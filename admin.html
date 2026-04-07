@@ -688,7 +688,7 @@ select{cursor:pointer}
 
 <script>
 // ═══════════════════════════════════════
-//  FIREBASE CONFIG — Replace with yours!
+//  FIREBASE CONFIG
 // ═══════════════════════════════════════
 const FB_CFG = {
   apiKey: "AIzaSyD4s4QOFphv0als6u_XZbtbIla2Yk7GslE",
@@ -798,20 +798,57 @@ function pickFmt(f,el){
   el.classList.add('selected');
 }
 
-function renderTeamGrid(){
-  document.getElementById('teamGrid').innerHTML=ALL_IDS.map(id=>{
-    const m=TM[id],s=selTeams.includes(id);
-    return `<div class="team-card ${s?'selected':''}" onclick="toggleTeam('${id}',this)">
-      <div class="team-check">✓</div>${lo(id,56)}<h3>${m.name}</h3>
+// UPDATED: Render team grid without inline onclick
+function renderTeamGrid() {
+  const grid = document.getElementById('teamGrid');
+  grid.innerHTML = ALL_IDS.map(id => {
+    const m = TM[id];
+    const s = selTeams.includes(id);
+    return `<div class="team-card ${s ? 'selected' : ''}" data-team-id="${id}">
+      <div class="team-check">✓</div>
+      ${lo(id, 56)}<h3>${m.name}</h3>
     </div>`;
   }).join('');
   updSelCnt();
 }
-function toggleTeam(id,el){
-  const i=selTeams.indexOf(id);
-  i>=0?selTeams.splice(i,1):selTeams.push(id);
-  renderTeamGrid();
+
+// Attach event listener once (after DOM is ready)
+function initTeamSelection() {
+  const grid = document.getElementById('teamGrid');
+  if (!grid) return;
+  // Remove any previous listener to avoid duplicates
+  grid.removeEventListener('click', teamClickHandler);
+  grid.addEventListener('click', teamClickHandler);
 }
+
+function teamClickHandler(e) {
+  const card = e.target.closest('.team-card');
+  if (!card) return;
+  const teamId = card.dataset.teamId;
+  if (!teamId) return;
+
+  const idx = selTeams.indexOf(teamId);
+  if (idx === -1) selTeams.push(teamId);
+  else selTeams.splice(idx, 1);
+
+  renderTeamGrid();   // re-renders with updated selection
+}
+
+document.getElementById('teamGrid').addEventListener('click', (e) => {
+  const card = e.target.closest('.team-card');
+  if (!card) return;
+  const teamId = card.dataset.teamId;
+  if (!teamId) return;
+
+  const index = selTeams.indexOf(teamId);
+  if (index === -1) {
+    selTeams.push(teamId);
+  } else {
+    selTeams.splice(index, 1);
+  }
+  renderTeamGrid();
+  updSelCnt();
+});
 function updSelCnt(){document.getElementById('selCnt').textContent=`(${selTeams.length} selected)`}
 
 function renderDragList(){
