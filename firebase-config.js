@@ -3,12 +3,12 @@
 // =====================================================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDM3e_u1nZFv3tZc_PFioPr1GYrMKfs7pY",
-  authDomain: "dls-tour.firebaseapp.com",
-  projectId: "dls-tour",
-  storageBucket: "dls-tour.firebasestorage.app",
-  messagingSenderId: "627648716601",
-  appId: "1:627648716601:web:9c6ba12dd7aeb3c4c492e8"
+  apiKey: "AIzaSyD4s4QOFphv0als6u_XZbtbIla2Yk7GslE",
+    authDomain: "dls-tes.firebaseapp.com",
+    projectId: "dls-tes",
+    storageBucket: "dls-tes.firebasestorage.app",
+    messagingSenderId: "205544215019",
+    appId: "1:205544215019:web:a011bb3ceebb2cb68ec9ae"
 };
 
 // Admin password
