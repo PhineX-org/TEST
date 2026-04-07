@@ -938,7 +938,7 @@ function renderReview(){
 }
 
 function goStep(n){
-  if(n===1&&selTeams.length<2){toast('Select at least 2 teams','warn');return;}
+
   if(n===2){
     const ord=teamRank.filter(t=>selTeams.includes(t));
     selTeams.filter(t=>!ord.includes(t)).forEach(t=>ord.push(t));
