@@ -12,4 +12,4 @@ const firebaseConfig = {
 };
 
 // Admin password
-const ADMIN_PASSWORD = "dls2026admin";
+const ADMIN_PASSWORD = "ADMIN26";
