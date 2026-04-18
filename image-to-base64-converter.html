@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image to Base64 Converter — LDFC Logo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 800px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .upload-area {
+      border: 3px dashed #667eea;
+      border-radius: 12px;
+      padding: 60px 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #f8f9ff;
+      margin-bottom: 30px;
+    }
+
+    .upload-area:hover {
+      border-color: #764ba2;
+      background: #f0f2ff;
+    }
+
+    .upload-area.dragover {
+      border-color: #764ba2;
+      background: #e8ebff;
+      transform: scale(1.02);
+    }
+
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+
+    .upload-text {
+      color: #333;
+      font-size: 18px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .upload-hint {
+      color: #666;
+      font-size: 14px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .preview-section {
+      display: none;
+      margin-bottom: 30px;
+    }
+
+    .preview-section.active {
+      display: block;
+    }
+
+    .preview-box {
+      background: #f8f9ff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .preview-image {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .output-section {
+      display: none;
+    }
+
+    .output-section.active {
+      display: block;
+    }
+
+    .output-label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .output-box {
+      background: #f8f9ff;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      padding: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #333;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .instructions {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .instructions h3 {
+      color: #856404;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .instructions ol {
+      color: #856404;
+      margin-left: 20px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .success-message {
+      display: none;
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #155724;
+      font-weight: 600;
+    }
+
+    .success-message.active {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .file-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .file-info-label {
+      font-weight: 600;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Image to Base64 Converter</h1>
+    <p class="subtitle">Convert your LDFC logo to a data URL for logos.js</p>
+
+    <!-- Upload Area -->
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-icon">📁</div>
+      <div class="upload-text">Click to upload or drag & drop</div>
+      <div class="upload-hint">Supports: JPG, PNG, GIF, WEBP</div>
+      <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <!-- Preview Section -->
+    <div class="preview-section" id="previewSection">
+      <div class="preview-box">
+        <img id="previewImage" class="preview-image" alt="Preview">
+      </div>
+      
+      <div class="file-info">
+        <span><span class="file-info-label">File:</span> <span id="fileName"></span></span>
+        <span><span class="file-info-label">Size:</span> <span id="fileSize"></span></span>
+        <span><span class="file-info-label">Type:</span> <span id="fileType"></span></span>
+      </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+      ✅ Successfully copied to clipboard!
+    </div>
+
+    <!-- Output Section -->
+    <div class="output-section" id="outputSection">
+      <label class="output-label">Base64 Data URL:</label>
+      <div class="output-box" id="outputBox"></div>
+      
+      <div class="button-group">
+        <button class="btn-primary" onclick="copyToClipboard()">
+          📋 Copy to Clipboard
+        </button>
+        <button class="btn-secondary" onclick="downloadAsFile()">
+          💾 Download as .txt
+        </button>
+        <button class="btn-secondary" onclick="reset()">
+          🔄 Convert Another
+        </button>
+      </div>
+
+      <div class="instructions">
+        <h3>📋 Next Steps:</h3>
+        <ol>
+          <li>Click "Copy to Clipboard" above</li>
+          <li>Open your <code>logos.js</code> file</li>
+          <li>Find the line: <code>"LDFC": "PASTE_BASE64_HERE"</code></li>
+          <li>Replace <code>PASTE_BASE64_HERE</code> with the copied data URL</li>
+          <li>Keep it inside the quotes!</li>
+          <li>Save the file</li>
+          <li>Refresh your tournament app — the LDFC logo will now appear! 🎉</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const previewSection = document.getElementById('previewSection');
+    const previewImage = document.getElementById('previewImage');
+    const outputSection = document.getElementById('outputSection');
+    const outputBox = document.getElementById('outputBox');
+    const successMessage = document.getElementById('successMessage');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const fileType = document.getElementById('fileType');
+
+    let currentDataURL = '';
+
+    // Click to upload
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('❌ Please select an image file!');
+        return;
+      }
+
+      // Show file info
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      fileType.textContent = file.type;
+
+      // Read the file
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        currentDataURL = e.target.result;
+        
+        // Show preview
+        previewImage.src = currentDataURL;
+        previewSection.classList.add('active');
+        
+        // Show output
+        outputBox.textContent = currentDataURL;
+        outputSection.classList.add('active');
+
+        // Scroll to output
+        outputSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function copyToClipboard() {
+      navigator.clipboard.writeText(currentDataURL).then(() => {
+        successMessage.classList.add('active');
+        setTimeout(() => {
+          successMessage.classList.remove('active');
+        }, 3000);
+      }).catch(err => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = currentDataURL;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        successMessage.classList.add('active');
+        setTimeout(() => {
+          successMessage.classList.remove('active');
+        }, 3000);
+      });
+    }
+
+    function downloadAsFile() {
+      const blob = new Blob([currentDataURL], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ldfc-base64.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function reset() {
+      previewSection.classList.remove('active');
+      outputSection.classList.remove('active');
+      successMessage.classList.remove('active');
+      fileInput.value = '';
+      currentDataURL = '';
+    }
+  </script>
+</body>
+</html>

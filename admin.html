@@ -703,12 +703,12 @@ const GEMINI_WORKER = 'https://super-paper-1cd0.ahmedelgoharymessi.workers.dev/'
 
 // ═══════ TEAMS META ═══════
 const TM = {
-  barcelona: { name:'FC Barcelona', short:'BAR' },
-  futurefc:  { name:'Future FC',    short:'FUT' },
+  barcelona: { name:'FC Barcelona', short:'FCB' },
+  futurefc:  { name:'Future FC',    short:'FFC' },
   liverpool: { name:'Liverpool FC', short:'LIV' },
   rbleipzig: { name:'RB Leipzig',   short:'RBL' },
-  tofifc:    { name:'Tofi FC',      short:'TOF' },
-  elahly:    { name:'El Ahly',      short:'AHL' },
+  tofifc:    { name:'Tofi FC',      short:'TFC' },
+  ldfc:    { name:'LEGEND DIAMOND FC',      short:'LDF' },
 };
 const ALL_IDS = Object.keys(TM);
 const FMT_NAMES = {league:'League',group:'Group Stage',knockout:'Knockout',group_knock:'Groups+KO',league_knock:'League+KO'};
@@ -938,7 +938,6 @@ function renderReview(){
 }
 
 function goStep(n){
-
   if(n===2){
     const ord=teamRank.filter(t=>selTeams.includes(t));
     selTeams.filter(t=>!ord.includes(t)).forEach(t=>ord.push(t));
