@@ -38,9 +38,9 @@ const SYMBOL_MAP = {
     '=': ['e'],
     
     // Special/look-alike characters
-    'а': ['a'], 'е': ['e'], 'о': ['o'], 'р': ['p'], 'с': ['c'], // Cyrillic
+    'а': ['a'], 'е': ['e'], 'о': ['o'], 'р': ['p'], 'с': ['c'],
     'х': ['x'], 'у': ['y'], 'і': ['i'], 'ѕ': ['s'], 'һ': ['h'],
-    'ɑ': ['a'], 'е': ['e'], 'ο': ['o'], 'ѕ': ['s'], // Greek-like
+    'ɑ': ['a'], 'е': ['e'], 'ο': ['o'], 'ѕ': ['s'],
     'ℓ': ['l'], '℮': ['e'], 'ℯ': ['e'], '℥': ['o'],
     
     // Remove these entirely
@@ -1336,6 +1336,6 @@ window.moderateMessage = async (text) => {
     return { allowed: !blocked, message: blocked ? 'رسالتك تحتوي على محتوى محظور' : null };
 };
 
-console.log('[MOD] JMS v3.1 Enhanced loaded — Advanced detection active');
+console.log('[MOD] JMS v3.1 loaded — Advanced detection active');
 
 })();

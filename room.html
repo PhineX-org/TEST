@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>الغرفة | El Jasus</title>
     <link rel="icon" type="image/png" href="ElJasus.png">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -204,42 +204,67 @@
             }
         }
 
-        /* Side panels positioning */
-        .side-panel-left {
-            position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 100;
+        /* ═══════════════════════════════════════════════════
+           PANEL DOCK — chat / voice / friends / reports
+           Phones & tablets (<1180px, mobile-first default below):
+           the four buttons collapse into ONE bottom toolbar so
+           nothing floats over the game card and nothing sits
+           off-screen. Wide desktop (≥1180px, see media query
+           further down): they split back into two floating side
+           columns, now with guaranteed clearance from the card. */
+        #panelDock {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 400;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 10px max(10px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+            background: linear-gradient(180deg, transparent, rgba(10,14,26,0.9) 45%, rgba(10,14,26,0.98));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0,242,255,0.12);
         }
 
-        .side-panel-right {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .dock-group-left,
+        .dock-group-right {
+            display: contents; /* dissolved on mobile — all 4 buttons share one row */
         }
 
-        @media (max-width: 768px) {
-            .side-panel-left,
-            .side-panel-right {
+        /* Reserve room below the game card so it never sits under the toolbar
+           (also applied to the brief loading screen, shown before gameContainer) */
+        #gameContainer,
+        #loadingScreen {
+            padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+        }
+
+        @media (min-width: 1180px) {
+            /* Plenty of width here — go back to two floating side columns */
+            #panelDock {
+                display: contents;
+            }
+            .dock-group-left,
+            .dock-group-right {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
                 position: fixed;
-                top: auto;
-                bottom: 20px;
-                transform: none;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 100;
             }
-            .side-panel-left {
-                left: 20px;
-            }
-            .side-panel-right {
-                right: 20px;
+            .dock-group-left { left: 24px; }
+            .dock-group-right { right: 24px; }
+
+            /* Guarantee the centered card never reaches under the columns */
+            #gameContainer,
+            #loadingScreen {
+                padding-left: 116px !important;
+                padding-right: 116px !important;
+                padding-bottom: 16px !important;
             }
         }
 
@@ -567,28 +592,28 @@
         <div id="waitingScreen" class="hidden w-full max-w-4xl">
             <div class="glass rounded-3xl p-6 fade-in-up">
                 <!-- Header -->
-                <div class="flex justify-between items-start mb-6">
-                    <div class="flex-1">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+                    <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-3 mb-2">
-                            <h2 id="roomCodeDisplay" class="text-4xl font-black neon-text cursor-pointer" 
+                            <h2 id="roomCodeDisplay" class="text-4xl font-black neon-text cursor-pointer truncate" 
                                 onclick="copyRoomCode()" title="اضغط للنسخ">
                                 ----
                             </h2>
-                            <button onclick="copyRoomCode()" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                            <button onclick="copyRoomCode()" class="p-2 rounded-lg hover:bg-white/10 transition-colors shrink-0">
                                 <i class="fas fa-copy text-primary"></i>
                             </button>
                         </div>
                         <p class="text-xs opacity-50 uppercase font-bold tracking-widest">كود الغرفة</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="shareRoom()" class="px-4 py-2 rounded-xl glass border-primary text-primary hover:bg-primary/10 transition-all">
-                            <i class="fas fa-share-alt ml-2"></i>مشاركة
+                    <div class="grid grid-cols-3 gap-2 sm:flex sm:gap-2 sm:shrink-0">
+                        <button onclick="shareRoom()" class="px-2 sm:px-4 py-2 rounded-xl glass border-primary text-primary hover:bg-primary/10 transition-all text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-share-alt sm:ml-2"></i><span class="hidden sm:inline">مشاركة</span>
                         </button>
-                        <button onclick="showQRCode()" class="px-4 py-2 rounded-xl glass border-primary text-primary hover:bg-primary/10 transition-all">
-                            <i class="fas fa-qrcode ml-2"></i>QR
+                        <button onclick="showQRCode()" class="px-2 sm:px-4 py-2 rounded-xl glass border-primary text-primary hover:bg-primary/10 transition-all text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-qrcode sm:ml-2"></i><span class="hidden sm:inline">QR</span>
                         </button>
-                        <button onclick="leaveRoom()" class="px-4 py-2 rounded-xl bg-danger/20 border-2 border-danger/30 text-danger hover:bg-danger/30 transition-all">
-                            مغادرة
+                        <button onclick="leaveRoom()" class="px-2 sm:px-4 py-2 rounded-xl bg-danger/20 border-2 border-danger/30 text-danger hover:bg-danger/30 transition-all text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-right-from-bracket sm:hidden"></i><span class="hidden sm:inline">مغادرة</span>
                         </button>
                     </div>
                 </div>
@@ -701,7 +726,7 @@
                 <!-- Spy Hint Section (only visible to spy) -->
                 <div id="spyHintSection" class="hidden mb-6 rounded-2xl p-4 border-2" 
                      style="background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(220,38,38,.06));border-color:rgba(239,68,68,.35);">
-                    <div class="flex items-center justify-between mb-3">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                         <div class="flex items-center gap-2">
                             <span style="font-size:22px;">🕵️</span>
                             <div>
@@ -756,8 +781,8 @@
         </div>
 
         <!-- TIE/DRAW SCREEN -->
-        <div id="tieScreen" class="hidden">
-            <h1 class="text-8xl font-black text-warning animate__animated animate__bounceIn neon-text text-center">
+        <div id="tieScreen" class="hidden w-full text-center px-2">
+            <h1 class="text-5xl sm:text-7xl md:text-8xl font-black text-warning animate__animated animate__bounceIn neon-text text-center break-words">
                 تعادل! 🤝
             </h1>
         </div>
@@ -826,31 +851,33 @@
     </div>
 
     <!-- Side Panel Buttons - LEFT (Chat & Voice) -->
-    <div class="side-panel-left">
-        <button id="chatBtn" class="panel-btn" 
-                style="background:rgba(6,182,212,0.18);border-color:rgba(6,182,212,0.5);color:#06b6d4;"
-                onclick="toggleChatPanel()" title="الدردشة الكتابية">
-            💬
-        </button>
-        <button id="voiceBtn" class="panel-btn"
-                style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.3);color:#22c55e;"
-                onclick="toggleVoicePanel()" title="الدردشة الصوتية">
-            🎙️
-        </button>
-    </div>
+    <div id="panelDock">
+        <div class="dock-group-left">
+            <button id="chatBtn" class="panel-btn" 
+                    style="background:rgba(6,182,212,0.18);border-color:rgba(6,182,212,0.5);color:#06b6d4;"
+                    onclick="toggleChatPanel()" title="الدردشة الكتابية">
+                💬
+            </button>
+            <button id="voiceBtn" class="panel-btn"
+                    style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.3);color:#22c55e;"
+                    onclick="toggleVoicePanel()" title="الدردشة الصوتية">
+                🎙️
+            </button>
+        </div>
 
-    <!-- Side Panel Buttons - RIGHT (Friends & Reports) -->
-    <div class="side-panel-right">
-        <button id="friendsBtn" class="panel-btn"
-                style="background:rgba(124,48,255,0.12);border-color:rgba(124,48,255,0.35);color:#a78bfa;"
-                onclick="toggleFriendsPanel()" title="الأصدقاء">
-            👥
-        </button>
-        <button id="reportsBtn" class="panel-btn"
-                style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#ef4444;"
-                onclick="toggleReportsPanel()" title="الإبلاغ">
-            🚩
-        </button>
+        <!-- Side Panel Buttons - RIGHT (Friends & Reports) -->
+        <div class="dock-group-right">
+            <button id="friendsBtn" class="panel-btn"
+                    style="background:rgba(124,48,255,0.12);border-color:rgba(124,48,255,0.35);color:#a78bfa;"
+                    onclick="toggleFriendsPanel()" title="الأصدقاء">
+                👥
+            </button>
+            <button id="reportsBtn" class="panel-btn"
+                    style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#ef4444;"
+                    onclick="toggleReportsPanel()" title="الإبلاغ">
+                🚩
+            </button>
+        </div>
     </div>
 
     <!-- CHAT PANEL -->
@@ -2661,11 +2688,17 @@ async function joinRoom(uid, username) {
 
         window.showToast = function(message) {
             const toast = document.createElement('div');
+            // Clear the bottom panel dock on phones/tablets (<1180px); desktop has no dock there.
+            const bottomOffset = window.innerWidth < 1180
+                ? 'calc(90px + env(safe-area-inset-bottom))'
+                : '20px';
             toast.style.cssText = `
                 position: fixed;
-                bottom: 20px;
+                bottom: ${bottomOffset};
                 left: 50%;
                 transform: translateX(-50%);
+                max-width: min(420px, 90vw);
+                text-align: center;
                 background: linear-gradient(135deg, rgba(0,242,255,0.9), rgba(124,48,255,0.9));
                 color: white;
                 padding: 12px 24px;

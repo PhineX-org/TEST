@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="الجاسوس">
     <meta name="theme-color" content="#000000">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الجاسوس | El Jasus - The Ultimate Edition</title>
+    <title>الجاسوس | El Jasus</title>
     <meta name="description" content="لعبة الجاسوس - العب مع أصدقائك واكتشف من هو الجاسوس بينكم في أجواء من التحدي والذكاء!">
     <meta name="keywords" content="الجاسوس, لعبة الجاسوس, ألعاب جماعية, PhineX">
     <meta name="author" content="PhineX">
@@ -19,17 +19,21 @@
     
     <style>
         :root {
-            --neon-blue: #00d4ff;
-            --electric-blue: #0066ff;
-            --sky-blue: #87ceeb;
-            --cyber-purple: #b026ff;
-            --deep-purple: #8b5cf6;
-            --neon-green: #39ff14;
-            --lime-green: #00ff88;
-            --dark-bg: #000000;
-            --dark-surface: #050510;
-            --dark-surface-2: #0a0a1a;
-            --dark-surface-3: #151528;
+            /* Palette rule: black + cyan (structure/brand) + lime (accent) — rgba only.
+               Every legacy variable name below is kept (so nothing downstream breaks)
+               but now aliases into just these three hues, and the two accents are
+               never blended into one gradient stop-to-stop. */
+            --neon-blue: rgba(0, 242, 255, 1);
+            --electric-blue: rgba(0, 242, 255, 1);
+            --sky-blue: rgba(0, 242, 255, 1);
+            --cyber-purple: rgba(163, 230, 53, 1);
+            --deep-purple: rgba(163, 230, 53, 1);
+            --neon-green: rgba(163, 230, 53, 1);
+            --lime-green: rgba(163, 230, 53, 1);
+            --dark-bg: rgba(0, 0, 0, 1);
+            --dark-surface: rgba(0, 0, 0, 1);
+            --dark-surface-2: rgba(0, 0, 0, 1);
+            --dark-surface-3: rgba(0, 0, 0, 1);
         }
 
         * {
@@ -41,7 +45,7 @@
         body {
             font-family: 'Cairo', sans-serif;
             background: var(--dark-bg);
-            color: #ffffff;
+            color: rgba(255, 255, 255, 1);
             overflow-x: hidden;
             position: relative;
         }
@@ -68,7 +72,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+            background: rgba(0, 0, 0, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -85,7 +89,7 @@
 
         /* Screen 1: Presented By */
         #presentedByScreen {
-            background: radial-gradient(circle at center, #0a0a0f 0%, #000 100%);
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%);
         }
 
         .presented-text {
@@ -127,7 +131,7 @@
 
         /* Screen 2: Credits */
         #creditsScreen {
-            background: radial-gradient(circle at center, #0a0a0f 0%, #000 100%);
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%);
         }
 
         .credits-content {
@@ -168,7 +172,7 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 4rem;
             font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple));
+            background: rgba(0, 242, 255, 1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -188,7 +192,7 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 4rem;
             font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple));
+            background: rgba(0, 242, 255, 1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: white;
             background-clip: text;
@@ -256,7 +260,7 @@
 
         /* Screen 3: Main Loading */
         #mainLoadingScreen {
-            background: radial-gradient(circle at 50% 50%, #0a0515 0%, #000 100%);
+            background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 100%);
             overflow: hidden;
         }
 
@@ -379,12 +383,12 @@
             transform: translate(-50%, -50%);
             border: 3px solid transparent;
             border-radius: 50%;
-            background: linear-gradient(var(--dark-bg), var(--dark-bg)) padding-box,
-                        linear-gradient(135deg, var(--neon-blue), var(--cyber-purple), var(--neon-green)) border-box;
+            background: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1)) padding-box,
+                        linear-gradient(135deg, rgba(0, 242, 255, 1) 0%, rgba(0, 242, 255, 1) 50%, rgba(163, 230, 53, 1) 50%, rgba(163, 230, 53, 1) 100%) border-box;
             animation: sphereRotate 8s linear infinite, spherePulse 3s ease-in-out infinite;
             box-shadow: 
-                0 0 40px rgba(0, 212, 255, 0.5),
-                inset 0 0 40px rgba(0, 212, 255, 0.2);
+                0 0 40px rgba(0, 242, 255, 0.5),
+                inset 0 0 40px rgba(0, 242, 255, 0.2);
         }
 
         @keyframes sphereRotate {
@@ -396,13 +400,13 @@
         @keyframes spherePulse {
             0%, 100% {
                 box-shadow: 
-                    0 0 40px rgba(0, 212, 255, 0.5),
-                    inset 0 0 40px rgba(0, 212, 255, 0.2);
+                    0 0 40px rgba(0, 242, 255, 0.5),
+                    inset 0 0 40px rgba(0, 242, 255, 0.2);
             }
             50% {
                 box-shadow: 
-                    0 0 80px rgba(0, 212, 255, 0.8),
-                    inset 0 0 60px rgba(0, 212, 255, 0.4);
+                    0 0 80px rgba(0, 242, 255, 0.8),
+                    inset 0 0 60px rgba(0, 242, 255, 0.4);
             }
         }
 
@@ -429,13 +433,13 @@
             font-size: 4rem;
             font-weight: 900;
             text-transform: uppercase;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple));
+            background: rgba(0, 242, 255, 1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             position: relative;
             z-index: 10;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
             animation: textGlow 2s ease-in-out infinite;
             letter-spacing: 0.1em;
         }
@@ -471,10 +475,11 @@
 
         .loading-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--neon-blue), var(--cyber-purple), var(--neon-green));
+            /* hard stop at 50% (not a blend) — starts cyan, "arrives" at lime as it completes */
+            background: linear-gradient(90deg, rgba(0, 242, 255, 1) 0%, rgba(0, 242, 255, 1) 50%, rgba(163, 230, 53, 1) 50%, rgba(163, 230, 53, 1) 100%);
             width: 0%;
             animation: loadingProgress 4s ease-out forwards;
-            box-shadow: 0 0 20px var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.8);
         }
 
         @keyframes loadingProgress {
@@ -585,10 +590,10 @@
             height: 100%;
             z-index: -1;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(176, 38, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 30%, rgba(57, 255, 20, 0.1) 0%, transparent 50%),
-                linear-gradient(180deg, #000000 0%, #050510 50%, #0a0a1a 100%);
+                radial-gradient(circle at 20% 50%, rgba(0, 242, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(163, 230, 53, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 30%, rgba(163, 230, 53, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 1) 100%);
         }
 
         /* Floating Energy Orbs */
@@ -669,8 +674,8 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
             transform-style: preserve-3d;
             animation: gridRotate 40s linear infinite;
@@ -729,16 +734,6 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            animation: logo3DRotate 20s linear infinite;
-        }
-
-        @keyframes logo3DRotate {
-            0% {
-                transform: rotateY(0deg) rotateX(10deg);
-            }
-            100% {
-                transform: rotateY(360deg) rotateX(10deg);
-            }
         }
 
         .hero-logo {
@@ -748,6 +743,7 @@
             position: relative;
             z-index: 2;
             animation: logoGlow 3s ease-in-out infinite;
+            border-radius: 50%;
         }
 
         @keyframes logoGlow {
@@ -769,8 +765,8 @@
             border: 2px solid transparent;
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            background: linear-gradient(var(--dark-bg), var(--dark-bg)) padding-box,
-                        linear-gradient(45deg, var(--neon-blue), var(--cyber-purple), var(--neon-green), var(--neon-blue)) border-box;
+            background: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1)) padding-box,
+                        linear-gradient(45deg, rgba(0, 242, 255, 1) 0%, rgba(0, 242, 255, 1) 50%, rgba(163, 230, 53, 1) 50%, rgba(163, 230, 53, 1) 100%) border-box;
             animation: holoRotate 8s linear infinite;
             opacity: 0.6;
         }
@@ -788,7 +784,7 @@
             font-family: 'Exo 2', sans-serif;
             font-size: clamp(3.5rem, 10vw, 7rem);
             font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple), var(--neon-green));
+            background: rgba(0, 242, 255, 1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -796,7 +792,7 @@
             letter-spacing: 0.02em;
             position: relative;
             text-transform: uppercase;
-            filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.5));
+            filter: drop-shadow(0 0 40px rgba(0, 242, 255, 0.5));
             animation: titleFloat 6s ease-in-out infinite;
         }
 
@@ -817,7 +813,7 @@
             color: var(--neon-blue);
             margin-bottom: 2rem;
             text-transform: uppercase;
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.8);
             animation: subtitlePulse 4s ease-in-out infinite;
         }
 
@@ -891,44 +887,44 @@
             left: 100%;
         }
 
-        /* Primary Button - Neon Blue */
+        /* Primary Button — lime fill (matches the primary-action color used across home.html) */
         .btn-primary {
-            background: linear-gradient(135deg, var(--neon-blue), var(--electric-blue));
-            color: #ffffff;
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.95), rgba(163, 230, 53, 0.85));
+            color: rgba(0, 0, 0, 0.92);
             box-shadow: 
-                0 0 30px rgba(0, 212, 255, 0.6),
-                0 10px 30px rgba(0, 102, 255, 0.4),
-                inset 0 0 20px rgba(255, 255, 255, 0.2);
+                0 0 30px rgba(163, 230, 53, 0.5),
+                0 10px 30px rgba(163, 230, 53, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.25);
             clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
         }
 
         .btn-primary:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 
-                0 0 50px rgba(0, 212, 255, 1),
-                0 15px 40px rgba(0, 102, 255, 0.6),
+                0 0 50px rgba(163, 230, 53, 0.8),
+                0 15px 40px rgba(163, 230, 53, 0.45),
                 inset 0 0 30px rgba(255, 255, 255, 0.3);
         }
 
-        /* Secondary Button - Purple Gradient */
+        /* Secondary Button — cyan ghost (matches the secondary/structural color used across home.html) */
         .btn-secondary {
-            background: linear-gradient(135deg, rgba(176, 38, 255, 0.2), rgba(139, 92, 246, 0.2));
-            color: #ffffff;
-            border: 2px solid var(--cyber-purple);
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.12), rgba(0, 242, 255, 0.08));
+            color: rgba(255, 255, 255, 1);
+            border: 2px solid rgba(0, 242, 255, 0.85);
             box-shadow: 
-                0 0 30px rgba(176, 38, 255, 0.4),
-                inset 0 0 20px rgba(176, 38, 255, 0.1);
+                0 0 30px rgba(0, 242, 255, 0.35),
+                inset 0 0 20px rgba(0, 242, 255, 0.08);
             clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
             backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover {
             transform: translateY(-5px) scale(1.05);
-            background: linear-gradient(135deg, rgba(176, 38, 255, 0.4), rgba(139, 92, 246, 0.4));
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.22), rgba(0, 242, 255, 0.16));
             box-shadow: 
-                0 0 50px rgba(176, 38, 255, 0.8),
-                0 15px 40px rgba(139, 92, 246, 0.5),
-                inset 0 0 30px rgba(176, 38, 255, 0.3);
+                0 0 50px rgba(0, 242, 255, 0.6),
+                0 15px 40px rgba(0, 242, 255, 0.35),
+                inset 0 0 30px rgba(0, 242, 255, 0.2);
         }
 
         /* Button Icon Styling */
@@ -980,7 +976,7 @@
         .features-section {
             padding: 8rem 2rem;
             position: relative;
-            background: linear-gradient(180deg, transparent 0%, rgba(5, 5, 16, 0.5) 50%, transparent 100%);
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.5) 50%, transparent 100%);
         }
 
         .section-title {
@@ -988,14 +984,14 @@
             font-size: clamp(2.8rem, 6vw, 4.5rem);
             font-weight: 900;
             text-align: center;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple), var(--neon-green));
+            background: rgba(0, 242, 255, 1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 5rem;
             letter-spacing: 0.02em;
             text-transform: uppercase;
-            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.6));
+            filter: drop-shadow(0 0 30px rgba(0, 242, 255, 0.6));
             position: relative;
         }
 
@@ -1023,9 +1019,9 @@
         .feature-card-3d {
             position: relative;
             padding: 3rem 2rem;
-            background: rgba(10, 10, 26, 0.6);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(0, 242, 255, 0.2);
             border-radius: 20px;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
@@ -1040,7 +1036,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(176, 38, 255, 0.1));
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(163, 230, 53, 0.1));
             opacity: 0;
             transition: opacity 0.5s ease;
             z-index: 0;
@@ -1060,7 +1056,7 @@
             background: linear-gradient(
                 0deg,
                 transparent,
-                rgba(0, 212, 255, 0.1),
+                rgba(0, 242, 255, 0.1),
                 transparent
             );
             transform: rotate(45deg);
@@ -1086,9 +1082,9 @@
             transform: translateY(-15px) rotateX(5deg);
             border-color: var(--neon-blue);
             box-shadow: 
-                0 30px 60px rgba(0, 212, 255, 0.4),
-                0 0 50px rgba(0, 212, 255, 0.3),
-                inset 0 0 30px rgba(0, 212, 255, 0.1);
+                0 30px 60px rgba(0, 242, 255, 0.4),
+                0 0 50px rgba(0, 242, 255, 0.3),
+                inset 0 0 30px rgba(0, 242, 255, 0.1);
         }
 
         .card-content {
@@ -1111,7 +1107,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple));
+            background: rgba(0, 242, 255, 1);
             border-radius: 50%;
             opacity: 0.2;
             animation: iconPulse 3s ease-in-out infinite;
@@ -1131,7 +1127,7 @@
         .feature-icon-3d {
             position: relative;
             font-size: 3rem;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple));
+            background: rgba(0, 242, 255, 1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -1169,7 +1165,7 @@
         .cta-section {
             padding: 8rem 2rem;
             position: relative;
-            background: radial-gradient(circle at center, rgba(10, 10, 26, 0.8) 0%, transparent 100%);
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
             overflow: hidden;
         }
 
@@ -1185,13 +1181,13 @@
             font-family: 'Exo 2', sans-serif;
             font-size: clamp(2.5rem, 6vw, 4rem);
             font-weight: 900;
-            background: linear-gradient(135deg, var(--neon-blue), var(--cyber-purple));
+            background: rgba(0, 242, 255, 1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 2rem;
             letter-spacing: 0.02em;
-            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.5));
+            filter: drop-shadow(0 0 30px rgba(0, 242, 255, 0.5));
         }
 
         .cta-description {
@@ -1203,11 +1199,11 @@
         }
 
         :root {
-    --discord: #5865F2;
-    --github: #333;
-    --youtube: #FF0000;
-    --facebook: #1877F2;
-    --sky-blue: #00acee;    /* for Discord's sky blue hover */
+    --discord: rgba(0, 242, 255, 1);
+    --github: rgba(0, 242, 255, 1);
+    --youtube: rgba(0, 242, 255, 1);
+    --facebook: rgba(0, 242, 255, 1);
+    --sky-blue: rgba(0, 242, 255, 1);
 }
 
 .social-links {
@@ -1225,11 +1221,12 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: #f0f0f0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     transition: all 0.3s ease;
     text-decoration: none;
-    color: #333;
+    color: rgba(255, 255, 255, 0.55);
 }
 
 .social-link i {
@@ -1237,24 +1234,14 @@
     transition: transform 0.2s ease;
 }
 
-/* Hover effects */
-.social-link-discord:hover {
-    color: var(--sky-blue);
-    transform: translateY(-3px);
-}
-
-.social-link-github:hover {
-    color: var(--github);
-    transform: translateY(-3px);
-}
-
-.social-link-youtube:hover {
-    color: var(--youtube);
-    transform: translateY(-3px);
-}
-
+/* Hover effects — unified cyan (own brand color, not each platform's) */
+.social-link-discord:hover,
+.social-link-github:hover,
+.social-link-youtube:hover,
 .social-link-facebook:hover {
-    color: var(--facebook);
+    color: rgba(0, 242, 255, 1);
+    border-color: rgba(0, 242, 255, 0.6);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.35);
     transform: translateY(-3px);
 }
 
@@ -1273,8 +1260,8 @@
         /* Footer - Redesigned with PhineX Watermark */
         .footer {
             padding: 5rem 2rem 2rem;
-            background: linear-gradient(180deg, transparent 0%, rgba(5, 5, 16, 0.95) 100%);
-            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.95) 100%);
+            border-top: 1px solid rgba(0, 242, 255, 0.2);
             position: relative;
             overflow: hidden;
         }
@@ -1320,7 +1307,7 @@
             margin-bottom: 1.5rem;
             letter-spacing: 0.1em;
             font-weight: 700;
-            text-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
         }
 
         .footer-section ul {
@@ -1343,7 +1330,7 @@
         .footer-section a:hover {
             color: var(--neon-blue);
             transform: translateX(-5px);
-            text-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8);
         }
 
         .footer-logo {
@@ -1372,7 +1359,7 @@
 
         .footer-bottom {
             padding-top: 2.5rem;
-            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            border-top: 1px solid rgba(0, 242, 255, 0.2);
             text-align: center;
             color: rgba(255, 255, 255, 0.6);
             font-size: 1rem;
@@ -1391,7 +1378,7 @@
 
         .footer-bottom a:hover {
             color: var(--cyber-purple);
-            text-shadow: 0 0 15px rgba(176, 38, 255, 0.8);
+            text-shadow: 0 0 15px rgba(163, 230, 53, 0.8);
         }
 
         /* Responsive */
@@ -1563,7 +1550,7 @@
             </div>
 
             <div class="eljasus-text glitch" data-text="EL JASUS">EL JASUS</div>
-            <div class="subtitle-text">THE ULTIMATE EDITION</div>
+            <div class="subtitle-text">THE CLASSIC EDITION</div>
             
             <div class="loading-bar-container">
                 <div class="loading-bar"></div>
@@ -1587,7 +1574,7 @@
                 </div>
                 
                 <h1 class="hero-title">الجاسوس | El Jasus</h1>
-                <div class="hero-subtitle">THE ULTIMATE EDITION</div>
+                <div class="hero-subtitle">THE CLASSIC EDITION</div>
                 <p class="hero-description">
                     اكتشف من هو الجاسوس بينكم في لعبة جماعية مليئة بالتشويق والإثارة. 
                     العب مع أصدقائك واختبر مهاراتك في الخداع والذكاء!
@@ -1834,7 +1821,7 @@
                 hexagon.style.animationDelay = Math.random() * 25 + 's';
                 hexagon.style.animationDuration = (20 + Math.random() * 15) + 's';
                 hexagon.innerHTML = hexagonSVG;
-                hexagon.style.color = `rgba(0, 212, 255, ${0.1 + Math.random() * 0.15})`;
+                hexagon.style.color = `rgba(0, 242, 255, ${0.1 + Math.random() * 0.15})`;
                 container.appendChild(hexagon);
             }
         }

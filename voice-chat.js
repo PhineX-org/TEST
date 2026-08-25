@@ -407,14 +407,17 @@ class VoiceChat {
         <!-- Hidden audio container -->
         <div id="voice-audio-container" style="display:none;position:absolute;"></div>
 
-        <!-- Voice chat panel — z-index 8500, right side -->
+        <!-- Voice chat panel — centered overlay, same pattern as chat/friends/reports panels -->
         <div id="voice-panel" style="
-            position:fixed;bottom:136px;right:20px;z-index:8500;
-            background:linear-gradient(135deg,rgba(10,14,26,.97),rgba(20,25,45,.97));
-            border:2px solid rgba(0,242,255,.3);border-radius:20px;padding:16px;
-            backdrop-filter:blur(20px);min-width:230px;display:none;
-            box-shadow:0 8px 32px rgba(0,0,0,.5);font-family:'Cairo',sans-serif;
-            animation:vcPanelIn .25s ease;">
+            display:none;position:fixed;inset:0;z-index:8500;
+            background:rgba(0,0,0,.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+            align-items:center;justify-content:center;padding:20px;
+            animation:vcPanelIn .2s ease;">
+          <div style="
+              width:100%;max-width:340px;max-height:85vh;overflow-y:auto;
+              background:linear-gradient(135deg,rgba(10,14,26,.98),rgba(20,25,45,.98));
+              border:2px solid rgba(0,242,255,.3);border-radius:20px;padding:18px;
+              box-shadow:0 8px 40px rgba(0,0,0,.6);font-family:'Cairo',sans-serif;">
 
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                 <h4 style="color:#00f2ff;font-size:12px;font-weight:900;
@@ -460,39 +463,29 @@ class VoiceChat {
                     style="display:none;width:42px;height:42px;border-radius:12px;
                         border:2px solid rgba(239,68,68,.3);background:rgba(239,68,68,.1);
                         color:#ef4444;cursor:pointer;font-size:16px;
-                        display:none;align-items:center;justify-content:center;
+                        align-items:center;justify-content:center;
                         transition:all .2s;"
                     title="مغادرة الصوت">
                     <i class="fas fa-phone-slash"></i>
                 </button>
             </div>
+          </div>
         </div>
-
-        <!-- Voice FAB — stacked below chat FAB at bottom:80px -->
-        <button id="voice-fab" style="
-            position:fixed;bottom:80px;right:20px;z-index:8501;
-            width:46px;height:46px;border-radius:50%;
-            background:linear-gradient(135deg,rgba(0,242,255,.15),rgba(124,48,255,.15));
-            border:2px solid rgba(0,242,255,.4);cursor:pointer;
-            display:flex;align-items:center;justify-content:center;
-            backdrop-filter:blur(12px);color:#00f2ff;font-size:18px;
-            transition:all .3s;box-shadow:0 4px 15px rgba(0,242,255,.2);"
-            title="الدردشة الصوتية">
-            <i class="fas fa-microphone"></i>
-        </button>
 
         <style>
             @keyframes vcPanelIn {
-                from { opacity:0; transform:translateY(12px) scale(.97); }
-                to   { opacity:1; transform:translateY(0) scale(1); }
+                from { opacity:0; }
+                to   { opacity:1; }
             }
         </style>`);
 
-        // Wire up FAB toggle
-        document.getElementById('voice-fab').addEventListener('click', () => this._togglePanel());
-
         // Wire up panel close button
         document.getElementById('vc-close-btn').addEventListener('click', () => this._togglePanel(false));
+
+        // Click outside the card (on the backdrop) closes the panel — same UX as the other room panels
+        document.getElementById('voice-panel').addEventListener('click', (e) => {
+            if (e.target.id === 'voice-panel') this._togglePanel(false);
+        });
 
         // Wire up join/mute/leave
         document.getElementById('vc-join-btn').addEventListener('click',  () => this.join());
@@ -506,17 +499,17 @@ class VoiceChat {
     _togglePanel(force) {
         const panel = document.getElementById('voice-panel');
         if (!panel) return;
-        const isOpen = panel.style.display === 'block';
+        const isOpen = panel.style.display === 'flex';
         const next   = force !== undefined ? force : !isOpen;
-        panel.style.display = next ? 'block' : 'none';
+        panel.style.display = next ? 'flex' : 'none';
     }
 
     updateUI() {
         const joinBtn  = document.getElementById('vc-join-btn');
         const muteBtn  = document.getElementById('vc-mute-btn');
         const leaveBtn = document.getElementById('vc-leave-btn');
-        const fab      = document.getElementById('voice-fab');
-        if (!joinBtn || !muteBtn || !leaveBtn || !fab) return;
+        const trigger  = document.getElementById('voiceBtn'); // static dock button, lives in room.html
+        if (!joinBtn || !muteBtn || !leaveBtn) return;
 
         if (this.active) {
             // ── In voice ──
@@ -537,14 +530,15 @@ class VoiceChat {
                 muteBtn.innerHTML           = '<i class="fas fa-microphone"></i> مفتوح';
             }
 
-            // FAB: green when active, red-ish when muted
-            fab.style.borderColor = this.muted ? 'rgba(239,68,68,.7)' : '#00ff00';
-            fab.style.boxShadow   = this.muted
-                ? '0 0 12px rgba(239,68,68,.4)'
-                : '0 0 15px rgba(0,255,0,.4)';
-            fab.innerHTML = this.muted
-                ? '<i class="fas fa-microphone-slash" style="color:#ef4444;"></i>'
-                : '<i class="fas fa-microphone" style="color:#00ff00;"></i>';
+            // Dock button: green when active, red-ish when muted (mirrors the old FAB states)
+            if (trigger) {
+                trigger.style.borderColor = this.muted ? 'rgba(239,68,68,.7)' : 'rgba(34,197,94,.7)';
+                trigger.style.background  = this.muted ? 'rgba(239,68,68,.18)' : 'rgba(34,197,94,.22)';
+                trigger.style.color       = this.muted ? '#ef4444' : '#00ff00';
+                trigger.style.boxShadow   = this.muted
+                    ? '0 0 12px rgba(239,68,68,.4)'
+                    : '0 0 12px rgba(34,197,94,.4)';
+            }
 
             // Add self to user list
             this.addVoiceUser(this.uid, this.username);
@@ -555,10 +549,13 @@ class VoiceChat {
             muteBtn.style.display  = 'none';
             leaveBtn.style.display = 'none';
 
-            // FAB: default cyan idle state
-            fab.style.borderColor = 'rgba(0,242,255,.4)';
-            fab.style.boxShadow   = '0 4px 15px rgba(0,242,255,.2)';
-            fab.innerHTML         = '<i class="fas fa-microphone" style="color:#00f2ff;"></i>';
+            // Dock button: back to its default idle colors
+            if (trigger) {
+                trigger.style.borderColor = 'rgba(34,197,94,0.3)';
+                trigger.style.background  = 'rgba(34,197,94,0.15)';
+                trigger.style.color       = '#22c55e';
+                trigger.style.boxShadow   = 'none';
+            }
 
             this.removeVoiceUser(this.uid);
         }
