@@ -25,7 +25,7 @@ const STATIC_ASSETS = [
     '/qr-notifications.js',
     '/voice-chat.js',
     '/screenshot.js',
-    '/ElJasus.png',
+    '/ElJasus.jpg',
     '/manifest.json',
     'https://cdn.tailwindcss.com',
     'https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap',
@@ -93,8 +93,8 @@ self.addEventListener('push', event => {
     event.waitUntil(
         self.registration.showNotification(data.title || 'El Jasus', {
             body:    data.body || 'إشعار جديد',
-            icon:    '/ElJasus.png',
-            badge:   '/ElJasus.png',
+            icon:    '/ElJasus.jpg',
+            badge:   '/ElJasus.jpg',
             tag:     data.tag || 'eljasus',
             data:    { url: data.url || '/' },
             actions: data.actions || []

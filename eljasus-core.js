@@ -220,7 +220,7 @@
 <div id="_ej_auth_box">
   ${allowGuest ? `<button id="_ej_auth_close" title="متابعة كضيف"><i class="fas fa-times"></i></button>` : ''}
   <div class="_ej_logo_row">
-    <img src="ElJasus.png" alt="El Jasus" onerror="this.style.display='none'">
+    <img src="ElJasus.jpg" alt="El Jasus" onerror="this.style.display='none'">
     <h2>El Jasus</h2>
     <p>سجل دخولك للاستمتاع بكل المزايا</p>
   </div>

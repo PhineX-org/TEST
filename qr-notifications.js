@@ -131,8 +131,8 @@ class PushNotifications {
 
         const n = new Notification(title, {
             body,
-            icon: 'ElJasus.png',
-            badge: 'ElJasus.png',
+            icon: 'ElJasus.jpg',
+            badge: 'ElJasus.jpg',
             tag: options.tag || 'eljasus',
             ...options
         });
