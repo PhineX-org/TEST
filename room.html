@@ -1210,8 +1210,13 @@
             }
             
             try {
+                // Use gameState.currentUser.uid, not the raw `user` param — in guest
+                // mode `user` (the Firebase Auth callback value) is null, while
+                // gameState.currentUser was just set above to the guest identity.
+                const myUid = window.gameState.currentUser.uid;
+
                 // Get player data
-                const playerSnap = await get(ref(db, `players/${user.uid}`));
+                const playerSnap = await get(ref(db, `players/${myUid}`));
                 const playerData = playerSnap.val();
                 
                 if (!playerData) {
@@ -1224,7 +1229,7 @@
                 console.log('Player data loaded:', playerData);
 
                 // Join room
-                await joinRoom(user.uid, playerData.username || playerData.email);
+                await joinRoom(myUid, playerData.username || playerData.email);
                 
                 // Setup listeners
                 setupRoomListener();
@@ -1255,6 +1260,14 @@ async function joinRoom(uid, username) {
 
         const roomData = roomSnap.val();
         console.log('Room data loaded:', roomData);
+
+        // Host status is derived from the room's persisted hostId (written once, at
+        // creation time, in home.html) — never a one-time client flag. Recomputing it
+        // here means it's correct for the creator, every joiner, and on every refresh
+        // or rejoin.
+        const amHost = !!roomData.hostId && roomData.hostId === uid;
+        window.gameState.isHost = amHost;
+        localStorage.setItem('isHost', amHost ? 'true' : 'false');
         
         // Check if banned
         const banSnap = await get(ref(db, `banned_users/${uid}`));
@@ -1285,6 +1298,7 @@ async function joinRoom(uid, username) {
             joinedAt: serverTimestamp(),
             connected: true,
             status: 'online',
+            isHost: amHost,
             // ✅ FIX: Use activeTheme/activeTitle from your database structure
             nameTheme: playerProfile.activeTheme || playerProfile.nameTheme || 'default',
             nameTag: playerProfile.activeTitle || playerProfile.nameTag || null,
@@ -1337,9 +1351,21 @@ async function joinRoom(uid, username) {
                 // Update players list
                 updatePlayersList();
                 
-                // Update host controls
+                // Host-only controls: show/hide + populate for whichever role this
+                // client actually has. #hostControls, #startBtn, and #waitingMsg all
+                // start hidden in the HTML and nothing was ever toggling them.
+                const hostControlsEl = document.getElementById('hostControls');
+                const startBtnEl     = document.getElementById('startBtn');
+                const waitingMsgEl   = document.getElementById('waitingMsg');
                 if (window.gameState.isHost) {
+                    hostControlsEl?.classList.remove('hidden');
+                    startBtnEl?.classList.remove('hidden');
+                    waitingMsgEl?.classList.add('hidden');
                     updateHostControls(roomData);
+                } else {
+                    hostControlsEl?.classList.add('hidden');
+                    startBtnEl?.classList.add('hidden');
+                    waitingMsgEl?.classList.remove('hidden');
                 }
             }, (error) => {
                 console.error('Error listening to room:', error);
@@ -1354,6 +1380,12 @@ async function joinRoom(uid, username) {
             const loadingScreen = document.getElementById('loadingScreen');
             if (loadingScreen) loadingScreen.classList.add('hidden');
             window.clearLoadingTimeout && window.clearLoadingTimeout();
+
+            // Reveal the game container itself — nothing else in the file ever did this,
+            // so every inner screen below was toggling visibility inside a parent that
+            // was permanently display:none.
+            const gameContainerEl = document.getElementById('gameContainer');
+            if (gameContainerEl) gameContainerEl.classList.remove('hidden');
             
             // Hide all screens
             document.getElementById('waitingScreen').classList.add('hidden');
