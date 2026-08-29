@@ -532,7 +532,7 @@
     },
     challenger: {
       name: 'Challenger',
-      nameAr: 'تحدي',
+      nameAr: 'متحدي',
       min: 100000,
       max: Infinity,
       color: '#39ff14',

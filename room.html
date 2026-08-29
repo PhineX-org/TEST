@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>الغرفة | El Jasus</title>
-    <link rel="icon" type="image/png" href="ElJasus.jpg">
+    <link rel="icon" type="image/png" href="ElJasus.png">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -1307,13 +1307,34 @@ async function joinRoom(uid, username) {
 
         // Setup disconnect handler
         const connectedRef = ref(db, '.info/connected');
+        const presenceRef = ref(db, `players/${uid}/presence`);
         onValue(connectedRef, (snap) => {
             if (snap.val() === true) {
                 onDisconnect(playerRef).update({ 
                     connected: false, 
                     status: 'offline' 
                 });
+                // Presence: so friends' "ask to join" gating (and the invite
+                // button) reflect reality even if the tab is just closed
+                // instead of Leave Room being clicked.
+                onDisconnect(presenceRef).update({
+                    inGame: false,
+                    phase: null,
+                    room: null
+                });
             }
+        });
+
+        // Presence: mark this player as in-game, in this room, at the
+        // waiting phase (the room listener below keeps `phase` in sync as
+        // the room's actual status changes). This is what makes a friend's
+        // "ask to join" button appear for other players at all.
+        await update(presenceRef, {
+            online: true,
+            inGame: true,
+            phase: 'waiting',
+            room: window.gameState.roomCode,
+            lastSeen: serverTimestamp()
         });
 
         window.gameState.currentUser = { uid, username };
@@ -1326,6 +1347,7 @@ async function joinRoom(uid, username) {
     }
 }
 
+        let _lastSyncedPhase = null;
         function setupRoomListener() {
             const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
             
@@ -1350,6 +1372,17 @@ async function joinRoom(uid, username) {
                 
                 // Update players list
                 updatePlayersList();
+
+                // Keep this player's presence.phase in sync with the room's real
+                // status, so a friend looking at "is this person in a waiting
+                // room?" (the ask-to-join gate) sees a live, accurate answer —
+                // only write when it actually changed, since onValue re-fires
+                // for every room update (chat, player list, etc.), not just status.
+                const myUid = window.gameState.currentUser?.uid;
+                if (myUid && roomData.status && roomData.status !== _lastSyncedPhase) {
+                    _lastSyncedPhase = roomData.status;
+                    update(ref(db, `players/${myUid}/presence`), { phase: roomData.status }).catch(() => {});
+                }
                 
                 // Host-only controls: show/hide + populate for whichever role this
                 // client actually has. #hostControls, #startBtn, and #waitingMsg all
@@ -1552,6 +1585,14 @@ async function joinRoom(uid, username) {
             if (window.gameState.isHost) {
                 await remove(ref(db, `rooms/${window.gameState.roomCode}`));
             }
+            // Clear presence (so "ask to join" stops offering this room to
+            // friends) and the stale currentRoom/isHost bookkeeping — none of
+            // this was being cleared before, so both stuck around after leaving.
+            await update(ref(db, `players/${window.gameState.currentUser.uid}/presence`), {
+                inGame: false, phase: null, room: null
+            }).catch(() => {});
+            localStorage.removeItem('currentRoom');
+            localStorage.setItem('isHost', 'false');
             window.location.href = 'home.html';
         };
 
@@ -2465,9 +2506,31 @@ async function joinRoom(uid, username) {
                 const friendPlayer = snap.val();
                 
                 const isOnline = friendPlayer?.status === 'online';
+                const friendPresence = friendPlayer?.presence || {};
+                const friendInWaitingRoom = !!(friendPresence.inGame && friendPresence.phase === 'waiting' && friendPresence.room);
                 
                 const item = document.createElement('div');
                 item.className = 'friend-item';
+
+                let actionBtn = '';
+                if (friendInWaitingRoom) {
+                    // Friend is sitting in a waiting-stage room elsewhere — ask to join it.
+                    // They (not us) must accept before we're actually added.
+                    actionBtn = `
+                        <button onclick="askToJoinFriend('${friendUid}')" 
+                            class="px-3 py-1.5 rounded-lg bg-success/20 hover:bg-success/30 text-success text-xs font-bold">
+                            اطلب الانضمام
+                        </button>
+                    `;
+                } else if (isOnline && window.gameState.currentStatus === 'waiting') {
+                    // We're in a waiting room ourselves — invite them to join us.
+                    actionBtn = `
+                        <button onclick="sendGameInvite('${friendUid}', '${(friendPlayer?.username || 'Friend').replace(/'/g, "\\'")}')" 
+                            class="px-3 py-1.5 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold">
+                            دعوة
+                        </button>
+                    `;
+                }
                 
                 item.innerHTML = `
                     <div class="friend-avatar">
@@ -2476,14 +2539,9 @@ async function joinRoom(uid, username) {
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="font-bold text-sm truncate"><span class="player-name-themed" data-uid="${friendUid}">${friendPlayer?.username || 'Friend'}</span></p>
-                        <p class="text-xs opacity-60">${isOnline ? 'متصل' : 'غير متصل'}</p>
+                        <p class="text-xs opacity-60">${friendInWaitingRoom ? 'في غرفة انتظار' : (isOnline ? 'متصل' : 'غير متصل')}</p>
                     </div>
-                    ${isOnline && window.gameState.currentStatus === 'waiting' ? `
-                        <button onclick="sendGameInvite('${friendUid}')" 
-                            class="px-3 py-1.5 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold">
-                            دعوة
-                        </button>
-                    ` : ''}
+                    ${actionBtn}
                 `;
                 
                 container.appendChild(item);
@@ -2600,19 +2658,41 @@ async function joinRoom(uid, username) {
             updateRoomPlayersForFriends();
         };
 
-        window.sendGameInvite = async function(friendUid) {
-            const inviteRef = ref(db, `players/${friendUid}/invites/${Date.now()}`);
-            
-            await set(inviteRef, {
-                from: window.gameState.currentUser.uid,
-                fromName: window.gameState.players[window.gameState.currentUser.uid]?.username,
-                roomCode: window.gameState.roomCode,
-                expiresAt: Date.now() + (5 * 60 * 1000),
-                status: 'pending'
-            });
-            
-            if (window.showToast) {
-                showToast('تم إرسال الدعوة!');
+        // Sends a real invite via the shared FI module (invites/{uid}, the path
+        // friend-invite-enhanced.js actually listens to). This used to write
+        // directly to players/{uid}/invites/{timestamp} with different field
+        // names — a path/schema nobody was listening to, so invited friends
+        // never saw anything.
+        window.sendGameInvite = async function(friendUid, friendUsername) {
+            if (!window.FI) {
+                if (window.showToast) showToast('نظام الدعوات لم يُحمّل بعد، حاول مرة أخرى');
+                return;
+            }
+            const myName = window.gameState.players[window.gameState.currentUser.uid]?.username;
+            try {
+                await window.FI.sendInvite(friendUid, friendUsername, window.gameState.roomCode, myName);
+                if (window.showToast) showToast('تم إرسال الدعوة!');
+            } catch (e) {
+                console.error('sendGameInvite error:', e);
+                if (window.showToast) showToast('تعذر إرسال الدعوة');
+            }
+        };
+
+        // "Ask to join" — sent to a friend who is currently sitting in a
+        // waiting-stage room of their own. They must explicitly accept
+        // (from their own toast/inbox) before we're actually added; nothing
+        // here writes us into their room directly.
+        window.askToJoinFriend = async function(friendUid) {
+            if (!window.FI) {
+                if (window.showToast) showToast('نظام الدعوات لم يُحمّل بعد، حاول مرة أخرى');
+                return;
+            }
+            try {
+                await window.FI.sendJoinRequest(friendUid);
+                if (window.showToast) showToast('تم إرسال طلب الانضمام، بانتظار الموافقة');
+            } catch (e) {
+                console.error('askToJoinFriend error:', e);
+                if (window.showToast) showToast(e.message || 'تعذر إرسال الطلب');
             }
         };
 

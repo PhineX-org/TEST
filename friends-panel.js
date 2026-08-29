@@ -302,7 +302,7 @@
         const phase = PHASE[f.presence?.phase] || 'يلعب';
         const r     = f.presence?.room || '';
         const actionBtn = (r && f.presence?.phase === 'waiting')
-          ? `<button class="fp-btn fp-btn-join" data-a="join" data-room="${r}">▶ انضم</button>`
+          ? `<button class="fp-btn fp-btn-join" data-a="join" data-uid="${uid}" data-room="${r}" data-name="${n.replace(/"/g, '&quot;')}">▶ اطلب الانضمام</button>`
           : `<span style="font-size:10px;color:#f59e0b;font-weight:700;">⏳ ${phase}</span>`;
         return `
           <div class="fp-card">
@@ -362,19 +362,19 @@
         .catch(e => _toast('خطأ: ' + e.message));
 
     } else if (a === 'join') {
-      try {
-        const m = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js');
-        const snap = await m.get(m.ref(_db, `rooms/${room}`));
-        if (!snap.exists()) { _toast('الغرفة غير موجودة'); return; }
-        const d = snap.val();
-        if (d.status !== 'waiting') { _toast('الغرفة ليست في وضع الانتظار'); return; }
-        const pl = Array.isArray(d.players) ? d.players : Object.values(d.players || {});
-        if (pl.length >= 10) { _toast('الغرفة ممتلئة'); return; }
-        if (!pl.includes(_myName)) await m.update(m.ref(_db, `rooms/${room}`), { players: [...pl, _myName] });
-        localStorage.setItem('currentRoom', room);
-        localStorage.setItem('isHost', 'false');
-        window.location.href = 'room.html';
-      } catch(e) { _toast('خطأ: ' + e.message); }
+      // FIX: this used to write straight into rooms/{room}/players as an
+      // array of name strings (incompatible with the real schema — an
+      // object keyed by uid, written by room.html's own joinRoom()) AND
+      // it skipped consent entirely, adding the clicking player directly.
+      // "Ask to join" now sends a request the target must accept, the same
+      // way a game invite works.
+      if (!window.FI) { _toast('نظام الدعوة غير متاح'); return; }
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = '...';
+      FI.sendJoinRequest(uid, name)
+        .then(() => { btn.textContent = '✓ أُرسل الطلب'; })
+        .catch(e => { _toast(e.message || 'تعذر إرسال الطلب'); btn.disabled = false; btn.textContent = originalText; });
 
     } else if (a === 'add') {
       if (!_db || !_myUid) return;
@@ -470,24 +470,12 @@
 
       _db = db; _myUid = resolvedUid; _myName = resolvedName || localStorage.getItem('eljasus_user_name') || 'لاعب';
 
-      import('https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js').then(m => {
-        m.onValue(m.ref(db, `players/${resolvedUid}/friends`), snap => {
-          const fm = snap.val() || {};
-          Object.keys(fm).forEach(fuid => {
-            if (friends[fuid]) return;
-            m.onValue(m.ref(db, `players/${fuid}`), pSnap => {
-              if (pSnap.exists()) { friends[fuid] = pSnap.val(); render(); }
-            });
-          });
-          Object.keys(friends).forEach(fuid => { if (!fm[fuid]) delete friends[fuid]; });
-          render();
-        });
-        m.onValue(m.ref(db, `players/${resolvedUid}/friendRequests`), snap => {
-          const c   = snap.exists() ? Object.keys(snap.val()).length : 0;
-          const dot = document.getElementById('fp-notif-dot');
-          if (dot) dot.style.display = c > 0 ? 'block' : 'none';
-        });
-      });
+      // FIX: this used to duplicate _subscribe()'s job inline, but referenced
+      // an undeclared `friends` object (never declared anywhere in this file —
+      // only `_friends` is) instead of the real `_friends` state. That threw a
+      // ReferenceError on the first friend processed, so the friends list here
+      // never actually loaded. _subscribe() already does this correctly.
+      _subscribe();
     },
 
     // ── Called by room.html when player list changes ───────────────

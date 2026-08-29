@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الأصدقاء | El Jasus</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/png" href="ElJasus.jpg">
+    <link rel="icon" type="image/png" href="ElJasus.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -271,7 +271,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-        import { getDatabase, ref, get, set, update, onValue, push, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { getDatabase, ref, get, set, update, onValue, push, remove, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
@@ -313,6 +313,19 @@
             document.getElementById('invite-modal-overlay').classList.remove('open');
         };
 
+        // "Ask to join" a friend who's currently sitting in a waiting-stage
+        // room of their own — sent as a request; they must accept it (from
+        // their own toast/inbox) before we're actually added to their room.
+        window.askToJoinFriend = async function(friendUid) {
+            if (!window.FI) { alert('نظام الدعوة لم يُحمّل بعد، حاول مرة أخرى'); return; }
+            try {
+                await window.FI.sendJoinRequest(friendUid);
+                showMessage('✅ تم إرسال طلب الانضمام، بانتظار الموافقة', 'success');
+            } catch (e) {
+                showMessage(e.message || 'تعذر إرسال الطلب', 'error');
+            }
+        };
+
         window.doSendInvite = async function() {
             if (!currentUser) { alert('يجب تسجيل الدخول'); return; }
             const btn = document.getElementById('inv-send-btn');
@@ -332,16 +345,27 @@
                 // 1. Create room
                 setStatus('⏳ جاري إنشاء الغرفة...', 'creating');
                 const roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+                const userID = currentUser.uid;
+                // FIX: this used to write host/players in an old array-based
+                // shape (host: myName, players: [myName]) that room.html can't
+                // read at all — it expects hostId + players keyed by uid, the
+                // same schema home.html's own create-room flow writes.
                 await set(ref(db, `rooms/${roomCode}`), {
-                    host:       myName,
+                    hostId:     userID,
                     status:     'waiting',
-                    players:    [myName],
-                    turn:       0,
                     category,
                     visibility: 'private',
-                    secret:     null,
-                    spyIdx:     null,
-                    createdAt:  Date.now(),
+                    createdAt:  serverTimestamp(),
+                    players: {
+                        [userID]: {
+                            username: myName,
+                            uid: userID,
+                            joinedAt: serverTimestamp(),
+                            connected: true,
+                            status: 'online',
+                            isHost: true
+                        }
+                    }
                 });
 
                 // 2. Send invite via FI (friend-invite.js)
@@ -363,7 +387,7 @@
                 localStorage.setItem('eljasus_user_name', myName);
 
                 btn.innerHTML = `<i class="fas fa-check ml-2"></i>تم — الانتقال للغرفة...`;
-                setTimeout(() => { window.location.href = 'room.html'; }, 1200);
+                setTimeout(() => { window.location.href = `room.html?room=${roomCode}`; }, 1200);
 
             } catch(e) {
                 setStatus('❌ خطأ: ' + e.message, 'error');
@@ -426,7 +450,7 @@
                 const snap = await get(ref(db, `players/${fid}`));
                 if (snap.exists()) {
                     const d = snap.val();
-                    const info = { uid: fid, username: d.username||'مجهول', online: d.presence?.online||false, inGame: d.presence?.inGame||false, nameTheme: d.nameTheme||'default', nameTag: d.nameTag||null, rankPoints: parseInt(d.rankPoints)||0 };
+                    const info = { uid: fid, username: d.username||'مجهول', online: d.presence?.online||false, inGame: d.presence?.inGame||false, phase: d.presence?.phase||null, room: d.presence?.room||null, nameTheme: d.nameTheme||'default', nameTag: d.nameTag||null, rankPoints: parseInt(d.rankPoints)||0 };
                     friendsData.push(info);
                     if (info.online) onlineFriendsData.push(info);
                 }
@@ -461,6 +485,9 @@
                 ? `<span style="font-size:10px;color:#f59e0b;font-weight:700;background:rgba(245,158,11,.1);padding:2px 6px;border-radius:4px;margin-right:4px;">🎮 يلعب</span>`
                 : '';
 
+            const canAskToJoin = friend.inGame && friend.phase === 'waiting' && friend.room;
+            const canInvite = friend.online && !friend.inGame;
+
             return `
             <div class="bg-white/5 rounded-xl p-4 border-2 border-cyan-500/20 hover:border-cyan-500/50 transition-all">
                 <div class="flex items-center justify-between">
@@ -486,7 +513,11 @@
                             <i class="fas fa-user"></i>
                             <span>الملف</span>
                         </button>
-                        ${friend.online ? `
+                        ${canAskToJoin ? `
+                        <button onclick="askToJoinFriend('${friend.uid}')"
+                            class="px-3 py-2 bg-gradient-to-r from-lime-500/20 to-cyan-500/20 border-2 border-lime-500/40 rounded-lg text-lime-400 text-xs font-bold hover:from-lime-500/30 hover:to-cyan-500/30 transition-all">
+                            <i class="fas fa-door-open ml-1"></i>اطلب الانضمام
+                        </button>` : canInvite ? `
                         <button onclick="openInviteModal('${friend.uid}','${friend.username}')"
                             class="px-3 py-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border-2 border-cyan-500/40 rounded-lg text-cyan-400 text-xs font-bold hover:from-cyan-500/30 hover:to-purple-500/30 transition-all">
                             <i class="fas fa-gamepad ml-1"></i>دعوة للعب
@@ -606,8 +637,16 @@
         }
 
         window.acceptRequest = async (friendId) => {
-            await set(ref(db, `players/${currentUser.uid}/friends/${friendId}`), true);
-            await set(ref(db, `players/${friendId}/friends/${currentUser.uid}`), true);
+            // Match the {username, addedAt} shape used everywhere else a
+            // friend entry gets written (room.html's addFriend()) — this
+            // was writing a bare `true`, which isn't wrong exactly (every
+            // reader here treats the friends list as a set of keys first),
+            // but loses the username/timestamp other screens fall back to.
+            const reqSnap = await get(ref(db, `players/${currentUser.uid}/friendRequests/${friendId}`));
+            const fromName = reqSnap.val()?.from?.username || 'صديق';
+            const mySnap = await get(ref(db, `players/${currentUser.uid}/username`));
+            await set(ref(db, `players/${currentUser.uid}/friends/${friendId}`), { username: fromName, addedAt: Date.now() });
+            await set(ref(db, `players/${friendId}/friends/${currentUser.uid}`), { username: mySnap.val() || currentUser.displayName || 'مجهول', addedAt: Date.now() });
             await remove(ref(db, `players/${currentUser.uid}/friendRequests/${friendId}`));
             showMessage('✅ تم قبول طلب الصداقة', 'success');
         };
