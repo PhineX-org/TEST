@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر | El Jasus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="../Assets/name-themes.js"></script>
+    <script src="../Assets/dialogs.js"></script>
+    <script src="../Assets/friend-invite-enhanced.js" defer></script>
+    <script src="../Assets/profile-viewer.js" defer></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0a0e1a;
+            --primary: #00f2ff;
+            --secondary: #59ff00;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0,242,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+        
+        .glass {
+            background: linear-gradient(135deg, rgba(15,20,35,0.9), rgba(25,30,50,0.8));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0,242,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        
+        .shop-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .shop-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,242,255,0.3);
+            border-color: rgba(0,242,255,0.5);
+        }
+        
+        .preview-name {
+            font-size: 20px;
+            font-weight: 900;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+            display: inline-block;
+            margin: 10px 0;
+        }
+        
+        .tab-btn {
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0,242,255,0.5);
+        }
+    </style>
+</head>
+<body class="p-4">
+    
+    <div class="max-w-6xl mx-auto relative z-10">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            <a href="home.html" class="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span class="text-sm font-bold">رجوع</span>
+            </a>
+            
+            <h1 class="text-3xl font-black" style="font-family: 'Orbitron', sans-serif; color: var(--primary); text-shadow: 0 0 20px rgba(0,242,255,0.8);">
+                🛒 المتجر
+            </h1>
+            
+            <div class="flex items-center gap-2 glass rounded-xl px-4 py-2">
+                <span class="text-sm font-bold">🪙</span>
+                <span id="coinBalance" class="font-black" style="font-family: 'Orbitron', sans-serif;">0</span>
+            </div>
+        </div>
+        <!-- Error message container -->
+        <div id="shopError" class="hidden glass rounded-2xl p-4 mb-4 bg-red-500/20 border-red-500 text-center text-red-300"></div>
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+            <button class="tab-btn active px-6 py-3 rounded-xl font-black text-sm" data-tab="themes">
+                ✨ ثيمات الأسماء
+            </button>
+            <button class="tab-btn px-6 py-3 rounded-xl font-black text-sm" data-tab="tags">
+                🏷️ وسوم الأسماء
+            </button>
+            <button class="tab-btn px-6 py-3 rounded-xl font-black text-sm" data-tab="ranks">
+                🏆 نظام الرتب
+            </button>
+        </div>
+        
+        <!-- Themes Tab -->
+        <div id="tab-themes" class="tab-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="themesGrid"></div>
+        </div>
+        
+        <!-- Tags Tab -->
+        <div id="tab-tags" class="tab-content hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tagsGrid"></div>
+        </div>
+        
+        <!-- Ranks Tab -->
+        <div id="tab-ranks" class="tab-content hidden">
+            <div class="glass rounded-2xl p-6 mb-6">
+                <h2 class="text-xl font-black mb-4" style="color: var(--primary);">📊 نظام الرتب</h2>
+                <p class="text-gray-400 mb-4">اكسب نقاط الرتبة من خلال الفوز بالمباريات وإكمال التحديات. كلما زادت رتبتك، حصلت على مكافآت أفضل!</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="ranksGrid"></div>
+        </div>
+        
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+            authDomain: "el-jasus.firebaseapp.com",
+            databaseURL: "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "el-jasus",
+            storageBucket: "el-jasus.firebasestorage.app",
+            messagingSenderId: "415659587906",
+            appId: "1:415659587906:web:782f7940176ea4097eb0db"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        
+        let currentUser = null;
+        let userActiveTheme = 'default';
+        let userActiveTag = null;
+        let userCoins = 0;
+        let userInventory = { nameThemes: [], nameTags: [] };
+        
+        onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        currentUser = user;
+        try {
+            await loadUserData();
+            renderShop();
+        } catch (error) {
+            console.error('فشل تحميل بيانات المستخدم:', error);
+            showError('⚠️ فشل تحميل بيانات المتجر. يرجى تحديث الصفحة.');
+            // مع ذلك نعرض واجهة فارغة أو نعيد التوجيه
+            document.getElementById('themesGrid').innerHTML = '<div class="col-span-full text-center text-red-400 p-4">تعذر تحميل البيانات</div>';
+        }
+    } else {
+        window.location.href = 'login.html';
+    }
+});
+
+function showError(message) {
+    const errorEl = document.getElementById('shopError');
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+    } else {
+        alert(message);
+    }
+}
+
+function hideError() {
+    const errorEl = document.getElementById('shopError');
+    if (errorEl) errorEl.classList.add('hidden');
+}
+        
+        async function loadUserData() {
+    try {
+        const snapshot = await get(ref(db, `players/${currentUser.uid}`));
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            userCoins = data.coins || 0;
+            
+            const inv = data.inventory || {};
+            userInventory = {
+                nameThemes: Array.isArray(inv.nameThemes) ? inv.nameThemes : ['default'],
+                nameTags: Array.isArray(inv.nameTags) ? inv.nameTags : []
+            };
+        } else {
+            userCoins = 0;
+            userInventory = { nameThemes: ['default'], nameTags: [] };
+        }
+        document.getElementById('coinBalance').textContent = userCoins;
+        userActiveTheme = data.nameTheme || 'default';
+        userActiveTag = data.nameTag || null;
+        hideError();
+    } catch (error) {
+        console.error('خطأ في تحميل بيانات المستخدم:', error);
+        showError('⚠️ فشل تحميل بيانات المتجر. يرجى تحديث الصفحة.');
+    }
+}
+        
+        function renderShop() {
+    // التحقق من وجود نظام الثيمات
+    if (!window.NameThemes) {
+        showError('❌ نظام الثيمات غير محمل. تأكد من وجود name-themes.js.');
+        return;
+    }
+    
+    renderThemes();
+    renderTags();
+    renderRanks (async () =>
+        parseInt(
+            (await get(ref(db, `players/${currentUser.uid}/rankPoints`))).val()) || 0);
+
+}
+        
+        function renderThemes() {
+    const grid = document.getElementById('themesGrid');
+    if (!grid) return;
+    
+    try {
+        const themes = window.NameThemes.themes;
+        if (!themes || Object.keys(themes).length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center text-gray-400 p-4">لا توجد ثيمات متاحة</div>';
+            return;
+        }
+        
+        // التأكد من أن userInventory.nameThemes مصفوفة
+        const ownedThemes = Array.isArray(userInventory.nameThemes) ? userInventory.nameThemes : ['default'];
+        
+        grid.innerHTML = Object.keys(themes).map(key => {
+            const theme = themes[key];
+            const owned = ownedThemes.includes(key);
+        const isActive = userActiveTheme === key;
+            
+            return `
+                <div class="glass rounded-2xl p-5 shop-item ${owned ? 'border-green-500' : ''}">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-black text-lg">${theme.name}</h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-black ${
+                            theme.type === 'animated' ? 'bg-purple-500/20 text-purple-400' :
+                            theme.type === 'particle' ? 'bg-yellow-500/20 text-yellow-400' :
+                            'bg-blue-500/20 text-blue-400'
+                        }">
+                            ${theme.type === 'animated' ? 'متحرك' : theme.type === 'particle' ? 'جزيئات' : 'ثابت'}
+                        </span>
+                    </div>
+                    
+                    <div class="mb-4 text-center">
+                        <div class="preview-name" id="preview-${key}">اسم اللاعب</div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🪙</span>
+                            <span class="font-black text-xl" style="font-family: 'Orbitron', sans-serif; color: var(--primary);">
+                                ${theme.price}
+                            </span>
+                        </div>
+                        ${owned ? `
+                            <div class="flex flex-col gap-1 items-end">
+                                ${isActive
+                                    ? '<span class="text-xs text-cyan-400 font-black">⚡ مفعّل</span>'
+                                    : '<span class="text-xs text-green-400 font-bold">✓ مملوك</span>'
+                                }
+                                <button onclick="window.activateTheme('${key}')"
+                                    class="px-4 py-1.5 rounded-lg ${isActive ? 'bg-gray-500/20 text-gray-400 border border-gray-500/50 cursor-default' : 'bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-400 border border-cyan-500/50 hover:scale-105'} text-xs font-black transition-all">
+                                    ${isActive ? 'مفعّل' : 'تفعيل'}
+                                </button>
+                            </div>
+                        ` : `
+                            <button onclick="window.buyTheme('${key}')"
+                                class="px-6 py-2 rounded-xl font-black text-sm bg-gradient-to-r from-cyan-500 to-purple-500 hover:scale-105 transition-all">
+                                شراء
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // تطبيق معاينة الثيمات
+        setTimeout(() => {
+            Object.keys(themes).forEach(key => {
+                const el = document.getElementById(`preview-${key}`);
+                if (el) {
+                    try {
+                        window.NameThemes.applyTheme(el, key, 'اسم اللاعب');
+                    } catch (e) {
+                        console.warn(`فشل تطبيق معاينة الثيم ${key}:`, e);
+                    }
+                }
+            });
+        }, 100);
+        
+    } catch (error) {
+        console.error('خطأ في renderThemes:', error);
+        grid.innerHTML = '<div class="col-span-full text-center text-red-400 p-4">حدث خطأ أثناء تحميل الثيمات</div>';
+    }
+}
+        
+        function renderTags() {
+    const grid = document.getElementById('tagsGrid');
+    if (!grid) return;
+    
+    try {
+        const tags = window.NameThemes.tags;
+        if (!tags || Object.keys(tags).length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center text-gray-400 p-4">لا توجد وسوم متاحة</div>';
+            return;
+        }
+        
+        const ownedTags = Array.isArray(userInventory.nameTags) ? userInventory.nameTags : [];
+        
+        grid.innerHTML = Object.keys(tags).map(key => {
+            const tag = tags[key];
+            const owned = ownedTags.includes(key);
+        const isActive = userActiveTag === key;
+            
+            return `
+                <div class="glass rounded-2xl p-5 shop-item ${owned ? 'border-green-500' : ''}">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-4xl">${tag.icon}</span>
+                        <div>
+                            <h3 class="font-black text-lg">${tag.name}</h3>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black mt-1" 
+                                 style="background: ${tag.bgColor}; border: ${tag.border}; color: ${tag.color};">
+                                ${tag.icon} ${tag.name}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🪙</span>
+                            <span class="font-black text-xl" style="font-family: 'Orbitron', sans-serif; color: var(--primary);">
+                                ${tag.price}
+                            </span>
+                        </div>
+                        ${owned ? `
+                            <div class="flex flex-col gap-1 items-end">
+                                <span class="text-xs text-green-400 font-bold">✓ مملوك</span>
+                                <button onclick="window.activateTag('${key}')"
+                                    class="px-4 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-400 border border-cyan-500/50 text-xs font-black transition-all hover:scale-105">
+                                    تفعيل
+                                </button>
+                            </div>
+                        ` : `
+                            <button onclick="window.buyTag('${key}')"
+                                class="px-6 py-2 rounded-xl font-black text-sm bg-gradient-to-r from-cyan-500 to-purple-500 hover:scale-105 transition-all">
+                                شراء
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+    } catch (error) {
+        console.error('خطأ في renderTags:', error);
+        grid.innerHTML = '<div class="col-span-full text-center text-red-400 p-4">حدث خطأ أثناء تحميل الوسوم</div>';
+    }
+}
+        
+        function renderRanks(userPoints = 0) {
+    const grid = document.getElementById('ranksGrid');
+    if (!grid) return;
+    
+    try {
+        if (!window.NameThemes || !window.NameThemes.ranks) {
+            grid.innerHTML = '<div class="col-span-full text-center text-gray-400 p-4">نظام الرتب غير متاح حالياً</div>';
+            return;
+        }
+        
+        const ranks = window.NameThemes.ranks;
+        const userRank = window.NameThemes.getRank(async () =>
+                parseInt((await get(ref(db, `players/${currentUser?.uid}/rankPoints`))).val()) || 0
+            );
+        grid.innerHTML = Object.keys(ranks).map(key => {
+            const rank = ranks[key];
+            
+            
+                    `<div class="flex items-center gap-3 mb-3">
+                        <span class="text-4xl">${rank.icon}</span>
+                        <div>
+                            <h3 class="font-black text-xl" style="color: ${rank.color};">${rank.nameAr}</h3>
+                            <p class="text-sm text-gray-400">${rank.name}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-black/30 rounded-xl p-3 mb-3">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">النقاط المطلوبة:</span>
+                            <span class="font-black" style="font-family: 'Orbitron', sans-serif; color: ${rank.color};">
+                                ${rank.min} - ${rank.max === Infinity ? '∞' : rank.max}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-xs text-gray-500 text-center">${rank.division}</p>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('خطأ في renderRanks:', error);
+        grid.innerHTML = '<div class="col-span-full text-center text-red-400 p-4">حدث خطأ أثناء تحميل الرتب</div>';
+    }
+}
+        
+        // Purchase functions
+        window.buyTheme = async function(themeKey) {
+    try {
+        if (!window.NameThemes || !window.NameThemes.themes) {
+            showError('النظام غير جاهز، يرجى تحديث الصفحة');
+            return;
+        }
+        
+        const theme = window.NameThemes.themes[themeKey];
+        if (!theme) {
+            showError('الثيم غير موجود');
+            return;
+        }
+        
+        if (userCoins < theme.price) {
+            showError('⚠️ ليس لديك عملات كافية!');
+            return;
+        }
+        
+        const ownedThemes = Array.isArray(userInventory.nameThemes) ? userInventory.nameThemes : ['default'];
+        if (ownedThemes.includes(themeKey)) {
+            showError('✅ أنت تمتلك هذا الثيم بالفعل!');
+            return;
+        }
+        
+        const newCoins = userCoins - theme.price;
+        const newThemes = [...ownedThemes, themeKey];
+        
+        await update(ref(db, `players/${currentUser.uid}`), {
+            coins: newCoins,
+            'inventory/nameThemes': newThemes
+        });
+        
+        userCoins = newCoins;
+        userInventory.nameThemes = newThemes;
+        
+        document.getElementById('coinBalance').textContent = userCoins;
+        renderThemes();
+        
+        alert(`✅ تم شراء "${theme.name}" بنجاح!`);
+        hideError();
+    } catch (error) {
+        console.error('Purchase error:', error);
+        showError('❌ حدث خطأ أثناء الشراء: ' + error.message);
+    }
+};
+
+window.buyTag = async function(tagKey) {
+    try {
+        if (!window.NameThemes || !window.NameThemes.tags) {
+            showError('النظام غير جاهز، يرجى تحديث الصفحة');
+            return;
+        }
+        
+        const tag = window.NameThemes.tags[tagKey];
+        if (!tag) {
+            showError('الوسم غير موجود');
+            return;
+        }
+        
+        if (userCoins < tag.price) {
+            showError('⚠️ ليس لديك عملات كافية!');
+            return;
+        }
+        
+        const ownedTags = Array.isArray(userInventory.nameTags) ? userInventory.nameTags : [];
+        if (ownedTags.includes(tagKey)) {
+            showError('✅ أنت تمتلك هذا الوسم بالفعل!');
+            return;
+        }
+        
+        const newCoins = userCoins - tag.price;
+        const newTags = [...ownedTags, tagKey];
+        
+        await update(ref(db, `players/${currentUser.uid}`), {
+            coins: newCoins,
+            'inventory/nameTags': newTags
+        });
+        
+        userCoins = newCoins;
+        userInventory.nameTags = newTags;
+        
+        document.getElementById('coinBalance').textContent = userCoins;
+        renderTags();
+        
+        alert(`✅ تم شراء "${tag.name}" بنجاح!`);
+        hideError();
+    } catch (error) {
+        console.error('Purchase error:', error);
+        showError('❌ حدث خطأ أثناء الشراء: ' + error.message);
+    }
+};
+
+window.activateTheme = async function(themeKey) {
+            try {
+                await update(ref(db, `players/${currentUser.uid}`), { nameTheme: themeKey });
+                const theme = window.NameThemes.themes[themeKey];
+                alert(`✅ تم تفعيل ثيم "${theme.name}"! سيظهر اسمك بهذا الشكل في الغرفة.`);
+            } catch (error) {
+                showError('❌ فشل تفعيل الثيم: ' + error.message);
+            }
+        };
+
+        window.activateTag = async function(tagKey) {
+            try {
+                // null = remove tag, anything else = set tag
+                const current = await get(ref(db, `players/${currentUser.uid}/nameTag`));
+                const isActive = current.val() === tagKey;
+                await update(ref(db, `players/${currentUser.uid}`), { nameTag: isActive ? null : tagKey });
+                const tag = window.NameThemes.tags[tagKey];
+                alert(isActive ? `❌ تم إزالة وسم "${tag.name}"` : `✅ تم تفعيل وسم "${tag.name}"!`);
+            } catch (error) {
+                showError('❌ فشل تفعيل الوسم: ' + error.message);
+            }
+        };
+        
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            });
+        });
+    </script>
+    
+</body>
+</html>

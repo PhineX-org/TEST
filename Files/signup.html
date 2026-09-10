@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="../Assets/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="الجاسوس">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب | El Jasus</title>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #000000 50%, #000000 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .logo-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #00f2ff;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+            margin-bottom: 20px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-section h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #00f2ff, #7c30ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+        }
+
+        .logo-section p {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #00f2ff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.8;
+        }
+
+        /* Glass Registration Box */
+        .registration-box {
+            background: linear-gradient(135deg, rgba(15, 20, 35, 0.9), rgba(25, 30, 50, 0.8));
+            backdrop-filter: blur(20px);
+            border: 2px solid;
+            border-image: linear-gradient(135deg, rgba(0, 242, 255, 0.3), rgba(124, 48, 255, 0.3)) 1;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 30px rgba(0, 242, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .registration-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(0, 242, 255, 0.05),
+                transparent
+            );
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .registration-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .registration-box h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #00f2ff, #7c30ff);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 242, 255, 0.05);
+            border: 2px solid rgba(0, 242, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: #00f2ff;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Custom Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-container input {
+            display: none;
+        }
+
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            background: rgba(0, 242, 255, 0.1);
+            border: 2px solid rgba(0, 242, 255, 0.3);
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox-container:hover .custom-checkbox {
+            border-color: #00f2ff;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        .checkbox-container input:checked + .custom-checkbox {
+            background: linear-gradient(135deg, #00f2ff, #7c30ff);
+            border-color: #00f2ff;
+        }
+
+        .custom-checkbox::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .checkbox-container input:checked + .custom-checkbox::after {
+            opacity: 1;
+        }
+
+        .checkbox-label {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00f2ff, #7c30ff);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            width: 300%;
+            height: 300%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Footer Links */
+        .footer-links {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a {
+            color: #00f2ff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #7c30ff;
+            text-decoration: underline;
+        }
+
+        /* Return Home Button with Blue/Skyblue Animated Border */
+        .return-home-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            width: 100%;
+            max-width: 300px;
+            height: 65px;
+            border: none;
+            outline: none;
+            color: #fff;
+            background: #0a0e1a;
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 900;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .return-home-btn::before {
+            content: '';
+            background: linear-gradient(45deg, 
+                #00d4ff, #0099ff, #00e5ff, #00bfff, 
+                #0080ff, #0099ff, #00d4ff, #00e5ff);
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(6px);
+            width: calc(100% + 6px);
+            height: calc(100% + 6px);
+            animation: glowingBorder 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 15px;
+        }
+
+        .return-home-btn:hover::before {
+            opacity: 1;
+        }
+
+        .return-home-btn::after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e1a, #1a1535);
+            left: 0;
+            top: 0;
+            border-radius: 15px;
+        }
+
+        @keyframes glowingBorder {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+
+        .return-home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .return-home-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <img src="../Assets/ElJasus.jpg" alt="El Jasus Logo">
+            <h1>EL JASUS</h1>
+            <p>The Classic Edition</p>
+        </div>
+
+        <!-- Registration Box -->
+        <div class="registration-box">
+            <h2>إنشاء حساب</h2>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>اسم المستخدم (معرف اللعبة)</label>
+                    <input type="text" id="username" placeholder="Agent_007" required>
+                </div>
+
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="fullName" placeholder="اسمك الكامل" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="regPassword" placeholder="••••••••••••" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmPassword" placeholder="••••••••••••" required>
+                </div>
+
+                <label class="checkbox-container" style="margin-top:-8px;margin-bottom:8px;">
+                    <input type="checkbox" id="showPasswordToggle" onchange="
+                        var t=this.checked?'text':'password';
+                        document.getElementById('regPassword').type=t;
+                        document.getElementById('confirmPassword').type=t;
+                        document.getElementById('eyeIconSignup').className=this.checked?'fas fa-eye-slash':'fas fa-eye';
+                    ">
+                    <span class="custom-checkbox"></span>
+                    <span class="checkbox-label" style="display:flex;align-items:center;gap:6px;">
+                        <i id="eyeIconSignup" class="fas fa-eye" style="color:#00f2ff;font-size:14px;"></i>
+                        إظهار كلمة المرور
+                    </span>
+                </label>
+                
+                <label class="checkbox-container">
+                    <input type="checkbox" id="dontShowAgain" required>
+                    <span class="custom-checkbox"></span>
+                    <span class="checkbox-label">أوافق على </span><a href="community.html" class="community-link">شروط و معايير المجتمع<span class="link-underline"></span></a>
+
+<style>
+.checkbox-label {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+}
+
+.community-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 900;
+    font-family: 'Cairo', sans-serif;
+    color: #00f2ff;
+    text-decoration: none;
+    padding: 1px 6px 1px 4px;
+    border-radius: 5px;
+    background: rgba(0, 242, 255, 0.07);
+    border: 1px solid rgba(0, 242, 255, 0.25);
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+/* shield icon via pseudo */
+.community-link::before {
+    content: '🛡️';
+    font-size: 11px;
+    line-height: 1;
+}
+
+/* animated underline */
+.link-underline {
+    position: absolute;
+    bottom: -1px;
+    right: 0;
+    height: 1px;
+    width: 0%;
+    background: linear-gradient(90deg, transparent, #00f2ff);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+}
+
+.community-link:hover {
+    color: #fff;
+    background: rgba(0, 242, 255, 0.15);
+    border-color: rgba(0, 242, 255, 0.6);
+    box-shadow:
+        0 0 12px rgba(0, 242, 255, 0.3),
+        inset 0 0 10px rgba(0, 242, 255, 0.05);
+    text-shadow: 0 0 8px rgba(0, 242, 255, 0.8);
+}
+
+.community-link:hover .link-underline {
+    width: 100%;
+}
+</style>
+                </label>
+
+                <button type="submit" class="btn-primary" id="registerBtn">
+                    <span style="position: relative; z-index: 1;">إنشاء الحساب</span>
+                </button>
+
+                <div class="footer-links">
+                    لديك حساب بالفعل؟ <a href="login.html">سجل دخولك الآن</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Return Home Button -->
+        <a href="home.html" class="return-home-btn">
+            <i class="fas fa-home"></i>
+            العودة للرئيسية
+        </a>
+    </div>
+
+    <script>
+        
+const firebaseConfig = {
+  apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+  authDomain: "el-jasus.firebaseapp.com",
+  databaseURL: "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "el-jasus",
+  storageBucket: "el-jasus.firebasestorage.app",
+  messagingSenderId: "415659587906",
+  appId: "1:415659587906:web:782f7940176ea4097eb0db",
+  measurementId: "G-N4K79FP56N"
+};
+        
+        firebase.initializeApp(firebaseConfig);
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const usernameValue = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const btn = document.getElementById('registerBtn');
+
+            // Validation
+            if (!usernameValue) {
+                alert('الرجاء إدخال اسم المستخدم');
+                return;
+            }
+
+            if (!email) {
+                alert('الرجاء إدخال البريد الإلكتروني');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('الرجاء إدخال بريد إلكتروني صحيح');
+                return;
+            }
+
+            if (!password) {
+                alert('الرجاء إدخال كلمة المرور');
+                return;
+            }
+
+            // Password validation
+            if (password.length < 6) {
+                alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+
+            if (password !== confirmPass) {
+                alert('كلمات المرور غير متطابقة!');
+                return;
+            }
+
+            btn.innerHTML = '<span style="position: relative; z-index: 1;">جاري المعالجة...</span>';
+            btn.disabled = true;
+
+            const fullNameValue = document.getElementById('fullName') 
+                ? document.getElementById('fullName').value.trim() 
+                : '';
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    return user.updateProfile({ displayName: usernameValue }).then(() => user);
+                })
+                .then(async (user) => {
+                    // Save all player data to Realtime Database using compat SDK
+                    try {
+                        await firebase.database()
+                            .ref("players/" + user.uid)
+                            .set({
+                                uid:         user.uid,
+                                username:    usernameValue,
+                                fullName:    fullNameValue,
+                                email:       user.email,
+                                coins:       100,
+                                hints:       3,
+                                rankPoints:  0,
+                                rank:        "Bronze",
+                                activeTheme: "cyan",
+                                activeTitle: "rookie",
+                                inventory:   { themes: ["cyan"], titles: ["rookie"] },
+                                stats: {
+                                    totalGames: 0, spyWins: 0, innocentWins: 0,
+                                    currentStreak: 0, longestWinStreak: 0
+                                },
+                                moderationWarnings: 0,
+                                totalBans:          0,
+                                createdAt:   Date.now()
+                            });
+                        console.log('[signup] ✅ Player saved — uid:', user.uid, '| username:', usernameValue);
+                    } catch(e) {
+                        console.error('[signup] DB write error:', e);
+                        // Do NOT block the user — just log the error
+                    }
+
+                    localStorage.setItem('eljasus_user_name',       usernameValue);
+                    localStorage.setItem('eljasus_user_full_name',  fullNameValue);
+                    localStorage.setItem('eljasus_user_email',      user.email);
+                    localStorage.setItem('eljasus_user_uid',        user.uid);
+                    localStorage.setItem('eljasus_welcome',         '1');
+
+                    alert('🎉 تم إنشاء الحساب! مرحباً، ' + usernameValue);
+                    setTimeout(() => { window.location.href = 'home.html'; }, 1500);
+                })
+                .catch((error) => {
+                    console.error('Signup Error:', error);
+                    
+                    let errorMessage = '';
+                    
+                    switch(error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMessage = 'هذا البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = 'البريد الإلكتروني غير صالح';
+                            break;
+                        case 'auth/operation-not-allowed':
+                            errorMessage = 'تسجيل الحسابات غير مفعل حالياً';
+                            break;
+                        case 'auth/weak-password':
+                            errorMessage = 'كلمة المرور ضعيفة جداً. استخدم 6 أحرف على الأقل';
+                            break;
+                        default:
+                            errorMessage = 'خطأ في إنشاء الحساب: ' + error.message;
+                    }
+                    
+                    alert(errorMessage);
+                    btn.innerHTML = '<span style="position: relative; z-index: 1;">إنشاء الحساب</span>';
+                    btn.disabled = false;
+                });
+        });
+    </script>
+    <link rel="stylesheet" href="../Assets/mobile.css">
+    <script src="../Assets/sound-system.js" defer></script>
+    <script src="../Assets/qr-notifications.js" defer></script>
+    <script src="../Assets/dialogs.js"></script>
+    <script>
+    window.alert   = (msg)             => UIAlert(msg);
+    window.confirm = (msg)             => UIConfirm(msg);
+    window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
+</script>
+    <script>
+    if(
+        'serviceWorker' in navigator
+        )
+        {
+            window.addEventListener(
+                'load',()=>navigator.serviceWorker.register('../Assets/sw.js').catch(()=>{}));
+            }
+</script>
+</body>
+</html>

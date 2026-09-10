@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معايير المجتمع | El Jasus</title>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../Assets/mobile.css">
+    <script src="../Assets/dialogs.js"></script>
+    <script src="../Assets/moderation.js"></script>
+    <style>
+        /* ── Variables ──────────────────────────────────── */
+        :root {
+            --bg:        #060810;
+            --surface:   rgba(12, 16, 30, 0.92);
+            --cyan:      #00f2ff;
+            --purple:    #7c30ff;
+            --red:       #ff3b5c;
+            --yellow:    #ffd700;
+            --green:     #00e676;
+            --orange:    #ff6b35;
+            --text:      #e8eaf0;
+            --muted:     rgba(232, 234, 240, 0.45);
+            --border:    rgba(0, 242, 255, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated background grid ───────────────────── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,242,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            animation: gridDrift 25s linear infinite;
+            pointer-events: none; z-index: 0;
+        }
+        @keyframes gridDrift { to { background-position: 48px 48px; } }
+
+        /* Ambient blobs */
+        .blob {
+            position: fixed; border-radius: 50%;
+            filter: blur(120px); opacity: 0.12;
+            pointer-events: none; z-index: 0;
+        }
+        .blob-1 { width: 600px; height: 600px; background: var(--cyan);   top: -200px; right: -150px; }
+        .blob-2 { width: 500px; height: 500px; background: var(--purple); bottom: -150px; left: -100px; }
+        .blob-3 { width: 300px; height: 300px; background: var(--red);    top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.07; }
+
+        /* ── Layout ─────────────────────────────────────── */
+        .page-wrap {
+            position: relative; z-index: 1;
+            max-width: 860px; margin: 0 auto;
+            padding: 0 16px 120px;
+        }
+
+        /* ── Header ─────────────────────────────────────── */
+        .site-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 0 0;
+        }
+        .back-link {
+            display: flex; align-items: center; gap: 8px;
+            color: var(--muted); text-decoration: none;
+            font-size: 13px; font-weight: 700;
+            transition: color .2s;
+        }
+        .back-link:hover { color: var(--cyan); }
+
+        /* ── Hero ────────────────────────────────────────── */
+        .hero {
+            text-align: center;
+            padding: 52px 0 40px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 18px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 11px; font-weight: 700;
+            color: var(--cyan); letter-spacing: .12em; text-transform: uppercase;
+            background: rgba(0,242,255,0.06);
+            margin-bottom: 24px;
+        }
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(28px, 7vw, 52px);
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 0%, var(--cyan) 50%, var(--purple) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+        .hero-sub {
+            font-size: 15px; color: var(--muted); max-width: 560px; margin: 0 auto 32px;
+            line-height: 1.7;
+        }
+        .hero-divider {
+            width: 80px; height: 3px; margin: 0 auto;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            border-radius: 99px;
+        }
+
+        /* ── Glass card ─────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 24px;
+            margin-bottom: 20px;
+            position: relative; overflow: hidden;
+            backdrop-filter: blur(20px);
+            transition: border-color .3s, box-shadow .3s;
+        }
+        .card:hover {
+            border-color: rgba(0,242,255,0.3);
+            box-shadow: 0 0 40px rgba(0,242,255,0.07);
+        }
+        /* accent left bar */
+        .card::after {
+            content: '';
+            position: absolute; right: 0; top: 16px; bottom: 16px;
+            width: 3px; border-radius: 99px;
+        }
+        .card.accent-cyan::after  { background: var(--cyan);   box-shadow: 0 0 12px var(--cyan); }
+        .card.accent-purple::after{ background: var(--purple); box-shadow: 0 0 12px var(--purple); }
+        .card.accent-red::after   { background: var(--red);    box-shadow: 0 0 12px var(--red); }
+        .card.accent-yellow::after{ background: var(--yellow); box-shadow: 0 0 12px var(--yellow); }
+        .card.accent-green::after { background: var(--green);  box-shadow: 0 0 12px var(--green); }
+        .card.accent-orange::after{ background: var(--orange); box-shadow: 0 0 12px var(--orange); }
+
+        /* ── Section label ───────────────────────────────── */
+        .section-label {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 28px; margin-top: 48px;
+        }
+        .section-label-icon {
+            width: 42px; height: 42px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .section-label-text h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px; font-weight: 900;
+            color: #fff; letter-spacing: .04em;
+        }
+        .section-label-text p {
+            font-size: 12px; color: var(--muted); margin-top: 2px;
+        }
+
+        /* ── Card header ─────────────────────────────────── */
+        .card-header {
+            display: flex; align-items: flex-start; gap: 14px;
+            margin-bottom: 16px;
+        }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .card-title {
+            font-size: 16px; font-weight: 900; color: #fff;
+            margin-bottom: 4px; line-height: 1.3;
+        }
+        .card-subtitle {
+            font-size: 12px; color: var(--muted);
+        }
+
+        /* ── Rule list ───────────────────────────────────── */
+        .rule-list { list-style: none; }
+        .rule-list li {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 14px; line-height: 1.6; color: var(--text);
+        }
+        .rule-list li:last-child { border-bottom: none; }
+        .rule-bullet {
+            width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 900; margin-top: 2px;
+        }
+
+        /* ── Violation table / tier cards ────────────────── */
+        .tier-grid {
+            display: grid; gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+        .tier-card {
+            border-radius: 14px; padding: 18px 16px;
+            border: 1px solid; position: relative; overflow: hidden;
+        }
+        .tier-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: currentColor; opacity: .05;
+        }
+        .tier-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px; font-weight: 900;
+            letter-spacing: .1em; text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .tier-name {
+            font-size: 16px; font-weight: 900; color: #fff;
+            margin-bottom: 10px;
+        }
+        .tier-penalty {
+            font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.7);
+        }
+        .tier-penalty strong { color: #fff; }
+        .tier-icon { font-size: 32px; float: left; margin-right: 0; margin-left: 10px; opacity: .6; }
+
+        /* Tier colors */
+        .tier-warn   { color: var(--yellow); border-color: rgba(255,215,0,.3); }
+        .tier-low    { color: var(--orange); border-color: rgba(255,107,53,.3); }
+        .tier-mid    { color: var(--red);    border-color: rgba(255,59,92,.3); }
+        .tier-high   { color: #c850c0;       border-color: rgba(200,80,192,.3); }
+        .tier-perm   { color: #ff1744;       border-color: rgba(255,23,68,.4); box-shadow: inset 0 0 30px rgba(255,23,68,.06); }
+
+        /* ── Specific offense rows ───────────────────────── */
+        .offense-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .offense-row:last-child { border-bottom: none; }
+        .offense-name { font-size: 14px; font-weight: 700; color: #fff; }
+        .offense-desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+        .offense-badge {
+            padding: 5px 12px; border-radius: 999px;
+            font-size: 11px; font-weight: 900;
+            white-space: nowrap; text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: .05em;
+        }
+        .badge-warn   { background: rgba(255,215,0,.15);   color: var(--yellow); border: 1px solid rgba(255,215,0,.3); }
+        .badge-low    { background: rgba(255,107,53,.15);  color: var(--orange); border: 1px solid rgba(255,107,53,.3); }
+        .badge-mid    { background: rgba(255,59,92,.15);   color: var(--red);    border: 1px solid rgba(255,59,92,.3); }
+        .badge-high   { background: rgba(200,80,192,.15);  color: #c850c0;       border: 1px solid rgba(200,80,192,.3); }
+        .badge-perm   { background: rgba(255,23,68,.2);    color: #ff1744;       border: 1px solid rgba(255,23,68,.4); }
+
+        /* ── Appeal / rights box ─────────────────────────── */
+        .rights-grid {
+            display: grid; gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        }
+        .right-item {
+            background: rgba(0,242,255,0.04);
+            border: 1px solid rgba(0,242,255,0.12);
+            border-radius: 12px; padding: 16px;
+            text-align: center;
+        }
+        .right-item .ri-icon { font-size: 28px; margin-bottom: 8px; }
+        .right-item .ri-title { font-size: 13px; font-weight: 900; color: var(--cyan); margin-bottom: 4px; }
+        .right-item .ri-text  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+        /* ── Timeline: how bans escalate ─────────────────── */
+        .timeline { position: relative; padding-right: 28px; }
+        .timeline::before {
+            content: '';
+            position: absolute; right: 10px; top: 6px; bottom: 6px;
+            width: 2px; border-radius: 99px;
+            background: linear-gradient(to bottom, var(--cyan), var(--purple), var(--red));
+            opacity: .3;
+        }
+        .tl-step {
+            position: relative; padding-bottom: 24px;
+        }
+        .tl-step:last-child { padding-bottom: 0; }
+        .tl-dot {
+            position: absolute; right: -28px; top: 4px;
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 2px solid; display: flex; align-items: center; justify-content: center;
+            font-size: 8px; font-weight: 900;
+        }
+        .tl-step-title { font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+        .tl-step-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+        /* ── Highlight callout ───────────────────────────── */
+        .callout {
+            display: flex; align-items: flex-start; gap: 14px;
+            padding: 16px 18px; border-radius: 14px;
+            margin-top: 16px;
+        }
+        .callout-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+        .callout-text { font-size: 13px; line-height: 1.7; }
+        .callout-text strong { display: block; font-size: 14px; margin-bottom: 4px; color: #fff; }
+
+        .callout-info   { background: rgba(0,242,255,.07);  border: 1px solid rgba(0,242,255,.2);  }
+        .callout-warn   { background: rgba(255,215,0,.07);  border: 1px solid rgba(255,215,0,.2);  color: rgba(255,215,0,.85); }
+        .callout-danger { background: rgba(255,59,92,.07);  border: 1px solid rgba(255,59,92,.2);  color: rgba(255,150,150,.9); }
+        .callout-green  { background: rgba(0,230,118,.06);  border: 1px solid rgba(0,230,118,.2);  color: rgba(0,230,118,.85); }
+
+        /* ── Version footer ──────────────────────────────── */
+        .page-footer {
+            text-align: center; padding: 40px 0 20px;
+            font-size: 12px; color: var(--muted);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 60px;
+        }
+        .page-footer span { color: var(--cyan); }
+
+        /* ── Animations ──────────────────────────────────── */
+        .fade-up {
+            opacity: 0; transform: translateY(22px);
+            animation: fadeUp .5s ease forwards;
+        }
+        @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+        /* stagger children */
+        .fade-up:nth-child(1)  { animation-delay: .05s; }
+        .fade-up:nth-child(2)  { animation-delay: .10s; }
+        .fade-up:nth-child(3)  { animation-delay: .15s; }
+        .fade-up:nth-child(4)  { animation-delay: .20s; }
+        .fade-up:nth-child(5)  { animation-delay: .25s; }
+        .fade-up:nth-child(6)  { animation-delay: .30s; }
+        .fade-up:nth-child(7)  { animation-delay: .35s; }
+        .fade-up:nth-child(8)  { animation-delay: .40s; }
+
+        /* ── Responsive ──────────────────────────────────── */
+        @media (max-width: 540px) {
+            .tier-grid  { grid-template-columns: 1fr; }
+            .rights-grid{ grid-template-columns: 1fr 1fr; }
+            .offense-row{ grid-template-columns: 1fr; }
+            .offense-badge { width: max-content; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="page-wrap">
+
+        <!-- ── Header ───────────────────────────────────── -->
+        <header class="site-header fade-up">
+            <a href="home.html" class="back-link">
+                <i class="fas fa-arrow-right"></i>
+                <span>رجوع</span>
+            </a>
+            <span style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--cyan);font-weight:700;letter-spacing:.1em;">EL JASUS</span>
+        </header>
+
+        <!-- ── Hero ─────────────────────────────────────── -->
+        <section class="hero fade-up">
+            <div class="hero-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>معايير المجتمع</span>
+            </div>
+            <h1 class="hero-title">قواعد اللعب<br>والمجتمع</h1>
+            <p class="hero-sub">
+                نهدف لتوفير بيئة لعب آمنة ممتعة للجميع. هذه القواعد ملزمة لكل لاعب —
+                الجهل بها لا يُعفي من المسؤولية.
+            </p>
+            <div class="hero-divider"></div>
+        </section>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 1 — GENERAL PRINCIPLES
+             ════════════════════════════════════════════════ -->
+        <div class="section-label fade-up">
+            <div class="card-icon section-label-icon" style="background:rgba(0,242,255,.1);">
+                <i class="fas fa-star" style="color:var(--cyan)"></i>
+            </div>
+            <div class="section-label-text">
+                <h2>المبادئ الأساسية</h2>
+                <p>القيم التي يقوم عليها المجتمع</p>
+            </div>
+        </div>
+
+        <div class="card accent-cyan fade-up">
+            <div class="card-header">
+                <div class="card-icon" style="background:rgba(0,242,255,.1);">
+                    <i class="fas fa-handshake" style="color:var(--cyan)"></i>
+                </div>
+                <div>
+                    <div class="card-title">الاحترام المتبادل</div>
+                    <div class="card-subtitle">الأساس الذي يبني عليه المجتمع</div>
+                </div>
+            </div>
+            <ul class="rule-list">
+                <li>
+                    <div class="rule-bullet" style="background:rgba(0,242,255,.15);color:var(--cyan);">١</div>
+                    تعامل مع جميع اللاعبين باحترام بصرف النظر عن مستواهم أو جنسيتهم أو عمرهم.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(0,242,255,.15);color:var(--cyan);">٢</div>
+                    الخسارة جزء من اللعبة — قبولها بروح رياضية واجب وليس خياراً.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(0,242,255,.15);color:var(--cyan);">٣</div>
+                    الاحتفال بالفوز مسموح، لكن الاستفزاز والشماتة المفرطة مخالفة.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(0,242,255,.15);color:var(--cyan);">٤</div>
+                    المساعدة في توجيه اللاعبين الجدد خُلق رفيع يُعكس إيجابياً على المجتمع.
+                </li>
+            </ul>
+        </div>
+
+        <div class="card accent-purple fade-up">
+            <div class="card-header">
+                <div class="card-icon" style="background:rgba(124,48,255,.12);">
+                    <i class="fas fa-gamepad" style="color:var(--purple)"></i>
+                </div>
+                <div>
+                    <div class="card-title">النزاهة في اللعب</div>
+                    <div class="card-subtitle">روح اللعبة فوق كل شيء</div>
+                </div>
+            </div>
+            <ul class="rule-list">
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">١</div>
+                    اللعب بنية صادقة — الجاسوس يخفي هويته والبريء يحاول الكشف بعقل نظيف.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">٢</div>
+                    لا يجوز التواصل خارج اللعبة (واتساب، ديسكورد...) لمشاركة معلومات سرية خلال الجولة.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">٣</div>
+                    استغلال البُق أو الثغرات التقنية مخالف صريح حتى لو أفاد اللاعب.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">٤</div>
+                    لا يجوز إنهاء الجولة عمداً بالخروج لتجنب الخسارة (rage quit).
+                </li>
+            </ul>
+        </div>
+
+        <div class="card accent-green fade-up">
+            <div class="card-header">
+                <div class="card-icon" style="background:rgba(0,230,118,.1);">
+                    <i class="fas fa-users" style="color:var(--green)"></i>
+                </div>
+                <div>
+                    <div class="card-title">الشمولية والانتماء</div>
+                    <div class="card-subtitle">الجميع مرحب به هنا (باثتثناء الاسرا.ئيلين )</div>
+                </div>
+            </div>
+            <ul class="rule-list">
+                <li>
+                    <div class="rule-bullet" style="background:rgba(0,230,118,.12);color:var(--green);">١</div>
+                    (باثتثناء الاسرا.ئيلين )لا تمييز على أساس الجنس أو العرق أو الدين أو الجنسية في أي تفاعل داخل اللعبة.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(0,230,118,.12);color:var(--green);">٢</div>
+                    اللغة العربية هي اللغة الرسمية، لكن لا يُمنع استخدام لغات أخرى طالما الجو محترم.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(0,230,118,.12);color:var(--green);">٣</div>
+                    اللاعبون الجدد يستحقون وقتاً للتعلم — لا تضغط على من يتعلم.
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 2 — PROHIBITED BEHAVIOUR
+             ════════════════════════════════════════════════ -->
+        <div class="section-label fade-up">
+            <div class="card-icon section-label-icon" style="background:rgba(255,59,92,.1);">
+                <i class="fas fa-ban" style="color:var(--red)"></i>
+            </div>
+            <div class="section-label-text">
+                <h2>السلوكيات المحظورة</h2>
+                <p>كل ما يُعرّض حسابك للعقوبة</p>
+            </div>
+        </div>
+
+        <!-- Offense table -->
+        <div class="card accent-red fade-up">
+            <div class="card-header">
+                <div class="card-icon" style="background:rgba(255,59,92,.1);">
+                    <i class="fas fa-exclamation-triangle" style="color:var(--red)"></i>
+                </div>
+                <div>
+                    <div class="card-title">جدول المخالفات والعقوبات</div>
+                    <div class="card-subtitle">كل مخالفة مُصنَّفة حسب درجة خطورتها</div>
+                </div>
+            </div>
+
+            <!-- Level 1 -->
+            <div style="margin-bottom:8px;padding:6px 10px;background:rgba(255,215,0,.06);border-radius:8px;border:1px solid rgba(255,215,0,.15);">
+                <span style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--yellow);letter-spacing:.1em;">
+                    ⚠️ المستوى الأول — تحذير
+                </span>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">الكلام غير اللائق الخفيف</div>
+                    <div class="offense-desc">ألفاظ طفيفة أو تعليقات مزعجة غير متكررة</div>
+                </div>
+                <div class="offense-badge badge-warn">تحذير</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">Rage Quit متكرر</div>
+                    <div class="offense-desc">الخروج عمداً من الجولة لتجنب الهزيمة (أكثر من مرتين)</div>
+                </div>
+                <div class="offense-badge badge-warn">تحذير</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">Spam في الشات</div>
+                    <div class="offense-desc">إرسال رسائل متكررة أو عشوائية لإزعاج الآخرين</div>
+                </div>
+                <div class="offense-badge badge-warn">تحذير</div>
+            </div>
+
+            <!-- Level 2 -->
+            <div style="margin:16px 0 8px;padding:6px 10px;background:rgba(255,107,53,.06);border-radius:8px;border:1px solid rgba(255,107,53,.2);">
+                <span style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--orange);letter-spacing:.1em;">
+                    🔶 المستوى الثاني — حظر مؤقت خفيف
+                </span>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">الإزعاج المتعمد</div>
+                    <div class="offense-desc">تعطيل سير اللعبة بشكل متعمد ومتكرر</div>
+                </div>
+                <div class="offense-badge badge-low">24 ساعة</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">التحرش اللفظي</div>
+                    <div class="offense-desc">إهانة مباشرة أو اتهامات كاذبة تجاه لاعب محدد</div>
+                </div>
+                <div class="offense-badge badge-low">24 ساعة</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">الغش بالتنسيق الخارجي</div>
+                    <div class="offense-desc">التواصل مع لاعبين آخرين خارج الغرفة لتبادل المعلومات</div>
+                </div>
+                <div class="offense-badge badge-low">48 ساعة</div>
+            </div>
+
+            <!-- Level 3 -->
+            <div style="margin:16px 0 8px;padding:6px 10px;background:rgba(255,59,92,.06);border-radius:8px;border:1px solid rgba(255,59,92,.2);">
+                <span style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--red);letter-spacing:.1em;">
+                    🔴 المستوى الثالث — حظر مؤقت شديد
+                </span>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">التنمر والمضايقة المتكررة</div>
+                    <div class="offense-desc">استهداف لاعب معين بشكل مستمر عبر جلسات متعددة</div>
+                </div>
+                <div class="offense-badge badge-mid">7 أيام</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">الكلام العدواني الصريح</div>
+                    <div class="offense-desc">ألفاظ بذيئة شديدة أو تهديدات شخصية داخل اللعبة</div>
+                </div>
+                <div class="offense-badge badge-mid">7 أيام</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">خلق حسابات متعددة للتحايل</div>
+                    <div class="offense-desc">إنشاء حساب جديد للتهرب من عقوبة سابقة</div>
+                </div>
+                <div class="offense-badge badge-mid">14 يوم</div>
+            </div>
+
+            <!-- Level 4 -->
+            <div style="margin:16px 0 8px;padding:6px 10px;background:rgba(200,80,192,.06);border-radius:8px;border:1px solid rgba(200,80,192,.2);">
+                <span style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:#c850c0;letter-spacing:.1em;">
+                    🟣 المستوى الرابع — حظر طويل
+                </span>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">نشر محتوى مسيء للمجتمع</div>
+                    <div class="offense-desc">خطاب كراهية أو محتوى عنصري أو طائفي</div>
+                </div>
+                <div class="offense-badge badge-high">30 يوم</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">التحرش الجنسي</div>
+                    <div class="offense-desc">أي محتوى أو كلام ذو طابع جنسي غير مرغوب</div>
+                </div>
+                <div class="offense-badge badge-high">30 يوم</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">اختراق أو التلاعب بالنظام</div>
+                    <div class="offense-desc">محاولة استغلال ثغرات أو رفع رصيد بطرق غير شرعية</div>
+                </div>
+                <div class="offense-badge badge-high">60 يوم</div>
+            </div>
+
+            <!-- Level 5 PERM -->
+            <div style="margin:16px 0 8px;padding:6px 10px;background:rgba(255,23,68,.07);border-radius:8px;border:1px solid rgba(255,23,68,.3);">
+                <span style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:#ff1744;letter-spacing:.1em;">
+                    ☠️ المستوى الخامس — حظر دائم
+                </span>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">الإساءة الجسيمة المتكررة</div>
+                    <div class="offense-desc">أي مخالفة من المستويات السابقة بعد عودة من حظر طويل</div>
+                </div>
+                <div class="offense-badge badge-perm">حظر دائم</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">التهديد بالأذى الجسدي</div>
+                    <div class="offense-desc">تهديد حقيقي أو شبه حقيقي بإيذاء لاعب خارج الإنترنت</div>
+                </div>
+                <div class="offense-badge badge-perm">حظر دائم</div>
+            </div>
+            <div class="offense-row">
+                <div>
+                    <div class="offense-name">الاستغلال التجاري غير المرخص</div>
+                    <div class="offense-desc">بيع حسابات أو عملات أو أصول اللعبة لمصلحة مادية</div>
+                </div>
+                <div class="offense-badge badge-perm">حظر دائم</div>
+            </div>
+
+            <div class="callout callout-danger" style="margin-top:20px;">
+                <div class="callout-icon">⚠️</div>
+                <div class="callout-text">
+                    <strong>تنبيه هام</strong>
+                    تُطبَّق العقوبات تلقائياً في الحالات الواضحة. الإدارة تحتفظ بحق تصعيد المستوى
+                    إذا رأت أن حجم الضرر يستدعي ذلك، حتى في الجريمة الأولى.
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 3 — ESCALATION SYSTEM
+             ════════════════════════════════════════════════ -->
+        <div class="section-label fade-up">
+            <div class="card-icon section-label-icon" style="background:rgba(255,107,53,.1);">
+                <i class="fas fa-level-up-alt" style="color:var(--orange)"></i>
+            </div>
+            <div class="section-label-text">
+                <h2>نظام التصعيد</h2>
+                <p>كيف تتراكم العقوبات عند التكرار</p>
+            </div>
+        </div>
+
+        <div class="card accent-orange fade-up">
+            <div class="timeline">
+                <div class="tl-step">
+                    <div class="tl-dot" style="color:var(--cyan);border-color:var(--cyan);">١</div>
+                    <div class="tl-step-title">المخالفة الأولى</div>
+                    <div class="tl-step-desc">
+                        تحذير رسمي يُسجَّل في ملف حسابك. لا يوجد حظر فوري إلا في المخالفات الجسيمة.
+                    </div>
+                </div>
+                <div class="tl-step">
+                    <div class="tl-dot" style="color:var(--yellow);border-color:var(--yellow);">٢</div>
+                    <div class="tl-step-title">التكرار خلال 30 يوماً</div>
+                    <div class="tl-step-desc">
+                        تُصعَّد العقوبة للمستوى التالي مباشرةً. مثلاً: تحذير → حظر 24 ساعة.
+                    </div>
+                </div>
+                <div class="tl-step">
+                    <div class="tl-dot" style="color:var(--orange);border-color:var(--orange);">٣</div>
+                    <div class="tl-step-title">التكرار خلال 90 يوماً من العودة</div>
+                    <div class="tl-step-desc">
+                        تُضاعَف مدة الحظر ضعفَين عن المرة السابقة. حساب المخالفات لا يُصفَّر تلقائياً.
+                    </div>
+                </div>
+                <div class="tl-step">
+                    <div class="tl-dot" style="color:var(--red);border-color:var(--red);">٤</div>
+                    <div class="tl-step-title">أربع مخالفات أو أكثر</div>
+                    <div class="tl-step-desc">
+                        يُعاد تقييم الحساب من قِبل الإدارة. قد ينتهي بحظر دائم بصرف النظر عن نوع المخالفة.
+                    </div>
+                </div>
+                <div class="tl-step">
+                    <div class="tl-dot" style="color:#ff1744;border-color:#ff1744;">∞</div>
+                    <div class="tl-step-title">الحظر الدائم</div>
+                    <div class="tl-step-desc">
+                        نهائي. يشمل الحساب والجهاز واحتمال الـ IP. لا يمكن استئنافه إلا مرة واحدة فقط.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier cards summary -->
+        <div class="tier-grid fade-up">
+            <div class="tier-card tier-warn">
+                <div class="tier-icon">⚠️</div>
+                <div class="tier-label">المستوى ١</div>
+                <div class="tier-name">تحذير</div>
+                <div class="tier-penalty">
+                    <strong>المخالفة الأولى الخفيفة</strong><br>
+                    تُسجَّل في ملفك، لا حظر مباشر.
+                </div>
+            </div>
+            <div class="tier-card tier-low">
+                <div class="tier-icon">🔶</div>
+                <div class="tier-label">المستوى ٢</div>
+                <div class="tier-name">حظر ٢٤–٤٨ ساعة</div>
+                <div class="tier-penalty">
+                    <strong>مخالفة متوسطة أو تكرار</strong><br>
+                    تُجمَّد الغرف والتفاعل مؤقتاً.
+                </div>
+            </div>
+            <div class="tier-card tier-mid">
+                <div class="tier-icon">🔴</div>
+                <div class="tier-label">المستوى ٣</div>
+                <div class="tier-name">حظر ٧–١٤ يوم</div>
+                <div class="tier-penalty">
+                    <strong>مخالفة شديدة أو تكرار</strong><br>
+                    يشمل الحرمان من المتجر والميزات.
+                </div>
+            </div>
+            <div class="tier-card tier-high">
+                <div class="tier-icon">🟣</div>
+                <div class="tier-label">المستوى ٤</div>
+                <div class="tier-name">حظر ٣٠–٦٠ يوم</div>
+                <div class="tier-penalty">
+                    <strong>مخالفة جسيمة</strong><br>
+                    تجميد الرصيد والإنجازات مؤقتاً.
+                </div>
+            </div>
+            <div class="tier-card tier-perm">
+                <div class="tier-icon">☠️</div>
+                <div class="tier-label">المستوى ٥</div>
+                <div class="tier-name">حظر دائم</div>
+                <div class="tier-penalty">
+                    <strong>لا رجعة فيه</strong><br>
+                    الحساب والجهاز محظوران بشكل كامل.
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 4 — CHAT RULES
+             ════════════════════════════════════════════════ -->
+        <div class="section-label fade-up">
+            <div class="card-icon section-label-icon" style="background:rgba(0,242,255,.1);">
+                <i class="fas fa-comments" style="color:var(--cyan)"></i>
+            </div>
+            <div class="section-label-text">
+                <h2>قواعد الشات والتواصل</h2>
+                <p>ما هو مسموح وما هو ممنوع في المحادثات</p>
+            </div>
+        </div>
+
+        <div class="card accent-cyan fade-up" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                    <i class="fas fa-check-circle" style="color:var(--green);font-size:16px;"></i>
+                    <span style="font-weight:900;color:var(--green);font-size:14px;">مسموح به ✅</span>
+                </div>
+                <ul class="rule-list">
+                    <li><div class="rule-bullet" style="background:rgba(0,230,118,.1);color:var(--green);">✓</div>النقاش حول اللعبة وتبادل الأدلة</li>
+                    <li><div class="rule-bullet" style="background:rgba(0,230,118,.1);color:var(--green);">✓</div>التشجيع ومجاملة اللاعبين</li>
+                    <li><div class="rule-bullet" style="background:rgba(0,230,118,.1);color:var(--green);">✓</div>استخدام إيموجيات ومشاعر بشكل لائق</li>
+                    <li><div class="rule-bullet" style="background:rgba(0,230,118,.1);color:var(--green);">✓</div>الضحك والدعابة المحترمة</li>
+                    <li><div class="rule-bullet" style="background:rgba(0,230,118,.1);color:var(--green);">✓</div>الإبلاغ عن لاعب مزعج</li>
+                </ul>
+            </div>
+            <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                    <i class="fas fa-times-circle" style="color:var(--red);font-size:16px;"></i>
+                    <span style="font-weight:900;color:var(--red);font-size:14px;">ممنوع ❌</span>
+                </div>
+                <ul class="rule-list">
+                    <li><div class="rule-bullet" style="background:rgba(255,59,92,.1);color:var(--red);">✗</div>السباب والألفاظ البذيئة</li>
+                    <li><div class="rule-bullet" style="background:rgba(255,59,92,.1);color:var(--red);">✗</div>الإعلانات التجارية أو الروابط الخارجية</li>
+                    <li><div class="rule-bullet" style="background:rgba(255,59,92,.1);color:var(--red);">✗</div>نشر معلومات شخصية لأي لاعب</li>
+                    <li><div class="rule-bullet" style="background:rgba(255,59,92,.1);color:var(--red);">✗</div>التحريض أو الخطاب الطائفي</li>
+                    <li><div class="rule-bullet" style="background:rgba(255,59,92,.1);color:var(--red);">✗</div>الانتحال وتقليد أسماء المشرفين</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 5 — REPORTING SYSTEM
+             ════════════════════════════════════════════════ -->
+        <div class="section-label fade-up">
+            <div class="card-icon section-label-icon" style="background:rgba(255,215,0,.1);">
+                <i class="fas fa-flag" style="color:var(--yellow)"></i>
+            </div>
+            <div class="section-label-text">
+                <h2>نظام الإبلاغ</h2>
+                <p>كيف تبلّغ عن مخالفة</p>
+            </div>
+        </div>
+
+        <div class="card accent-yellow fade-up">
+            <ul class="rule-list">
+                <li>
+                    <div class="rule-bullet" style="background:rgba(255,215,0,.12);color:var(--yellow);">١</div>
+                    <div>
+                        <strong style="color:#fff;">من داخل الغرفة</strong><br>
+                        اضغط على اسم اللاعب ← زر "إبلاغ". ستُرسَل لقطة شاشة تلقائية من النظام.
+                    </div>
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(255,215,0,.12);color:var(--yellow);">٢</div>
+                    <div>
+                        <strong style="color:#fff;">عبر البريد الإلكتروني</strong><br>
+                        أرسل وصفاً واضحاً مع اسم اللاعب ووقت المخالفة تقريباً.
+                    </div>
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(255,215,0,.12);color:var(--yellow);">٣</div>
+                    <div>
+                        <strong style="color:#fff;">بلاغات كيدية</strong><br>
+                        الإبلاغ الكاذب بقصد إيذاء لاعب سليم يُعرِّض المُبلِّغ للعقوبة.
+                    </div>
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(255,215,0,.12);color:var(--yellow);">٤</div>
+                    <div>
+                        <strong style="color:#fff;">مدة المراجعة</strong><br>
+                        تُراجَع البلاغات خلال 48–72 ساعة. في الحالات الطارئة قد تكون أسرع.
+                    </div>
+                </li>
+            </ul>
+
+            <div class="callout callout-info" style="margin-top:18px;">
+                <div class="callout-icon">💡</div>
+                <div class="callout-text">
+                    <strong>نصيحة</strong>
+                    احتفظ بلقطة شاشة أو تسجيل قبل الإبلاغ — يُسرِّع ذلك إجراء التحقيق بشكل كبير.
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 6 — PLAYER RIGHTS & APPEAL
+             ════════════════════════════════════════════════ -->
+        <div class="section-label fade-up">
+            <div class="card-icon section-label-icon" style="background:rgba(0,230,118,.1);">
+                <i class="fas fa-balance-scale" style="color:var(--green)"></i>
+            </div>
+            <div class="section-label-text">
+                <h2>حقوق اللاعب والاستئناف</h2>
+                <p>حقوقك المكفولة في مواجهة أي عقوبة</p>
+            </div>
+        </div>
+
+        <div class="card accent-green fade-up">
+            <div class="rights-grid">
+                <div class="right-item">
+                    <div class="ri-icon">📋</div>
+                    <div class="ri-title">الإخطار</div>
+                    <div class="ri-text">لك حق معرفة سبب العقوبة بشكل واضح.</div>
+                </div>
+                <div class="right-item">
+                    <div class="ri-icon">🔍</div>
+                    <div class="ri-title">الاستئناف</div>
+                    <div class="ri-text">حق طلب مراجعة القرار مرة واحدة خلال 14 يوماً.</div>
+                </div>
+                <div class="right-item">
+                    <div class="ri-icon">🧾</div>
+                    <div class="ri-title">السجل</div>
+                    <div class="ri-text">حق الاطلاع على سجل مخالفاتك في حسابك.</div>
+                </div>
+                <div class="right-item">
+                    <div class="ri-icon">🤝</div>
+                    <div class="ri-title">المعاملة العادلة</div>
+                    <div class="ri-text">تُطبَّق القواعد بشكل متساوٍ على الجميع.</div>
+                </div>
+                <div class="right-item">
+                    <div class="ri-icon">🔒</div>
+                    <div class="ri-title">الخصوصية</div>
+                    <div class="ri-text">لن تُكشَف تفاصيل عقوبتك لأطراف غير معنية.</div>
+                </div>
+                <div class="right-item">
+                    <div class="ri-icon">🗑️</div>
+                    <div class="ri-title">حذف الحساب</div>
+                    <div class="ri-text">حق طلب حذف بياناتك الشخصية في أي وقت.</div>
+                </div>
+            </div>
+
+            <div class="callout callout-green" style="margin-top:20px;">
+                <div class="callout-icon">⚖️</div>
+                <div class="callout-text">
+                    <strong>إجراءات الاستئناف</strong>
+                    أرسل طلب استئناف موضحاً فيه: اسم حسابك، تاريخ العقوبة، سبب اعتراضك والأدلة
+                    المتاحة. سيَردّ فريق الإدارة خلال 7 أيام عمل.
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 7 — FAIR PLAY REWARDS
+             ════════════════════════════════════════════════ -->
+        <div class="section-label fade-up">
+            <div class="card-icon section-label-icon" style="background:rgba(0,242,255,.1);">
+                <i class="fas fa-trophy" style="color:var(--cyan)"></i>
+            </div>
+            <div class="section-label-text">
+                <h2>مكافآت اللعب النظيف</h2>
+                <p>السلوك الجيد له مكافآت حقيقية</p>
+            </div>
+        </div>
+
+        <div class="card accent-cyan fade-up">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+                <div style="background:rgba(0,242,255,.05);border:1px solid rgba(0,242,255,.15);border-radius:12px;padding:16px;text-align:center;">
+                    <div style="font-size:30px;margin-bottom:8px;">🏅</div>
+                    <div style="font-weight:900;color:var(--cyan);font-size:13px;margin-bottom:4px;">شارة اللاعب النظيف</div>
+                    <div style="font-size:12px;color:var(--muted);line-height:1.5;">30 يوم بلا أي مخالفة</div>
+                </div>
+                <div style="background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.15);border-radius:12px;padding:16px;text-align:center;">
+                    <div style="font-size:30px;margin-bottom:8px;">🪙</div>
+                    <div style="font-weight:900;color:var(--yellow);font-size:13px;margin-bottom:4px;">عملات إضافية</div>
+                    <div style="font-size:12px;color:var(--muted);line-height:1.5;">+50 عملة كل 30 يوم نظيف</div>
+                </div>
+                <div style="background:rgba(124,48,255,.05);border:1px solid rgba(124,48,255,.15);border-radius:12px;padding:16px;text-align:center;">
+                    <div style="font-size:30px;margin-bottom:8px;">⭐</div>
+                    <div style="font-weight:900;color:var(--purple);font-size:13px;margin-bottom:4px;">نقاط رتبة مضاعفة</div>
+                    <div style="font-size:12px;color:var(--muted);line-height:1.5;">x1.25 لفترة 7 أيام</div>
+                </div>
+                <div style="background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.15);border-radius:12px;padding:16px;text-align:center;">
+                    <div style="font-size:30px;margin-bottom:8px;">🎖️</div>
+                    <div style="font-weight:900;color:var(--green);font-size:13px;margin-bottom:4px;">إنجاز "ضمير اللعبة"</div>
+                    <div style="font-size:12px;color:var(--muted);line-height:1.5;">90 يوم متواصلة بلا مخالفات</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ════════════════════════════════════════════════
+             PART 8 — FINAL NOTES
+             ════════════════════════════════════════════════ -->
+        <div class="card accent-purple fade-up" style="margin-top:40px;">
+            <div class="card-header">
+                <div class="card-icon" style="background:rgba(124,48,255,.1);">
+                    <i class="fas fa-info-circle" style="color:var(--purple)"></i>
+                </div>
+                <div>
+                    <div class="card-title">ملاحظات ختامية</div>
+                    <div class="card-subtitle">اقرأها بعناية</div>
+                </div>
+            </div>
+            <ul class="rule-list">
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">●</div>
+                    تحتفظ الإدارة بحق تعديل هذه القواعد في أي وقت مع إخطار اللاعبين قبل 7 أيام من التطبيق.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">●</div>
+                    تسجيل الحساب يعني الموافقة التلقائية الكاملة على جميع هذه القواعد.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">●</div>
+                    الحالات الاستثنائية التي لا تُغطيها هذه القواعد تُقرِّرها الإدارة بصلاحية تقديرية.
+                </li>
+                <li>
+                    <div class="rule-bullet" style="background:rgba(124,48,255,.15);color:var(--purple);">●</div>
+                    هذه القواعد تسري داخل اللعبة وفي أي قناة تواصل رسمية مرتبطة بـ El Jasus.
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- ── Footer ─────────────────────────────────────── -->
+        <footer class="page-footer fade-up">
+            <p>
+                <span>El Jasus</span> — معايير المجتمع
+                &nbsp;·&nbsp; الإصدار 1.0
+                &nbsp;·&nbsp; آخر تحديث: فبراير ٢٠٢٦
+            </p>
+            <p style="margin-top:8px;">
+                اللعب عدل · الاحترام واجب · المتعة مشتركة
+            </p>
+        </footer>
+
+    </div><!-- /page-wrap -->
+
+    <script>
+        /* Stagger all .fade-up elements with IntersectionObserver */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.animationPlayState = 'running';
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.fade-up').forEach((el, i) => {
+            el.style.animationPlayState = 'paused';
+            el.style.animationDelay = (i * 0.06) + 's';
+            observer.observe(el);
+        });
+    </script>
+    <script>
+        window.alert   = (msg)             => UIAlert(msg);
+        window.confirm = (msg)             => UIConfirm(msg);
+        window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
+    </script>
+</body>
+</html>

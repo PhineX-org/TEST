@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تغيير اسم المستخدم | El Jasus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../Assets/mobile.css">
+<script src="../Assets/sound-system.js" defer></script>
+<script src="../Assets/qr-notifications.js" defer></script>
+    <script src="../Assets/dialogs.js"></script>
+
+    <style>
+        :root { 
+            --bg-color: #0a0e1a;
+            --primary-color: #00f2ff;
+            --secondary-color: #7c30ff;
+        }
+        
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background-attachment: fixed;
+            color: #ffffff; 
+            min-height: 100vh; 
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+        
+        .glass { 
+            background: linear-gradient(135deg, rgba(15, 20, 35, 0.9), rgba(25, 30, 50, 0.8));
+            backdrop-filter: blur(20px);
+            border: 2px solid;
+            border-image: linear-gradient(135deg, rgba(0, 242, 255, 0.3), rgba(124, 48, 255, 0.3)) 1;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 30px rgba(0, 242, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(0, 242, 255, 0.05),
+                transparent
+            );
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .neon-text {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 
+                0 0 10px rgba(0, 242, 255, 0.8),
+                0 0 20px rgba(0, 242, 255, 0.6);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: 2px solid rgba(0, 242, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
+        }
+
+        input {
+            background: rgba(0, 242, 255, 0.05);
+            border: 2px solid rgba(0, 242, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="max-w-xl mx-auto relative z-10 mt-10">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            <a href="account.html" class="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-all hover:translate-x-1">
+                <i class="fas fa-arrow-right text-xl"></i>
+                <span class="text-sm font-bold">رجوع</span>
+            </a>
+            
+            <div class="text-center flex-1">
+                <h1 class="text-3xl font-black uppercase tracking-tight neon-text">تغيير اسم المستخدم</h1>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1" style="font-family: 'Orbitron', sans-serif;">CHANGE USERNAME</p>
+            </div>
+
+            <div class="w-20"></div>
+        </div>
+
+        <!-- Current Username Display -->
+        <div class="glass rounded-2xl p-6 mb-4 animate__animated animate__fadeIn">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-cyan-500/20 border-2 border-cyan-500/30 flex items-center justify-center">
+                    <i class="fas fa-user text-cyan-400 text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-xs text-gray-400 mb-1">اسم المستخدم الحالي</p>
+                    <h3 id="currentUsername" class="text-2xl font-black neon-text">Loading...</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Username Change Form -->
+        <div class="glass rounded-3xl p-8 animate__animated animate__fadeIn">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-lg bg-cyan-500/20 border-2 border-cyan-500/30 flex items-center justify-center">
+                    <i class="fas fa-user-edit text-cyan-400 text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-black neon-text">اسم المستخدم الجديد</h2>
+                    <p class="text-xs text-gray-400">اختر اسم مستخدم جديد لحسابك</p>
+                </div>
+            </div>
+            
+            <form id="usernameForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-400 mb-2">اسم المستخدم الجديد</label>
+                    <input 
+                        type="text" 
+                        id="newUsername" 
+                        placeholder="أدخل اسم المستخدم الجديد"
+                        class="w-full p-4 rounded-xl outline-none text-sm font-bold text-white"
+                        required
+                    >
+                    <p class="text-xs text-gray-500 mt-2">سيظهر هذا الاسم في اللعبة وفي لوحة المتصدرين</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-400 mb-2">كلمة المرور للتأكيد</label>
+                    <input 
+                        type="password" 
+                        id="usernamePassword" 
+                        placeholder="أدخل كلمة المرور للتأكيد"
+                        class="w-full p-4 rounded-xl outline-none text-sm font-bold text-white"
+                        required
+                    >
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full btn-primary py-4 rounded-xl font-black text-sm uppercase tracking-wider">
+                        <i class="fas fa-check ml-2"></i>
+                        تحديث اسم المستخدم
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Info Card -->
+        <div class="glass rounded-2xl p-4 mt-4 animate__animated animate__fadeIn border-2 border-blue-500/30">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-lightbulb text-blue-400 text-xl mt-1"></i>
+                <div>
+                    <h3 class="font-bold text-blue-400 mb-1">ملاحظة</h3>
+                    <p class="text-xs text-gray-400">
+                        تغيير اسم المستخدم لن يؤثر على إحصائياتك أو انتصاراتك المسجلة في لوحة المتصدرين.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, updateProfile, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, update, get } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        
+const firebaseConfig = {
+  apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+  authDomain: "el-jasus.firebaseapp.com",
+  databaseURL: "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "el-jasus",
+  storageBucket: "el-jasus.firebasestorage.app",
+  messagingSenderId: "415659587906",
+  appId: "1:415659587906:web:782f7940176ea4097eb0db",
+  measurementId: "G-N4K79FP56N"
+};
+
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        window._firebaseFns = { ref, get, update, onValue, push, serverTimestamp };
+
+        let currentUser = null;
+
+        // Check Authentication and Load Current Username
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                // Try to get username from database first
+                const userRef = ref(db, `players/${user.uid}`);
+                const snapshot = await get(userRef);
+                
+                let username = 'مجهول';
+                if (snapshot.exists() && snapshot.val().username) {
+                    username = snapshot.val().username;
+                } else if (user.displayName) {
+                    username = user.displayName;
+                }
+                
+                document.getElementById('currentUsername').innerText = username;
+            } else {
+                alert('يجب تسجيل الدخول أولاً');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Handle Username Change
+        document.getElementById('usernameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newUsername = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('usernamePassword').value;
+
+            if (!newUsername) {
+                alert('الرجاء إدخال اسم مستخدم جديد');
+                return;
+            }
+
+            if (!password) {
+                alert('الرجاء إدخال كلمة المرور للتأكيد');
+                return;
+            }
+
+            try {
+                // Check if user is using Google sign-in (no password authentication)
+                const isGoogleUser = currentUser.providerData.some(
+                    provider => provider.providerId === 'google.com'
+                );
+
+                if (isGoogleUser) {
+                    // For Google users, skip password verification
+                    // Or you can ask them to re-authenticate with Google
+                    const confirmChange = confirm('هل أنت متأكد من تغيير اسم المستخدم؟');
+                    if (!confirmChange) return;
+                } else {
+                    // Reauthenticate with email/password
+                    const credential = EmailAuthProvider.credential(currentUser.email, password);
+                    await reauthenticateWithCredential(currentUser, credential);
+                }
+
+                // Update username in database
+                await update(ref(db, `players/${currentUser.uid}`), {
+                    username: newUsername
+                });
+
+                // Update display name in Firebase Auth
+                await updateProfile(currentUser, {
+                    displayName: newUsername
+                });
+
+                // Update localStorage
+                localStorage.setItem('eljasus_user_name', newUsername);
+
+                alert('تم تحديث اسم المستخدم بنجاح!');
+                window.location.href = 'account.html';
+            } catch (error) {
+                console.error(error);
+                if (error.code === 'auth/wrong-password') {
+                    alert('كلمة المرور غير صحيحة');
+                } else if (error.code === 'auth/invalid-credential') {
+                    alert('بيانات الاعتماد غير صالحة. إذا كنت تستخدم Google للدخول، يرجى استخدام زر التحقق من Google في صفحة الحساب.');
+                } else {
+                    alert('فشل تحديث اسم المستخدم: ' + error.message);
+                }
+            }
+        });
+    </script>
+<script>
+    window.alert   = (msg)             => UIAlert(msg);
+    window.confirm = (msg)             => UIConfirm(msg);
+    window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
+</script>
+</body>
+</html>

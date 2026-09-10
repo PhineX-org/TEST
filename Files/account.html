@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="../Assets/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="الجاسوس">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحساب | El Jasus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="../Assets/name-themes.js"></script>
+   <script src="../Assets/friend-invite-enhanced.js" defer></script>
+   <script src="../Assets/profile-viewer.js" defer></script>
+   <script src="../Assets/dialogs.js"></script>
+    <style>
+        :root { 
+            --bg-color: #0a0e1a;
+            --primary-color: #00f2ff;
+            --secondary-color: #7c30ff;
+        }
+
+        /* Ensure visibility */
+        #notLoggedIn,
+        #loggedInContent {
+            position: relative;
+            z-index: 10;
+        }
+
+        #notLoggedIn.hidden,
+        #loggedInContent.hidden {
+            display: none !important;
+        }
+        
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background-attachment: fixed;
+            color: #ffffff; 
+            min-height: 100vh; 
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+        
+        .glass { 
+            background: linear-gradient(135deg, rgba(15, 20, 35, 0.9), rgba(25, 30, 50, 0.8));
+            backdrop-filter: blur(20px);
+            border: 2px solid;
+            border-image: linear-gradient(135deg, rgba(0, 242, 255, 0.3), rgba(124, 48, 255, 0.3)) 1;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 30px rgba(0, 242, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(0, 242, 255, 0.05),
+                transparent
+            );
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .neon-text {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 
+                0 0 10px rgba(0, 242, 255, 0.8),
+                0 0 20px rgba(0, 242, 255, 0.6);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: 2px solid rgba(0, 242, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.2), rgba(124, 48, 255, 0.2));
+            border: 2px solid rgba(0, 242, 255, 0.3);
+        }
+
+        .avatar-ring {
+            animation: avatarPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0, 242, 255, 0.8); }
+        }
+
+        .animate__animated {
+            animation-duration: 0.5s;
+        }
+
+        .animate__fadeIn {
+            animation-name: fadeIn;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Not Logged In Screen -->
+    <div id="notLoggedIn" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+        <div class="text-center animate__animated animate__fadeIn">
+            <svg class="w-32 h-32 text-cyan-400 opacity-50 mx-auto mb-6" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+            </svg>
+            <h2 class="text-3xl font-black mb-4 neon-text">يجب تسجيل الدخول أولاً</h2>
+            <p class="text-gray-400 mb-8">للوصول إلى حسابك، يجب عليك تسجيل الدخول</p>
+            
+            <div class="flex flex-col gap-4 max-w-sm mx-auto">
+                <a href="login.html" class="btn-primary py-4 px-8 rounded-xl font-black text-lg uppercase tracking-wider inline-flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                    </svg>
+                    تسجيل الدخول
+                </a>
+                
+                <p class="text-sm text-gray-500">
+                    ليس لديك حساب؟ 
+                    <a href="signup.html" class="text-cyan-400 hover:text-cyan-300 font-bold underline">
+                        أنشئ واحداً الآن
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (When Logged In) -->
+    <div id="loggedInContent" class="hidden">
+        
+        <!-- Header -->
+        <header class="max-w-4xl mx-auto mb-6 relative z-10">
+            <div class="flex items-center justify-between">
+                <a href="home.html" class="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-all hover:translate-x-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    <span class="text-sm font-bold">رجوع</span>
+                </a>
+                
+                <div class="text-center flex-1">
+                    <h1 class="text-3xl font-black uppercase tracking-tight neon-text">حسابي</h1>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1" style="font-family: 'Orbitron', sans-serif;">MY ACCOUNT</p>
+                </div>
+
+                <button id="logoutBtn" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border-2 border-red-500/30 rounded-xl text-red-400 font-bold text-sm transition-all flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </header>
+
+        <div class="max-w-4xl mx-auto relative z-10">
+            
+            <!-- Profile Card -->
+            <div class="glass rounded-3xl p-8 mb-6 animate__animated animate__fadeIn">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center avatar-ring border-4 border-cyan-500/30">
+                            <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- User Info -->
+                    <div class="flex-1 text-center md:text-right">
+                        <h2 id="displayUsername" class="text-4xl font-black neon-text mb-2">Loading...</h2>
+                        <p id="displayEmail" class="text-gray-400 text-sm mb-4">loading...</p>
+                        
+                        <!-- Stats Row -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="stat-badge rounded-xl p-3">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">انتصارات جاسوس</p>
+                                <p id="statSpyWins" class="text-2xl font-black text-red-400" style="font-family: 'Orbitron', sans-serif;">0</p>
+                            </div>
+                            <div class="stat-badge rounded-xl p-3">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">انتصارات بريء</p>
+                                <p id="statInnocentWins" class="text-2xl font-black text-green-400" style="font-family: 'Orbitron', sans-serif;">0</p>
+                            </div>
+                            <div class="stat-badge rounded-xl p-3">
+                                <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">إجمالي المباريات</p>
+                                <p id="statTotalGames" class="text-2xl font-black text-purple-400" style="font-family: 'Orbitron', sans-serif;">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Change Username Button -->
+                <a href="username.html" class="glass rounded-2xl p-6 animate__animated animate__fadeIn hover:border-cyan-500/50 transition-all group cursor-pointer block">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-lg bg-cyan-500/20 border-2 border-cyan-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-8 h-8 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-black mb-1 group-hover:text-cyan-400 transition-colors">تغيير اسم المستخدم</h3>
+                            <p class="text-xs text-gray-400">قم بتحديث اسم المستخدم الخاص بك</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-cyan-400 group-hover:translate-x-[-3px] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Change Password Button -->
+                <a href="password.html" class="glass rounded-2xl p-6 animate__animated animate__fadeIn hover:border-purple-500/50 transition-all group cursor-pointer block">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-lg bg-purple-500/20 border-2 border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-8 h-8 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-black mb-1 group-hover:text-purple-400 transition-colors">تغيير كلمة المرور</h3>
+                            <p class="text-xs text-gray-400">قم بتحديث كلمة المرور الخاصة بك</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-500 group-hover:text-purple-400 group-hover:translate-x-[-3px] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Google Re-authentication -->
+                <div class="glass rounded-2xl p-6 animate__animated animate__fadeIn cursor-pointer hover:border-red-500/50 transition-all group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-lg bg-red-500/20 border-2 border-red-500/30 flex items-center justify-center">
+                            <svg class="w-8 h-8" viewBox="0 0 48 48">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                                <path fill="none" d="M0 0h48v48H0z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-black mb-1">التحقق عبر Google</h3>
+                            <p class="text-xs text-gray-400">قم بإعادة التحقق من حسابك للعمليات الحساسة</p>
+                        </div>
+                    </div>
+                    <button id="googleReauthBtn" class="w-full bg-white/5 hover:bg-white/10 border-2 border-white/10 py-3 rounded-xl font-black text-sm transition-all mt-4 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                            <path fill="none" d="M0 0h48v48H0z"/>
+                        </svg>
+                        التحقق الآن
+                    </button>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="glass rounded-2xl p-6 border-red-500/30 animate__animated animate__fadeIn">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 rounded-lg bg-red-500/20 border-2 border-red-500/30 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-black text-red-400 mb-1">منطقة الخطر</h3>
+                            <p class="text-xs text-gray-400">حذف الحساب سيؤدي إلى فقدان جميع بياناتك</p>
+                        </div>
+                    </div>
+                    
+                    <button id="deleteAccountBtn" class="w-full bg-red-500/20 hover:bg-red-500/30 border-2 border-red-500/50 text-red-400 py-3 rounded-xl font-black text-sm transition-all uppercase tracking-wider flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        حذف الحساب نهائياً
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, reauthenticateWithPopup, deleteUser } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        
+const firebaseConfig = {
+  apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+  authDomain: "el-jasus.firebaseapp.com",
+  databaseURL: "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "el-jasus",
+  storageBucket: "el-jasus.firebasestorage.app",
+  messagingSenderId: "415659587906",
+  appId: "1:415659587906:web:782f7940176ea4097eb0db",
+  measurementId: "G-N4K79FP56N"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        window._firebaseFns = { ref, get, remove };
+
+        let currentUser = null;
+
+        // Check Authentication
+onAuthStateChanged(auth, async (user) => {
+    const notLoggedInDiv = document.getElementById('notLoggedIn');
+    const loggedInDiv = document.getElementById('loggedInContent');
+    
+    if (user) {
+        currentUser = user;
+        
+        // Load moderation if available (before showing content)
+        if (typeof MOD !== 'undefined' && MOD.init) {
+            await MOD.init(db, user);
+            if (document.getElementById('_ej_ban')) return;
+        }
+        
+        // Show logged in content
+        notLoggedInDiv.classList.add('hidden');
+        loggedInDiv.classList.remove('hidden');
+        
+        await loadUserData(user.uid);
+    } else {
+        // Show not logged in screen
+        loggedInDiv.classList.add('hidden');
+        notLoggedInDiv.classList.remove('hidden');
+    }
+});
+
+        // Load User Data
+        async function loadUserData(uid) {
+            try {
+                const userRef = ref(db, `players/${uid}`);
+                const snapshot = await get(userRef);
+                
+                let username = 'مجهول';
+                let email = currentUser.email || 'لا يوجد بريد';
+                
+                // Load coin balance for display (if element exists)
+                const coinEl = document.getElementById('coinCount');
+                if (coinEl) {
+                    try {
+                        const coinSnap = await get(ref(db, `players/${uid}/coins`));
+                        coinEl.textContent = coinSnap.val() || 0;
+                    } catch (error) {
+                        console.log('Could not load coins:', error);
+                    }
+                }
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    username = data.username || currentUser.displayName || 'مجهول';
+                    
+                    document.getElementById('statSpyWins').innerText = data.stats?.spyWins || 0;
+                    document.getElementById('statInnocentWins').innerText = data.stats?.innocentWins || 0;
+                    document.getElementById('statTotalGames').innerText = data.stats?.totalGames || 0;
+                } else if (currentUser.displayName) {
+                    username = currentUser.displayName;
+                }
+                
+                document.getElementById('displayUsername').innerText = username;
+                document.getElementById('displayEmail').innerText = email;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                // Set fallback values
+                document.getElementById('displayUsername').innerText = currentUser.displayName || 'مجهول';
+                document.getElementById('displayEmail').innerText = currentUser.email || 'لا يوجد بريد';
+            }
+        }
+
+        // Google Re-authentication
+        document.getElementById('googleReauthBtn').addEventListener('click', async () => {
+            try {
+                const provider = new GoogleAuthProvider();
+                await reauthenticateWithPopup(currentUser, provider);
+                alert('تم التحقق بنجاح!');
+            } catch (error) {
+                console.error('Reauth error:', error);
+                alert('فشل التحقق: ' + error.message);
+            }
+        });
+
+        // Delete Account
+        document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+            const confirmed = confirm('هل أنت متأكد من حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه!');
+            
+            if (!confirmed) return;
+
+            const doubleConfirm = confirm('تحذير أخير! سيتم حذف جميع بياناتك بشكل نهائي. هل تريد الاستمرار؟');
+            
+            if (!doubleConfirm) return;
+
+            try {
+                // Delete user data from database
+                await remove(ref(db, `players/${currentUser.uid}`));
+
+                // Delete user account
+                await deleteUser(currentUser);
+
+                // Clear localStorage
+                localStorage.removeItem('eljasus_user_name');
+                localStorage.removeItem('eljasus_user_email');
+
+                alert('تم حذف الحساب بنجاح');
+                window.location.href = 'home.html';
+            } catch (error) {
+                console.error('Delete error:', error);
+                
+                if (error.code === 'auth/requires-recent-login') {
+                    alert('يجب إعادة تسجيل الدخول قبل حذف الحساب. الرجاء تسجيل الخروج ثم الدخول مرة أخرى.');
+                } else {
+                    alert('فشل حذف الحساب: ' + error.message);
+                }
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                localStorage.removeItem('eljasus_user_name');
+                localStorage.removeItem('eljasus_user_email');
+                window.location.href = 'home.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('فشل تسجيل الخروج: ' + error.message);
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="../Assets/mobile.css">
+    <script src="../Assets/sound-system.js" defer></script>
+    <script src="../Assets/qr-notifications.js" defer></script>
+    <script src="../Assets/dialogs.js"></script>
+<script>
+    window.alert   = (msg)             => UIAlert ? UIAlert(msg) : alert(msg);
+    window.confirm = (msg)             => UIConfirm ? UIConfirm(msg) : confirm(msg);
+    window.prompt  = (msg, defaultVal) => UIPrompt ? UIPrompt(msg, { defaultValue: defaultVal }) : prompt(msg, defaultVal);
+</script>
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/../Assets/sw.js').catch(()=>{}));}</script>
+    <script src="../Assets/moderation.js"></script>
+</body>
+</html>

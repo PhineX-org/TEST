@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الجاسوس | El Jasus</title>
+    <meta name="description" content="لعبة الجاسوس - العب مع أصدقائك واكتشف من هو الجاسوس بينكم في أجواء من التحدي والذكاء!">
+    <meta name="keywords" content="الجاسوس, لعبة الجاسوس, ألعاب جماعية, ألعاب حفلات, ألعاب أونلاين, ألعاب محلية, ترفيه, تسلية, تحدي, كلمات سرية, PhineX">
+    <meta name="author" content="PhineX">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://el-jasus.web.app/">
+    <meta property="og:title" content="الجاسوس | El Jasus">
+    <meta property="og:description" content="اكتشف من هو الجاسوس بينكم! لعبة جماعية ممتعة للأصدقاء والعائلة، متوفرة أونلاين ومحلياً.">
+    <meta property="og:site_name" content="El Jasus">
+    <meta property="og:locale" content="ar_EG">
+    <title>الجاسوس | El Jasus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-red: #ff003c;
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: #050505;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* أنميشن الخلفية المتحركة */
+        .spy-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)),
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="10" font-family="monospace" font-size="2" fill="rgba(0,242,255,0.1)">010101101001010</text></svg>');
+            background-size: 200px;
+            animation: backgroundScroll 20s linear infinite;
+        }
+
+        @keyframes backgroundScroll {
+            from { background-position: 0 0; }
+            to { background-position: 0 1000px; }
+        }
+
+        /* أنميشن الرادار */
+        .radar {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-cyan);
+            background: repeating-radial-gradient(circle, transparent 0, transparent 20px, rgba(0,242,255,0.05) 21px);
+            margin: 0 auto 20px;
+            overflow: hidden;
+        }
+
+        .radar::before {
+            content: "";
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100%; height: 100%;
+            background: conic-gradient(from 0deg, transparent 70%, var(--neon-cyan));
+            origin: top left;
+            transform-origin: 0 0;
+            animation: scan 4s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes scan {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spy-icon {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 50px;
+            filter: drop-shadow(0 0 10px var(--neon-cyan));
+        }
+
+        .glass-card { 
+            background: rgba(15, 15, 15, 0.8); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .glow-btn {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            transition: 0.3s;
+        }
+
+        .glow-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 40px var(--neon-cyan);
+        }
+
+        
+    </style>
+</head>
+<body>
+
+    <div class="spy-bg"></div>
+
+    <div class="max-w-2xl mx-auto p-6 relative z-10">
+        
+        <div class="text-center py-10 animate__animated animate__fadeIn">
+            <div class="radar">
+                <div class="spy-icon">🕵️‍♂️</div>
+            </div>
+            <h1 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-2">لعبة الجاسوس</h1>
+            <p class="text-cyan-500 font-mono tracking-widest text-sm italic">مين هو الجاسوس؟</p>
+        </div>
+
+        <div id="setup-screen" class="glass-card rounded-3xl p-8 shadow-2xl animate__animated animate__fadeInUp">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="space-y-4">
+                    <label class="block text-xs font-bold text-cyan-400 uppercase tracking-widest">اختر القسم</label>
+                    <select id="categorySelect" class="w-full bg-black/50 border border-cyan-900 rounded-xl p-3 outline-none text-white appearance-none cursor-pointer">
+                        <option value="places">🌍 أماكن مشهورة</option>
+                        <option value="food">🍕 أكلات مصرية</option>
+                        <option value="jobs">🛠️ مهن ووظائف</option>
+                    </select>
+
+                    <label class="block text-xs font-bold text-cyan-400 uppercase tracking-widest">عدد اللاعبين</label>
+                    <div class="flex items-center gap-4 bg-black/50 rounded-xl p-2 border border-cyan-900">
+                        <button onclick="changeCount(-1)" class="w-10 h-10 hover:bg-cyan-500 hover:text-black rounded-lg transition-all font-bold text-xl">-</button>
+                        <input type="number" id="playerCount" value="3" readonly class="bg-transparent text-center w-full font-black text-xl text-cyan-300">
+                        <button onclick="changeCount(1)" class="w-10 h-10 hover:bg-cyan-500 hover:text-black rounded-lg transition-all font-bold text-xl">+</button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-pink-500 uppercase tracking-widest">أسماء اللاعبين</label>
+                    <div id="playerNamesInputs" class="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                        </div>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="mt-8 w-full glow-btn py-4 rounded-xl font-black text-lg transition-all transform active:scale-95 uppercase">
+                ابدأ اللعب الآن ⚡
+            </button>
+        </div>
+
+        <div id="game-screen" class="hidden text-center animate__animated animate__zoomIn">
+            <div class="mb-8">
+                <p class="text-cyan-500 font-bold mb-2 tracking-widest">الدور على اللاعب:</p>
+                <h2 id="currentPlayerName" class="text-4xl font-black text-white">اسم اللاعب</h2>
+            </div>
+
+            <div id="roleCard" onclick="revealRole()" class="relative h-64 glass-card rounded-3xl border-2 border-dashed border-cyan-500 flex items-center justify-center cursor-pointer group hover:border-solid transition-all duration-300 overflow-hidden">
+                <div id="cardText" class="text-2xl font-bold group-hover:scale-110 transition-transform">انقر لكشف الكلمة 🔐</div>
+            </div>
+
+            <button id="nextBtn" onclick="nextPlayer()" class="hidden mt-6 w-full bg-cyan-600 hover:bg-cyan-500 text-black py-4 rounded-xl font-black shadow-lg animate__animated animate__pulse animate__infinite">
+                 .. اللاعب التالي
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const gameData = {
+        places: [
+            "المدرسة", "المستشفى", "حديقة الحيوان", "المطار", "النادي", "السينما", "المطعم", "البحر", "المزرعة", "السيرك",
+            "المكتبة", "المسجد", "المحل", "الصيدلية", "البنك", "المحكمة", "السجن", "الغابة", "الصحراء",
+            "الجبل", "القلعة", "القصر", "الفندق", "المتحف", "المسرح", "المخبز", "المقهى (القهوة)", "السوبر ماركت", "محطة القطار",
+            "محطة المترو", "الورشة", "الاستاد", "الجيم", "الحضانة", "الجامعة", "صالون الحلاقة", "المعمل", "المنزل", "المطبخ",
+            "غرفة النوم", "الحمام", "السطوح", "الشارع", "الكوبري", "الميناء", "السفارة", "المرصد", "المخيم", "الشلال",
+            "البحيرة", "الكهف", "المسبح (البيسين)", "المصنع", "المكتب", "الأتوبيس", "الطيارة", "المركب", "الفضاء", "القمر",
+            "المريخ", "السوق", "الملاهي", "حديقة عامة", "الشقة", "الفيلا", "الخيمة", "الجراج", "المصلحة الحكومية", "البريد",
+            "قسم الشرطة", "المطافئ", "الإسعاف", "العيادة", "المول", "محل الموبايلات", "السايبر", "استوديو تصوير", "قاعة أفراح", "عزاء",
+            "معرض سيارات", "محل ورد", "محل هدايا", "كشك", "بنزينة", "موقف ميكروباصات", "مغسلة سيارات", "محل حلويات", "فرن عيش", "محل سمك",
+            "محل جزارة", "محل بقالة", "صالة بولينج", "تنس طاولة", "ملعب كورة", "البورصة", "المدبح", "الجزيرة", "المنارة", "المقابر"
+        ],
+
+        football_teams: [
+            "الأهلي المصري", "الزمالك", "الإسماعيلي", "المصري البورسعيدي", "الاتحاد السكندري", "بيراميدز", "سموحة", 
+            "مودرن فيوتشر", "المقاولون العرب", "غزل المحلة", "الجونة", "البنك الأهلي", "سيراميكا كليوباترا", "إنبي", "طلائع الجيش", "حرس الحدود", "أسوان",
+            "الهلال السعودي", "النصر السعودي", "الاتحاد السعودي", "الأهلي السعودي", "الشباب السعودي", "العين الإماراتي", "شباب الأهلي", "الوداد المغربي", "الرجاء المغربي", 
+            "الجيش الملكي", "الترجي التونسي", "النجم الساحلي", "الإفريقي التونسي", 
+            "السد القطري", "الدحيل", "الكويت الكويتي", "القادسية الكويتي", "الوحدات الأردني", "الزوراء العراقي",
+            "ليفربول", "مانشستر سيتي", "مانشستر يونايتد", "أرسنال", "تشيلسي", "توتنهام", "أستون فيلا", "نيوكاسل يونايتد", "ليستر سيتي", "وست هام",
+            "ريال مدريد", "برشلونة", "أتلتيكو مدريد", "إشبيلية", "فالنسيا", "ريال سوسيداد", "فياريال", "بيلباو",
+            "يوفنتوس", "إيه سي ميلان", "إنتر ميلان", "نابولي", "روما", "لاتسيو", "فيورنتينا", "بايرن ميونخ", "بوروسيا دورتموند", "باير ليفركوزن", "لايبزيج", "باريس سان جيرمان", "مارسيليا", "ليون", "موناكو", "أياكس أمستردام", "بنفيكا", "بورتو",
+            "منتخب مصر", "منتخب السعودية", "منتخب المغرب", "منتخب الجزائر", "منتخب تونس", "منتخب قطر", "منتخب البرازيل", "منتخب الأرجنتين", "منتخب فرنسا",
+            "منتخب ألمانيا", "منتخب إسبانيا", "منتخب إيطاليا", "منتخب إنجلترا", "منتخب البرتغال", "منتخب بلجيكا", "منتخب كرواتيا", "منتخب هولندا", "منتخب الأوروغواي", 
+            "منتخب اليابان", "منتخب كوريا الجنوبية", "منتخب السنغال", "منتخب نيجيريا", "منتخب الكاميرون"
+        ],
+
+        food: [
+            "كشري", "ملوخية", "فول", "طعمية (فلافل)", "فتة باللحمة", "حواوشي", "محشي كرنب", "محشي ورق عنب", "ممبار", "كوارع",
+            "فتة كوارع", "كفتة مشوية", "طرب", "كباب", "كبدة إسكندراني", "سجق شرقي", "مكرونة بشاميل", "رقاق باللحمة", "جلاش", "أرز بلبن",
+            "أم علي", "بسبوسة", "كنافة", "لقيمات (قاضي)", "فطير مشلتت", "مش وجبنة قديمة", "عسل أسود وطحينة", "كشك", "بصارة", "عدس",
+            "شوربة لسان عصفور", "أرز معمر", "مسقعة", "تورلي خضار", "بامية باللحمة", "قلقاس", "سبانخ", "أرز بالشعرية", "فراخ محمرة", "حمام محشي",
+            "بط", "أرانب", "سمك بلطي", "سمك بوري", "جمبري", "سبيط", "فسيخ", "رنجة", "ملوحة", "بطاطس محمرة","بابا غنوج", "سلطة خضراء", "مخلل (طرشي)",
+            "باذنجان مخلل", "بيض بالبسطرمة", "شكشوكة", "عجة", "مخ بانيه", "كبدة وقوانص", "كفتة",
+            "كفتة أرز", "أرز صيادية", "كيكة برتقال", "رز بلبن", "مهلبية", "قمر الدين", "عاشورا", "زلابيا", "بلح الشام", "صوابع زينب",
+            "كحك العيد", "بسكويت نشادر", "غريبة", "بيتيفور", "منين (قراقيش)", "قرص بعجوة", "عيش بلدي", "عيش فينو", "شاورما مصري", "فراخ بانيه",
+            "صينية بطاطس", "مكرونة بالصلصة", "ساندوتش جبنة", "شاي بلبن", "سحلب", "عصير قصب", "عرقسوس", "تمرهندي", "خروب", "سوبيا",
+            "مدمس", "بيض مسلوق", "جبنة بيضا", "لانشون", "بسطرمة", "مخروطة", "كوسة بالبشاميل", "أرز بالخلطة", "كبدة جملي", "فريك"
+        ],
+
+        jobs: [
+            "دكتور", "مهندس", "مدرس", "ضابط", "محامي", "محاسب", "ممرض", "صيدلي", "طيار", "سواق",
+            "نجار", "سباك", "كهربائي", "نقاش", "بنا", "ميكانيكي", "حلاق", "خياط", "طباخ", "جزار",
+            "بائع", "صحفي", "مذيع", "ممثل", "مغني", "رسام", "مصور", "لاعب كورة", "مدرب", "حكم",
+            "عامل نظافة", "بواب", "عامل دليفري", "نجار مسلح", "حداد", "فلاح", "صياد", "قاضي", "رجل إطفاء", "عسكري",
+            "مأذون", "إمام مسجد", "قسيس", "مألف", "شاعر", "مخرج", "مونتير", "مصمم جرافيك", "مبرمج", "هكر",
+            "عالم", "رائد فضاء", "غطاس", "طيار حربي", "مضيفة طيران", "مترجم", "سكرتير", "مدير", "وزير", "رئيس",
+            "خبير تجميل", "موديل", "يوتيوبر", "تيكتوكر", "بلوجر", "عامل بنزينة", "صراف", "جرسون", "شيف", "حلواني",
+            "خفير", "بودي جارد", "محقق", "جاسوس", "رجل أعمال", "بائع خضار", "بائع فاكهة", "بائع لبن", "مكوجي", "منجد",
+            "عامل بناء", "فني تكييف", "فني راديو", "ساحر", "مهرج", "راقص", "مدرب جيم", "سباح محترف", "عامل منجم", "عامل شحن",
+            "ساعي بريد", "موظف استقبال", "طبيب بيطري", "طبيب أسنان", "طبيب عيون", "محلل كورة", "سمسار", "تاجر", "مقاول", "طيار درون"
+        ],
+
+        companies: [
+            "Apple", "Google", "Microsoft", "Amazon", "Facebook", "Instagram", "WhatsApp", "YouTube", "TikTok", "Netflix",
+            "Samsung", "Huawei", "Xiaomi", "Oppo", "Sony", "LG", "Dell", "HP", "Intel", "Canon","Nvidia",
+            "Coca-Cola", "Pepsi", "Nestle", "Unilever","Johnson & Johnson", "L'Oréal",
+            "Ford", "Chevrolet", "Honda", "Nissan", "Volkswagen",
+            "Tesla", "Toyota", "Mercedes", "BMW", "Audi", "Ferrari", "Lamborghini", "Ford", "Chevrolet", "Jeep",
+            "Nike", "Adidas", "Puma", "Zara", "H&M", "Gucci", "Prada", "Rolex", "Lacoste", "Chanel",
+            "McDonald's", "KFC", "Burger King", "Pizza Hut", "Subway", "Starbucks", "Pepsi", "Coca-Cola", "Red Bull", "KitKat",
+            "Disney", "Marvel", "DC Comics", "Warner Bros", "Paramount", "Pixar", "Universal", "Spotify", "Snapchat", "Telegram",
+            "Visa", "Mastercard", "PayPal", "Binance", "Amazon", "eBay", "Alibaba", "AliExpress", "Shein", "Noon",
+            "Uber", "Careem", "Qatar airlines", "Booking", "FedEx", "DHL", "Aramex", "IKEA", "Walmart", "Carrefour","EA Sports",
+            "Nestle", "Dove", "Nivea", "Colgate", "Gillette", "Rolex", "Casio", "Samsung", "Sony",
+            "Lego", "Barbie", "Hot Wheels", "PlayStation", "Xbox", "Nintendo", "Zoom", "Skype", "Slack", "LinkedIn"
+        ]
+    };
+        let players = [];
+        let currentIndex = 0;
+        let secretWord = "";
+        let impostorIndex = -1;
+
+        function changeCount(val) {
+            const input = document.getElementById('playerCount');
+            let newVal = parseInt(input.value) + val;
+            if (newVal >= 3 && newVal <= 15) {
+                input.value = newVal;
+                generateInputs();
+            }
+        }
+
+        function generateInputs() {
+            const count = document.getElementById('playerCount').value;
+            const container = document.getElementById('playerNamesInputs');
+            container.innerHTML = "";
+            for (let i = 1; i <= count; i++) {
+                container.innerHTML += `<input type="text" class="p-name w-full bg-black/40 border border-cyan-900 rounded-lg p-2 text-sm focus:border-cyan-400 outline-none mb-1 text-white" value="لاعب ${i}">`;
+            }
+        }
+
+        function startGame() {
+            const nameInputs = document.querySelectorAll('.p-name');
+            players = Array.from(nameInputs).map(input => input.value || "لاعب مجهول");
+            const cat = document.getElementById('categorySelect').value;
+            const words = categories[cat];
+            secretWord = words[Math.floor(Math.random() * words.length)];
+            impostorIndex = Math.floor(Math.random() * players.length);
+            
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('currentPlayerName').innerText = players[currentIndex];
+            const card = document.getElementById('roleCard');
+            card.className = "relative h-64 glass-card rounded-3xl border-2 border-dashed border-cyan-500 flex items-center justify-center cursor-pointer";
+            document.getElementById('cardText').innerText = "انقر لكشف الكلمة 🔐";
+            document.getElementById('nextBtn').classList.add('hidden');
+        }
+
+        function revealRole() {
+            const card = document.getElementById('roleCard');
+            const text = document.getElementById('cardText');
+            if (currentIndex === impostorIndex) {
+                card.classList.add('border-red-500', 'bg-red-900/20');
+                text.innerHTML = "<span class='text-red-500 text-3xl font-black'>⚠️ أنت الجاسوس!</span>";
+            } else {
+                card.classList.add('border-green-500', 'bg-green-900/20');
+                text.innerHTML = "<span class='text-green-400 text-xl font-bold'>الكلمة هي:</span><br><span class='text-4xl font-black mt-2 inline-block'>" + secretWord + "</span>";
+            }
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
+
+        function nextPlayer() {
+            currentIndex++;
+            if (currentIndex < players.length) {
+                updateUI();
+            } else {
+                alert("تم توزيع الأدوار! ابدأوا الكلام وحاولوا تطلعوا الجاسوس.");
+                location.reload();
+            }
+        }
+
+        generateInputs();
+    </script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<footer class="mt-20 border-t border-cyan-900/50 bg-black/40 backdrop-blur-md pt-12 pb-6">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+            
+            <div class="space-y-4 text-center md:text-right">
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                    <i class="fas fa-dragon text-3xl text-cyan-400 drop-shadow-[0_0_8px_#00f2ff]"></i>
+                    <span class="text-2xl font-black tracking-tighter text-white uppercase italic">PhineX</span>
+                </div>
+                <p class="text-gray-400 font-bold text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
+                    نخبة من المبرمجين المحترفين لصناعة تجارب رقمية استثنائية.
+                </p>
+            </div>
+
+            <div class="space-y-6 text-center md:text-left">
+                <h4 class="text-[10px] font-black text-cyan-500 uppercase tracking-[0.3em]">تواصل معنا</h4>
+                <div class="flex flex-wrap justify-center md:justify-end gap-4">
+                    <a href="https://discord.gg/V2NDkCmhEm" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#5865F2] hover:border-[#5865F2] hover:shadow-[0_0_15px_#5865F2] transition-all duration-300">
+                        <i class="fab fa-discord text-xl"></i>
+                    </a>
+                    <a href="https://phinex-org.github.io" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-300">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCslNCf9VtxpFH_gtA1VHFyQ" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#FF0000] hover:border-[#FF0000] hover:shadow-[0_0_15px_#FF0000] transition-all duration-300">
+                        <i class="fab fa-youtube text-xl"></i>
+                    </a>
+                    <a href="https://chat.whatsapp.com/IuC3Gu6x5p61MORTnAuHJA" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#25D366] hover:border-[#25D366] hover:shadow-[0_0_15px_#25D366] transition-all duration-300">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61584765330775" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#1877F2] hover:border-[#1877F2] hover:shadow-[0_0_15px_#1877F2] transition-all duration-300">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+            <p>&copy; 2026 <span class="text-cyan-500">PhineX</span>. All rights reserved.</p>
+            
+            <a href="https://www.facebook.com/ahmd.aljwhry.495523" class="group flex items-center gap-2 hover:text-white transition-colors">
+                <span>Made with</span>
+                <i class="fas fa-heart text-red-600 animate-pulse"></i>
+                <span>By :</span>
+                <div class="flex items-center gap-1 text-cyan-500 group-hover:text-cyan-400">
+                    <i class="fas fa-laptop-code"></i>
+                    <span class="underline decoration-cyan-900 underline-offset-4">@Ahmed Al Gohary</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

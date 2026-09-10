@@ -1,0 +1,2917 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>الغرفة | El Jasus</title>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="../Assets/dialogs.js"></script>
+    <script src="../Assets/name-themes.js"></script>
+   <script src="../Assets/friend-invite-enhanced.js" defer></script>
+   <script src="../Assets/profile-viewer.js" defer></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0a0e1a;
+            --card-bg: rgba(15, 20, 35, 0.95);
+            --primary: #00f2ff;
+            --secondary: #7c30ff;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #fbbf24;
+            --text: #ffffff;
+            --text-muted: rgba(255,255,255,0.6);
+            --border: rgba(0,242,255,0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0,242,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        /* Glass morphism */
+        .glass {
+            background: linear-gradient(135deg, rgba(15,20,35,0.9), rgba(25,30,50,0.8));
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,242,255,0.05); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        .custom-scrollbar { scrollbar-width: thin; scrollbar-color: var(--primary) rgba(0,242,255,0.05); }
+
+        /* Neon text */
+        .neon-text {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(0,242,255,0.8), 0 0 20px rgba(0,242,255,0.6);
+            color: var(--primary);
+        }
+
+        /* Gradient button */
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 900;
+            border: 2px solid rgba(0,242,255,0.5);
+            box-shadow: 0 0 20px rgba(0,242,255,0.4);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0,242,255,0.6);
+        }
+        .btn-gradient:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Player status tags */
+        .status-tag {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .status-disconnected {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #ef4444;
+        }
+        .status-idle {
+            background: rgba(251,191,36,0.15);
+            border: 1px solid rgba(251,191,36,0.3);
+            color: #fbbf24;
+        }
+        .status-online {
+            background: rgba(34,197,94,0.15);
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #22c55e;
+        }
+
+        /* Suspect counter */
+        .suspect-counter {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 11px;
+            font-weight: 900;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #0a0e1a;
+            box-shadow: 0 0 15px rgba(239,68,68,0.6);
+        }
+
+        /* Suspect badges - NEW for multiple suspects */
+        .suspect-badge {
+            display: inline-block;
+            background: rgba(239,68,68,0.2);
+            border: 1px solid rgba(239,68,68,0.4);
+            color: #ef4444;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin: 2px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        /* Reveal card - disable pointer events when not your turn */
+        .reveal-card.not-your-turn {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Responsive utilities */
+        @media (max-width: 640px) {
+            .game-container {
+                padding: 12px !important;
+            }
+            .player-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════
+           PANEL DOCK — chat / voice / friends / reports
+           Phones & tablets (<1180px, mobile-first default below):
+           the four buttons collapse into ONE bottom toolbar so
+           nothing floats over the game card and nothing sits
+           off-screen. Wide desktop (≥1180px, see media query
+           further down): they split back into two floating side
+           columns, now with guaranteed clearance from the card. */
+        #panelDock {
+            display: flex;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 400;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 10px max(10px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+            background: linear-gradient(180deg, transparent, rgba(10,14,26,0.9) 45%, rgba(10,14,26,0.98));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0,242,255,0.12);
+        }
+
+        .dock-group-left,
+        .dock-group-right {
+            display: contents; /* dissolved on mobile — all 4 buttons share one row */
+        }
+
+        /* Reserve room below the game card so it never sits under the toolbar
+           (also applied to the brief loading screen, shown before gameContainer) */
+        #gameContainer,
+        #loadingScreen {
+            padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+        }
+
+        @media (min-width: 1180px) {
+            /* Plenty of width here — go back to two floating side columns */
+            #panelDock {
+                display: contents;
+            }
+            .dock-group-left,
+            .dock-group-right {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                position: fixed;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 100;
+            }
+            .dock-group-left { left: 24px; }
+            .dock-group-right { right: 24px; }
+
+            /* Guarantee the centered card never reaches under the columns */
+            #gameContainer,
+            #loadingScreen {
+                padding-left: 116px !important;
+                padding-right: 116px !important;
+                padding-bottom: 16px !important;
+            }
+        }
+
+        /* Panel buttons */
+        .panel-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(12px);
+            border: 2px solid;
+            position: relative;
+        }
+
+        .panel-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .panel-btn.active::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid #0a0e1a;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Voting card */
+        .vote-card {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .vote-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,242,255,0.3);
+        }
+
+        .vote-card.voted {
+            border-color: var(--success);
+            box-shadow: 0 0 20px rgba(34,197,94,0.4);
+        }
+
+        .vote-card.most-voted {
+            border-color: var(--danger);
+            box-shadow: 0 0 20px rgba(239,68,68,0.5);
+        }
+
+        /* Spinner */
+        .spinner-wheel {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c30ff, #ef4444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 6px solid var(--warning);
+            box-shadow: 0 0 50px rgba(251,191,36,0.5);
+        }
+
+        .spinner-wheel.spinning {
+            animation: spin 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        /* Reveal card */
+        .reveal-card {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .reveal-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .reveal-card.flipped .reveal-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .reveal-card-front,
+        .reveal-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            padding: 40px;
+        }
+
+        .reveal-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Friends list */
+        .friend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .friend-item:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--primary);
+        }
+
+        .friend-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .friend-status-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #0a0e1a;
+        }
+
+        .friend-status-dot.online {
+            background: var(--success);
+        }
+
+        .friend-status-dot.offline {
+            background: #666;
+        }
+
+        /* IMPROVED REPORT PANEL STYLES */
+        .report-panel-header {
+            background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.1));
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            border-bottom: 2px solid rgba(239,68,68,0.3);
+            margin: -24px -24px 20px -24px;
+        }
+
+        .report-form-section {
+            margin-bottom: 20px;
+        }
+
+        .report-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 8px;
+        }
+
+        .report-select,
+        .report-textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 2px solid rgba(239,68,68,0.25);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .report-select:focus,
+        .report-textarea:focus {
+            border-color: rgba(239,68,68,0.5);
+            background: rgba(0,0,0,0.6);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+        }
+
+        .report-select option {
+            background: #1a1535;
+            padding: 8px;
+        }
+
+        .report-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .report-reason-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .report-reason-option {
+            padding: 12px;
+            background: rgba(239,68,68,0.08);
+            border: 2px solid rgba(239,68,68,0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .report-reason-option:hover {
+            background: rgba(239,68,68,0.15);
+            border-color: rgba(239,68,68,0.4);
+            transform: translateY(-2px);
+        }
+
+        .report-reason-option.selected {
+            background: rgba(239,68,68,0.25);
+            border-color: rgba(239,68,68,0.6);
+            box-shadow: 0 0 15px rgba(239,68,68,0.3);
+        }
+
+        .report-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 20px rgba(239,68,68,0.4);
+        }
+
+        .report-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(239,68,68,0.6);
+        }
+
+        .report-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .report-info-box {
+            background: rgba(251,191,36,0.1);
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .report-info-box i {
+            color: #fbbf24;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="glass rounded-3xl p-8 text-center max-w-md">
+            <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-xl font-bold neon-text mb-2">جاري التحميل...</p>
+            <p class="text-sm opacity-60 mb-4">الاتصال بالغرفة</p>
+            <p id="loadingRoomCode" class="text-xs opacity-40 mb-6">---</p>
+            <button onclick="window.location.href='home.html'" 
+                class="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 border-2 border-white/20 transition-all text-sm">
+                <i class="fas fa-arrow-right ml-2"></i>العودة للقائمة الرئيسية
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Game Container -->
+    <div id="gameContainer" class="hidden min-h-screen flex items-center justify-center p-4 relative z-10">
+        
+        <!-- WAITING STATUS -->
+        <div id="waitingScreen" class="hidden w-full max-w-4xl">
+            <div class="glass rounded-3xl p-6 fade-in-up">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h2 id="roomCodeDisplay" class="text-4xl font-black neon-text cursor-pointer truncate" 
+                                onclick="copyRoomCode()" title="اضغط للنسخ">
+                                ----
+                            </h2>
+                            <button onclick="copyRoomCode()" class="p-2 rounded-lg hover:bg-white/10 transition-colors shrink-0">
+                                <i class="fas fa-copy text-primary"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs opacity-50 uppercase font-bold tracking-widest">كود الغرفة</p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 sm:flex sm:gap-2 sm:shrink-0">
+                        <button onclick="shareRoom()" class="px-2 sm:px-4 py-2 rounded-xl glass border-primary text-primary hover:bg-primary/10 transition-all text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-share-alt sm:ml-2"></i><span class="hidden sm:inline">مشاركة</span>
+                        </button>
+                        <button onclick="showQRCode()" class="px-2 sm:px-4 py-2 rounded-xl glass border-primary text-primary hover:bg-primary/10 transition-all text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-qrcode sm:ml-2"></i><span class="hidden sm:inline">QR</span>
+                        </button>
+                        <button onclick="leaveRoom()" class="px-2 sm:px-4 py-2 rounded-xl bg-danger/20 border-2 border-danger/30 text-danger hover:bg-danger/30 transition-all text-xs sm:text-sm whitespace-nowrap">
+                            <i class="fas fa-right-from-bracket sm:hidden"></i><span class="hidden sm:inline">مغادرة</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Host Controls -->
+                <div id="hostControls" class="hidden mb-6 glass rounded-2xl p-4 border border-white/5">
+                    <label class="text-xs font-bold opacity-40 uppercase tracking-wider block mb-3">إعدادات المضيف</label>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Category selector -->
+                        <div>
+                            <label class="text-xs opacity-60 block mb-2">الفئة</label>
+                            <select id="categorySelect" onchange="updateRoomSettings()" 
+                                class="w-full bg-black/60 p-3 rounded-xl border-2 border-primary/20 outline-none focus:border-primary font-bold text-sm">
+                                <option value="places">🌍 أماكن سياحية</option>
+                                <option value="food">🍕 أكلات مصرية</option>
+                                <option value="jobs">🛠️ مهن ووظائف</option>
+                                <option value="companies">🏢 شركات عالمية</option>
+                                <option value="football_teams">⚽ أندية كرة قدم</option>
+                            </select>
+                        </div>
+
+                        <!-- Room visibility -->
+                        <div>
+                            <label class="text-xs opacity-60 block mb-2">نوع الغرفة</label>
+                            <button id="visibilityBtn" onclick="toggleRoomVisibility()"
+                                class="w-full px-4 py-3 rounded-xl border-2 transition-all font-bold text-sm">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Players List -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-sm font-bold opacity-60 uppercase tracking-widest">اللاعبون</label>
+                        <span id="playerCount" class="text-sm font-black neon-text">0/10</span>
+                    </div>
+                    <div id="playersList" class="grid player-grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto custom-scrollbar pr-2">
+                        <!-- Players will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Start Button (Host Only) -->
+                <button id="startBtn" class="hidden w-full btn-gradient py-4 rounded-2xl font-black text-lg uppercase tracking-wider">
+                    <i class="fas fa-rocket ml-2"></i>ابدأ اللعب
+                </button>
+                
+                <!-- Waiting Message (Guest) -->
+                <div id="waitingMsg" class="hidden text-center py-4 opacity-60 animate-pulse">
+                    <i class="fas fa-clock ml-2"></i>في انتظار المضيف...
+                </div>
+                
+                <!-- Minimum Players Warning -->
+                <p id="minPlayersMsg" class="hidden text-center text-sm text-warning mt-3">
+                    <i class="fas fa-exclamation-triangle ml-2"></i>يجب توفر 3 لاعبين على الأقل
+                </p>
+            </div>
+        </div>
+
+        <!-- REVEAL ROLES STATUS -->
+        <div id="revealScreen" class="hidden w-full max-w-md">
+            <div class="text-center mb-6">
+                <p class="text-xs font-black uppercase tracking-widest mb-2 opacity-50">دور اللاعب</p>
+                <h3 id="currentPlayerName" class="text-3xl font-black neon-text mb-2">---</h3>
+                <p id="turnIndicator" class="text-sm opacity-60"></p>
+            </div>
+
+            <div id="revealCard" class="reveal-card h-96 glass rounded-3xl border-2 border-dashed border-primary/50" 
+                 onclick="flipRevealCard()">
+                <div class="reveal-card-inner h-full">
+                    <!-- Front (hidden) -->
+                    <div class="reveal-card-front glass">
+                        <i class="fas fa-fingerprint text-7xl mb-4 opacity-20"></i>
+                        <p class="font-bold opacity-50 text-lg">انقر للكشف 🔒</p>
+                    </div>
+                    <!-- Back (role revealed) -->
+                    <div id="revealCardBack" class="reveal-card-back">
+                        <!-- Content filled by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <button id="nextRevealBtn" class="hidden mt-6 w-full btn-gradient py-4 rounded-2xl font-black uppercase tracking-wider"
+                    onclick="nextReveal()">
+                <i class="fas fa-arrow-left ml-2"></i>التالي
+            </button>
+        </div>
+
+        <!-- DISCUSSION STATUS -->
+        <div id="discussionScreen" class="hidden w-full max-w-4xl">
+            <div class="glass rounded-3xl p-6 fade-in-up">
+                <h2 class="text-2xl font-black mb-6 text-center neon-text">
+                    <i class="fas fa-comments ml-2"></i>نقاش الجولة
+                </h2>
+
+                <!-- Timer -->
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center gap-2 px-6 py-3 rounded-full glass border border-primary/30">
+                        <i class="fas fa-clock text-warning"></i>
+                        <span id="discussionTimer" class="font-black text-2xl neon-text">--:--</span>
+                    </div>
+                </div>
+
+                <!-- Suspects List with improved multi-suspect UI -->
+                <div id="suspectsList" class="grid player-grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                    <!-- Player cards with suspect buttons -->
+                </div>
+
+                <!-- Spy Hint Section (only visible to spy) -->
+                <div id="spyHintSection" class="hidden mb-6 rounded-2xl p-4 border-2" 
+                     style="background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(220,38,38,.06));border-color:rgba(239,68,68,.35);">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span style="font-size:22px;">🕵️</span>
+                            <div>
+                                <p class="text-xs font-black" style="color:#f87171;">تلميح للجاسوس فقط</p>
+                                <p class="text-xs text-gray-400">
+                                    تلميحات متبقية: <span id="hintBalance" class="font-black" style="color:#f87171;">3</span> / 3
+                                </p>
+                            </div>
+                        </div>
+                        <button id="useHintBtn" onclick="useHint()"
+                            class="px-4 py-2 rounded-xl font-black text-xs transition-all"
+                            style="background:linear-gradient(135deg,rgba(239,68,68,.35),rgba(220,38,38,.2));border:2px solid rgba(239,68,68,.6);color:#fca5a5;">
+                            اكشف تلميحاً 🔍
+                        </button>
+                    </div>
+                    <div id="hintDisplay" class="hidden rounded-xl p-3" 
+                         style="background:rgba(0,0,0,.3);border:1px solid rgba(239,68,68,.2);">
+                        <p class="text-xs font-bold mb-2" style="color:#9ca3af;">تلميحات مكشوفة:</p>
+                        <div id="hintList" class="flex flex-col gap-1"></div>
+                    </div>
+                </div>
+
+                <!-- Move to Voting Button -->
+                <button id="moveToVotingBtn" onclick="readyForVoting()"
+                    class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-4 rounded-2xl font-black text-sm shadow-xl hover:scale-102 transition-all uppercase tracking-wider border-2 border-purple-400/50">
+                    <i class="fas fa-check ml-2"></i>جاهز للتصويت
+                </button>
+                <p id="votingReadyInfo" class="text-xs opacity-60 mt-2 text-center">
+                    <span id="readyCount">0</span> / <span id="totalPlayers">0</span> جاهزون للتصويت
+                </p>
+            </div>
+        </div>
+
+        <!-- VOTING STATUS -->
+        <div id="votingScreen" class="hidden w-full max-w-4xl">
+            <div class="glass rounded-3xl p-6 fade-in-up">
+                <h2 class="text-2xl font-black mb-4 text-center neon-text">
+                    <i class="fas fa-vote-yea ml-2"></i>التصويت
+                </h2>
+                <p class="text-sm opacity-70 mb-6 text-center">اختر اللاعب الذي تشك أنه الجاسوس</p>
+
+                <div id="voteCards" class="grid player-grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                    <!-- Voting cards -->
+                </div>
+
+                <div id="votingStatus" class="text-center">
+                    <p class="text-sm opacity-60">
+                        <span id="votedCount">0</span> / <span id="totalVoters">0</span> صوّتوا
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIE/DRAW SCREEN -->
+        <div id="tieScreen" class="hidden w-full text-center px-2">
+            <h1 class="text-5xl sm:text-7xl md:text-8xl font-black text-warning animate__animated animate__bounceIn neon-text text-center break-words">
+                تعادل! 🤝
+            </h1>
+        </div>
+
+        <!-- SPINNER SCREEN -->
+        <div id="spinnerScreen" class="hidden w-full max-w-md">
+            <div class="glass rounded-3xl p-6 text-center fade-in-up">
+                <h2 class="text-2xl font-black mb-4 neon-text">اختيار عشوائي 🎯</h2>
+                <p class="text-sm opacity-70 mb-6">حدث تعادل، سيتم اختيار لاعب عشوائي</p>
+                
+                <div class="flex justify-center mb-6">
+                    <div id="spinnerWheel" class="spinner-wheel">
+                        <div id="spinnerContent" class="text-3xl font-black text-white"></div>
+                    </div>
+                </div>
+
+                <button id="spinBtn" onclick="startSpinner()"
+                    class="w-full bg-gradient-to-r from-warning to-orange-500 py-4 rounded-2xl font-black text-lg shadow-xl hover:scale-105 transition-all border-2 border-warning/50">
+                    <i class="fas fa-dice ml-2"></i>ابدأ السحب
+                </button>
+            </div>
+        </div>
+
+        <!-- SPY GUESS SCREEN -->
+        <div id="spyGuessScreen" class="hidden w-full max-w-4xl">
+            <div class="glass rounded-3xl p-6 border-2 border-danger/30 text-center fade-in-up">
+                <h2 class="text-2xl font-black mb-2 text-danger neon-text">
+                    🕵️ الجاسوس المكشوف
+                </h2>
+                <p id="spyNameDisplay" class="text-xl mb-4"></p>
+                <p class="text-sm opacity-70 mb-6">اختر الكلمة الصحيحة من القائمة</p>
+
+                <div id="wordChoices" class="grid player-grid grid-cols-2 md:grid-cols-3 gap-3 mb-6 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                    <!-- Word choices -->
+                </div>
+
+                <p id="guessResult" class="text-lg font-black mt-4"></p>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="resultScreen" class="hidden w-full max-w-lg">
+            <div class="glass rounded-3xl p-8 text-center fade-in-up">
+                <div id="resultIcon" class="text-8xl mb-4"></div>
+                <h2 id="resultTitle" class="text-3xl font-black mb-2 neon-text"></h2>
+                <p id="resultMessage" class="text-lg mb-6"></p>
+
+                <!-- Player summary -->
+                <div id="resultPlayerList" class="grid grid-cols-2 gap-2 mb-6 max-h-48 overflow-y-auto custom-scrollbar pr-2">
+                    <!-- Player results -->
+                </div>
+
+                <!-- Screenshot button -->
+                <button onclick="takeScreenshot()" 
+                    class="w-full mb-3 bg-gradient-to-r from-purple-600 to-blue-600 py-3 rounded-2xl font-black uppercase tracking-wider border-2 border-purple-400/50">
+                    <i class="fas fa-camera ml-2"></i>التقط صورة
+                </button>
+
+                <button id="returnToRoomBtn" onclick="returnToWaiting()"
+                    class="w-full btn-gradient py-4 rounded-2xl font-black uppercase tracking-wider">
+                    <i class="fas fa-home ml-2"></i>العودة للغرفة
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Side Panel Buttons - LEFT (Chat & Voice) -->
+    <div id="panelDock">
+        <div class="dock-group-left">
+            <button id="chatBtn" class="panel-btn" 
+                    style="background:rgba(6,182,212,0.18);border-color:rgba(6,182,212,0.5);color:#06b6d4;"
+                    onclick="toggleChatPanel()" title="الدردشة الكتابية">
+                💬
+            </button>
+            <button id="voiceBtn" class="panel-btn"
+                    style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.3);color:#22c55e;"
+                    onclick="toggleVoicePanel()" title="الدردشة الصوتية">
+                🎙️
+            </button>
+        </div>
+
+        <!-- Side Panel Buttons - RIGHT (Friends & Reports) -->
+        <div class="dock-group-right">
+            <button id="friendsBtn" class="panel-btn"
+                    style="background:rgba(124,48,255,0.12);border-color:rgba(124,48,255,0.35);color:#a78bfa;"
+                    onclick="toggleFriendsPanel()" title="الأصدقاء">
+                👥
+            </button>
+            <button id="reportsBtn" class="panel-btn"
+                    style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#ef4444;"
+                    onclick="toggleReportsPanel()" title="الإبلاغ">
+                🚩
+            </button>
+        </div>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div id="chatPanel" class="hidden modal-overlay" style="z-index:2000;">
+        <div class="modal-content glass rounded-3xl p-6 border-2 border-primary/30">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-black neon-text">💬 الدردشة</h3>
+                <button onclick="toggleChatPanel()" class="p-2 rounded-lg hover:bg-white/10">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div id="chatMessages" class="h-96 overflow-y-auto custom-scrollbar mb-4 p-4 rounded-xl bg-black/20">
+                <!-- Messages -->
+            </div>
+
+            <div class="flex gap-2">
+                <input id="chatInput" type="text" placeholder="اكتب رسالة..." maxlength="200"
+                    class="flex-1 bg-black/40 border-2 border-primary/20 focus:border-primary rounded-xl px-4 py-3 outline-none"
+                    onkeypress="if(event.key==='Enter')sendChatMessage()">
+                <button onclick="sendChatMessage()" class="btn-gradient px-6 py-3 rounded-xl">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VOICE PANEL -->
+    
+    <!-- FRIENDS PANEL -->
+    <div id="friendsPanel" class="hidden modal-overlay" style="z-index:2000;">
+        <div class="modal-content glass rounded-3xl p-6 border-2 border-secondary/30">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-black neon-text">👥 الأصدقاء</h3>
+                <button onclick="toggleFriendsPanel()" class="p-2 rounded-lg hover:bg-white/10">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex gap-2 mb-4 p-1 rounded-xl bg-black/30">
+                <button id="friendsListTab" onclick="switchFriendsTab('list')" 
+                    class="flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all">
+                    قائمة الأصدقاء
+                </button>
+                <button id="addFriendTab" onclick="switchFriendsTab('add')"
+                    class="flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all">
+                    إضافة صديق
+                </button>
+            </div>
+
+            <!-- Friends List View -->
+            <div id="friendsListView" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                <!-- Friends will be listed here -->
+            </div>
+
+            <!-- Add Friend View -->
+            <div id="addFriendView" class="hidden">
+                <p class="text-sm opacity-60 mb-4">أضف لاعبين من نفس الغرفة كأصدقاء</p>
+                <div id="roomPlayersList" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                    <!-- Room players -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMPROVED REPORTS PANEL -->
+    <div id="reportsPanel" class="hidden modal-overlay" style="z-index:2000;">
+        <div class="modal-content glass rounded-3xl p-6 border-2 border-danger/30" style="padding-top: 24px;">
+            <!-- Enhanced Header -->
+            <div class="report-panel-header">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h3 class="text-2xl font-black mb-1" style="color:#f87171;">🚩 الإبلاغ عن لاعب</h3>
+                        <p class="text-xs opacity-70">ساعدنا في الحفاظ على مجتمع آمن وممتع للجميع</p>
+                    </div>
+                    <button onclick="toggleReportsPanel()" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <i class="fas fa-times text-xl" style="color:#f87171;"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="report-info-box">
+                <i class="fas fa-info-circle"></i>
+                البلاغات الكاذبة قد تؤدي إلى حظر حسابك. يُرجى الإبلاغ فقط عن المخالفات الحقيقية.
+            </div>
+
+            <!-- Player Selection -->
+            <div class="report-form-section">
+                <label class="report-label">
+                    <i class="fas fa-user ml-1"></i> اللاعب المخالف
+                </label>
+                <select id="reportPlayerSelect" class="report-select">
+                    <option value="">-- اختر لاعباً --</option>
+                </select>
+            </div>
+
+            <!-- Reason Selection (Grid Layout) -->
+            <div class="report-form-section">
+                <label class="report-label">
+                    <i class="fas fa-exclamation-circle ml-1"></i> سبب البلاغ
+                </label>
+                <div class="report-reason-grid">
+                    <div class="report-reason-option" onclick="selectReportReason('cheating', this)">
+                        <div style="font-size:20px;margin-bottom:4px;">🎰</div>
+                        <div>غش في اللعبة</div>
+                    </div>
+                    <div class="report-reason-option" onclick="selectReportReason('harassment', this)">
+                        <div style="font-size:20px;margin-bottom:4px;">⚠️</div>
+                        <div>تحرش أو إيذاء</div>
+                    </div>
+                    <div class="report-reason-option" onclick="selectReportReason('offensive', this)">
+                        <div style="font-size:20px;margin-bottom:4px;">🤬</div>
+                        <div>محتوى مسيء</div>
+                    </div>
+                    <div class="report-reason-option" onclick="selectReportReason('spam', this)">
+                        <div style="font-size:20px;margin-bottom:4px;">📵</div>
+                        <div>رسائل مزعجة</div>
+                    </div>
+                    <div class="report-reason-option" onclick="selectReportReason('hate_speech', this)">
+                        <div style="font-size:20px;margin-bottom:4px;">🚫</div>
+                        <div>خطاب كراهية</div>
+                    </div>
+                    <div class="report-reason-option" onclick="selectReportReason('threats', this)">
+                        <div style="font-size:20px;margin-bottom:4px;">💀</div>
+                        <div>تهديدات</div>
+                    </div>
+                </div>
+                <input type="hidden" id="reportReason" value="">
+            </div>
+
+            <!-- Description -->
+            <div class="report-form-section">
+                <label class="report-label">
+                    <i class="fas fa-align-right ml-1"></i> التفاصيل (اختياري)
+                </label>
+                <textarea id="reportDescription" class="report-textarea" maxlength="500"
+                    placeholder="اشرح ما حدث بالتفصيل... (اختياري)"></textarea>
+                <div class="text-xs opacity-40 mt-1 text-left">
+                    <span id="reportCharCount">0</span> / 500
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button onclick="submitReport()" class="report-submit-btn">
+                <i class="fas fa-paper-plane ml-2"></i>إرسال البلاغ
+            </button>
+        </div>
+    </div>
+
+    <!-- QR CODE MODAL -->
+    <div id="qrModal" class="hidden modal-overlay" onclick="if(event.target===this)this.classList.add('hidden')">
+        <div class="glass rounded-3xl p-8 text-center" style="max-width:400px;">
+            <h3 class="text-2xl font-black mb-4 neon-text">
+                <i class="fas fa-qrcode ml-2"></i>رمز QR
+            </h3>
+            <div id="qrcode" class="mb-4 flex justify-center bg-white p-4 rounded-2xl"></div>
+            <p class="text-sm opacity-60 mb-4">امسح الرمز للانضمام للغرفة</p>
+            <button onclick="document.getElementById('qrModal').classList.add('hidden')" 
+                class="btn-gradient px-8 py-3 rounded-xl font-black">
+                إغلاق
+            </button>
+        </div>
+    </div>
+
+    <!-- Load moderation system FIRST -->
+    <script src="../Assets/moderation.js"></script>
+
+    <!-- Firebase & Game Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, set, get, update, onValue, remove, push, onDisconnect, serverTimestamp, onChildAdded, query, orderByChild, equalTo, runTransaction } 
+            from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+            authDomain: "el-jasus.firebaseapp.com",
+            databaseURL: "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "el-jasus",
+            storageBucket: "el-jasus.firebasestorage.app",
+            messagingSenderId: "415659587906",
+            appId: "1:415659587906:web:782f7940176ea4097eb0db"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // ═══════════════════════════════════════════════════════════
+        // INJECT FIREBASE FUNCTIONS FOR MODERATION SYSTEM & VOICE CHAT
+        // ═══════════════════════════════════════════════════════════
+        window._firebaseFns = {
+            ref:      (database, path) => ref(database, path),
+            get:      (reference) => get(reference),
+            set:      (reference, value) => set(reference, value),
+            update:   (reference, value) => update(reference, value),
+            remove:   (reference) => remove(reference),
+            push:     (reference, value) => push(reference, value),
+            onValue:  (reference, callback) => {
+                const unsub = onValue(reference, callback);
+                return unsub;
+            },
+            onChildAdded: (reference, callback) => {
+                const unsub = onChildAdded(reference, callback);
+                return unsub;
+            },
+            serverTimestamp: () => serverTimestamp(),
+        };
+
+        console.log('Firebase initialized');
+        console.log('Database URL:', firebaseConfig.databaseURL);
+
+        // Test Firebase connection
+        const connectedRef = ref(db, '.info/connected');
+        onValue(connectedRef, (snapshot) => {
+            if (snapshot.val() === true) {
+                console.log('✓ Firebase connected');
+            } else {
+                console.warn('✗ Firebase disconnected');
+            }
+        });
+
+        // Global state
+        window.gameState = {
+            roomCode: null,
+            currentUser: null,
+            isHost: false,
+            players: {},
+            currentStatus: 'waiting',
+            myRole: null,
+            secretWord: null,
+            category: null,
+            revealedPlayers: [],
+            suspects: {},
+            votingReady: {},
+            votes: {},
+            spyHintsUsed: 0
+        };
+
+        // Debug function
+        window.debugGameState = function() {
+            console.log('=== GAME STATE DEBUG ===');
+            console.log('Room Code:', window.gameState.roomCode);
+            console.log('Current User:', window.gameState.currentUser?.uid);
+            console.log('Is Host:', window.gameState.isHost);
+            console.log('Current Status:', window.gameState.currentStatus);
+            console.log('Players:', window.gameState.players);
+            console.log('Player Count:', Object.keys(window.gameState.players).length);
+            console.log('Suspects:', window.gameState.suspects);
+            console.log('=======================');
+            return window.gameState;
+        };
+
+        // Initialize room from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomCode = urlParams.get('room');
+        
+        console.log('URL params:', window.location.search);
+        console.log('Room code from URL:', roomCode);
+        
+        if (!roomCode || roomCode.trim() === '') {
+            console.error('No room code in URL');
+            alert('لم يتم توفير كود الغرفة');
+            window.location.href = 'home.html';
+        }
+
+        window.gameState.roomCode = roomCode;
+        
+        // Display room code in loading screen
+        const loadingRoomCodeEl = document.getElementById('loadingRoomCode');
+        if (loadingRoomCodeEl) {
+            loadingRoomCodeEl.textContent = `كود الغرفة: ${roomCode}`;
+        }
+
+        // FIX: nothing was ever setting the actual waiting-screen room-code
+        // display — it just showed its static "----" placeholder forever.
+        const roomCodeDisplayEl = document.getElementById('roomCodeDisplay');
+        if (roomCodeDisplayEl) {
+            roomCodeDisplayEl.textContent = roomCode;
+        }
+
+        // Loading timeout
+        const loadingTimeout = setTimeout(() => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+                console.error('Loading timeout');
+                const errorMsg = document.createElement('p');
+                errorMsg.className = 'text-sm text-danger mt-4';
+                errorMsg.textContent = 'الاتصال يستغرق وقتاً طويلاً. تحقق من اتصالك بالإنترنت.';
+                loadingScreen.querySelector('.glass').appendChild(errorMsg);
+            }
+        }, 10000);
+
+        window.clearLoadingTimeout = function() {
+            clearTimeout(loadingTimeout);
+        };
+
+        // Auth state
+        onAuthStateChanged(auth, async (user) => {
+    const isGuestMode = localStorage.getItem('guestMode') === 'true';
+    
+    if (!user && !isGuestMode) {
+        console.log('No user authenticated and not guest mode');
+        window.location.href = 'home.html';
+        return;
+    }
+
+    if (isGuestMode) {
+        const guestUID = localStorage.getItem('eljasus_guest_uid');
+        const guestName = localStorage.getItem('eljasus_user_name') || 'ضيف';
+        window.gameState.currentUser = { 
+            uid: guestUID, 
+            displayName: guestName, 
+            email: null,
+            isGuest: true 
+        };
+        console.log('Guest mode:', guestUID);
+    } else {
+        window.gameState.currentUser = user;
+        console.log('User authenticated:', user.uid);
+    }
+            
+            // ═══════════════════════════════════════════════════════════
+            // INITIALIZE MODERATION SYSTEM
+            // ═══════════════════════════════════════════════════════════
+            if (window.MOD && window.MOD.init) {
+                try {
+                    await window.MOD.init(db, user);
+                    console.log('✓ Moderation system initialized');
+                } catch (error) {
+                    console.error('Failed to initialize moderation:', error);
+                }
+            } else {
+                console.warn('Moderation system not loaded');
+            }
+            
+            try {
+                // Use gameState.currentUser.uid, not the raw `user` param — in guest
+                // mode `user` (the Firebase Auth callback value) is null, while
+                // gameState.currentUser was just set above to the guest identity.
+                const myUid = window.gameState.currentUser.uid;
+
+                // Get player data
+                const playerSnap = await get(ref(db, `players/${myUid}`));
+                const playerData = playerSnap.val();
+                
+                if (!playerData) {
+                    console.error('No player data found');
+                    alert('لم يتم العثور على بيانات اللاعب');
+                    window.location.href = 'home.html';
+                    return;
+                }
+
+                console.log('Player data loaded:', playerData);
+
+                // Join room
+                await joinRoom(myUid, playerData.username || playerData.email);
+                
+                // Setup listeners
+                setupRoomListener();
+                setupChatListener();
+                setupFriendsListener();
+            } catch (error) {
+                console.error('Error in auth state change:', error);
+                alert('حدث خطأ: ' + error.message);
+                window.location.href = 'home.html';
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // ROOM MANAGEMENT
+        // ═══════════════════════════════════════════════════════════
+
+async function joinRoom(uid, username) {
+    try {
+        const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+        const roomSnap = await get(roomRef);
+        
+        if (!roomSnap.exists()) {
+            console.error('Room does not exist');
+            alert('الغرفة غير موجودة');
+            window.location.href = 'home.html';
+            return;
+        }
+
+        const roomData = roomSnap.val();
+        console.log('Room data loaded:', roomData);
+
+        // Host status is derived from the room's persisted hostId (written once, at
+        // creation time, in home.html) — never a one-time client flag. Recomputing it
+        // here means it's correct for the creator, every joiner, and on every refresh
+        // or rejoin.
+        const amHost = !!roomData.hostId && roomData.hostId === uid;
+        window.gameState.isHost = amHost;
+        localStorage.setItem('isHost', amHost ? 'true' : 'false');
+        
+        // Check if banned
+        const banSnap = await get(ref(db, `banned_users/${uid}`));
+        if (banSnap.exists()) {
+            alert('لقد تم حظرك من اللعبة');
+            window.location.href = 'home.html';
+            return;
+        }
+
+        // Check if room is full
+        const playerCount = roomData.players ? Object.keys(roomData.players).length : 0;
+        const isPlayerInRoom = roomData.players && roomData.players[uid];
+        
+        if (playerCount >= 10 && !isPlayerInRoom) {
+            alert('الغرفة ممتلئة (10/10)');
+            window.location.href = 'home.html';
+            return;
+        }
+
+        const playerProfileSnap = await get(ref(db, `players/${uid}`));
+        const playerProfile = playerProfileSnap.val() || {};
+
+        // Add player to room WITH theme/tag data
+        const playerRef = ref(db, `rooms/${window.gameState.roomCode}/players/${uid}`);
+        await set(playerRef, {
+            username,
+            uid,
+            joinedAt: serverTimestamp(),
+            connected: true,
+            status: 'online',
+            isHost: amHost,
+            // ✅ FIX: Use activeTheme/activeTitle from your database structure
+            nameTheme: playerProfile.activeTheme || playerProfile.nameTheme || 'default',
+            nameTag: playerProfile.activeTitle || playerProfile.nameTag || null,
+            rankPoints: playerProfile.rankPoints || 0
+        });
+
+        // Setup disconnect handler
+        const connectedRef = ref(db, '.info/connected');
+        const presenceRef = ref(db, `players/${uid}/presence`);
+        onValue(connectedRef, (snap) => {
+            if (snap.val() === true) {
+                onDisconnect(playerRef).update({ 
+                    connected: false, 
+                    status: 'offline' 
+                });
+                // Presence: so friends' "ask to join" gating (and the invite
+                // button) reflect reality even if the tab is just closed
+                // instead of Leave Room being clicked.
+                onDisconnect(presenceRef).update({
+                    inGame: false,
+                    phase: null,
+                    room: null
+                });
+            }
+        });
+
+        // Presence: mark this player as in-game, in this room, at the
+        // waiting phase (the room listener below keeps `phase` in sync as
+        // the room's actual status changes). This is what makes a friend's
+        // "ask to join" button appear for other players at all.
+        await update(presenceRef, {
+            online: true,
+            inGame: true,
+            phase: 'waiting',
+            room: window.gameState.roomCode,
+            lastSeen: serverTimestamp()
+        });
+
+        window.gameState.currentUser = { uid, username };
+        console.log('Successfully joined room');
+        
+    } catch (error) {
+        console.error('Error joining room:', error);
+        alert('فشل الانضمام للغرفة: ' + error.message);
+        window.location.href = 'home.html';
+    }
+}
+
+        let _lastSyncedPhase = null;
+        function setupRoomListener() {
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            
+            onValue(roomRef, (snapshot) => {
+                const roomData = snapshot.val();
+                if (!roomData) {
+                    console.error('Room deleted');
+                    alert('تم حذف الغرفة');
+                    window.location.href = 'home.html';
+                    return;
+                }
+
+                console.log('Room data updated:', roomData);
+
+                window.gameState.players = roomData.players || {};
+                window.gameState.currentStatus = roomData.status || 'waiting';
+                window.gameState.category = roomData.category || 'places';
+                window.gameState.secretWord = roomData.secretWord;
+                
+                // Update UI based on status
+                updateGameScreen(roomData.status || 'waiting');
+                
+                // Update players list
+                updatePlayersList();
+
+                // Keep this player's presence.phase in sync with the room's real
+                // status, so a friend looking at "is this person in a waiting
+                // room?" (the ask-to-join gate) sees a live, accurate answer —
+                // only write when it actually changed, since onValue re-fires
+                // for every room update (chat, player list, etc.), not just status.
+                const myUid = window.gameState.currentUser?.uid;
+                if (myUid && roomData.status && roomData.status !== _lastSyncedPhase) {
+                    _lastSyncedPhase = roomData.status;
+                    update(ref(db, `players/${myUid}/presence`), { phase: roomData.status }).catch(() => {});
+                }
+                
+                // Host-only controls: show/hide + populate for whichever role this
+                // client actually has. #hostControls, #startBtn, and #waitingMsg all
+                // start hidden in the HTML and nothing was ever toggling them.
+                const hostControlsEl = document.getElementById('hostControls');
+                const startBtnEl     = document.getElementById('startBtn');
+                const waitingMsgEl   = document.getElementById('waitingMsg');
+                if (window.gameState.isHost) {
+                    hostControlsEl?.classList.remove('hidden');
+                    startBtnEl?.classList.remove('hidden');
+                    waitingMsgEl?.classList.add('hidden');
+                    updateHostControls(roomData);
+                } else {
+                    hostControlsEl?.classList.add('hidden');
+                    startBtnEl?.classList.add('hidden');
+                    waitingMsgEl?.classList.remove('hidden');
+                }
+            }, (error) => {
+                console.error('Error listening to room:', error);
+                alert('حدث خطأ: ' + error.message);
+            });
+        }
+
+        function updateGameScreen(status) {
+            console.log('Updating screen:', status);
+
+            // Hide loading screen first
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen) loadingScreen.classList.add('hidden');
+            window.clearLoadingTimeout && window.clearLoadingTimeout();
+
+            // Reveal the game container itself — nothing else in the file ever did this,
+            // so every inner screen below was toggling visibility inside a parent that
+            // was permanently display:none.
+            const gameContainerEl = document.getElementById('gameContainer');
+            if (gameContainerEl) gameContainerEl.classList.remove('hidden');
+            
+            // Hide all screens
+            document.getElementById('waitingScreen').classList.add('hidden');
+            document.getElementById('revealScreen').classList.add('hidden');
+            document.getElementById('discussionScreen').classList.add('hidden');
+            document.getElementById('votingScreen').classList.add('hidden');
+            document.getElementById('tieScreen').classList.add('hidden');
+            document.getElementById('spinnerScreen').classList.add('hidden');
+            document.getElementById('spyGuessScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+
+            // Show current screen
+            switch(status) {
+                case 'waiting':
+                    document.getElementById('waitingScreen').classList.remove('hidden');
+                    break;
+                case 'revealing':
+                    document.getElementById('revealScreen').classList.remove('hidden');
+                    handleRevealStatus();
+                    break;
+                case 'discussion':
+                    document.getElementById('discussionScreen').classList.remove('hidden');
+                    handleDiscussionStatus();
+                    break;
+                case 'voting':
+                    document.getElementById('votingScreen').classList.remove('hidden');
+                    handleVotingStatus();
+                    break;
+                case 'tie':
+                    document.getElementById('tieScreen').classList.remove('hidden');
+                    setTimeout(() => {
+                        if (window.gameState.isHost) {
+                            update(ref(db, `rooms/${window.gameState.roomCode}`), { status: 'spinner' });
+                        }
+                    }, 3000);
+                    break;
+                case 'spinner':
+                    document.getElementById('spinnerScreen').classList.remove('hidden');
+                    break;
+                case 'spyGuess':
+                    document.getElementById('spyGuessScreen').classList.remove('hidden');
+                    handleSpyGuessStatus();
+                    break;
+                case 'result':
+                    document.getElementById('resultScreen').classList.remove('hidden');
+                    handleResultStatus();
+                    break;
+                default:
+                    document.getElementById('waitingScreen').classList.remove('hidden');
+            }
+        }
+
+        function updatePlayersList() {
+            const container = document.getElementById('playersList');
+            const players = window.gameState.players;
+            const playerCount = Object.keys(players).length;
+            
+            document.getElementById('playerCount').textContent = `${playerCount}/10`;
+            
+            container.innerHTML = '';
+            
+            Object.entries(players).forEach(([uid, player]) => {
+                const isMe = uid === window.gameState.currentUser.uid;
+                const isHost = window.gameState.isHost && isMe;
+                
+                const playerCard = document.createElement('div');
+                playerCard.className = `glass rounded-xl p-3 border-2 ${isMe ? 'border-primary' : 'border-white/10'} transition-all`;
+                
+                let statusTag = '';
+                if (!player.connected || player.status === 'disconnected') {
+                    statusTag = '<span class="status-tag status-disconnected">غير متصل</span>';
+                } else if (player.status === 'idle') {
+                    statusTag = '<span class="status-tag status-idle">غير نشط</span>';
+                } else {
+                    statusTag = '<span class="status-tag status-online">متصل</span>';
+                }
+                
+                playerCard.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1 flex-wrap">
+                                ${isHost ? '<i class="fas fa-crown text-warning text-xs"></i>' : ''}
+                                <span class="player-name-themed" data-uid="${uid}"></span>
+                            </div>
+                            ${statusTag}
+                        </div>
+                        ${window.gameState.isHost && !isMe ? `
+                            <button onclick="kickPlayer('${uid}')" class="p-2 rounded-lg bg-danger/20 hover:bg-danger/30 transition-colors" title="طرد">
+                                <i class="fas fa-user-times text-danger text-xs"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(playerCard);
+                const nameEl_w = playerCard.querySelector(`[data-uid="${uid}"]`);
+                if (nameEl_w && window.NameThemes) {
+                    window.NameThemes.applyPlayerStyle(nameEl_w, {
+                        username: player.username,
+                        nameTheme: player.nameTheme || 'default',
+                        nameTag: player.nameTag || null,
+                        rankPoints: parseInt(player.rankPoints) || 0
+                    });
+                }
+            });
+
+            // Update start button
+            const canStart = playerCount >= 3;
+            const startBtn = document.getElementById('startBtn');
+            const minMsg = document.getElementById('minPlayersMsg');
+            
+            if (startBtn && !startBtn.classList.contains('hidden')) {
+                startBtn.disabled = !canStart;
+                minMsg.classList.toggle('hidden', canStart);
+            }
+        }
+
+        function updateHostControls(roomData) {
+            const categorySelect = document.getElementById('categorySelect');
+            const visibilityBtn = document.getElementById('visibilityBtn');
+            
+            if (categorySelect) {
+                categorySelect.value = roomData.category || 'places';
+            }
+            
+            if (visibilityBtn) {
+                const isPublic = roomData.visibility === 'public';
+                visibilityBtn.textContent = isPublic ? '🌐 عامة' : '🔒 خاصة';
+                visibilityBtn.className = `w-full px-4 py-3 rounded-xl border-2 transition-all font-bold text-sm ${
+                    isPublic 
+                        ? 'bg-success/10 border-success/30 text-success' 
+                        : 'bg-warning/10 border-warning/30 text-warning'
+                }`;
+            }
+        }
+
+        window.updateRoomSettings = async function() {
+            if (!window.gameState.isHost) return;
+            const category = document.getElementById('categorySelect').value;
+            await update(ref(db, `rooms/${window.gameState.roomCode}`), { category });
+        };
+
+        window.toggleRoomVisibility = async function() {
+            if (!window.gameState.isHost) return;
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const currentVisibility = snap.val()?.visibility || 'public';
+            await update(roomRef, {
+                visibility: currentVisibility === 'public' ? 'private' : 'public'
+            });
+        };
+
+        window.kickPlayer = async function(uid) {
+            if (!window.gameState.isHost) return;
+            if (!confirm('هل تريد طرد هذا اللاعب؟')) return;
+            await remove(ref(db, `rooms/${window.gameState.roomCode}/players/${uid}`));
+        };
+
+        window.leaveRoom = async function() {
+            if (!confirm('هل تريد مغادرة الغرفة؟')) return;
+            await remove(ref(db, `rooms/${window.gameState.roomCode}/players/${window.gameState.currentUser.uid}`));
+            if (window.gameState.isHost) {
+                await remove(ref(db, `rooms/${window.gameState.roomCode}`));
+            }
+            // Clear presence (so "ask to join" stops offering this room to
+            // friends) and the stale currentRoom/isHost bookkeeping — none of
+            // this was being cleared before, so both stuck around after leaving.
+            await update(ref(db, `players/${window.gameState.currentUser.uid}/presence`), {
+                inGame: false, phase: null, room: null
+            }).catch(() => {});
+            localStorage.removeItem('currentRoom');
+            localStorage.setItem('isHost', 'false');
+            window.location.href = 'home.html';
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // GAME START
+        // ═══════════════════════════════════════════════════════════
+
+        document.getElementById('startBtn')?.addEventListener('click', async () => {
+            if (!window.gameState.isHost) return;
+            
+            const playerCount = Object.keys(window.gameState.players).length;
+            if (playerCount < 3) {
+                alert('يجب توفر 3 لاعبين على الأقل');
+                return;
+            }
+
+            // Assign roles
+            const playerIds = Object.keys(window.gameState.players);
+            const spyIndex = Math.floor(Math.random() * playerIds.length);
+            const spyId = playerIds[spyIndex];
+            
+            // Select secret word
+            const words = getWordsForCategory(window.gameState.category);
+            const secretWord = words[Math.floor(Math.random() * words.length)];
+            
+            // Create roles
+            const roles = {};
+            playerIds.forEach(uid => {
+                roles[uid] = uid === spyId ? 'spy' : 'innocent';
+            });
+
+            // Update room
+            await update(ref(db, `rooms/${window.gameState.roomCode}`), {
+                status: 'revealing',
+                roles,
+                secretWord,
+                spyId,
+                currentRevealIndex: 0,
+                revealOrder: playerIds,
+                startedAt: serverTimestamp()
+            });
+        });
+
+        function getWordsForCategory(category) {
+            const categories = {
+                places: ["المدرسة", "المستشفى", "حديقة الحيوان", "المطار", "النادي", "السينما", "المطعم", "البحر", "المزرعة", "السيرك"],
+                food: ["كشري", "ملوخية", "فول", "طعمية", "فتة", "حواوشي", "محشي", "كفتة", "أرز بلبن", "كنافة"],
+                jobs: ["دكتور", "مهندس", "مدرس", "ضابط", "محامي", "محاسب", "ممرض", "صيدلي", "طيار", "سواق"],
+                companies: ["Apple", "Google", "Microsoft", "Amazon", "Facebook", "Samsung", "Nike", "Adidas", "McDonald's", "Coca-Cola"],
+                football_teams: ["الأهلي", "الزمالك", "ريال مدريد", "برشلونة", "ليفربول", "مانشستر", "يوفنتوس", "بايرن", "باريس", "منتخب مصر"]
+            };
+            return categories[category] || categories.places;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // REVEAL STATUS - FIX: Only current player can flip
+        // ═══════════════════════════════════════════════════════════
+
+        async function handleRevealStatus() {
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const roomData = snap.val();
+            
+            if (!roomData) return;
+
+            const revealOrder = roomData.revealOrder || [];
+            const currentIndex = roomData.currentRevealIndex || 0;
+            const currentPlayerId = revealOrder[currentIndex];
+            
+            const currentPlayer = window.gameState.players[currentPlayerId];
+            document.getElementById('currentPlayerName').textContent = currentPlayer?.username || '---';
+            document.getElementById('turnIndicator').textContent = `اللاعب ${currentIndex + 1} من ${revealOrder.length}`;
+
+            const isMyTurn = currentPlayerId === window.gameState.currentUser.uid;
+            const revealCard = document.getElementById('revealCard');
+            
+            // ✅ FIX: Disable card flipping if not your turn
+            if (!isMyTurn) {
+                revealCard.classList.add('not-your-turn');
+                revealCard.onclick = null;
+                revealCard.title = 'انتظر دورك';
+            } else {
+                revealCard.classList.remove('not-your-turn');
+                revealCard.onclick = flipRevealCard;
+                revealCard.title = 'انقر للكشف';
+                
+                const myRole = roomData.roles?.[window.gameState.currentUser.uid];
+                window.gameState.myRole = myRole;
+                
+                const backCard = document.getElementById('revealCardBack');
+                
+                if (myRole === 'spy') {
+                    backCard.className = 'reveal-card-back glass';
+                    backCard.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(220,38,38,0.1))';
+                    backCard.style.borderColor = '#ef4444';
+                    backCard.innerHTML = `
+                        <i class="fas fa-user-secret text-7xl mb-4" style="color:#ef4444;"></i>
+                        <h3 class="text-3xl font-black mb-2" style="color:#ef4444;">أنت الجاسوس! 🕵️</h3>
+                        <p class="text-sm opacity-70">اكتشف الكلمة السرية دون أن يكتشفوك</p>
+                    `;
+                } else {
+                    backCard.className = 'reveal-card-back glass';
+                    backCard.style.background = 'linear-gradient(135deg, rgba(34,197,94,0.2), rgba(5,150,105,0.1))';
+                    backCard.style.borderColor = '#22c55e';
+                    backCard.innerHTML = `
+                        <i class="fas fa-shield-alt text-7xl mb-4" style="color:#22c55e;"></i>
+                        <h3 class="text-3xl font-black mb-2" style="color:#22c55e;">أنت بريء! 🛡️</h3>
+                        <p class="text-lg mb-2">الكلمة السرية:</p>
+                        <p class="text-4xl font-black neon-text">${roomData.secretWord}</p>
+                        <p class="text-sm opacity-70 mt-2">اكتشف الجاسوس قبل أن يعرف الكلمة</p>
+                    `;
+                }
+            }
+        }
+
+        window.flipRevealCard = function() {
+            // Only flip if it's your turn
+            const revealCard = document.getElementById('revealCard');
+            if (revealCard.classList.contains('not-your-turn')) {
+                if (window.showToast) {
+                    showToast('⛔ انتظر دورك');
+                }
+                return;
+            }
+            
+            revealCard.classList.toggle('flipped');
+            setTimeout(() => {
+                document.getElementById('nextRevealBtn').classList.remove('hidden');
+            }, 600);
+        };
+
+        window.nextReveal = async function() {
+            const nextBtn = document.getElementById('nextRevealBtn');
+            
+            // ✅ FIX: Disable button immediately to prevent double-clicks
+            nextBtn.disabled = true;
+            nextBtn.style.opacity = '0.5';
+            
+            try {
+                const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+                const snap = await get(roomRef);
+                const roomData = snap.val();
+                
+                if (!roomData) return;
+
+                const currentIndex = roomData.currentRevealIndex || 0;
+                const revealOrder = roomData.revealOrder || [];
+                
+                if (currentIndex >= revealOrder.length - 1) {
+                    await update(roomRef, {
+                        status: 'discussion',
+                        discussionStartedAt: serverTimestamp()
+                    });
+                } else {
+                    await update(roomRef, {
+                        currentRevealIndex: currentIndex + 1
+                    });
+                    document.getElementById('revealCard').classList.remove('flipped');
+                    document.getElementById('nextRevealBtn').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error in nextReveal:', error);
+                if (window.showToast) {
+                    showToast('⛔ حدث خطأ، حاول مرة أخرى');
+                }
+                // Re-enable button on error
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = '1';
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // DISCUSSION STATUS - FIX: Multiple suspects support
+        // ═══════════════════════════════════════════════════════════
+
+        async function handleDiscussionStatus() {
+            // ✅ FIX: Reset spy hints at start of discussion
+            window.gameState.spyHintsUsed = 0;
+            document.getElementById('hintBalance').textContent = '3';
+            document.getElementById('hintList').innerHTML = '';
+            document.getElementById('hintDisplay').classList.add('hidden');
+            
+            const useHintBtn = document.getElementById('useHintBtn');
+            if (useHintBtn) {
+                useHintBtn.disabled = false;
+                useHintBtn.style.opacity = '1';
+            }
+            
+            if (window.gameState.myRole === 'spy') {
+                document.getElementById('spyHintSection').classList.remove('hidden');
+            } else {
+                document.getElementById('spyHintSection').classList.add('hidden');
+            }
+
+            const suspectsRef = ref(db, `rooms/${window.gameState.roomCode}/suspects`);
+            onValue(suspectsRef, (snapshot) => {
+                window.gameState.suspects = snapshot.val() || {};
+                updateSuspectsList();
+            });
+
+            const readyRef = ref(db, `rooms/${window.gameState.roomCode}/votingReady`);
+            onValue(readyRef, (snapshot) => {
+                window.gameState.votingReady = snapshot.val() || {};
+                updateVotingReadyStatus();
+            });
+
+            startDiscussionTimer();
+        }
+
+        function updateSuspectsList() {
+            const container = document.getElementById('suspectsList');
+            const players = window.gameState.players;
+            const suspects = window.gameState.suspects;
+            const myUid = window.gameState.currentUser.uid;
+            
+            container.innerHTML = '';
+            
+            // Get my suspect list
+            const mySuspects = suspects[myUid] || [];
+            
+            Object.entries(players).forEach(([uid, player]) => {
+                // Count how many people suspect this player
+                const suspectCount = Object.values(suspects).filter(suspectList => 
+                    Array.isArray(suspectList) ? suspectList.includes(uid) : suspectList === uid
+                ).length;
+                
+                const isMe = uid === myUid;
+                const iSuspect = mySuspects.includes(uid);
+                
+                const card = document.createElement('div');
+                card.className = `glass rounded-xl p-3 border-2 ${isMe ? 'border-primary' : 'border-white/10'} transition-all relative`;
+                
+                card.innerHTML = `
+                    ${suspectCount > 0 ? `<div class="suspect-counter">${suspectCount}</div>` : ''}
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <span class="player-name-themed" data-uid="${uid}"></span>
+                        ${!isMe ? `
+                            <button onclick="toggleSuspect('${uid}')" 
+                                class="w-full py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                    iSuspect
+                                        ? 'bg-danger text-white'
+                                        : 'bg-white/10 hover:bg-white/20'
+                                }">
+                                ${iSuspect ? '✓ مشتبه به' : 'ضع كمشتبه'}
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+                const nameEl_d = card.querySelector(`[data-uid="${uid}"]`);
+                if (nameEl_d && window.NameThemes) {
+                    window.NameThemes.applyPlayerStyle(nameEl_d, {
+                        username: player.username,
+                        nameTheme: player.nameTheme || 'default',
+                        nameTag: player.nameTag || null,
+                        rankPoints: parseInt(player.rankPoints) || 0
+                    });
+                }
+            });
+        }
+
+        window.toggleSuspect = async function(targetUid) {
+            const myUid = window.gameState.currentUser.uid;
+            const suspectRef = ref(db, `rooms/${window.gameState.roomCode}/suspects/${myUid}`);
+            
+            const snap = await get(suspectRef);
+            let currentSuspects = snap.val() || [];
+            
+            // Ensure it's an array
+            if (!Array.isArray(currentSuspects)) {
+                currentSuspects = currentSuspects ? [currentSuspects] : [];
+            }
+            
+            // Toggle suspect
+            if (currentSuspects.includes(targetUid)) {
+                currentSuspects = currentSuspects.filter(uid => uid !== targetUid);
+            } else {
+                currentSuspects.push(targetUid);
+            }
+            
+            // Save or remove
+            if (currentSuspects.length > 0) {
+                await set(suspectRef, currentSuspects);
+            } else {
+                await remove(suspectRef);
+            }
+        };
+
+        window.useHint = async function() {
+            if (window.gameState.myRole !== 'spy') return;
+            if (window.gameState.spyHintsUsed >= 3) {
+                alert('لقد استخدمت جميع التلميحات');
+                return;
+            }
+
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const secretWord = snap.val()?.secretWord;
+            
+            if (!secretWord) return;
+
+            const hints = [
+                `يبدأ بحرف: ${secretWord[0]}`,
+                `عدد الحروف: ${secretWord.length}`,
+                `ينتهي بحرف: ${secretWord[secretWord.length - 1]}`
+            ];
+            
+            const hint = hints[window.gameState.spyHintsUsed];
+            window.gameState.spyHintsUsed++;
+            
+            const hintDisplay = document.getElementById('hintDisplay');
+            const hintList = document.getElementById('hintList');
+            
+            hintDisplay.classList.remove('hidden');
+            
+            const hintItem = document.createElement('div');
+            hintItem.className = 'text-sm p-2 rounded bg-black/20 border border-danger/20';
+            hintItem.textContent = `${window.gameState.spyHintsUsed}. ${hint}`;
+            hintList.appendChild(hintItem);
+            
+            document.getElementById('hintBalance').textContent = 3 - window.gameState.spyHintsUsed;
+            
+            if (window.gameState.spyHintsUsed >= 3) {
+                document.getElementById('useHintBtn').disabled = true;
+                document.getElementById('useHintBtn').style.opacity = '0.5';
+            }
+        };
+
+        function updateVotingReadyStatus() {
+            const ready = window.gameState.votingReady;
+            const total = Object.keys(window.gameState.players).length;
+            const readyCount = Object.keys(ready).length;
+            
+            document.getElementById('readyCount').textContent = readyCount;
+            document.getElementById('totalPlayers').textContent = total;
+            
+            if (readyCount >= Math.ceil(total / 2)) {
+                if (window.gameState.isHost) {
+                    update(ref(db, `rooms/${window.gameState.roomCode}`), {
+                        status: 'voting'
+                    });
+                }
+            }
+        }
+
+        window.readyForVoting = async function() {
+            const myUid = window.gameState.currentUser.uid;
+            await set(ref(db, `rooms/${window.gameState.roomCode}/votingReady/${myUid}`), true);
+            document.getElementById('moveToVotingBtn').disabled = true;
+            document.getElementById('moveToVotingBtn').textContent = '✓ جاهز';
+        };
+
+        function startDiscussionTimer() {
+            document.getElementById('discussionTimer').textContent = '∞';
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // VOTING STATUS
+        // ═══════════════════════════════════════════════════════════
+
+        async function handleVotingStatus() {
+            const votesRef = ref(db, `rooms/${window.gameState.roomCode}/votes`);
+            onValue(votesRef, async (snapshot) => {
+                window.gameState.votes = snapshot.val() || {};
+                updateVotingCards();
+                
+                const totalPlayers = Object.keys(window.gameState.players).length;
+                const votedCount = Object.keys(window.gameState.votes).length;
+                
+                document.getElementById('votedCount').textContent = votedCount;
+                document.getElementById('totalVoters').textContent = totalPlayers;
+                
+                if (votedCount === totalPlayers && window.gameState.isHost) {
+                    setTimeout(() => calculateVotingResults(), 2000);
+                }
+            });
+        }
+
+        function updateVotingCards() {
+            const container = document.getElementById('voteCards');
+            const players = window.gameState.players;
+            const votes = window.gameState.votes;
+            const myVote = votes[window.gameState.currentUser.uid];
+            
+            container.innerHTML = '';
+            
+            const voteCounts = {};
+            Object.values(votes).forEach(targetUid => {
+                voteCounts[targetUid] = (voteCounts[targetUid] || 0) + 1;
+            });
+            
+            const maxVotes = Math.max(...Object.values(voteCounts), 0);
+            
+            Object.entries(players).forEach(([uid, player]) => {
+                const voteCount = voteCounts[uid] || 0;
+                const isMe = uid === window.gameState.currentUser.uid;
+                const iVoted = myVote === uid;
+                const isMostVoted = voteCount === maxVotes && maxVotes > 0;
+                
+                const card = document.createElement('div');
+                card.className = `vote-card glass rounded-xl p-4 border-2 ${
+                    iVoted ? 'voted' : isMostVoted ? 'most-voted' : 'border-white/10'
+                }`;
+                
+                if (!myVote && !isMe) {
+                    card.onclick = () => castVote(uid);
+                }
+                
+                card.innerHTML = `
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center relative">
+                            <i class="fas fa-user text-white text-xl"></i>
+                            ${voteCount > 0 ? `
+                                <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-danger flex items-center justify-center border-2 border-black font-black text-sm">
+                                    ${voteCount}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <span class="player-name-themed" data-uid="${uid}"></span>
+                        ${iVoted ? '<p class="text-xs text-success">✓ تم التصويت</p>' : ''}
+                        ${isMe ? '<p class="text-xs opacity-60">(أنت)</p>' : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+                const nameEl_v = card.querySelector(`[data-uid="${uid}"]`);
+                if (nameEl_v && window.NameThemes) {
+                    window.NameThemes.applyPlayerStyle(nameEl_v, {
+                        username: player.username,
+                        nameTheme: player.nameTheme || 'default',
+                        nameTag: player.nameTag || null,
+                        rankPoints: parseInt(player.rankPoints) || 0
+                    });
+                }
+            });
+        }
+
+        window.castVote = async function(targetUid) {
+            const myUid = window.gameState.currentUser.uid;
+            
+            if (window.gameState.votes[myUid]) {
+                alert('لقد صوّت بالفعل');
+                return;
+            }
+            
+            if (targetUid === myUid) {
+                alert('لا يمكنك التصويت لنفسك');
+                return;
+            }
+            
+            await set(ref(db, `rooms/${window.gameState.roomCode}/votes/${myUid}`), targetUid);
+        };
+
+        async function calculateVotingResults() {
+            const votes = window.gameState.votes;
+            const voteCounts = {};
+            
+            Object.values(votes).forEach(targetUid => {
+                voteCounts[targetUid] = (voteCounts[targetUid] || 0) + 1;
+            });
+            
+            const maxVotes = Math.max(...Object.values(voteCounts));
+            const mostVoted = Object.entries(voteCounts)
+                .filter(([_, count]) => count === maxVotes)
+                .map(([uid, _]) => uid);
+            
+            if (mostVoted.length > 1) {
+                await update(ref(db, `rooms/${window.gameState.roomCode}`), {
+                    status: 'tie',
+                    tiedPlayers: mostVoted
+                });
+            } else {
+                const votedOutUid = mostVoted[0];
+                await processVotedPlayer(votedOutUid);
+            }
+        }
+
+        async function processVotedPlayer(votedUid) {
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const roomData = snap.val();
+            
+            const isSpy = roomData.roles[votedUid] === 'spy';
+            
+            if (isSpy) {
+                await update(roomRef, {
+                    status: 'spyGuess',
+                    votedOutSpy: votedUid
+                });
+            } else {
+                await update(roomRef, {
+                    status: 'result',
+                    winner: 'spy',
+                    votedOutInnocent: votedUid
+                });
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // SPINNER
+        // ═══════════════════════════════════════════════════════════
+
+        window.startSpinner = async function() {
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const tiedPlayers = snap.val()?.tiedPlayers || [];
+            
+            if (tiedPlayers.length === 0) return;
+
+            const wheel = document.getElementById('spinnerWheel');
+            const content = document.getElementById('spinnerContent');
+            const btn = document.getElementById('spinBtn');
+            
+            btn.disabled = true;
+            wheel.classList.add('spinning');
+            
+            let counter = 0;
+            const interval = setInterval(() => {
+                const randomPlayer = tiedPlayers[Math.floor(Math.random() * tiedPlayers.length)];
+                const playerName = window.gameState.players[randomPlayer]?.username || '?';
+                content.textContent = playerName;
+                counter++;
+                
+                if (counter > 20) {
+                    clearInterval(interval);
+                    wheel.classList.remove('spinning');
+                    
+                    const selectedUid = tiedPlayers[Math.floor(Math.random() * tiedPlayers.length)];
+                    content.textContent = window.gameState.players[selectedUid]?.username || '?';
+                    
+                    setTimeout(async () => {
+                        await processVotedPlayer(selectedUid);
+                    }, 2000);
+                }
+            }, 150);
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // SPY GUESS
+        // ═══════════════════════════════════════════════════════════
+
+        async function handleSpyGuessStatus() {
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const roomData = snap.val();
+            
+            const spyUid = roomData.votedOutSpy;
+            const spyName = window.gameState.players[spyUid]?.username;
+            
+            document.getElementById('spyNameDisplay').textContent = `الجاسوس: ${spyName}`;
+            
+            const words = getWordsForCategory(window.gameState.category);
+            const container = document.getElementById('wordChoices');
+            
+            container.innerHTML = '';
+            
+            words.forEach(word => {
+                const card = document.createElement('div');
+                card.className = 'glass rounded-xl p-4 border-2 border-white/10 cursor-pointer hover:border-primary transition-all';
+                
+                if (spyUid === window.gameState.currentUser.uid) {
+                    card.onclick = () => guessWord(word);
+                } else {
+                    card.style.cursor = 'not-allowed';
+                    card.style.opacity = '0.6';
+                }
+                
+                card.innerHTML = `<p class="font-bold text-center">${word}</p>`;
+                container.appendChild(card);
+            });
+        }
+
+        window.guessWord = async function(guessedWord) {
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const secretWord = snap.val()?.secretWord;
+            
+            const correct = guessedWord === secretWord;
+            const result = document.getElementById('guessResult');
+            
+            if (correct) {
+                result.textContent = '✓ تخمين صحيح! الجاسوس يفوز!';
+                result.style.color = '#ef4444';
+                setTimeout(async () => {
+                    await update(roomRef, {
+                        status: 'result',
+                        winner: 'spy',
+                        spyGuessedCorrectly: true
+                    });
+                }, 2000);
+            } else {
+                result.textContent = '✗ تخمين خاطئ! الأبرياء يفوزون!';
+                result.style.color = '#22c55e';
+                setTimeout(async () => {
+                    await update(roomRef, {
+                        status: 'result',
+                        winner: 'innocent',
+                        spyGuessedWrong: true
+                    });
+                }, 2000);
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // RESULT
+        // ═══════════════════════════════════════════════════════════
+
+        async function handleResultStatus() {
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            const snap = await get(roomRef);
+            const roomData = snap.val();
+            
+            const winner = roomData.winner;
+            const roles = roomData.roles || {};
+            
+            const icon = document.getElementById('resultIcon');
+            const title = document.getElementById('resultTitle');
+            const message = document.getElementById('resultMessage');
+            
+            if (winner === 'spy') {
+                icon.textContent = '🕵️';
+                title.textContent = 'الجاسوس انتصر!';
+                title.style.color = '#ef4444';
+                message.textContent = 'الجاسوس نجح في خداع الأبرياء';
+            } else {
+                icon.textContent = '🛡️';
+                title.textContent = 'الأبرياء انتصروا!';
+                title.style.color = '#22c55e';
+                message.textContent = 'تم كشف الجاسوس بنجاح';
+            }
+            
+            const container = document.getElementById('resultPlayerList');
+            container.innerHTML = '';
+            
+            Object.entries(roles).forEach(([uid, role]) => {
+                const player = window.gameState.players[uid];
+                if (!player) return;
+                
+                const won = (role === 'spy' && winner === 'spy') || (role === 'innocent' && winner === 'innocent');
+                
+                const card = document.createElement('div');
+                card.className = `p-2 rounded-lg ${won ? 'bg-success/20' : 'bg-danger/20'}`;
+                card.innerHTML = `
+                    <p class="font-bold text-sm">${role === 'spy' ? '🕵️' : '🛡️'} <span class="player-name-themed" data-uid="${uid}"></span></p>
+                    <p class="text-xs opacity-60">${won ? 'فائز' : 'خاسر'}</p>
+                `;
+                container.appendChild(card);
+
+                // Apply theme (Snippet 2)
+                const nameEl4 = card.querySelector(`[data-uid="${uid}"]`);
+                if (nameEl4 && window.NameThemes) {
+                    window.NameThemes.applyPlayerStyle(nameEl4, {
+                        username: player.username,
+                        nameTheme: player.nameTheme || 'default',
+                        nameTag: player.nameTag || null,
+                        rankPoints: player.rankPoints || 0
+                    });
+                }
+            });
+            
+            // FIX: this used to call updatePlayerStats() unconditionally, but
+            // handleResultStatus() re-runs on every room update while
+            // status stays 'result' (a chat message arriving is enough) —
+            // without a guard, a single round would get recorded multiple
+            // times. secretWord changes every round, so roomCode+secretWord+
+            // winner is a stable fingerprint for "this specific result".
+            const resultKey = `${window.gameState.roomCode}_${roomData.secretWord}_${winner}`;
+            if (window.gameState._lastStatsKey !== resultKey) {
+                window.gameState._lastStatsKey = resultKey;
+                await updatePlayerStats(winner, roles);
+            }
+        }
+
+        // FIX: this was a stub that only console.logged — "Firebase doesn't
+        // support increment" is true for a plain set(), but the Realtime
+        // Database SDK does support atomic increments via runTransaction(),
+        // which is what this now uses. No game has ever actually recorded a
+        // result before this, which is why the leaderboard only ever showed
+        // zeros regardless of how many rounds were played.
+        //
+        // Every player's browser runs this same function when the result
+        // screen appears — so each client only ever writes to ITS OWN
+        // players/{uid} record (never anyone else's), using its own role
+        // looked up from `roles`. That's also what a correctly-scoped
+        // Firebase rule (auth.uid === $uid) would only allow anyway.
+        async function updatePlayerStats(winner, roles) {
+            const myUid = window.gameState.currentUser?.uid;
+            if (!myUid) return;
+            const myRole = roles?.[myUid];
+            if (!myRole) return; // no role recorded for us this round — nothing to count
+
+            const won = (myRole === 'spy' && winner === 'spy') || (myRole === 'innocent' && winner === 'innocent');
+
+            try {
+                await runTransaction(ref(db, `players/${myUid}/stats`), (stats) => {
+                    stats = stats || { totalGames: 0, spyWins: 0, innocentWins: 0, currentStreak: 0, longestWinStreak: 0 };
+                    stats.totalGames = (stats.totalGames || 0) + 1;
+                    if (myRole === 'spy' && won) stats.spyWins = (stats.spyWins || 0) + 1;
+                    if (myRole === 'innocent' && won) stats.innocentWins = (stats.innocentWins || 0) + 1;
+                    if (won) {
+                        stats.currentStreak = (stats.currentStreak || 0) + 1;
+                        stats.longestWinStreak = Math.max(stats.longestWinStreak || 0, stats.currentStreak);
+                    } else {
+                        stats.currentStreak = 0;
+                    }
+                    return stats;
+                });
+
+                // Ranked points: win/loss moves rankPoints, which determines
+                // the rank tier shown on the leaderboard's "الرتب" tab.
+                const RANK_TIERS = [
+                    { name: 'Diamond',  min: 4000 },
+                    { name: 'Platinum', min: 3000 },
+                    { name: 'Gold',     min: 2000 },
+                    { name: 'Silver',   min: 1000 },
+                    { name: 'Bronze',   min: 0 }
+                ];
+                const txResult = await runTransaction(ref(db, `players/${myUid}/rankPoints`), (pts) => {
+                    pts = (pts || 0) + (won ? 30 : -15);
+                    return Math.max(0, pts);
+                });
+                const newPoints = txResult.snapshot.val() ?? 0;
+                const newTier = RANK_TIERS.find(t => newPoints >= t.min)?.name || 'Bronze';
+                await set(ref(db, `players/${myUid}/rank`), newTier);
+            } catch (e) {
+                console.error('updatePlayerStats failed:', e);
+            }
+        }
+
+        // ✅ FIX: Reset spy hints when returning to waiting
+        window.returnToWaiting = async function() {
+            if (!window.gameState.isHost) {
+                alert('فقط المضيف يمكنه إعادة اللعب');
+                return;
+            }
+            
+            // Reset local spy hints state
+            window.gameState.spyHintsUsed = 0;
+            
+            const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+            await update(roomRef, {
+                status: 'waiting',
+                roles: null,
+                secretWord: null,
+                spyId: null,
+                currentRevealIndex: null,
+                revealOrder: null,
+                suspects: null,
+                votingReady: null,
+                votes: null,
+                tiedPlayers: null,
+                votedOutSpy: null,
+                votedOutInnocent: null,
+                winner: null
+            });
+        };
+
+        window.takeScreenshot = async function() {
+            if (window.SS) {
+                const roomRef = ref(db, `rooms/${window.gameState.roomCode}`);
+                const snap = await get(roomRef);
+                const roomData = snap.val();
+                
+                await window.SS.capture({
+                    winner: roomData.winner,
+                    word: roomData.secretWord,
+                    category: window.gameState.category,
+                    players: Object.entries(roomData.roles || {}).map(([uid, role]) => ({
+                        name: window.gameState.players[uid]?.username,
+                        role
+                    })),
+                    myName: window.gameState.currentUser.displayName || window.gameState.currentUser.email,
+                    myRole: window.gameState.myRole,
+                    myWon: (window.gameState.myRole === 'spy' && roomData.winner === 'spy') || 
+                           (window.gameState.myRole === 'innocent' && roomData.winner === 'innocent')
+                });
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // ROOM SHARING
+        // ═══════════════════════════════════════════════════════════
+
+        window.copyRoomCode = function() {
+            const code = window.gameState.roomCode;
+            navigator.clipboard.writeText(code).then(() => {
+                if (window.showToast) {
+                    showToast('تم نسخ الكود!');
+                } else {
+                    alert('تم نسخ الكود: ' + code);
+                }
+            });
+        };
+
+        window.shareRoom = async function() {
+            const url = `${window.location.origin}${window.location.pathname}?room=${window.gameState.roomCode}`;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'El Jasus - انضم للعبة!',
+                        text: `انضم لغرفتي في El Jasus!\nالكود: ${window.gameState.roomCode}`,
+                        url
+                    });
+                } catch (e) {
+                    console.log('Share cancelled');
+                }
+            } else {
+                navigator.clipboard.writeText(url);
+                if (window.showToast) {
+                    showToast('تم نسخ الرابط!');
+                } else {
+                    alert('تم نسخ الرابط');
+                }
+            }
+        };
+
+        window.showQRCode = function() {
+            const modal = document.getElementById('qrModal');
+            const qrContainer = document.getElementById('qrcode');
+            
+            qrContainer.innerHTML = '';
+            
+            new QRCode(qrContainer, {
+                text: `${window.location.origin}${window.location.pathname}?room=${window.gameState.roomCode}`,
+                width: 256,
+                height: 256
+            });
+            
+            modal.classList.remove('hidden');
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // CHAT SYSTEM WITH MODERATION
+        // ═══════════════════════════════════════════════════════════
+
+        function setupChatListener() {
+            const chatRef = ref(db, `rooms/${window.gameState.roomCode}/chat`);
+            
+            onChildAdded(chatRef, (snapshot) => {
+                const message = snapshot.val();
+                displayChatMessage(message);
+            });
+        }
+
+        function displayChatMessage(msg) {
+            const container = document.getElementById('chatMessages');
+            const isMe = msg.uid === window.gameState.currentUser.uid;
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `mb-3 ${isMe ? 'text-right' : 'text-left'}`;
+            
+            msgDiv.innerHTML = `
+                <div class="inline-block max-w-[70%]">
+                    <p class="text-xs opacity-60 mb-1">${msg.username}</p>
+                    <div class="rounded-xl px-4 py-2 ${
+                        isMe 
+                            ? 'bg-gradient-to-r from-primary to-secondary text-white' 
+                            : 'bg-white/10'
+                    }">
+                        <p class="text-sm break-words">${msg.text}</p>
+                    </div>
+                    <p class="text-xs opacity-40 mt-1">${new Date(msg.timestamp).toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'})}</p>
+                </div>
+            `;
+            
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            if (document.getElementById('chatPanel').classList.contains('hidden')) {
+                document.getElementById('chatBtn').classList.add('active');
+            }
+        }
+
+        window.sendChatMessage = async function() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            // ═══════════════════════════════════════════════════════════
+            // MODERATION CHECK
+            // ═══════════════════════════════════════════════════════════
+            if (window.MOD && window.MOD.scan) {
+                try {
+                    const blocked = await window.MOD.scan(text);
+                    if (blocked) {
+                        // Message was blocked, warning/ban already shown
+                        input.value = '';
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Moderation error:', error);
+                    // Continue sending if moderation fails (fail-open)
+                }
+            }
+            
+            const chatRef = ref(db, `rooms/${window.gameState.roomCode}/chat`);
+            await push(chatRef, {
+                uid: window.gameState.currentUser.uid,
+                username: window.gameState.players[window.gameState.currentUser.uid]?.username || 'مجهول',
+                text,
+                timestamp: Date.now()
+            });
+            
+            input.value = '';
+        };
+
+        window.toggleChatPanel = function() {
+            const panel = document.getElementById('chatPanel');
+            panel.classList.toggle('hidden');
+            
+            if (!panel.classList.contains('hidden')) {
+                document.getElementById('chatBtn').classList.remove('active');
+                document.getElementById('chatInput').focus();
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // VOICE CHAT - Initialize when DOM ready
+        // ═══════════════════════════════════════════════════════════
+
+        window.toggleVoicePanel = function() {
+            if (window.VoiceChat) {
+                // Check if voice chat instance already exists
+                if (!window.voiceChatInstance) {
+                    const playerData = window.gameState.players[window.gameState.currentUser.uid];
+                    window.voiceChatInstance = new VoiceChat(
+                        db,
+                        window.gameState.roomCode,
+                        window.gameState.currentUser.uid,
+                        playerData?.username || 'لاعب'
+                    );
+                }
+                // Toggle panel
+                window.voiceChatInstance._togglePanel();
+            } else {
+                console.warn('VoiceChat not loaded');
+                if (window.showToast) {
+                    showToast('⛔ الدردشة الصوتية غير متوفرة');
+                }
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // FRIENDS SYSTEM
+        // ═══════════════════════════════════════════════════════════
+
+        function setupFriendsListener() {
+            const friendsRef = ref(db, `players/${window.gameState.currentUser.uid}/friends`);
+            onValue(friendsRef, (snapshot) => {
+                updateFriendsList(snapshot.val() || {});
+            });
+        }
+
+        function updateFriendsList(friends) {
+            const container = document.getElementById('friendsListView');
+            container.innerHTML = '';
+            
+            if (Object.keys(friends).length === 0) {
+                container.innerHTML = '<p class="text-center text-sm opacity-60 py-8">لا يوجد أصدقاء بعد</p>';
+                return;
+            }
+            
+            Object.entries(friends).forEach(async ([friendUid, friendData]) => {
+                const friendPlayerRef = ref(db, `players/${friendUid}`);
+                const snap = await get(friendPlayerRef);
+                const friendPlayer = snap.val();
+                
+                // FIX: this checked players/{uid}/status, a top-level field
+                // nothing actually writes for general "is this player
+                // online" purposes — only presence.online (written on
+                // home.html and room.html now) is ever kept accurate. This
+                // was the same field friends-panel.js and friends.html
+                // already correctly check.
+                const friendPresence = friendPlayer?.presence || {};
+                const isOnline = !!friendPresence.online;
+                const friendInWaitingRoom = !!(friendPresence.inGame && friendPresence.phase === 'waiting' && friendPresence.room);
+                
+                const item = document.createElement('div');
+                item.className = 'friend-item';
+
+                let actionBtn = '';
+                if (friendInWaitingRoom) {
+                    // Friend is sitting in a waiting-stage room elsewhere — ask to join it.
+                    // They (not us) must accept before we're actually added.
+                    actionBtn = `
+                        <button onclick="askToJoinFriend('${friendUid}')" 
+                            class="px-3 py-1.5 rounded-lg bg-success/20 hover:bg-success/30 text-success text-xs font-bold">
+                            اطلب الانضمام
+                        </button>
+                    `;
+                } else if (isOnline && window.gameState.currentStatus === 'waiting') {
+                    // We're in a waiting room ourselves — invite them to join us.
+                    actionBtn = `
+                        <button onclick="sendGameInvite('${friendUid}', '${(friendPlayer?.username || 'Friend').replace(/'/g, "\\'")}')" 
+                            class="px-3 py-1.5 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold">
+                            دعوة
+                        </button>
+                    `;
+                }
+                
+                item.innerHTML = `
+                    <div class="friend-avatar">
+                        <i class="fas fa-user text-white text-sm"></i>
+                        <div class="friend-status-dot ${isOnline ? 'online' : 'offline'}"></div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-sm truncate"><span class="player-name-themed" data-uid="${friendUid}">${friendPlayer?.username || 'Friend'}</span></p>
+                        <p class="text-xs opacity-60">${friendInWaitingRoom ? 'في غرفة انتظار' : (isOnline ? 'متصل' : 'غير متصل')}</p>
+                    </div>
+                    ${actionBtn}
+                `;
+                
+                container.appendChild(item);
+                const fnEl = item.querySelector(`[data-uid="${friendUid}"]`);
+                if (fnEl && window.NameThemes && friendPlayer) {
+                    window.NameThemes.applyPlayerStyle(fnEl, {
+                        username: friendPlayer.username || friendData.username,
+                        nameTheme: friendPlayer.activeTheme || friendPlayer.nameTheme || 'default',
+                        nameTag: friendPlayer.activeTitle || friendPlayer.nameTag || null,
+                        rankPoints: friendPlayer.rankPoints || 0
+                    });
+                }
+            });
+        }
+
+        window.toggleFriendsPanel = function() {
+            const panel = document.getElementById('friendsPanel');
+            panel.classList.toggle('hidden');
+            
+            if (!panel.classList.contains('hidden')) {
+                switchFriendsTab('list');
+            }
+        };
+
+        window.switchFriendsTab = function(tab) {
+            const listTab = document.getElementById('friendsListTab');
+            const addTab = document.getElementById('addFriendTab');
+            const listView = document.getElementById('friendsListView');
+            const addView = document.getElementById('addFriendView');
+            
+            if (tab === 'list') {
+                listTab.classList.add('bg-primary', 'text-white');
+                listTab.classList.remove('bg-transparent');
+                addTab.classList.remove('bg-primary', 'text-white');
+                addTab.classList.add('bg-transparent');
+                listView.classList.remove('hidden');
+                addView.classList.add('hidden');
+            } else {
+                addTab.classList.add('bg-primary', 'text-white');
+                addTab.classList.remove('bg-transparent');
+                listTab.classList.remove('bg-primary', 'text-white');
+                listTab.classList.add('bg-transparent');
+                addView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                updateRoomPlayersForFriends();
+            }
+        };
+
+        function updateRoomPlayersForFriends() {
+            const container = document.getElementById('roomPlayersList');
+            const players = window.gameState.players;
+            const myUid = window.gameState.currentUser.uid;
+            
+            container.innerHTML = '';
+            
+            Object.entries(players).forEach(async ([uid, player]) => {
+                if (uid === myUid) return;
+                
+                const friendRef = ref(db, `players/${myUid}/friends/${uid}`);
+                const snap = await get(friendRef);
+                const isFriend = snap.exists();
+                
+                const item = document.createElement('div');
+                item.className = 'friend-item';
+                
+                item.innerHTML = `
+                    <div class="friend-avatar">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-sm truncate"><span class="player-name-themed" data-uid="${uid}">${player.username}</span></p>
+                    </div>
+                    ${isFriend ? `
+                        <span class="text-xs text-success">✓ صديق</span>
+                    ` : `
+                        <button onclick="addFriend('${uid}', '${player.username}')" 
+                            class="px-3 py-1.5 rounded-lg bg-success/20 hover:bg-success/30 text-success text-xs font-bold">
+                            إضافة
+                        </button>
+                    `}
+                `;
+                
+                container.appendChild(item);
+                const rpEl = item.querySelector(`[data-uid="${uid}"]`);
+                if (rpEl && window.NameThemes) {
+                    window.NameThemes.applyPlayerStyle(rpEl, {
+                        username: player.username,
+                        nameTheme: player.nameTheme || 'default',
+                        nameTag: player.nameTag || null,
+                        rankPoints: player.rankPoints || 0
+                    });
+                }
+            });
+        }
+
+        window.addFriend = async function(friendUid, friendUsername) {
+            const myUid = window.gameState.currentUser.uid;
+            const myUsername = window.gameState.players[myUid]?.username;
+            
+            await set(ref(db, `players/${myUid}/friends/${friendUid}`), {
+                username: friendUsername,
+                addedAt: serverTimestamp()
+            });
+            
+            await set(ref(db, `players/${friendUid}/friends/${myUid}`), {
+                username: myUsername,
+                addedAt: serverTimestamp()
+            });
+            
+            if (window.showToast) {
+                showToast('تمت إضافة الصديق!');
+            }
+            
+            updateRoomPlayersForFriends();
+        };
+
+        // Sends a real invite via the shared FI module (invites/{uid}, the path
+        // friend-invite-enhanced.js actually listens to). This used to write
+        // directly to players/{uid}/invites/{timestamp} with different field
+        // names — a path/schema nobody was listening to, so invited friends
+        // never saw anything.
+        window.sendGameInvite = async function(friendUid, friendUsername) {
+            if (!window.FI) {
+                if (window.showToast) showToast('نظام الدعوات لم يُحمّل بعد، حاول مرة أخرى');
+                return;
+            }
+            const myName = window.gameState.players[window.gameState.currentUser.uid]?.username;
+            try {
+                await window.FI.sendInvite(friendUid, friendUsername, window.gameState.roomCode, myName);
+                if (window.showToast) showToast('تم إرسال الدعوة!');
+            } catch (e) {
+                console.error('sendGameInvite error:', e);
+                if (window.showToast) showToast('تعذر إرسال الدعوة');
+            }
+        };
+
+        // "Ask to join" — sent to a friend who is currently sitting in a
+        // waiting-stage room of their own. They must explicitly accept
+        // (from their own toast/inbox) before we're actually added; nothing
+        // here writes us into their room directly.
+        window.askToJoinFriend = async function(friendUid) {
+            if (!window.FI) {
+                if (window.showToast) showToast('نظام الدعوات لم يُحمّل بعد، حاول مرة أخرى');
+                return;
+            }
+            try {
+                await window.FI.sendJoinRequest(friendUid);
+                if (window.showToast) showToast('تم إرسال طلب الانضمام، بانتظار الموافقة');
+            } catch (e) {
+                console.error('askToJoinFriend error:', e);
+                if (window.showToast) showToast(e.message || 'تعذر إرسال الطلب');
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // IMPROVED REPORTS SYSTEM
+        // ═══════════════════════════════════════════════════════════
+
+        let selectedReportReason = '';
+
+        window.selectReportReason = function(reason, element) {
+            selectedReportReason = reason;
+            document.getElementById('reportReason').value = reason;
+            
+            // Update UI
+            document.querySelectorAll('.report-reason-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        };
+
+        window.toggleReportsPanel = function() {
+            const panel = document.getElementById('reportsPanel');
+            panel.classList.toggle('hidden');
+            
+            if (!panel.classList.contains('hidden')) {
+                updateReportPlayersList();
+                // Reset form
+                document.getElementById('reportPlayerSelect').value = '';
+                document.getElementById('reportDescription').value = '';
+                document.querySelectorAll('.report-reason-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                selectedReportReason = '';
+            }
+        };
+
+        function updateReportPlayersList() {
+            const select = document.getElementById('reportPlayerSelect');
+            const players = window.gameState.players;
+            const myUid = window.gameState.currentUser.uid;
+            
+            select.innerHTML = '<option value="">-- اختر لاعباً --</option>';
+            
+            Object.entries(players).forEach(([uid, player]) => {
+                if (uid === myUid) return;
+                
+                const option = document.createElement('option');
+                option.value = uid;
+                option.textContent = player.username;
+                select.appendChild(option);
+            });
+        }
+
+        // Character counter for description
+        document.addEventListener('DOMContentLoaded', () => {
+            const desc = document.getElementById('reportDescription');
+            if (desc) {
+                desc.addEventListener('input', () => {
+                    document.getElementById('reportCharCount').textContent = desc.value.length;
+                });
+            }
+        });
+
+        window.submitReport = async function() {
+            const targetUid = document.getElementById('reportPlayerSelect').value;
+            const reason = selectedReportReason || document.getElementById('reportReason').value;
+            const description = document.getElementById('reportDescription').value.trim();
+            
+            if (!targetUid) {
+                alert('اختر لاعباً للإبلاغ عنه');
+                return;
+            }
+            
+            if (!reason) {
+                alert('اختر سبب البلاغ');
+                return;
+            }
+            
+            const reportRef = ref(db, `reports/${Date.now()}`);
+            
+            await set(reportRef, {
+                reportedBy: window.gameState.currentUser.uid,
+                reportedByName: window.gameState.players[window.gameState.currentUser.uid]?.username,
+                targetUid,
+                targetName: window.gameState.players[targetUid]?.username,
+                reason,
+                description,
+                roomCode: window.gameState.roomCode,
+                timestamp: serverTimestamp(),
+                status: 'pending'
+            });
+            
+            if (window.showToast) {
+                showToast('✓ تم إرسال البلاغ بنجاح');
+            } else {
+                alert('تم إرسال البلاغ');
+            }
+            
+            toggleReportsPanel();
+        };
+
+        // ═══════════════════════════════════════════════════════════
+        // UTILITIES
+        // ═══════════════════════════════════════════════════════════
+
+        window.showToast = function(message) {
+            const toast = document.createElement('div');
+            // Clear the bottom panel dock on phones/tablets (<1180px); desktop has no dock there.
+            const bottomOffset = window.innerWidth < 1180
+                ? 'calc(90px + env(safe-area-inset-bottom))'
+                : '20px';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: ${bottomOffset};
+                left: 50%;
+                transform: translateX(-50%);
+                max-width: min(420px, 90vw);
+                text-align: center;
+                background: linear-gradient(135deg, rgba(0,242,255,0.9), rgba(124,48,255,0.9));
+                color: white;
+                padding: 12px 24px;
+                border-radius: 12px;
+                font-weight: bold;
+                z-index: 10000;
+                animation: fadeInUp 0.3s ease;
+            `;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
+    </script>
+
+    <!-- Load voice chat script -->
+    <script src="../Assets/voice-chat.js"></script>
+    
+    <!-- Load screenshot system -->
+    <script src="../Assets/screenshot.js"></script>
+    <script>
+        window.alert   = (msg)             => UIAlert(msg);
+        window.confirm = (msg)             => UIConfirm(msg);
+        window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
+    </script>
+</body>
+</html>

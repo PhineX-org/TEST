@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="../Assets/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="الجاسوس">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الغرف العامة | El Jasus</title>
+    <meta name="description" content="تصفح واختر الغرف العامة المتاحة للعب مع لاعبين من حول العالم">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="../Assets/dialogs.js"></script>
+    <script src="../Assets/moderation.js"></script>
+
+    <style>
+
+        :root { 
+            --bg-color: #000000;
+            --card-color: rgba(0, 0, 0, 0.85);
+            --btn-color: #00f2ff;
+            --text-color: #ffffff;
+            --accent-color: #00f2ff;
+            --lime-color: #a3e635;
+        }
+        
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: #000000;
+            background-image:
+                radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,0.10), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,0.06), transparent 60%);
+            background-attachment: fixed;
+            color: var(--text-color); 
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0,242,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255,0.035) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(0,242,255,0.8), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        .glass { 
+            background: rgba(0,0,0,0.82);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,242,255,0.18);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0,242,255,0.8), 0 0 20px rgba(0,242,255,0.6), 0 0 30px rgba(0,242,255,0.4);
+            color: var(--accent-color);
+        }
+
+        /* ═══ ROOM CARD — mobile-first, no expand step. Everything (code,
+           category, host, players, join) is visible immediately; the card
+           stacks vertically by default and only becomes a wider layout on
+           bigger screens, rather than starting wide and hoping it wraps. ═══ */
+        .room-card { 
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            position: relative;
+        }
+        
+        .room-card:hover { 
+            border-color: rgba(0,242,255,0.5);
+            box-shadow: 0 12px 40px rgba(0,242,255,0.15);
+        }
+
+        .room-card.state-full { opacity: 0.55; }
+
+        .room-code-chip {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            color: rgba(0,242,255,1);
+            text-shadow: 0 0 12px rgba(0,242,255,0.5);
+        }
+
+        .category-badge { 
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(0,242,255,0.08);
+            border: 1px solid rgba(0,242,255,0.25);
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* Player-count pill: lime = plenty of room, cyan = filling up,
+           neutral/dim = full (a disabled state, not an alarm — no red). */
+        .player-count-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 900;
+            border: 1px solid;
+        }
+        .player-count-pill.plenty     { background: rgba(163,230,53,0.1);  border-color: rgba(163,230,53,0.4);  color: #a3e635; }
+        .player-count-pill.filling    { background: rgba(0,242,255,0.1);   border-color: rgba(0,242,255,0.4);   color: #00f2ff; }
+        .player-count-pill.full       { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); }
+
+        .filter-chip { transition: all 0.2s ease; }
+        .filter-chip.active span { 
+            background: rgba(0,242,255,0.9);
+            border-color: #00f2ff;
+            color: #000;
+            box-shadow: 0 0 16px rgba(0,242,255,0.4);
+            font-weight: 900;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { 
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background: rgba(0,242,255,0.5);
+            border-radius: 10px;
+        }
+
+        .stat-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        .spinner { 
+            width: 48px; height: 48px;
+            border: 4px solid rgba(0,242,255,0.2);
+            border-top-color: #00f2ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .search-bar:focus { 
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(0,242,255,0.15), 0 0 20px rgba(0,242,255,0.25);
+        }
+
+        .empty-state { animation: fadeInUp 0.6s ease-in-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            background: rgba(163,230,53,0.95);
+            color: #000;
+            transition: all 0.25s ease;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(163,230,53,0.35); }
+        .btn-primary:disabled, .btn-primary.is-disabled {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.4);
+            box-shadow: none;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .btn-icon-ghost {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.7);
+            transition: all 0.2s ease;
+        }
+        .btn-icon-ghost:hover { border-color: rgba(0,242,255,0.5); color: #00f2ff; }
+
+        .stat-number { display: inline-block; font-variant-numeric: tabular-nums; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .room-container { animation: slideInUp 0.4s ease-out backwards; }
+        .room-container:nth-child(1) { animation-delay: 0.05s; }
+        .room-container:nth-child(2) { animation-delay: 0.1s; }
+        .room-container:nth-child(3) { animation-delay: 0.15s; }
+        .room-container:nth-child(4) { animation-delay: 0.2s; }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ═══ Mobile refinements ═══ */
+        @media (max-width: 640px) {
+            .room-code-chip { font-size: 1.1rem; }
+            #particles { display: none; } /* skip decorative cost on small/low-power devices */
+        }
+    </style>
+</head>
+<body class="p-4 pb-20">
+    <!-- Floating particles -->
+    <div id="particles"></div>
+
+    <header class="max-w-6xl mx-auto mb-6 animate__animated animate__fadeInDown" style="position: relative; z-index: 10;">
+        <div class="flex items-center justify-between gap-2 mb-3">
+            <a href="home.html" class="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-all group flex-shrink-0">
+                <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform text-lg"></i>
+                <span class="text-sm font-bold hidden sm:inline">رجوع للقائمة</span>
+            </a>
+            <h1 class="text-xl sm:text-3xl font-black text-white neon-text text-center flex-1 min-w-0 truncate">🌐 الغرف العامة</h1>
+            <div class="w-6 sm:w-24 flex-shrink-0"></div>
+        </div>
+        <div class="text-center">
+            <p class="text-xs text-gray-400 font-bold">اختر غرفة وابدأ المغامرة</p>
+            <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
+                <span class="stat-pulse" style="font-size:12px;font-weight:700;color:#a3e635;display:flex;align-items:center;gap:6px;">
+                    <span style="width:10px;height:10px;border-radius:50%;background:#a3e635;display:inline-block;box-shadow:0 0 10px #a3e635;"></span>
+                    <span id="online-player-count" class="stat-number">-</span> لاعب متصل
+                </span>
+                <span class="stat-pulse" style="font-size:12px;font-weight:700;color:#00f2ff;display:flex;align-items:center;gap:6px;">
+                    🎮 <span id="active-game-count" class="stat-number">-</span> مباراة جارية
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto" style="position: relative; z-index: 10;">
+
+        <div class="glass rounded-2xl p-4 mb-6 border border-white/10 animate__animated animate__fadeIn fade-in">
+            <div class="relative mb-4">
+                <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن غرفة بالكود..."
+                    class="search-bar w-full bg-black/40 border-2 border-white/10 rounded-xl pr-12 pl-4 py-3 text-sm outline-none transition-all"/>
+            </div>
+            <button id="filterToggle" class="w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border-2 border-white/10 rounded-xl p-3 transition-all group">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-filter text-cyan-400 text-lg"></i>
+                    <span class="text-sm font-bold">فلترة النتائج المتقدمة</span>
+                </div>
+                <i class="fas fa-chevron-down transition-transform text-cyan-400" id="filterIcon"></i>
+            </button>
+            <div id="filterPanel" class="hidden mt-4 space-y-4 animate__animated animate__fadeIn">
+                <div>
+                    <label class="text-xs font-bold text-gray-400 uppercase block mb-3 tracking-wider">
+                        <i class="fas fa-th-large ml-1"></i> التصنيفات
+                    </label>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-chip category-filter" data-category="all">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                🌐 الكل
+                            </span>
+                        </button>
+                        <button class="filter-chip category-filter" data-category="places">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                🌍 أماكن سياحية
+                            </span>
+                        </button>
+                        <button class="filter-chip category-filter" data-category="food">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                🍕 أكلات مصرية
+                            </span>
+                        </button>
+                        <button class="filter-chip category-filter" data-category="jobs">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                🛠️ مهن ووظائف
+                            </span>
+                        </button>
+                        <button class="filter-chip category-filter" data-category="companies">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                🏢 شركات عالمية
+                            </span>
+                        </button>
+                        <button class="filter-chip category-filter" data-category="football_teams">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                ⚽ أندية كورة
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-400 uppercase block mb-3 tracking-wider">
+                        <i class="fas fa-users ml-1"></i> عدد اللاعبين
+                    </label>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-chip player-filter" data-players="all">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                الكل
+                            </span>
+                        </button>
+                        <button class="filter-chip player-filter" data-players="available">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                غرف متاحة
+                            </span>
+                        </button>
+                        <button class="filter-chip player-filter" data-players="almost-full">
+                            <span class="px-4 py-2.5 rounded-xl border-2 border-white/20 bg-white/5 text-xs font-bold hover:border-cyan-400 transition-all">
+                                شبه ممتلئة
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <button id="clearFilters" class="w-full py-3 px-4 bg-white/5 hover:bg-white/10 border-2 border-white/15 rounded-xl text-xs font-bold text-white/70 transition-all hover:scale-105">
+                    <i class="fas fa-times-circle ml-1"></i> مسح جميع الفلاتر
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-4 px-2">
+            <p class="text-xs text-gray-400 font-bold">
+                <i class="fas fa-door-open ml-1 text-cyan-400"></i>
+                <span id="roomCount" class="stat-number">-</span> غرفة متاحة
+            </p>
+            <button id="refreshBtn" class="flex items-center gap-2 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-all group px-3 py-2 rounded-lg hover:bg-cyan-400/10">
+                <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i>
+                تحديث البيانات
+            </button>
+        </div>
+
+        <!-- Loading -->
+        <div id="loadingState" class="glass rounded-2xl p-10 text-center border border-white/10">
+            <div class="spinner mb-4"></div>
+            <p class="text-sm text-gray-400 font-bold mb-1">جارٍ الاتصال بالخوادم...</p>
+            <p class="text-xs text-gray-600">يرجى الانتظار</p>
+        </div>
+
+        <!-- Rooms -->
+        <div id="roomsList" class="space-y-4"></div>
+
+        <!-- Empty -->
+        <div id="emptyState" class="hidden empty-state glass rounded-2xl p-12 text-center border border-white/10">
+            <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-cyan-500/10 flex items-center justify-center border-2 border-cyan-500/20">
+                <i class="fas fa-inbox text-5xl text-gray-600"></i>
+            </div>
+            <h3 class="text-2xl font-black text-gray-300 mb-2">لا توجد غرف متاحة حالياً</h3>
+            <p class="text-sm text-gray-500 mb-6">جرب تغيير الفلاتر أو أنشئ غرفة جديدة بنفسك</p>
+            <a href="home.html" class="inline-block px-8 py-4 btn-primary rounded-xl text-sm font-black transition-all border-2 border-cyan-400/50">
+                <i class="fas fa-plus-circle ml-2"></i> إنشاء غرفة جديدة
+            </a>
+        </div>
+
+        <!-- Error -->
+        <div id="errorState" class="hidden glass rounded-2xl p-8 text-center border-2 border-cyan-500/30">
+            <i class="fas fa-exclamation-triangle text-4xl text-cyan-400 mb-4 block animate__animated animate__shakeX"></i>
+            <p class="text-lg text-cyan-400 font-bold mb-1">تعذّر الاتصال بقاعدة البيانات</p>
+            <p id="errorMsg" class="text-sm text-gray-400 mb-6"></p>
+            <button onclick="location.reload()" class="px-8 py-3 bg-cyan-500/20 border-2 border-cyan-500/40 rounded-xl text-sm font-bold text-cyan-400 hover:bg-cyan-500/30 transition-all">
+                <i class="fas fa-redo ml-2"></i> إعادة المحاولة
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp }                                     from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged }    from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, update, push, serverTimestamp }
+                                                                     from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey:            "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+            authDomain:        "el-jasus.firebaseapp.com",
+            databaseURL:       "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId:         "el-jasus",
+            storageBucket:     "el-jasus.firebasestorage.app",
+            messagingSenderId: "415659587906",
+            appId:             "1:415659587906:web:782f7940176ea4097eb0db",
+            measurementId:     "G-N4K79FP56N"
+        };
+
+        const app  = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db   = getDatabase(app);
+
+        window._firebaseFns = { ref, get, update, onValue, push, serverTimestamp };
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // DOM shortcuts
+        const el = id => document.getElementById(id);
+
+        // State
+        function showLoading() {
+            el('loadingState').classList.remove('hidden');
+            el('emptyState').classList.add('hidden');
+            el('errorState').classList.add('hidden');
+            el('roomsList').innerHTML = '';
+        }
+        function showEmpty() {
+            el('loadingState').classList.add('hidden');
+            el('emptyState').classList.remove('hidden');
+            el('errorState').classList.add('hidden');
+        }
+        function showError(msg) {
+            el('loadingState').classList.add('hidden');
+            el('emptyState').classList.add('hidden');
+            el('errorState').classList.remove('hidden');
+            el('errorMsg').textContent = msg || '';
+        }
+        function hideAllStates() {
+            el('loadingState').classList.add('hidden');
+            el('emptyState').classList.add('hidden');
+            el('errorState').classList.add('hidden');
+        }
+
+        // Categories with enhanced styling
+        // Icons differentiate categories now — no per-category color needed,
+        // every badge uses the same .category-badge treatment.
+        const categoryLabels = {
+            places:         { label:"أماكن سياحية",  icon:"🌍" },
+            food:           { label:"أكلات مصرية",   icon:"🍕" },
+            jobs:           { label:"مهن ووظائف",    icon:"🛠️" },
+            companies:      { label:"شركات عالمية",  icon:"🏢" },
+            football_teams: { label:"أندية كورة",    icon:"⚽" }
+        };
+        const defaultCategory = { label:"عامة", icon:"🎮" };
+
+        // Data
+        let allRooms      = [];
+        let filteredRooms = [];
+        let activeFilters = { category:'all', players:'all', search:'' };
+        let listenersStarted = false;
+        let playersData = {}; // Store players data for username lookup
+
+        function getPlayerCount(room) {
+            if (Array.isArray(room.players))                      return room.players.filter(Boolean).length;
+            if (room.players && typeof room.players === 'object') return Object.keys(room.players).length;
+            if (typeof room.playerCount === 'number')             return room.playerCount;
+            return 0;
+        }
+
+        // ✅ FIX: Get host username from players data
+        async function getHostUsername(room) {
+            if (!room.hostId) return 'مجهول';
+            
+            // Try to get from room's players first
+            if (room.players && room.players[room.hostId]) {
+                return room.players[room.hostId].username || 'مجهول';
+            }
+            
+            // Try to get from global players data
+            if (playersData[room.hostId]) {
+                return playersData[room.hostId].username || 'مجهول';
+            }
+            
+            // Fetch from database
+            try {
+                const playerSnap = await get(ref(db, `players/${room.hostId}`));
+                const playerData = playerSnap.val();
+                if (playerData) {
+                    playersData[room.hostId] = playerData;
+                    return playerData.username || playerData.email || 'مجهول';
+                }
+            } catch (error) {
+                console.error('Error fetching host username:', error);
+            }
+            
+            return 'مجهول';
+        }
+
+        // Start listeners
+        function startListeners() {
+            if (listenersStarted) return;
+            listenersStarted = true;
+
+            // ✅ IMPROVED: Listen to all players for username lookup
+            onValue(ref(db, 'players'), snap => {
+                if (snap.exists()) {
+                    const players = snap.val();
+                    playersData = players;
+                    
+                    // Count online players
+                    const onlineCount = Object.values(players).filter(p => p?.presence?.online).length;
+                    el('online-player-count').textContent = onlineCount;
+                    
+                    // Animate number change
+                    el('online-player-count').classList.add('animate__animated', 'animate__pulse');
+                    setTimeout(() => {
+                        el('online-player-count').classList.remove('animate__animated', 'animate__pulse');
+                    }, 500);
+                } else {
+                    el('online-player-count').textContent = '0';
+                }
+            }, err => {
+                console.warn('[onlinerooms] players read error:', err.code);
+                el('online-player-count').textContent = '?';
+            });
+
+            // Rooms listener with improved data fetching
+            onValue(ref(db, 'rooms'), async snap => {
+                const rooms = snap.val() || {};
+
+                const activeGames = Object.values(rooms).filter(r => r?.status === 'playing').length;
+                el('active-game-count').textContent = activeGames;
+                
+                // Animate number change
+                el('active-game-count').classList.add('animate__animated', 'animate__pulse');
+                setTimeout(() => {
+                    el('active-game-count').classList.remove('animate__animated', 'animate__pulse');
+                }, 500);
+
+                allRooms = [];
+
+                // ✅ IMPROVED: Fetch host usernames for all rooms
+                const roomPromises = Object.keys(rooms).map(async code => {
+                    const room = rooms[code];
+                    if (!room) return null;
+
+                    const isWaiting =
+                        !room.status              ||
+                        room.status === 'waiting' ||
+                        room.status === 'lobby';
+
+                    if (isWaiting) {
+                        const hostUsername = await getHostUsername(room);
+                        return {
+                            code,
+                            category:    room.category  || null,
+                            playerCount: getPlayerCount(room),
+                            maxPlayers:  room.maxPlayers || 10,
+                            hostId:      room.hostId,
+                            hostUsername: hostUsername,
+                            visibility:  room.visibility || 'public',
+                            createdAt:   room.createdAt || Date.now()
+                        };
+                    }
+                    return null;
+                });
+
+                const roomsData = await Promise.all(roomPromises);
+                allRooms = roomsData.filter(r => r !== null);
+
+                applyFilters();
+
+            }, err => {
+                console.error('[onlinerooms] rooms read FAILED:', err.code, err.message);
+                showError(err.code + ': ' + err.message);
+            });
+        }
+
+        // Auth: sign in then start listeners
+        onAuthStateChanged(auth, async user => {
+            if (user) {
+                if (window.MOD) {
+                    await MOD.init(db, user);
+                    if (document.getElementById('_ej_ban')) return;
+                }
+                startListeners();
+            } else {
+                signInAnonymously(auth)
+                    .catch(err => {
+                        console.warn('[onlinerooms] Anonymous auth failed:', err.code);
+                        startListeners();
+                    });
+            }
+        });
+
+        // Filter & render
+        function applyFilters() {
+            filteredRooms = allRooms.filter(room => {
+                if (activeFilters.search && !room.code.toLowerCase().includes(activeFilters.search.toLowerCase())) return false;
+                if (activeFilters.category !== 'all' && room.category !== activeFilters.category) return false;
+                if (activeFilters.players === 'available'   && room.playerCount >= room.maxPlayers) return false;
+                if (activeFilters.players === 'almost-full' && room.playerCount < 7)               return false;
+                return true;
+            });
+            renderRooms();
+        }
+
+        function renderRooms() {
+            el('roomCount').textContent = filteredRooms.length;
+            
+            // Animate count
+            el('roomCount').classList.add('animate__animated', 'animate__pulse');
+            setTimeout(() => {
+                el('roomCount').classList.remove('animate__animated', 'animate__pulse');
+            }, 500);
+
+            if (filteredRooms.length === 0) {
+                el('roomsList').innerHTML = '';
+                showEmpty();
+                return;
+            }
+
+            hideAllStates();
+
+            // FIX/REDESIGN: the old card required a tap to expand before the
+            // Join button even appeared, and its collapsed state packed 4
+            // side-by-side blocks (code/category/players/arrow) into one row
+            // that only worked by hoping flex-wrap would land somewhere
+            // reasonable — on a phone it wrapped unpredictably and the join
+            // action was hidden behind an extra tap. This version shows
+            // everything — including Join — immediately, stacked in a
+            // mobile-first column that never depends on horizontal room.
+            el('roomsList').innerHTML = filteredRooms.map((room, index) => {
+                const cat          = categoryLabels[room.category] || defaultCategory;
+                const pct          = (room.playerCount / room.maxPlayers) * 100;
+                const isAlmostFull = pct >= 70;
+                const isFull       = room.playerCount >= room.maxPlayers;
+                const pillState    = isFull ? 'full' : isAlmostFull ? 'filling' : 'plenty';
+                const pillNote     = isFull ? 'ممتلئة' : isAlmostFull ? 'شبه ممتلئة' : 'مقاعد متاحة';
+
+                return `
+                <div class="room-container" data-room-id="${room.code}">
+                    <div class="room-card glass rounded-2xl p-4 border-2 border-white/10 ${isFull ? 'state-full' : ''}">
+
+                        <div class="flex items-center justify-between gap-2 mb-3 flex-wrap">
+                            <span class="room-code-chip">${room.code}</span>
+                            <span class="category-badge"><span>${cat.icon}</span><span>${cat.label}</span></span>
+                        </div>
+
+                        <div class="text-xs text-white/50 mb-3 truncate">
+                            <i class="fas fa-crown" style="color:#a3e635;"></i>
+                            المضيف: <span class="font-bold text-white">${room.hostUsername}</span>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="player-count-pill ${pillState}">
+                                <i class="fas fa-users"></i> ${room.playerCount}/${room.maxPlayers} · ${pillNote}
+                            </span>
+                            <div class="flex gap-2 flex-shrink-0">
+                                <button onclick="if(window.QR) QR.generate('${room.code}')" title="مشاركة رمز QR"
+                                    class="btn-icon-ghost w-10 h-10 rounded-lg flex items-center justify-center text-lg">📲</button>
+                                <button onclick="copyRoomCode('${room.code}')" title="نسخ الكود"
+                                    class="btn-icon-ghost w-10 h-10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button onclick="joinRoom('${room.code}')" ${isFull ? 'disabled' : ''}
+                            class="btn-primary w-full py-3 rounded-xl font-black text-sm ${isFull ? 'is-disabled' : ''}">
+                            <i class="fas fa-${isFull ? 'lock' : 'sign-in-alt'} ml-2"></i>
+                            ${isFull ? 'الغرفة ممتلئة' : 'انضمام للغرفة'}
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        // ✅ FIX: Join room with proper URL parameter
+        window.joinRoom = function(roomCode) {
+            const myName = localStorage.getItem('eljasus_user_name');
+            if (!myName) {
+                alert('يجب إدخال اسمك أولاً من الصفحة الرئيسية');
+                window.location.href = 'home.html';
+                return;
+            }
+            localStorage.setItem('pendingRoomJoin', roomCode);
+            localStorage.setItem('currentRoom', roomCode);
+            // ✅ FIX: Include room code in URL
+            window.location.href = `room.html?room=${roomCode}`;
+        };
+
+        window.copyRoomCode = function(code) {
+            navigator.clipboard.writeText(code);
+            const btn = event.target.closest('button');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check text-lime-400 text-lg"></i>';
+            btn.classList.add('animate__animated', 'animate__bounceIn');
+            setTimeout(() => { 
+                btn.innerHTML = orig; 
+                btn.classList.remove('animate__animated', 'animate__bounceIn');
+            }, 1500);
+        };
+
+        el('filterToggle').addEventListener('click', () => {
+            const panel  = el('filterPanel'), icon = el('filterIcon');
+            const hidden = panel.classList.toggle('hidden');
+            icon.style.transform = hidden ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+
+        document.querySelectorAll('.category-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeFilters.category = btn.dataset.category;
+                applyFilters();
+            });
+        });
+
+        document.querySelectorAll('.player-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.player-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeFilters.players = btn.dataset.players;
+                applyFilters();
+            });
+        });
+
+        el('searchInput').addEventListener('input', e => { 
+            activeFilters.search = e.target.value; 
+            applyFilters(); 
+        });
+
+        el('clearFilters').addEventListener('click', () => {
+            activeFilters = { category:'all', players:'all', search:'' };
+            el('searchInput').value = '';
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-category="all"]').classList.add('active');
+            document.querySelector('[data-players="all"]').classList.add('active');
+            applyFilters();
+        });
+
+        el('refreshBtn').addEventListener('click', () => {
+            const icon = el('refreshBtn').querySelector('i');
+            icon.classList.add('fa-spin');
+            setTimeout(() => icon.classList.remove('fa-spin'), 1000);
+            applyFilters();
+        });
+
+        document.querySelector('[data-category="all"]').classList.add('active');
+        document.querySelector('[data-players="all"]').classList.add('active');
+
+        // Auto-join from QR URL param
+        const urlParams = new URLSearchParams(window.location.search);
+        const joinCode  = urlParams.get('join');
+        if (joinCode) {
+            el('searchInput').value = joinCode;
+            el('searchInput').dispatchEvent(new Event('input'));
+            setTimeout(() => window.joinRoom(joinCode), 1500);
+        }
+    </script>
+
+    <link rel="stylesheet" href="../Assets/mobile.css">
+    <script src="../Assets/sound-system.js" defer></script>
+    <script>
+        window.alert   = (msg)             => UIAlert(msg);
+        window.confirm = (msg)             => UIConfirm(msg);
+        window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
+    </script>
+    <script src="../Assets/qr-notifications.js" defer></script>
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../Assets/sw.js').catch(()=>{}));}</script>
+</body>
+</html>

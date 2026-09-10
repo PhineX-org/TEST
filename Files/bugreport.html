@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإبلاغ عن مشكلة | El Jasus</title>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --cyber-cyan: #00f2ff;
+            --cyber-purple: #b026ff;
+            --cyber-pink: #ff006e;
+            --cyber-green: #39ff14;
+            --cyber-blue: #0066ff;
+            --dark-bg: #000000;
+            --dark-surface: #0a0a0f;
+            --dark-surface-2: #151520;
+            --critical: #ff0055;
+            --heavy: #ff6b00;
+            --medium: #ffaa00;
+            --low: #00ccff;
+            --improvement: #39ff14;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #0a0515 0%, #000 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,242,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridScroll 30s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridScroll {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            100% {
+                transform: translateY(40px) translateX(40px);
+            }
+        }
+
+        /* Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--cyber-cyan);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 20s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) translateX(var(--drift));
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            color: var(--cyber-cyan);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button:hover {
+            background: rgba(0, 242, 255, 0.2);
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            transform: translateX(5px);
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.3);
+            animation: titlePulse 4s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px var(--cyber-cyan));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px var(--cyber-purple));
+            }
+        }
+
+        .page-subtitle {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            letter-spacing: 0.2em;
+        }
+
+        /* Report Card */
+        .report-card {
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.03), rgba(176, 38, 255, 0.03));
+            pointer-events: none;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--cyber-cyan);
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .form-label .required {
+            color: var(--cyber-pink);
+        }
+
+        /* Category Selector */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .category-option {
+            position: relative;
+        }
+
+        .category-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .category-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            text-align: center;
+        }
+
+        .category-label:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Category Colors */
+        .category-option input:checked + .category-label {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);
+        }
+
+        .category-option.critical input:checked + .category-label {
+            background: rgba(255, 0, 85, 0.1);
+            border-color: var(--critical);
+            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.4);
+        }
+
+        .category-option.critical .category-icon {
+            color: var(--critical);
+        }
+
+        .category-option.heavy input:checked + .category-label {
+            background: rgba(255, 107, 0, 0.1);
+            border-color: var(--heavy);
+            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.4);
+        }
+
+        .category-option.heavy .category-icon {
+            color: var(--heavy);
+        }
+
+        .category-option.medium input:checked + .category-label {
+            background: rgba(255, 170, 0, 0.1);
+            border-color: var(--medium);
+            box-shadow: 0 10px 30px rgba(255, 170, 0, 0.4);
+        }
+
+        .category-option.medium .category-icon {
+            color: var(--medium);
+        }
+
+        .category-option.low input:checked + .category-label {
+            background: rgba(0, 204, 255, 0.1);
+            border-color: var(--low);
+            box-shadow: 0 10px 30px rgba(0, 204, 255, 0.4);
+        }
+
+        .category-option.low .category-icon {
+            color: var(--low);
+        }
+
+        .category-option.improvement input:checked + .category-label {
+            background: rgba(57, 255, 20, 0.1);
+            border-color: var(--improvement);
+            box-shadow: 0 10px 30px rgba(57, 255, 20, 0.4);
+        }
+
+        .category-option.improvement .category-icon {
+            color: var(--improvement);
+        }
+
+        /* Input Fields */
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 242, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-purple));
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.3);
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.5);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background: rgba(57, 255, 20, 0.1);
+            border: 1px solid var(--improvement);
+            color: var(--improvement);
+        }
+
+        .message.error {
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px solid var(--critical);
+            color: var(--critical);
+        }
+
+        .message i {
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 6rem;
+            padding: 4rem 2rem 2rem;
+            background: linear-gradient(180deg, transparent 0%, rgba(10, 5, 21, 0.8) 100%);
+            border-top: 1px solid rgba(0, 242, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: 'PhineX';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(6rem, 15vw, 12rem);
+            font-weight: 900;
+            color: rgba(0, 242, 255, 0.03);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--cyber-cyan);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .footer-section a:hover {
+            color: var(--cyber-cyan);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            color: var(--cyber-cyan);
+        }
+
+        .social-link:hover {
+            background: rgba(0, 242, 255, 0.2);
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .footer-logo {
+            width: 60px;
+            height: auto;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 20px var(--cyber-cyan));
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .report-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-label {
+                min-height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles -->
+    <div class="particles" id="particlesContainer"></div>
+
+    <div class="container">
+        <!-- Back Button -->
+        <a href="home.html" class="back-button">
+            <i class="fas fa-arrow-right"></i>
+            العودة للرئيسية
+        </a>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">الإبلاغ عن مشكلة</h1>
+            <p class="page-subtitle">ساعدنا في تحسين تجربتك</p>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div id="successMessage" class="message success">
+            <i class="fas fa-check-circle"></i>
+            <span>تم إرسال التقرير بنجاح! شكراً لمساعدتك في تحسين اللعبة.</span>
+        </div>
+
+        <div id="errorMessage" class="message error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText">حدث خطأ أثناء إرسال التقرير. يرجى المحاولة مرة أخرى.</span>
+        </div>
+
+        <!-- Report Card -->
+        <div class="report-card">
+            <form id="bugReportForm">
+                <!-- Category Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        اختر تصنيف المشكلة <span class="required">*</span>
+                    </label>
+                    <div class="category-grid">
+                        <div class="category-option critical">
+                            <input type="radio" name="category" value="critical" id="cat-critical" required>
+                            <label for="cat-critical" class="category-label">
+                                <i class="fas fa-exclamation-triangle category-icon"></i>
+                                <span class="category-name">حرجة</span>
+                            </label>
+                        </div>
+
+                        <div class="category-option heavy">
+                            <input type="radio" name="category" value="heavy" id="cat-heavy">
+                            <label for="cat-heavy" class="category-label">
+                                <i class="fas fa-times-circle category-icon"></i>
+                                <span class="category-name">شديدة</span>
+                            </label>
+                        </div>
+
+                        <div class="category-option medium">
+                            <input type="radio" name="category" value="medium" id="cat-medium">
+                            <label for="cat-medium" class="category-label">
+                                <i class="fas fa-exclamation-circle category-icon"></i>
+                                <span class="category-name">متوسطة</span>
+                            </label>
+                        </div>
+
+                        <div class="category-option low">
+                            <input type="radio" name="category" value="low" id="cat-low">
+                            <label for="cat-low" class="category-label">
+                                <i class="fas fa-info-circle category-icon"></i>
+                                <span class="category-name">بسيطة</span>
+                            </label>
+                        </div>
+
+                        <div class="category-option improvement">
+                            <input type="radio" name="category" value="improvement" id="cat-improvement">
+                            <label for="cat-improvement" class="category-label">
+                                <i class="fas fa-lightbulb category-icon"></i>
+                                <span class="category-name">تحسين</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title" class="form-label">
+                        عنوان التقرير <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        name="title" 
+                        class="form-input" 
+                        placeholder="اكتب عنواناً واضحاً للمشكلة..."
+                        required
+                        maxlength="100"
+                    >
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description" class="form-label">
+                        وصف المشكلة <span class="required">*</span>
+                    </label>
+                    <textarea 
+                        id="description" 
+                        name="description" 
+                        class="form-textarea" 
+                        placeholder="صف المشكلة بالتفصيل، وكيف يمكن إعادة إنتاجها..."
+                        required
+                        maxlength="1000"
+                    ></textarea>
+                </div>
+
+                <!-- Contact -->
+                <div class="form-group">
+                    <label for="contact" class="form-label">
+                        البريد الإلكتروني أو رابط التواصل
+                    </label>
+                    <input 
+                        type="text" 
+                        id="contact" 
+                        name="contact" 
+                        class="form-input" 
+                        placeholder="example@email.com أو رابط Discord/Telegram..."
+                        maxlength="200"
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-button" id="submitBtn">
+                    <i class="fas fa-paper-plane" style="margin-left: 0.5rem;"></i>
+                    إرسال التقرير
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <img src="../Assets/ElJasus.jpg" alt="El Jasus" class="footer-logo">
+                    <h3>الجاسوس</h3>
+                    <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+                        لعبة جماعية مثيرة تجمع الأصدقاء في تجربة مليئة بالتشويق والإثارة
+                    </p>
+                    <div class="social-links" style="margin-top: 1.5rem;">
+                        <a href="https://discord.gg/xBQ3ewVVHk" target="_blank" class="social-link">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://github.com/PhineX-org" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCslNCf9VtxpFH_gtA1VHFyQ" target="_blank" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61584765330775" target="_blank" class="social-link">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="../index.html">الصفحة الرئيسية</a></li>
+                        <li><a href="home.html">اللعبة</a></li>
+                        <li><a href="howtoplay.html">كيفية اللعب</a></li>
+                        <li><a href="leaderboard.html">لوحة المتصدرين</a></li>
+                        <li><a href="aboutus.html">من نحن</a></li>
+                        <li><a href="JMS.html">نظام الاشراف والحظورات</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>الدعم</h3>
+                    <ul>
+                        <li><a href="https://discord.gg/xBQ3ewVVHk" target="_blank">Discord</a></li>
+                        <li><a href="bugreport.html">الإبلاغ عن مشكلة</a></li>
+                        <li><a href="community.html">معايير المجتمع</a></li>
+                        <li><a href="https://PhineX-org.github.io/PhineX.github.io/" target="_blank">PhineX</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 El Jasus by PhineX. جميع الحقوق محفوظة.</p>
+                <p style="margin-top: 0.5rem;">
+                    صُنع بـ <i class="fas fa-heart" style="color: var(--cyber-pink);"></i> بواسطة 
+                    <a href="https://www.facebook.com/A.Mo.Elgohary/" target="_blank" style="color: var(--cyber-cyan);">Ahmed Al Gohary</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // ============================================
+        // PARTICLES GENERATION
+        // ============================================
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.setProperty('--drift', (Math.random() - 0.5) * 200 + 'px');
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+        apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+        authDomain: "el-jasus.firebaseapp.com",
+        databaseURL: "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "el-jasus",
+        storageBucket: "el-jasus.firebasestorage.app",
+        messagingSenderId: "415659587906",
+        appId: "1:415659587906:web:782f7940176ea4097eb0db",
+        measurementId: "G-N4K79FP56N"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // ============================================
+        // FORM SUBMISSION
+        // ============================================
+        const form = document.getElementById('bugReportForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = {
+                category: document.querySelector('input[name="category"]:checked').value,
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                contact: document.getElementById('contact').value.trim(),
+                timestamp: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            // Validate
+            if (!formData.category || !formData.title || !formData.description) {
+                showError('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-left: 0.5rem;"></i> جاري الإرسال...';
+
+            try {
+                // Generate unique ID
+                const reportId = database.ref().child('reports').push().key;
+
+                // Save to Firebase
+                await database.ref('reports/' + reportId).set(formData);
+
+                // Show success message
+                showSuccess();
+
+                // Reset form
+                form.reset();
+
+            } catch (error) {
+                console.error('Error submitting report:', error);
+                showError('حدث خطأ أثناء إرسال التقرير: ' + error.message);
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane" style="margin-left: 0.5rem;"></i> إرسال التقرير';
+            }
+        });
+
+        function showSuccess() {
+            successMessage.style.display = 'flex';
+            errorMessage.style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Hide after 5 seconds
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'flex';
+            successMessage.style.display = 'none';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Hide after 5 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // ============================================
+        // FORM VALIDATION
+        // ============================================
+        document.getElementById('title').addEventListener('input', function() {
+            const remaining = 100 - this.value.length;
+            if (remaining < 20) {
+                this.style.borderColor = remaining < 10 ? 'var(--critical)' : 'var(--medium)';
+            } else {
+                this.style.borderColor = 'rgba(0, 242, 255, 0.2)';
+            }
+        });
+
+        document.getElementById('description').addEventListener('input', function() {
+            const remaining = 1000 - this.value.length;
+            if (remaining < 100) {
+                this.style.borderColor = remaining < 50 ? 'var(--critical)' : 'var(--medium)';
+            } else {
+                this.style.borderColor = 'rgba(0, 242, 255, 0.2)';
+            }
+        });
+    </script>
+    <script>
+        window.alert   = (msg)             => UIAlert(msg);
+        window.confirm = (msg)             => UIConfirm(msg);
+        window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
+    </script>
+</body>
+</html>
