@@ -500,7 +500,9 @@
                     <p id="season-dates" class="text-gray-500 text-xs mb-4"></p>
                     <div class="grid grid-cols-5 gap-2 mb-5" id="rank-tier-counts"></div>
                     <div id="rank-leaderboard-list" class="space-y-2">
-                        <p class="text-gray-400 text-center py-4">اضغط على تبويب الرتب لتحميلها</p>
+                        <div class="skeleton rounded-xl h-14"></div>
+                        <div class="skeleton rounded-xl h-14"></div>
+                        <div class="skeleton rounded-xl h-14"></div>
                     </div>
                 </div>
             </div>
@@ -509,6 +511,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
         import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
         function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -525,10 +528,12 @@ const firebaseConfig = {
 };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getDatabase(app);
         window._firebaseFns = { ref, get, onValue };
 
         let allPlayers = [];
+        let loadTimeoutHandle = null;
 
         // Tab Switching
         window.switchTab = (tab) => {
@@ -547,14 +552,21 @@ const firebaseConfig = {
         // Fetch Leaderboard Data
         async function fetchLeaderboard() {
             const playersRef = ref(db, 'players');
-            
+
+            if (loadTimeoutHandle) clearTimeout(loadTimeoutHandle);
+            loadTimeoutHandle = setTimeout(() => {
+                showLoadError('استغرق التحميل وقتاً طويلاً. تحقق من اتصالك وحاول مجدداً.');
+            }, 12000);
+
             onValue(playersRef, (snapshot) => {
+                if (loadTimeoutHandle) { clearTimeout(loadTimeoutHandle); loadTimeoutHandle = null; }
                 const data = snapshot.val();
                 allPlayers = [];
                 
                 if (data) {
                     Object.keys(data).forEach(uid => {
                         const player = data[uid];
+                        if (!player || !player.username) return;
                         allPlayers.push({
                             uid: uid,
                             username: player.username || 'مجهول',
@@ -569,8 +581,32 @@ const firebaseConfig = {
 
                 updateStats();
                 renderLeaderboards();
+            }, (error) => {
+                console.error('[leaderboard] players read failed:', error.code, error.message);
+                showLoadError(`${error.code || ''} ${error.message || ''}`.trim());
             });
         }
+
+        // Shows a clear error + retry button in place of the skeletons,
+        // instead of leaving them spinning forever when a read fails.
+        function showLoadError(message) {
+            if (loadTimeoutHandle) { clearTimeout(loadTimeoutHandle); loadTimeoutHandle = null; }
+            const errorHtml = `
+                <div class="text-center py-10">
+                    <svg class="w-12 h-12 text-red-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+                    </svg>
+                    <p class="text-red-400 font-black mb-1">تعذّر تحميل البيانات</p>
+                    <p class="text-xs text-gray-500 mb-4">${esc(message || '')}</p>
+                    <button onclick="fetchLeaderboard()" class="px-6 py-2 bg-red-500/15 border-2 border-red-500/40 rounded-xl text-sm font-black text-red-400">
+                        إعادة المحاولة
+                    </button>
+                </div>`;
+            ['spyLeaderboardList', 'innocentLeaderboardList', 'totalLeaderboardList'].forEach(id => {
+                document.getElementById(id).innerHTML = errorHtml;
+            });
+        }
+        window.fetchLeaderboard = fetchLeaderboard;
 
         function calculateWinRate(stats) {
             if (!stats || stats.totalGames === 0) return 0;
@@ -731,16 +767,42 @@ const firebaseConfig = {
                         +'<p class="font-black text-sm" style="color:'+c+';">'+p.rank+'</p>'
                         +'<p class="text-xs text-gray-500">'+p.rankPoints+' pts</p></div></div>';
                 }).join('');
+            }).catch(error => {
+                console.error('[leaderboard] rank read failed:', error.code, error.message);
+                listEl.innerHTML = `<div class="text-center py-6">
+                    <p class="text-red-400 font-black mb-1">تعذّر تحميل الرتب</p>
+                    <p class="text-xs text-gray-500 mb-3">${esc(`${error.code || ''} ${error.message || ''}`.trim())}</p>
+                    <button onclick="loadRankLeaderboard()" class="px-6 py-2 bg-red-500/15 border-2 border-red-500/40 rounded-xl text-sm font-black text-red-400">إعادة المحاولة</button>
+                </div>`;
             });
         }
+        window.loadRankLeaderboard = loadRankLeaderboard;
 
         // Refresh Button
         document.getElementById('refreshBtn').addEventListener('click', () => {
             fetchLeaderboard();
         });
 
-        // Initialize
-        fetchLeaderboard();
+        // Initialize — auth first. Every other page in this app either has
+        // a logged-in session or falls back to Firebase anonymous auth
+        // before reading the database, because the security rules require
+        // auth != null to read players. This page never did either, so
+        // reads silently failed and nothing ever replaced the skeletons.
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                fetchLeaderboard();
+                loadRankLeaderboard();
+            } else {
+                signInAnonymously(auth).catch((err) => {
+                    console.warn('[leaderboard] anonymous auth failed:', err && err.code);
+                    // Try anyway — some rule sets allow open reads even
+                    // without auth. If not, the onValue error handler
+                    // above will show a clear error instead of hanging.
+                    fetchLeaderboard();
+                    loadRankLeaderboard();
+                });
+            }
+        });
     </script>
 <script>
     window.alert   = (msg)             => UIAlert ? UIAlert(msg) : alert(msg);
