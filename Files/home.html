@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
    <meta charset="UTF-8">
-    <link rel="manifest" href="../Assets/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="الجاسوس">
@@ -19,7 +19,7 @@
     <meta property="og:site_name" content="El Jasus">
     <meta property="og:locale" content="ar_EG">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/png" href="ElJasus.jpg">
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -1024,19 +1024,18 @@
         <div class="nav-divider-label">الرئيسية</div>
 
         <a href="../index.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-home"></i></span>
+            <span class="nav-item-icon cyan"><i class="fas fa-home"></i></span>
             <span>الرئيسية</span>
-            <span class="nav-badge">NEW</span>
         </a>
 
         <a href="leaderboard.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-trophy"></i></span>
+            <span class="nav-item-icon gold"><i class="fas fa-trophy"></i></span>
             <span>لوحة المتصدرين</span>
  
         </a>
 
         <a href="howtoplay.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-book-open"></i></span>
+            <span class="nav-item-icon blue"><i class="fas fa-book-open"></i></span>
             <span>كيفية اللعب</span>
         </a>
 
@@ -1044,23 +1043,22 @@
         <div class="nav-divider-label">حسابي</div>
 
         <a href="account.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-user-circle"></i></span>
+            <span class="nav-item-icon cyan"><i class="fas fa-user-circle"></i></span>
             <span>حسابي</span>
         </a>
 
         <a href="profile.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-id-card"></i></span>
+            <span class="nav-item-icon pink"><i class="fas fa-id-card"></i></span>
             <span>ملفي الشخصي</span>
         </a>
 
         <a href="friends.html" class="nav-item">
             <span class="nav-item-icon green"><i class="fas fa-user-friends"></i></span>
             <span>الأصدقاء</span>
-        <span class="nav-badge">NEW</span>
         </a>
 
         <a href="analytics.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-chart-line"></i></span>
+            <span class="nav-item-icon purple"><i class="fas fa-chart-line"></i></span>
             <span>الإحصائيات</span>
         </a>
 
@@ -1070,10 +1068,11 @@
         <a href="bugreport.html" class="nav-item">
             <span class="nav-item-icon green"><i class="fas fa-bug"></i></span>
             <span>الإبلاغ عن مشكلة</span>
+            <span class="nav-badge">NEW</span>
         </a>
 
         <a href="JMS.html" class="nav-item">
-        <span class="nav-item-icon green"><i class="fas fa-ban"></i></span>
+        <span class="nav-item-icon blue"><i class="fas fa-ban"></i></span>
         <span>نظام الJMS</span>
         <span class="nav-badge">NEW</span>
         </a>
@@ -1082,7 +1081,7 @@
         <div class="nav-divider-label">المتجر</div>
 
         <a href="shop.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-store"></i></span>
+            <span class="nav-item-icon gold"><i class="fas fa-store"></i></span>
             <span>المتجر</span>
  
         </a>
@@ -1096,7 +1095,7 @@
         </a>
 
         <a href="signup.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-user-plus"></i></span>
+            <span class="nav-item-icon purple"><i class="fas fa-user-plus"></i></span>
             <span>إنشاء حساب</span>
         </a>
     
@@ -1105,10 +1104,9 @@
         <div class="nav-divider-label">الإدارة</div>
 
         <a href="admin.html" class="nav-item">
-            <span class="nav-item-icon green"><i class="fas fa-cog"></i></span>
+            <span class="nav-item-icon orange"><i class="fas fa-cog"></i></span>
             <span>لوحة الإدارة</span>
-            <span class="nav-badge">ADMIN</span>
-            <span class="nav-badge">NEW</span>
+            <span class="nav-badge" style="background:rgba(0,242,255,0.16);color:rgba(0,242,255,1);border:1px solid rgba(0,242,255,0.4);">ADMIN</span>
         </a>
 
     </div>
@@ -2196,7 +2194,7 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
     // ── SERVICE WORKER ───────────────────────
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () =>
-            navigator.serviceWorker.register('../Assets/sw.js').catch(() => {}));
+            navigator.serviceWorker.register('/sw.js').catch(() => {}));
     }
 
     // ── DAILY REWARD TOAST ───────────────────

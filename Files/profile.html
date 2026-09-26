@@ -207,8 +207,9 @@
                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                         </svg>
                     </div>
-                    <div id="rankBadge" class="absolute -bottom-2 -right-2 px-4 py-2 rounded-full text-xs font-black uppercase border-2 rank-bronze">
-                        BRONZE
+                    <div id="rankBadge" class="absolute -bottom-2 -right-2 px-3 py-1.5 rounded-full text-xs font-black uppercase border-2 rank-bronze flex items-center gap-1.5">
+                        <span id="rankBadgeIcon" class="w-4 h-4 flex-shrink-0"></span>
+                        <span id="rankBadgeText">BRONZE</span>
                     </div>
                 </div>
 
@@ -216,7 +217,7 @@
                 <div class="flex-1 text-center md:text-right">
                     <div id="playerUsername" class="text-5xl font-black mb-2" style="display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;">. . . Loading</div>
                     <div class="flex items-center justify-center md:justify-start gap-4 mb-4">
-                        <span id="playerRank" class="text-gray-400 text-sm">Bronze · Division III</span>
+                        <span id="playerRank" class="text-gray-400 text-sm">Bronze</span>
                         <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
                         <span id="playerPoints" class="text-cyan-400 font-bold" style="font-family: 'Orbitron', sans-serif;">0 نقطة</span>
                     </div>
@@ -454,6 +455,11 @@ if (usernameElement && window.NameThemes) {
         }
 
         function calculateRank(points) {
+            if (window.NameThemes) {
+                const r = window.NameThemes.getRank(points);
+                return { name: r.name, nameAr: r.nameAr, min: r.min, max: r.max, class: `rank-${r.key}`, rankPoints: points };
+            }
+            // Fallback only used if name-themes.js failed to load
             const ranks = [
                 { name: 'Bronze', min: 0, max: 999, class: 'rank-bronze' },
                 { name: 'Silver', min: 1000, max: 2499, class: 'rank-silver' },
@@ -461,7 +467,6 @@ if (usernameElement && window.NameThemes) {
                 { name: 'Platinum', min: 5000, max: 9999, class: 'rank-platinum' },
                 { name: 'Diamond', min: 10000, max: Infinity, class: 'rank-diamond' }
             ];
-
             return ranks.find(r => points >= r.min && points <= r.max) || ranks[0];
         }
 
@@ -470,15 +475,24 @@ if (usernameElement && window.NameThemes) {
             points = parseInt(points) || 0;
             
             const badge = document.getElementById('rankBadge');
-            badge.className = `absolute -bottom-2 -right-2 px-4 py-2 rounded-full text-xs font-black uppercase border-2 ${rankInfo.class}`;
-            badge.innerText = rankInfo.name;
+            badge.className = `absolute -bottom-2 -right-2 px-3 py-1.5 rounded-full text-xs font-black uppercase border-2 flex items-center gap-1.5 ${rankInfo.class}`;
+            document.getElementById('rankBadgeText').innerText = rankInfo.name;
 
-            document.getElementById('playerRank').innerText = `${rankInfo.name} · Division I`;
+            const iconSlot = document.getElementById('rankBadgeIcon');
+            iconSlot.innerHTML = '';
+            if (window.NameThemes) iconSlot.appendChild(window.NameThemes.createRankIcon(points, 16));
+
+            document.getElementById('playerRank').innerText = rankInfo.nameAr || rankInfo.name;
             document.getElementById('playerPoints').innerText = `${points} نقطة`;
 
-            // Calculate progress safely
-            let progress;
-            if (rankInfo.max === Infinity) {
+            // Progress toward the next tier — delegate to the shared rank
+            // system so this always matches room.html / leaderboard.html.
+            let progress, pointsForNextTier = 0;
+            if (window.NameThemes) {
+                const p = window.NameThemes.getProgress(points);
+                progress = p.progressPercent;
+                pointsForNextTier = p.pointsForNextTier;
+            } else if (rankInfo.max === Infinity) {
                 progress = 100;
             } else {
                 const range = rankInfo.max - rankInfo.min;
@@ -487,7 +501,9 @@ if (usernameElement && window.NameThemes) {
             
             progress = Math.max(0, Math.min(100, progress)); // Clamp between 0-100
             
-            document.getElementById('rankProgress').innerText = `${progress.toFixed(1)}%`;
+            document.getElementById('rankProgress').innerText = pointsForNextTier > 0
+                ? `${progress.toFixed(1)}% (${pointsForNextTier} نقطة متبقية)`
+                : `${progress.toFixed(1)}%`;
             document.getElementById('rankProgressBar').style.width = `${progress}%`;
 
             // Calculate level
@@ -623,6 +639,6 @@ if (usernameElement && window.NameThemes) {
     window.confirm = (msg)             => UIConfirm ? UIConfirm(msg) : confirm(msg);
     window.prompt  = (msg, defaultVal) => UIPrompt ? UIPrompt(msg, { defaultValue: defaultVal }) : prompt(msg, defaultVal);
 </script>
-    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../Assets/sw.js').catch(()=>{}));}</script>
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}</script>
 </body>
 </html>

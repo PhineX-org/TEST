@@ -17,7 +17,7 @@
         :root {
             --bg-dark: #0a0e1a;
             --primary: #00f2ff;
-            --secondary: #59ff00;
+            --secondary: #7c30ff;
         }
         
         body {
@@ -116,10 +116,7 @@
                 ✨ ثيمات الأسماء
             </button>
             <button class="tab-btn px-6 py-3 rounded-xl font-black text-sm" data-tab="tags">
-                🏷️ وسوم الأسماء
-            </button>
-            <button class="tab-btn px-6 py-3 rounded-xl font-black text-sm" data-tab="ranks">
-                🏆 نظام الرتب
+                🏷️ الالقاب
             </button>
         </div>
         
@@ -131,15 +128,6 @@
         <!-- Tags Tab -->
         <div id="tab-tags" class="tab-content hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tagsGrid"></div>
-        </div>
-        
-        <!-- Ranks Tab -->
-        <div id="tab-ranks" class="tab-content hidden">
-            <div class="glass rounded-2xl p-6 mb-6">
-                <h2 class="text-xl font-black mb-4" style="color: var(--primary);">📊 نظام الرتب</h2>
-                <p class="text-gray-400 mb-4">اكسب نقاط الرتبة من خلال الفوز بالمباريات وإكمال التحديات. كلما زادت رتبتك، حصلت على مكافآت أفضل!</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="ranksGrid"></div>
         </div>
         
     </div>
@@ -207,6 +195,7 @@ function hideError() {
         if (snapshot.exists()) {
             const data = snapshot.val();
             userCoins = data.coins || 0;
+            userRankPoints = parseInt(data.rankPoints) || 0;
             
             const inv = data.inventory || {};
             userInventory = {
@@ -215,6 +204,7 @@ function hideError() {
             };
         } else {
             userCoins = 0;
+            userRankPoints = 0;
             userInventory = { nameThemes: ['default'], nameTags: [] };
         }
         document.getElementById('coinBalance').textContent = userCoins;
@@ -236,9 +226,7 @@ function hideError() {
     
     renderThemes();
     renderTags();
-    renderRanks (async () =>
-        parseInt(
-            (await get(ref(db, `players/${currentUser.uid}/rankPoints`))).val()) || 0);
+    renderRanks(userRankPoints);
 
 }
         
@@ -401,22 +389,26 @@ function hideError() {
         }
         
         const ranks = window.NameThemes.ranks;
-        const userRank = window.NameThemes.getRank(async () =>
-                parseInt((await get(ref(db, `players/${currentUser?.uid}/rankPoints`))).val()) || 0
-            );
+        const userRank = window.NameThemes.getRank(userPoints);
+
         grid.innerHTML = Object.keys(ranks).map(key => {
             const rank = ranks[key];
-            
-            
-                    `<div class="flex items-center gap-3 mb-3">
-                        <span class="text-4xl">${rank.icon}</span>
-                        <div>
-                            <h3 class="font-black text-xl" style="color: ${rank.color};">${rank.nameAr}</h3>
+            const isCurrent = rank.key === userRank.key;
+
+            return `<div class="rounded-2xl p-4 border-2 transition-all" id="rankCard-${key}"
+                         style="border-color: ${isCurrent ? rank.color : rank.color + '30'}; background: ${isCurrent ? rank.color + '14' : 'rgba(0,0,0,0.2)'};">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 flex-shrink-0" id="rankShowcaseIcon-${key}"></div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-black text-xl" style="color: ${rank.color};">${rank.nameAr}</h3>
+                                ${isCurrent ? '<span class="text-[9px] font-black px-2 py-0.5 rounded-full" style="background:' + rank.color + '33; color:' + rank.color + ';">رتبتك</span>' : ''}
+                            </div>
                             <p class="text-sm text-gray-400">${rank.name}</p>
                         </div>
                     </div>
                     
-                    <div class="bg-black/30 rounded-xl p-3 mb-3">
+                    <div class="bg-black/30 rounded-xl p-3">
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-400">النقاط المطلوبة:</span>
                             <span class="font-black" style="font-family: 'Orbitron', sans-serif; color: ${rank.color};">
@@ -424,11 +416,14 @@ function hideError() {
                             </span>
                         </div>
                     </div>
-                    
-                    <p class="text-xs text-gray-500 text-center">${rank.division}</p>
                 </div>
             `;
         }).join('');
+
+        Object.keys(ranks).forEach(key => {
+            const holder = document.getElementById(`rankShowcaseIcon-${key}`);
+            if (holder) holder.appendChild(window.NameThemes.createRankIcon(ranks[key].min, 48));
+        });
     } catch (error) {
         console.error('خطأ في renderRanks:', error);
         grid.innerHTML = '<div class="col-span-full text-center text-red-400 p-4">حدث خطأ أثناء تحميل الرتب</div>';
@@ -491,7 +486,7 @@ window.buyTag = async function(tagKey) {
         
         const tag = window.NameThemes.tags[tagKey];
         if (!tag) {
-            showError('الوسم غير موجود');
+            showError('اللقب غير موجود');
             return;
         }
         
@@ -502,7 +497,7 @@ window.buyTag = async function(tagKey) {
         
         const ownedTags = Array.isArray(userInventory.nameTags) ? userInventory.nameTags : [];
         if (ownedTags.includes(tagKey)) {
-            showError('✅ أنت تمتلك هذا الوسم بالفعل!');
+            showError('✅ أنت تمتلك هذا اللقب بالفعل!');
             return;
         }
         
@@ -545,9 +540,9 @@ window.activateTheme = async function(themeKey) {
                 const isActive = current.val() === tagKey;
                 await update(ref(db, `players/${currentUser.uid}`), { nameTag: isActive ? null : tagKey });
                 const tag = window.NameThemes.tags[tagKey];
-                alert(isActive ? `❌ تم إزالة وسم "${tag.name}"` : `✅ تم تفعيل وسم "${tag.name}"!`);
+                alert(isActive ? `❌ تم إزالة اللقب "${tag.name}"` : `✅ تم تفعيل اللقب "${tag.name}"!`);
             } catch (error) {
-                showError('❌ فشل تفعيل الوسم: ' + error.message);
+                showError('❌ فشل تفعيل اللقب: ' + error.message);
             }
         };
         

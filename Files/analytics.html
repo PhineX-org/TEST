@@ -107,62 +107,6 @@
         <h3 class="neon text-lg font-black mb-4">آخر 10 مباريات</h3>
         <div id="history-list" class="space-y-3"></div>
     </div>
-
-    <!-- Report a Player Section -->
-    <div class="glass rounded-2xl p-6" style="border-image:linear-gradient(135deg,rgba(239,68,68,.4),rgba(239,68,68,.1)) 1;">
-        <div class="flex items-center gap-3 mb-5">
-            <div class="w-12 h-12 rounded-xl bg-red-500/20 border-2 border-red-500/30 flex items-center justify-center">
-                <svg class="w-6 h-6 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"/>
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-lg font-black text-red-400">الإبلاغ عن لاعب</h3>
-                <p class="text-xs text-gray-400">للمحافظة على بيئة لعب صحية</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label class="text-sm font-bold text-gray-400 block mb-2">اسم المستخدم</label>
-                <input id="report-username" type="text" placeholder="أدخل اسم اللاعب"
-                    class="w-full p-3 rounded-xl bg-white/5 border-2 border-red-500/20 text-white outline-none"
-                    style="font-family:'Cairo',sans-serif;">
-            </div>
-            <div>
-                <label class="text-sm font-bold text-gray-400 block mb-2">كود الغرفة (اختياري)</label>
-                <input id="report-room" type="text" placeholder="XXXXXX"
-                    class="w-full p-3 rounded-xl bg-white/5 border-2 border-red-500/20 text-white outline-none"
-                    style="font-family:'Cairo',sans-serif;">
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <label class="text-sm font-bold text-gray-400 block mb-3">سبب الإبلاغ</label>
-            <div class="flex flex-wrap gap-2" id="reason-tags">
-                <span class="report-tag bg-red-500/20 border-2 border-red-500/30 text-red-300" onclick="selectReason(this,'cheating')">🎯 غش</span>
-                <span class="report-tag bg-orange-500/20 border-2 border-orange-500/30 text-orange-300" onclick="selectReason(this,'spam')">💬 سبام</span>
-                <span class="report-tag bg-yellow-500/20 border-2 border-yellow-500/30 text-yellow-300" onclick="selectReason(this,'harassment')">😠 تحرش</span>
-                <span class="report-tag bg-purple-500/20 border-2 border-purple-500/30 text-purple-300" onclick="selectReason(this,'offensive')">🤬 محتوى مسيء</span>
-                <span class="report-tag bg-blue-500/20 border-2 border-blue-500/30 text-blue-300" onclick="selectReason(this,'other')">❓ أخرى</span>
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <label class="text-sm font-bold text-gray-400 block mb-2">تفاصيل إضافية</label>
-            <textarea id="report-desc" rows="3" placeholder="اكتب تفاصيل إضافية هنا..."
-                class="w-full p-3 rounded-xl bg-white/5 border-2 border-red-500/20 text-white outline-none resize-none"
-                style="font-family:'Cairo',sans-serif;"></textarea>
-        </div>
-
-        <button onclick="submitReport()" class="mt-4 px-8 py-3 rounded-xl font-black text-sm uppercase flex items-center gap-2"
-            style="background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 0 20px rgba(239,68,68,.4);">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"/>
-            </svg>
-            إرسال البلاغ
-        </button>
-    </div>
 </div>
 
 <script type="module">
@@ -187,50 +131,7 @@ const db   = getDatabase(app);
 window._firebaseFns = { ref, get, push };
 
 let currentUser = null;
-let selectedReason = '';
 let userData = {};
-
-window.selectReason = (el, reason) => {
-    document.querySelectorAll('.report-tag').forEach(t => {
-        t.style.fontWeight = '700';
-        t.style.boxShadow = '';
-    });
-    el.style.fontWeight = '900';
-    el.style.boxShadow = '0 0 12px currentColor';
-    selectedReason = reason;
-};
-
-window.submitReport = async () => {
-    const username = document.getElementById('report-username').value.trim();
-    const room     = document.getElementById('report-room').value.trim();
-    const desc     = document.getElementById('report-desc').value.trim();
-
-    if (!username) { alert('الرجاء إدخال اسم المستخدم'); return; }
-    if (!selectedReason) { alert('الرجاء اختيار سبب البلاغ'); return; }
-
-    try {
-        await push(ref(db, 'reports'), {
-            reportedUsername: username,
-            reportedBy: currentUser.uid,
-            reportedByUsername: currentUser.displayName || 'مجهول',
-            reason: selectedReason,
-            description: desc,
-            roomCode: room || null,
-            timestamp: Date.now(),
-            status: 'pending'
-        });
-
-        alert('تم إرسال البلاغ. شكراً لمساعدتنا في الحفاظ على بيئة لعب جيدة!');
-        document.getElementById('report-username').value = '';
-        document.getElementById('report-room').value = '';
-        document.getElementById('report-desc').value = '';
-        selectedReason = '';
-        document.querySelectorAll('.report-tag').forEach(t => t.style.boxShadow = '');
-    } catch (error) {
-        console.error('Error submitting report:', error);
-        alert('حدث خطأ أثناء إرسال البلاغ. يرجى المحاولة مرة أخرى.');
-    }
-};
 
 // ── LOAD ANALYTICS ────────────────────────
 onAuthStateChanged(auth, async user => {
@@ -349,7 +250,7 @@ function renderHistory(history) {
 </script>
     <script src="../Assets/sound-system.js" defer></script>
     <script src="../Assets/qr-notifications.js" defer></script>
-    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/../Assets/sw.js').catch(()=>{}));}</script>
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}</script>
     <script src="../Assets/moderation.js"></script>
 </body>
 </html>

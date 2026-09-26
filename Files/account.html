@@ -480,7 +480,7 @@ onAuthStateChanged(auth, async (user) => {
                 await signOut(auth);
                 localStorage.removeItem('eljasus_user_name');
                 localStorage.removeItem('eljasus_user_email');
-                window.location.href = 'home.html';
+                window.location.href = 'login.html';
             } catch (error) {
                 console.error('Logout error:', error);
                 alert('فشل تسجيل الخروج: ' + error.message);
@@ -496,7 +496,7 @@ onAuthStateChanged(auth, async (user) => {
     window.confirm = (msg)             => UIConfirm ? UIConfirm(msg) : confirm(msg);
     window.prompt  = (msg, defaultVal) => UIPrompt ? UIPrompt(msg, { defaultValue: defaultVal }) : prompt(msg, defaultVal);
 </script>
-    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/../Assets/sw.js').catch(()=>{}));}</script>
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}</script>
     <script src="../Assets/moderation.js"></script>
 </body>
 </html>

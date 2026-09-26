@@ -11,7 +11,7 @@
 // ============================================
 
 const CACHE_NAME    = 'eljasus-v2';
-const STATIC_../Assets = [
+const STATIC_Assets = [
     '/',
     '/home.html',
     '/login.html',
@@ -46,10 +46,10 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('[SW] Caching static ../Assets');
+                console.log('[SW] Caching static_Assets');
                 // Cache what we can, ignore failures for CDN links
                 return Promise.allSettled(
-                    STATIC_../Assets.map(url => cache.add(url).catch(() => {}))
+                    STATIC_Assets.map(url => cache.add(url).catch(() => {}))
                 );
             })
             .then(() => self.skipWaiting())

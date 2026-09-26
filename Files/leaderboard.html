@@ -498,7 +498,7 @@
                     </h2>
                     <p id="season-name" class="u-cyan text-sm font-bold mb-1"></p>
                     <p id="season-dates" class="text-gray-500 text-xs mb-4"></p>
-                    <div class="grid grid-cols-5 gap-2 mb-5" id="rank-tier-counts"></div>
+                    <div class="grid grid-cols-4 md:grid-cols-7 gap-2 mb-5" id="rank-tier-counts"></div>
                     <div id="rank-leaderboard-list" class="space-y-2">
                         <div class="skeleton rounded-xl h-14"></div>
                         <div class="skeleton rounded-xl h-14"></div>
@@ -725,13 +725,13 @@ const firebaseConfig = {
         }
 
         // RANK LEADERBOARD
-        const RANK_ORDER  = {Diamond:5,Platinum:4,Gold:3,Silver:2,Bronze:1};
-        const RANK_COLORS = {Diamond:'#00f2ff',Platinum:'#e5e4e2',Gold:'#ffd700',Silver:'#c0c0c0',Bronze:'#cd7f32'};
+        const RANK_ORDER  = {Ace:7,Crown:6,Diamond:5,Platinum:4,Gold:3,Silver:2,Bronze:1};
+        const RANK_COLORS = {Ace:'#ffffff',Crown:'#ffd700',Diamond:'#00f2ff',Platinum:'#e5e4e2',Gold:'#ffd700',Silver:'#c0c0c0',Bronze:'#cd7f32'};
 
         function loadRankLeaderboard() {
             const listEl = document.getElementById('rank-leaderboard-list');
             const tierEl = document.getElementById('rank-tier-counts');
-            const counts = {Bronze:0,Silver:0,Gold:0,Platinum:0,Diamond:0};
+            const counts = {Bronze:0,Silver:0,Gold:0,Platinum:0,Diamond:0,Crown:0,Ace:0};
             const now = new Date();
             document.getElementById('season-name').textContent =
                 'موسم ' + now.toLocaleDateString('ar-SA',{month:'long',year:'numeric'});

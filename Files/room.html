@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>الغرفة | El Jasus</title>
-    <link rel="icon" type="image/png" href="../Assets/ElJasus.png">
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -14,7 +14,7 @@
     <script src="../Assets/name-themes.js"></script>
    <script src="../Assets/friend-invite-enhanced.js" defer></script>
    <script src="../Assets/profile-viewer.js" defer></script>
-    
+
     <style>
         :root {
             --bg-dark: #0a0e1a;
@@ -186,6 +186,19 @@
 
         .fade-in-up {
             animation: fadeInUp 0.5s ease-out;
+        }
+
+        /* Ranked screen — pop the badge in so it reads as a clear reveal.
+           Replays every time #rankedScreen goes from hidden -> visible,
+           same trick .fade-in-up already relies on elsewhere on this page. */
+        @keyframes rankIconPop {
+            0% { opacity: 0; transform: scale(0.4); }
+            60% { opacity: 1; transform: scale(1.08); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .rank-icon-pop {
+            animation: rankIconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         /* Reveal card - disable pointer events when not your turn */
@@ -841,8 +854,45 @@
                     <i class="fas fa-camera ml-2"></i>التقط صورة
                 </button>
 
-                <button id="returnToRoomBtn" onclick="returnToWaiting()"
+                <button id="viewRankBtn" onclick="showRankedScreen()"
                     class="w-full btn-gradient py-4 rounded-2xl font-black uppercase tracking-wider">
+                    <i class="fas fa-medal ml-2"></i>عرض الرتبة
+                </button>
+            </div>
+        </div>
+
+        <!-- RANKED SCREEN -->
+        <div id="rankedScreen" class="hidden w-full max-w-lg">
+            <div class="glass rounded-3xl p-8 text-center fade-in-up">
+                <h2 class="text-2xl font-black mb-2 neon-text">
+                    <i class="fas fa-medal ml-2"></i>تغيّر الرتبة
+                </h2>
+
+                <div id="rankedContent">
+                    <!-- Big, clear rank badge with a soft glow behind it -->
+                    <div class="relative flex items-center justify-center mx-auto mb-4" style="width:190px; height:190px;">
+                        <div id="rankedIconGlow" class="absolute rounded-full" style="width:150px; height:150px; filter: blur(36px); opacity:0.55; pointer-events:none;"></div>
+                        <div id="rankedIconWrap" class="relative rank-icon-pop"></div>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-3 mb-1">
+                        <span id="rankedDelta" class="text-2xl font-black" style="font-family: 'Orbitron', sans-serif;"></span>
+                        <span id="rankedName" class="text-2xl sm:text-3xl font-black"></span>
+                    </div>
+                    <p id="rankedPoints" class="text-sm opacity-70 mb-4"></p>
+
+                    <div class="w-full h-3 rounded-full overflow-hidden mb-2" style="background: rgba(255,255,255,0.1);">
+                        <div id="rankedProgressBar" class="h-full rounded-full transition-all duration-700" style="width:0%;"></div>
+                    </div>
+                    <p id="rankedProgressLabel" class="text-xs opacity-60"></p>
+
+                    <p id="rankedTierChange" class="hidden text-center text-base font-black mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.1);"></p>
+                </div>
+
+                <p id="rankedEmptyState" class="hidden text-sm opacity-60 my-8">لم تُحتسب نقاط لك في هذه الجولة</p>
+
+                <button id="returnToRoomBtn" onclick="returnToWaiting()"
+                    class="w-full btn-gradient py-4 rounded-2xl font-black uppercase tracking-wider mt-2">
                     <i class="fas fa-home ml-2"></i>العودة للغرفة
                 </button>
             </div>
@@ -1045,7 +1095,7 @@
     </div>
 
     <!-- Load moderation system FIRST -->
-    <script src="../Assets/moderation.js"></script>
+    <script src="moderation.js"></script>
 
     <!-- Firebase & Game Logic -->
     <script type="module">
@@ -1436,6 +1486,7 @@ async function joinRoom(uid, username) {
             document.getElementById('spinnerScreen').classList.add('hidden');
             document.getElementById('spyGuessScreen').classList.add('hidden');
             document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('rankedScreen').classList.add('hidden');
 
             // Show current screen
             switch(status) {
@@ -2095,7 +2146,8 @@ async function joinRoom(uid, username) {
                 await update(roomRef, {
                     status: 'result',
                     winner: 'spy',
-                    votedOutInnocent: votedUid
+                    votedOutInnocent: votedUid,
+                    resultId: Date.now()
                 });
             }
         }
@@ -2189,7 +2241,8 @@ async function joinRoom(uid, username) {
                     await update(roomRef, {
                         status: 'result',
                         winner: 'spy',
-                        spyGuessedCorrectly: true
+                        spyGuessedCorrectly: true,
+                        resultId: Date.now()
                     });
                 }, 2000);
             } else {
@@ -2199,7 +2252,8 @@ async function joinRoom(uid, username) {
                     await update(roomRef, {
                         status: 'result',
                         winner: 'innocent',
-                        spyGuessedWrong: true
+                        spyGuessedWrong: true,
+                        resultId: Date.now()
                     });
                 }, 2000);
             }
@@ -2262,73 +2316,170 @@ async function joinRoom(uid, username) {
                 }
             });
             
-            // FIX: this used to call updatePlayerStats() unconditionally, but
-            // handleResultStatus() re-runs on every room update while
-            // status stays 'result' (a chat message arriving is enough) —
-            // without a guard, a single round would get recorded multiple
-            // times. secretWord changes every round, so roomCode+secretWord+
-            // winner is a stable fingerprint for "this specific result".
-            const resultKey = `${window.gameState.roomCode}_${roomData.secretWord}_${winner}`;
-            if (window.gameState._lastStatsKey !== resultKey) {
-                window.gameState._lastStatsKey = resultKey;
-                await updatePlayerStats(winner, roles);
+            renderRankCardLoading();
+            const outcome = await updatePlayerStats(winner, roles, roomData.resultId);
+            renderRankCard(outcome);
+        }
+
+        // Renders a neutral/loading state on the ranked screen while the
+        // transaction below is in flight (or shows the "not part of this
+        // round" empty state if this client isn't a player, e.g. a spectator —
+        // that gets sorted out for real once renderRankCard(outcome) runs).
+        function renderRankCardLoading() {
+            const content = document.getElementById('rankedContent');
+            if (!content) return;
+            content.classList.remove('hidden');
+            document.getElementById('rankedEmptyState').classList.add('hidden');
+            document.getElementById('rankedDelta').textContent = '…';
+            document.getElementById('rankedName').textContent = '';
+            document.getElementById('rankedPoints').textContent = 'جاري تحديث الرتبة...';
+            document.getElementById('rankedTierChange').classList.add('hidden');
+        }
+
+        // Paints the ranked screen from the outcome object returned by
+        // updatePlayerStats() — old/new points, delta, old/new rank, and
+        // whether the player was promoted/demoted this round.
+        function renderRankCard(outcome) {
+            const content = document.getElementById('rankedContent');
+            const emptyState = document.getElementById('rankedEmptyState');
+            if (!content || !emptyState) return;
+
+            if (!outcome || !window.NameThemes) {
+                content.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            content.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            const { delta, oldPoints, newPoints, oldRank, newRank, promoted, demoted } = outcome;
+            const progress = window.NameThemes.getProgress(newPoints);
+
+            // Big, clear rank badge (large enough to actually read the artwork),
+            // plus a soft glow behind it tinted to the rank's color.
+            const iconWrap = document.getElementById('rankedIconWrap');
+            iconWrap.innerHTML = '';
+            iconWrap.appendChild(window.NameThemes.createRankIcon(newPoints, 190));
+            const glow = document.getElementById('rankedIconGlow');
+            if (glow) glow.style.background = `radial-gradient(circle, ${newRank.color}66, transparent 70%)`;
+
+            // Delta chip (+500 / -300 style, colored by sign)
+            const deltaEl = document.getElementById('rankedDelta');
+            const won = delta > 0;
+            deltaEl.textContent = `${won ? '+' : ''}${delta}`;
+            deltaEl.style.color = won ? '#22c55e' : '#ef4444';
+
+            // Name + points
+            document.getElementById('rankedName').textContent = newRank.nameAr;
+            document.getElementById('rankedName').style.color = newRank.color;
+            document.getElementById('rankedPoints').textContent =
+                `${oldPoints} ← ${newPoints} نقطة`;
+
+            // Progress bar toward next tier
+            const bar = document.getElementById('rankedProgressBar');
+            bar.style.width = `${progress.progressPercent}%`;
+            bar.style.background = newRank.color;
+            document.getElementById('rankedProgressLabel').textContent = progress.next
+                ? `${progress.pointsForNextTier} نقطة للوصول إلى ${progress.next.nameAr}`
+                : 'أعلى رتبة — استمر بالفوز للبقاء في القمة';
+
+            // Promotion / demotion banner
+            const tierChangeEl = document.getElementById('rankedTierChange');
+            if (promoted) {
+                tierChangeEl.textContent = `🎉 ترقية! أصبحت رتبتك الآن ${newRank.nameAr}`;
+                tierChangeEl.style.color = '#22c55e';
+                tierChangeEl.classList.remove('hidden');
+            } else if (demoted) {
+                tierChangeEl.textContent = `⚠️ هبوط رتبة إلى ${newRank.nameAr}`;
+                tierChangeEl.style.color = '#ef4444';
+                tierChangeEl.classList.remove('hidden');
+            } else {
+                tierChangeEl.classList.add('hidden');
             }
         }
 
-        // FIX: this was a stub that only console.logged — "Firebase doesn't
-        // support increment" is true for a plain set(), but the Realtime
-        // Database SDK does support atomic increments via runTransaction(),
-        // which is what this now uses. No game has ever actually recorded a
-        // result before this, which is why the leaderboard only ever showed
-        // zeros regardless of how many rounds were played.
-        //
-        // Every player's browser runs this same function when the result
-        // screen appears — so each client only ever writes to ITS OWN
-        // players/{uid} record (never anyone else's), using its own role
-        // looked up from `roles`. That's also what a correctly-scoped
-        // Firebase rule (auth.uid === $uid) would only allow anyway.
-        async function updatePlayerStats(winner, roles) {
-            const myUid = window.gameState.currentUser?.uid;
-            if (!myUid) return;
-            const myRole = roles?.[myUid];
-            if (!myRole) return; // no role recorded for us this round — nothing to count
+        // Navigates from the result screen to the dedicated ranked screen.
+        // Purely local — the rank outcome was already computed (and rendered
+        // into the now-hidden #rankedScreen) back when the 'result' status
+        // first came in, so this just reveals it. Doesn't touch Firebase, so
+        // every player can browse their own rank change independently.
+        window.showRankedScreen = function() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('rankedScreen').classList.remove('hidden');
+        };
 
-            const won = (myRole === 'spy' && winner === 'spy') || (myRole === 'innocent' && winner === 'innocent');
+        // Applies this match's result to the CURRENT player only — every
+        // client writes only its own players/{uid} node, which is what the
+        // Firebase rules allow (and what the rest of this app already does).
+        // Uses a transaction so concurrent writes never clobber each other,
+        // and a resultId guard so re-renders of the result screen (or a
+        // page refresh mid-result) never double-apply the same match.
+        async function updatePlayerStats(winner, roles, resultId) {
+            const uid = window.gameState.currentUser?.uid;
+            if (!uid || !roles || !roles[uid]) return null; // not a player this round
+
+            const role = roles[uid]; // 'spy' | 'innocent'
+            const won = role === winner;
+
+            if (!window.NameThemes) {
+                console.error('updatePlayerStats: NameThemes not loaded, cannot compute rank');
+                return null;
+            }
+
+            const playerRef = ref(db, `players/${uid}`);
+            let outcome = null;
 
             try {
-                await runTransaction(ref(db, `players/${myUid}/stats`), (stats) => {
-                    stats = stats || { totalGames: 0, spyWins: 0, innocentWins: 0, currentStreak: 0, longestWinStreak: 0 };
-                    stats.totalGames = (stats.totalGames || 0) + 1;
-                    if (myRole === 'spy' && won) stats.spyWins = (stats.spyWins || 0) + 1;
-                    if (myRole === 'innocent' && won) stats.innocentWins = (stats.innocentWins || 0) + 1;
-                    if (won) {
-                        stats.currentStreak = (stats.currentStreak || 0) + 1;
-                        stats.longestWinStreak = Math.max(stats.longestWinStreak || 0, stats.currentStreak);
-                    } else {
-                        stats.currentStreak = 0;
-                    }
-                    return stats;
-                });
+                await runTransaction(playerRef, (player) => {
+                    player = player || {};
+                    const stats = player.stats || {};
+                    outcome = null; // reset every retry — only a committing run should set this
 
-                // Ranked points: win/loss moves rankPoints, which determines
-                // the rank tier shown on the leaderboard's "الرتب" tab.
-                const RANK_TIERS = [
-                    { name: 'Diamond',  min: 4000 },
-                    { name: 'Platinum', min: 3000 },
-                    { name: 'Gold',     min: 2000 },
-                    { name: 'Silver',   min: 1000 },
-                    { name: 'Bronze',   min: 0 }
-                ];
-                const txResult = await runTransaction(ref(db, `players/${myUid}/rankPoints`), (pts) => {
-                    pts = (pts || 0) + (won ? 30 : -15);
-                    return Math.max(0, pts);
+                    // Already processed this exact round for this player —
+                    // abort without changing anything.
+                    if (resultId && stats.lastResultId === resultId) {
+                        return; // undefined = abort transaction
+                    }
+
+                    const currentPoints = parseInt(player.rankPoints) || 0;
+                    const result = window.NameThemes.applyMatchResult(currentPoints, role, won);
+
+                    const spyGames = (stats.spyGames || 0) + (role === 'spy' ? 1 : 0);
+                    const innocentGames = (stats.innocentGames || 0) + (role === 'innocent' ? 1 : 0);
+                    const spyWins = (stats.spyWins || 0) + (role === 'spy' && won ? 1 : 0);
+                    const innocentWins = (stats.innocentWins || 0) + (role === 'innocent' && won ? 1 : 0);
+                    const timesCaughtAsSpy = (stats.timesCaughtAsSpy || 0) + (role === 'spy' && !won ? 1 : 0);
+                    const totalGames = (stats.totalGames || 0) + 1;
+                    const currentStreak = won ? (stats.currentStreak || 0) + 1 : 0;
+                    const longestWinStreak = Math.max(stats.longestWinStreak || 0, currentStreak);
+                    const spyDetectionRate = spyGames > 0 ? Math.round((timesCaughtAsSpy / spyGames) * 100) : 0;
+
+                    player.rankPoints = result.newPoints;
+                    player.rank = result.newRank.name;
+                    player.stats = {
+                        ...stats,
+                        totalGames,
+                        spyGames,
+                        innocentGames,
+                        spyWins,
+                        innocentWins,
+                        timesCaughtAsSpy,
+                        spyDetectionRate,
+                        currentStreak,
+                        longestWinStreak,
+                        lastResultId: resultId || Date.now()
+                    };
+
+                    outcome = result;
+                    return player;
                 });
-                const newPoints = txResult.snapshot.val() ?? 0;
-                const newTier = RANK_TIERS.find(t => newPoints >= t.min)?.name || 'Bronze';
-                await set(ref(db, `players/${myUid}/rank`), newTier);
-            } catch (e) {
-                console.error('updatePlayerStats failed:', e);
+            } catch (err) {
+                console.error('updatePlayerStats transaction failed:', err);
+                return null;
             }
+
+            return outcome; // null if this round was already processed
         }
 
         // ✅ FIX: Reset spy hints when returning to waiting
