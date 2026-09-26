@@ -466,7 +466,7 @@
       color: '#ffe100',
       bgColor: 'rgba(255, 0, 0, 0.15)',
       border: '1px solid rgba(255, 196, 0, 0.4)',
-      price: null
+      price: null // Special tag, not purchasable
     }
   };
 
@@ -476,78 +476,101 @@
   
   const RANKS = {
     bronze: {
+      key: 'bronze',
       name: 'Bronze',
-      nameAr: 'برونز',
+      nameAr: 'برونزي',
       min: 0,
       max: 999,
       color: '#cd7f32',
-      icon: '🥉',
-      division: 'Division I'
+      icon: '🥉',          // fallback glyph, only shown if the image below fails to load
+      image: 'Bronze.png'
     },
     silver: {
+      key: 'silver',
       name: 'Silver',
       nameAr: 'فضي',
       min: 1000,
-      max: 2499,
+      max: 1999,
       color: '#c0c0c0',
       icon: '🥈',
-      division: 'Division I'
+      image: 'Silver.png'
     },
     gold: {
+      key: 'gold',
       name: 'Gold',
       nameAr: 'ذهبي',
-      min: 2500,
-      max: 4999,
+      min: 2000,
+      max: 2999,
       color: '#ffd700',
       icon: '🥇',
-      division: 'Division I'
+      image: 'Gold.png'
     },
     platinum: {
+      key: 'platinum',
       name: 'Platinum',
       nameAr: 'بلاتيني',
-      min: 5000,
-      max: 9999,
+      min: 3000,
+      max: 4999,
       color: '#e5e4e2',
       icon: '💠',
-      division: 'Division I'
+      image: 'Platinum.png'
     },
     diamond: {
+      key: 'diamond',
       name: 'Diamond',
-      nameAr: 'ألماس',
-      min: 10000,
-      max: 19999,
+      nameAr: 'ألماسي',
+      min: 5000,
+      max: 6499,
       color: '#00f2ff',
       icon: '💎',
-      division: 'Division I'
+      image: 'Diamond.png'
     },
-    master: {
-      name: 'Master',
-      nameAr: 'خبير',
-      min: 20000,
-      max: 39999,
-      color: '#7c30ff',
+    crown: {
+      key: 'crown',
+      name: 'Crown',
+      nameAr: 'ملكي',
+      min: 6500,
+      max: 7499,
+      color: '#ffd700',
       icon: '👑',
-      division: 'Division I'
+      image: 'Crown.png'
     },
-    grandmaster: {
-      name: 'Grandmaster',
-      nameAr: 'خبير أعظم',
-      min: 40000,
-      max: 99999,
-      color: '#ff0080',
-      icon: '🔱',
-      division: 'Division I'
-    },
-    challenger: {
-      name: 'Challenger',
-      nameAr: 'متحدي',
-      min: 100000,
+    ace: {
+      key: 'ace',
+      name: 'Ace',
+      nameAr: 'ايس',
+      min: 7500,
       max: Infinity,
-      color: '#39ff14',
-      icon: '⚡',
-      division: 'Division I'
+      color: '#ffffff',
+      icon: '🃏',
+      image: 'Ace.png'
     }
   };
+
+  // Ordered low → high. Drives "what's the next rank" / progress-bar lookups.
+  const RANK_ORDER_LIST = ['bronze', 'silver', 'gold', 'platinum', 'diamond', 'crown', 'ace'];
+
+  // ═══════════════════════════════════════════════════════════
+  // RANK POINTS — how much a match result is worth
+  // ═══════════════════════════════════════════════════════════
+  // Fixed, deterministic values — never randomized. Winning as spy pays out
+  // the most (it's the harder role to win) but costs very little on a loss;
+  // innocents gain a bit less for a win but are penalized harder for a loss,
+  // since beating the spy is the "expected" outcome for the innocent team.
+  // All four values are multiples of 100, so rank point totals starting
+  // from 0 are always a clean multiple of 100 — that's also why every tier
+  // threshold below is a multiple of 100.
+  const POINTS_DELTA = {
+    winAsSpy: 500,
+    winAsInnocent: 400,
+    loseAsSpy: -100,
+    loseAsInnocent: -300
+  };
+
+  function getPointsDelta(role, won) {
+    if (role === 'spy') return won ? POINTS_DELTA.winAsSpy : POINTS_DELTA.loseAsSpy;
+    return won ? POINTS_DELTA.winAsInnocent : POINTS_DELTA.loseAsInnocent;
+  }
 
   // ═══════════════════════════════════════════════════════════
   // HELPER FUNCTIONS
@@ -563,6 +586,62 @@
       }
     }
     return RANKS.bronze; // Default to bronze
+  }
+
+  /**
+   * Progress toward the next tier — used for progress bars.
+   * @param {number} points
+   * @returns {{rank:Object, next:Object|null, pointsIntoRank:number, pointsForNextTier:number, progressPercent:number}}
+   */
+  function getRankProgress(points) {
+    points = parseInt(points) || 0;
+    const rank = calculateRank(points);
+    const idx = RANK_ORDER_LIST.indexOf(rank.key);
+    const next = (idx >= 0 && idx < RANK_ORDER_LIST.length - 1)
+      ? RANKS[RANK_ORDER_LIST[idx + 1]]
+      : null;
+
+    if (!next) {
+      // Top rank (Diamond) — no ceiling, bar always reads full.
+      return { rank, next: null, pointsIntoRank: points - rank.min, pointsForNextTier: 0, progressPercent: 100 };
+    }
+
+    const pointsIntoRank = points - rank.min;
+    const rangeSize = next.min - rank.min;
+    const progressPercent = rangeSize > 0
+      ? Math.max(0, Math.min(100, (pointsIntoRank / rangeSize) * 100))
+      : 100;
+
+    return {
+      rank,
+      next,
+      pointsIntoRank,
+      pointsForNextTier: Math.max(0, next.min - points),
+      progressPercent
+    };
+  }
+
+  /**
+   * Deterministically applies one match's result to a points total.
+   * Never lets points go below 0.
+   * @param {number} currentPoints
+   * @param {'spy'|'innocent'} role
+   * @param {boolean} won
+   */
+  function applyMatchResult(currentPoints, role, won) {
+    const oldPoints = parseInt(currentPoints) || 0;
+    const delta = getPointsDelta(role, won);
+    const newPoints = Math.max(0, oldPoints + delta);
+    const oldRank = calculateRank(oldPoints);
+    const newRank = calculateRank(newPoints);
+
+    return {
+      role, won, delta,
+      oldPoints, newPoints,
+      oldRank, newRank,
+      promoted: newRank.key !== oldRank.key && newPoints > oldPoints,
+      demoted: newRank.key !== oldRank.key && newPoints < oldPoints
+    };
   }
 
   function injectStylesheet() {
@@ -623,6 +702,40 @@
         white-space: nowrap;
         vertical-align: middle;
       }
+
+      .ej-rank-badge-img {
+        width: 14px;
+        height: 14px;
+        object-fit: contain;
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+
+      .ej-rank-badge-fallback {
+        line-height: 1;
+        display: inline-block;
+      }
+
+      .ej-rank-icon-wrap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .ej-rank-icon-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 0 10px currentColor);
+      }
+
+      .ej-rank-icon-fallback {
+        line-height: 1;
+        filter: drop-shadow(0 0 10px currentColor);
+      }
     `;
     
     // Add all theme keyframes
@@ -672,6 +785,36 @@
     themes: NAME_THEMES,
     tags: NAME_TAGS,
     ranks: RANKS,
+    rankOrder: RANK_ORDER_LIST,
+    pointsDelta: POINTS_DELTA,
+
+    /**
+     * Points awarded/deducted for a role+outcome. Deterministic, never random.
+     * @param {'spy'|'innocent'} role
+     * @param {boolean} won
+     */
+    getPointsDelta(role, won) {
+      return getPointsDelta(role, won);
+    },
+
+    /**
+     * Progress toward the next tier (for progress bars).
+     * @param {number} rankPoints
+     */
+    getProgress(rankPoints) {
+      return getRankProgress(rankPoints);
+    },
+
+    /**
+     * Applies one match result to a points total — the single source of
+     * truth for how rank points change after a game.
+     * @param {number} currentPoints
+     * @param {'spy'|'innocent'} role
+     * @param {boolean} won
+     */
+    applyMatchResult(currentPoints, role, won) {
+      return applyMatchResult(currentPoints, role, won);
+    },
     
     /**
      * Apply name theme to an element
@@ -738,9 +881,62 @@
       el.className = 'ej-rank-badge';
       el.style.color = rank.color;
       el.style.borderColor = rank.color + '40';
-      el.innerHTML = `${rank.icon} <span>${rank.nameAr}</span>`;
+
+      const img = document.createElement('img');
+      img.src = rank.image;
+      img.alt = rank.nameAr;
+      img.className = 'ej-rank-badge-img';
+      img.onerror = function () {
+        // No artwork uploaded yet — fall back to the emoji glyph instead of
+        // showing a broken-image icon.
+        const fallback = document.createElement('span');
+        fallback.className = 'ej-rank-badge-fallback';
+        fallback.textContent = rank.icon;
+        img.replaceWith(fallback);
+      };
+      el.appendChild(img);
+
+      const label = document.createElement('span');
+      label.textContent = rank.nameAr;
+      el.appendChild(label);
       
       return el;
+    },
+
+    /**
+     * Create a standalone rank icon (image, falling back to the emoji glyph
+     * if the image 404s) at a given pixel size. Used anywhere a rank needs
+     * to be shown bigger than the inline name badge — the room.html rank
+     * screen, the leaderboard, profile pages, the shop's rank showcase.
+     * @param {number} rankPoints
+     * @param {number} [size=64] - width/height in px
+     * @returns {HTMLElement}
+     */
+    createRankIcon(rankPoints, size) {
+      size = size || 64;
+      const rank = calculateRank(rankPoints);
+
+      const wrap = document.createElement('span');
+      wrap.className = 'ej-rank-icon-wrap';
+      wrap.style.width = size + 'px';
+      wrap.style.height = size + 'px';
+      wrap.style.color = rank.color;
+
+      const img = document.createElement('img');
+      img.src = rank.image;
+      img.alt = rank.nameAr;
+      img.className = 'ej-rank-icon-img';
+      img.onerror = function () {
+        wrap.innerHTML = '';
+        const fallback = document.createElement('span');
+        fallback.className = 'ej-rank-icon-fallback';
+        fallback.textContent = rank.icon;
+        fallback.style.fontSize = Math.round(size * 0.62) + 'px';
+        wrap.appendChild(fallback);
+      };
+      wrap.appendChild(img);
+
+      return wrap;
     },
     
     /**

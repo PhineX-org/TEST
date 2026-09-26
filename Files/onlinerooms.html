@@ -12,7 +12,7 @@
     <meta name="description" content="تصفح واختر الغرف العامة المتاحة للعب مع لاعبين من حول العالم">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -20,18 +20,24 @@
     <script src="../Assets/moderation.js"></script>
 
     <style>
+        /* Palette rule: black + cyan (structure) + lime (positive/action) —
+           rgba only, the two accents never blended in one gradient. Matches
+           home.html / index.html / leaderboard.html. */
         :root { 
-            --bg-color: #0a0e1a;
-            --card-color: rgba(20, 20, 20, 0.9);
+            --bg-color: #000000;
+            --card-color: rgba(0, 0, 0, 0.85);
             --btn-color: #00f2ff;
             --text-color: #ffffff;
             --accent-color: #00f2ff;
-            --secondary-color: #7c30ff;
+            --lime-color: #a3e635;
         }
         
         body { 
             font-family: 'Cairo', sans-serif; 
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background: #000000;
+            background-image:
+                radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,0.10), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,0.06), transparent 60%);
             background-attachment: fixed;
             color: var(--text-color); 
             min-height: 100vh;
@@ -39,14 +45,13 @@
             overflow-x: hidden;
         }
 
-        /* Animated grid background */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
             background-image: 
-                linear-gradient(rgba(0,242,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,242,255,0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0,242,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255,0.035) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: gridMove 20s linear infinite;
             pointer-events: none;
@@ -58,7 +63,6 @@
             100% { transform: translateY(50px); }
         }
 
-        /* Floating particles */
         .particle {
             position: fixed;
             width: 4px;
@@ -78,10 +82,10 @@
         }
 
         .glass { 
-            background: linear-gradient(135deg, rgba(15,20,35,0.95), rgba(25,30,50,0.9));
+            background: rgba(0,0,0,0.82);
             backdrop-filter: blur(20px);
-            border: 2px solid rgba(0,242,255,0.15);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(0,242,255,0.18);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
         }
 
         .neon-text {
@@ -89,86 +93,66 @@
             color: var(--accent-color);
         }
 
-        /* Enhanced room card with 3D effect */
+        /* ═══ ROOM CARD — mobile-first, no expand step. Everything (code,
+           category, host, players, join) is visible immediately; the card
+           stacks vertically by default and only becomes a wider layout on
+           bigger screens, rather than starting wide and hoping it wraps. ═══ */
         .room-card { 
-            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
-            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             position: relative;
-            transform-style: preserve-3d;
-            perspective: 1000px;
         }
         
         .room-card:hover { 
-            transform: translateY(-8px) rotateX(2deg);
             border-color: rgba(0,242,255,0.5);
-            box-shadow: 0 20px 60px rgba(0,242,255,0.25);
+            box-shadow: 0 12px 40px rgba(0,242,255,0.15);
         }
 
-        .room-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: linear-gradient(135deg, rgba(0,242,255,0.1), rgba(124,48,255,0.1));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
+        .room-card.state-full { opacity: 0.55; }
+
+        .room-code-chip {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 0.06em;
+            color: rgba(0,242,255,1);
+            text-shadow: 0 0 12px rgba(0,242,255,0.5);
         }
 
-        .room-card:hover::before {
-            opacity: 1;
+        .category-badge { 
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(0,242,255,0.08);
+            border: 1px solid rgba(0,242,255,0.25);
+            color: rgba(255,255,255,0.85);
         }
 
-        .room-card.active { 
-            border-color: rgba(0,242,255,0.7);
-            box-shadow: 0 0 40px rgba(0,242,255,0.3);
-            transform: scale(1.02);
+        /* Player-count pill: lime = plenty of room, cyan = filling up,
+           neutral/dim = full (a disabled state, not an alarm — no red). */
+        .player-count-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 900;
+            border: 1px solid;
         }
+        .player-count-pill.plenty     { background: rgba(163,230,53,0.1);  border-color: rgba(163,230,53,0.4);  color: #a3e635; }
+        .player-count-pill.filling    { background: rgba(0,242,255,0.1);   border-color: rgba(0,242,255,0.4);   color: #00f2ff; }
+        .player-count-pill.full       { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); }
 
-        /* Improved popup with slide animation */
-        .join-popup { 
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4,0,0.2,1);
-            transform-origin: top;
-            transform: scaleY(0);
-        }
-        
-        .join-popup.active { 
-            max-height: 300px;
-            opacity: 1;
-            margin-top: 1rem;
-            transform: scaleY(1);
-        }
-
-        /* Animated connecting line */
-        .connecting-line { 
-            position: absolute;
-            width: 3px;
-            height: 0;
-            background: linear-gradient(to bottom, rgba(0,242,255,0.8), transparent);
-            left: 50%;
-            transform: translateX(-50%);
-            transition: height 0.4s ease;
-            z-index: 1;
-            box-shadow: 0 0 10px rgba(0,242,255,0.6);
-        }
-        
-        .connecting-line.active { 
-            height: 1.5rem;
-        }
-
-        /* Filter chips with glow effect */
-        .filter-chip { 
-            transition: all 0.3s ease;
-        }
-        
+        .filter-chip { transition: all 0.2s ease; }
         .filter-chip.active span { 
-            background: linear-gradient(135deg, #00f2ff 0%, #7c30ff 100%);
+            background: rgba(0,242,255,0.9);
             border-color: #00f2ff;
             color: #000;
-            box-shadow: 0 0 20px rgba(0,242,255,0.5);
+            box-shadow: 0 0 16px rgba(0,242,255,0.4);
             font-weight: 900;
         }
 
@@ -178,188 +162,71 @@
             border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb { 
-            background: linear-gradient(180deg, var(--accent-color), var(--secondary-color));
+            background: rgba(0,242,255,0.5);
             border-radius: 10px;
         }
 
-        /* Enhanced category badges */
-        .category-badge { 
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 0.75rem;
-            font-size: 0.875rem;
-            font-weight: 800;
-            position: relative;
-            overflow: hidden;
-        }
+        .stat-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-        .category-badge::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transform: translateX(-100%);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            100% { transform: translateX(100%); }
-        }
-
-        /* Pulse animation for live stats */
-        .stat-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Player count badge with glow */
-        .player-count-badge { 
-            position: relative;
-            overflow: hidden;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
-        }
-
-        .player-count-badge.almost-full {
-            animation: warningPulse 1.5s infinite;
-        }
-
-        @keyframes warningPulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(251,191,36,0.3); }
-            50% { box-shadow: 0 0 20px rgba(251,191,36,0.6); }
-        }
-
-        .player-count-badge.full {
-            animation: dangerPulse 1s infinite;
-        }
-
-        @keyframes dangerPulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(239,68,68,0.4); }
-            50% { box-shadow: 0 0 25px rgba(239,68,68,0.8); }
-        }
-
-        /* Loading spinner with gradient */
         .spinner { 
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             border: 4px solid rgba(0,242,255,0.2);
             border-top-color: #00f2ff;
-            border-right-color: #7c30ff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-        
-        @keyframes spin { 
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Search bar with focus effect */
         .search-bar:focus { 
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 4px rgba(0,242,255,0.15), 0 0 20px rgba(0,242,255,0.3);
-            transform: scale(1.01);
+            box-shadow: 0 0 0 4px rgba(0,242,255,0.15), 0 0 20px rgba(0,242,255,0.25);
         }
 
-        /* Enhanced empty state */
-        .empty-state { 
-            animation: fadeInUp 0.6s ease-in-out;
-        }
-        
-        @keyframes fadeInUp { 
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .empty-state { animation: fadeInUp 0.6s ease-in-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Room info tooltip */
-        .room-tooltip {
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%) scale(0);
-            background: rgba(0,0,0,0.95);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 12px;
-            white-space: nowrap;
-            transition: transform 0.3s ease;
-            pointer-events: none;
-            z-index: 100;
-            border: 1px solid rgba(0,242,255,0.3);
-        }
-
-        .room-card:hover .room-tooltip {
-            transform: translateX(-50%) scale(1);
-        }
-
-        /* Button hover effects */
         .btn-primary {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #00f2ff, #7c30ff);
-            transition: all 0.3s ease;
+            background: rgba(163,230,53,0.95);
+            color: #000;
+            transition: all 0.25s ease;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(163,230,53,0.35); }
+        .btn-primary:disabled, .btn-primary.is-disabled {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.4);
+            box-shadow: none;
+            transform: none;
+            cursor: not-allowed;
         }
 
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
+        .btn-icon-ghost {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.7);
+            transition: all 0.2s ease;
         }
+        .btn-icon-ghost:hover { border-color: rgba(0,242,255,0.5); color: #00f2ff; }
 
-        .btn-primary:hover::before {
-            transform: translateX(100%);
-        }
+        .stat-number { display: inline-block; font-variant-numeric: tabular-nums; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,242,255,0.4);
-        }
+        .room-container { animation: slideInUp 0.4s ease-out backwards; }
+        .room-container:nth-child(1) { animation-delay: 0.05s; }
+        .room-container:nth-child(2) { animation-delay: 0.1s; }
+        .room-container:nth-child(3) { animation-delay: 0.15s; }
+        .room-container:nth-child(4) { animation-delay: 0.2s; }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Stats counter animation */
-        .stat-number {
-            display: inline-block;
-            font-variant-numeric: tabular-nums;
-        }
+        /* ═══ Mobile refinements ═══ */
+        @media (max-width: 640px) {
+            .room-code-chip { font-size: 1.1rem; }
+            #particles { display: none; } /* skip decorative cost on small/low-power devices */
 
-        /* Fade in animation for content */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Stagger animation for room cards */
-        .room-container {
-            animation: slideInRight 0.5s ease-out backwards;
-        }
-
-        .room-container:nth-child(1) { animation-delay: 0.1s; }
-        .room-container:nth-child(2) { animation-delay: 0.2s; }
-        .room-container:nth-child(3) { animation-delay: 0.3s; }
-        .room-container:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
     </style>
 </head>
@@ -368,25 +235,25 @@
     <div id="particles"></div>
 
     <header class="max-w-6xl mx-auto mb-6 animate__animated animate__fadeInDown" style="position: relative; z-index: 10;">
-        <div class="flex items-center justify-between mb-4">
-            <a href="home.html" class="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-all group">
+        <div class="flex items-center justify-between gap-2 mb-3">
+            <a href="home.html" class="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-all group flex-shrink-0">
                 <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform text-lg"></i>
-                <span class="text-sm font-bold">رجوع للقائمة</span>
+                <span class="text-sm font-bold hidden sm:inline">رجوع للقائمة</span>
             </a>
-            <div class="text-center">
-                <h1 class="text-3xl font-black text-white mb-1 neon-text">🌐 الغرف العامة</h1>
-                <p class="text-xs text-gray-400 font-bold">اختر غرفة وابدأ المغامرة</p>
-                <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
-                    <span class="stat-pulse" style="font-size:12px;font-weight:700;color:#22c55e;display:flex;align-items:center;gap:6px;">
-                        <span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 10px #22c55e;"></span>
-                        <span id="online-player-count" class="stat-number">-</span> لاعب متصل
-                    </span>
-                    <span class="stat-pulse" style="font-size:12px;font-weight:700;color:#00f2ff;display:flex;align-items:center;gap:6px;">
-                        🎮 <span id="active-game-count" class="stat-number">-</span> مباراة جارية
-                    </span>
-                </div>
+            <h1 class="text-xl sm:text-3xl font-black text-white neon-text text-center flex-1 min-w-0 truncate">🌐 الغرف العامة</h1>
+            <div class="w-6 sm:w-24 flex-shrink-0"></div>
+        </div>
+        <div class="text-center">
+            <p class="text-xs text-gray-400 font-bold">اختر غرفة وابدأ المغامرة</p>
+            <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
+                <span class="stat-pulse" style="font-size:12px;font-weight:700;color:#a3e635;display:flex;align-items:center;gap:6px;">
+                    <span style="width:10px;height:10px;border-radius:50%;background:#a3e635;display:inline-block;box-shadow:0 0 10px #a3e635;"></span>
+                    <span id="online-player-count" class="stat-number">-</span> لاعب متصل
+                </span>
+                <span class="stat-pulse" style="font-size:12px;font-weight:700;color:#00f2ff;display:flex;align-items:center;gap:6px;">
+                    🎮 <span id="active-game-count" class="stat-number">-</span> مباراة جارية
+                </span>
             </div>
-            <div class="w-24"></div>
         </div>
     </header>
 
@@ -394,7 +261,7 @@
 
         <div class="glass rounded-2xl p-4 mb-6 border border-white/10 animate__animated animate__fadeIn fade-in">
             <div class="relative mb-4">
-                <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg"></i>
+                <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg margin-left-4 "></i>
                 <input type="text" id="searchInput" placeholder="ابحث عن غرفة بالكود..."
                     class="search-bar w-full bg-black/40 border-2 border-white/10 rounded-xl pr-12 pl-4 py-3 text-sm outline-none transition-all"/>
             </div>
@@ -465,7 +332,7 @@
                         </button>
                     </div>
                 </div>
-                <button id="clearFilters" class="w-full py-3 px-4 bg-red-500/10 hover:bg-red-500/20 border-2 border-red-500/30 rounded-xl text-xs font-bold text-red-400 transition-all hover:scale-105">
+                <button id="clearFilters" class="w-full py-3 px-4 bg-white/5 hover:bg-white/10 border-2 border-white/15 rounded-xl text-xs font-bold text-white/70 transition-all hover:scale-105">
                     <i class="fas fa-times-circle ml-1"></i> مسح جميع الفلاتر
                 </button>
             </div>
@@ -494,7 +361,7 @@
 
         <!-- Empty -->
         <div id="emptyState" class="hidden empty-state glass rounded-2xl p-12 text-center border border-white/10">
-            <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-br from-cyan-500/10 to-purple-500/10 flex items-center justify-center border-2 border-cyan-500/20">
+            <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-cyan-500/10 flex items-center justify-center border-2 border-cyan-500/20">
                 <i class="fas fa-inbox text-5xl text-gray-600"></i>
             </div>
             <h3 class="text-2xl font-black text-gray-300 mb-2">لا توجد غرف متاحة حالياً</h3>
@@ -505,11 +372,11 @@
         </div>
 
         <!-- Error -->
-        <div id="errorState" class="hidden glass rounded-2xl p-8 text-center border-2 border-red-500/30">
-            <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4 block animate__animated animate__shakeX"></i>
-            <p class="text-lg text-red-400 font-bold mb-1">تعذّر الاتصال بقاعدة البيانات</p>
+        <div id="errorState" class="hidden glass rounded-2xl p-8 text-center border-2 border-cyan-500/30">
+            <i class="fas fa-exclamation-triangle text-4xl text-cyan-400 mb-4 block animate__animated animate__shakeX"></i>
+            <p class="text-lg text-cyan-400 font-bold mb-1">تعذّر الاتصال بقاعدة البيانات</p>
             <p id="errorMsg" class="text-sm text-gray-400 mb-6"></p>
-            <button onclick="location.reload()" class="px-8 py-3 bg-red-500/20 border-2 border-red-500/40 rounded-xl text-sm font-bold text-red-400 hover:bg-red-500/30 transition-all">
+            <button onclick="location.reload()" class="px-8 py-3 bg-cyan-500/20 border-2 border-cyan-500/40 rounded-xl text-sm font-bold text-cyan-400 hover:bg-cyan-500/30 transition-all">
                 <i class="fas fa-redo ml-2"></i> إعادة المحاولة
             </button>
         </div>
@@ -580,20 +447,21 @@
         }
 
         // Categories with enhanced styling
+        // Icons differentiate categories now — no per-category color needed,
+        // every badge uses the same .category-badge treatment.
         const categoryLabels = {
-            places:         { label:"أماكن سياحية",  icon:"🌍", color:"from-green-500/20 to-emerald-500/20 border-green-500/40"  },
-            food:           { label:"أكلات مصرية",   icon:"🍕", color:"from-orange-500/20 to-red-500/20 border-orange-500/40"    },
-            jobs:           { label:"مهن ووظائف",    icon:"🛠️", color:"from-blue-500/20 to-cyan-500/20 border-blue-500/40"       },
-            companies:      { label:"شركات عالمية",  icon:"🏢", color:"from-purple-500/20 to-pink-500/20 border-purple-500/40"   },
-            football_teams: { label:"أندية كورة",    icon:"⚽", color:"from-yellow-500/20 to-green-500/20 border-yellow-500/40" }
+            places:         { label:"أماكن سياحية",  icon:"🌍" },
+            food:           { label:"أكلات مصرية",   icon:"🍕" },
+            jobs:           { label:"مهن ووظائف",    icon:"🛠️" },
+            companies:      { label:"شركات عالمية",  icon:"🏢" },
+            football_teams: { label:"أندية كورة",    icon:"⚽" }
         };
-        const defaultCategory = { label:"عامة", icon:"🎮", color:"from-cyan-500/20 to-blue-500/20 border-cyan-500/40" };
+        const defaultCategory = { label:"عامة", icon:"🎮" };
 
         // Data
         let allRooms      = [];
         let filteredRooms = [];
         let activeFilters = { category:'all', players:'all', search:'' };
-        let activeRoomId  = null;
         let listenersStarted = false;
         let playersData = {}; // Store players data for username lookup
 
@@ -759,126 +627,59 @@
 
             hideAllStates();
 
+            // FIX/REDESIGN: the old card required a tap to expand before the
+            // Join button even appeared, and its collapsed state packed 4
+            // side-by-side blocks (code/category/players/arrow) into one row
+            // that only worked by hoping flex-wrap would land somewhere
+            // reasonable — on a phone it wrapped unpredictably and the join
+            // action was hidden behind an extra tap. This version shows
+            // everything — including Join — immediately, stacked in a
+            // mobile-first column that never depends on horizontal room.
             el('roomsList').innerHTML = filteredRooms.map((room, index) => {
                 const cat          = categoryLabels[room.category] || defaultCategory;
                 const pct          = (room.playerCount / room.maxPlayers) * 100;
                 const isAlmostFull = pct >= 70;
                 const isFull       = room.playerCount >= room.maxPlayers;
+                const pillState    = isFull ? 'full' : isAlmostFull ? 'filling' : 'plenty';
+                const pillNote     = isFull ? 'ممتلئة' : isAlmostFull ? 'شبه ممتلئة' : 'مقاعد متاحة';
 
                 return `
                 <div class="room-container" data-room-id="${room.code}">
-                    <div class="room-card glass rounded-2xl p-5 border-2 border-white/10 relative" onclick="toggleRoomDetails('${room.code}')">
-                        
-                        <!-- Room tooltip -->
-                        <div class="room-tooltip">
-                            انقر لعرض التفاصيل
+                    <div class="room-card glass rounded-2xl p-4 border-2 border-white/10 ${isFull ? 'state-full' : ''}">
+
+                        <div class="flex items-center justify-between gap-2 mb-3 flex-wrap">
+                            <span class="room-code-chip">${room.code}</span>
+                            <span class="category-badge"><span>${cat.icon}</span><span>${cat.label}</span></span>
                         </div>
 
-                        <div class="flex items-center justify-between gap-4 flex-wrap">
-
-                            <!-- Room Code -->
-                            <div class="flex-shrink-0 text-center">
-                                <p class="text-xs text-gray-400 font-bold mb-2 uppercase tracking-wider">
-                                    <i class="fas fa-key ml-1"></i> كود الغرفة
-                                </p>
-                                <div class="px-5 py-3 bg-gradient-to-br from-cyan-500/15 to-blue-500/15 border-2 border-cyan-500/40 rounded-xl backdrop-blur-sm">
-                                    <p class="text-2xl font-black neon-text tracking-wider">${room.code}</p>
-                                </div>
-                            </div>
-
-                            <!-- Category Badge -->
-                            <div class="flex-1 min-w-0">
-                                <div class="category-badge bg-gradient-to-br ${cat.color} border-2">
-                                    <span class="text-2xl">${cat.icon}</span>
-                                    <span class="text-sm">${cat.label}</span>
-                                </div>
-                                <!-- Host Info -->
-                                <div class="mt-2 text-xs text-gray-400">
-                                    <i class="fas fa-crown text-yellow-500 ml-1"></i>
-                                    المضيف: <span class="font-bold text-white">${room.hostUsername}</span>
-                                </div>
-                            </div>
-
-                            <!-- Player Count -->
-                            <div class="flex-shrink-0">
-                                <div class="player-count-badge ${isFull ? 'full' : isAlmostFull ? 'almost-full' : ''} relative px-5 py-3 border-2 ${isFull ? 'border-red-500/60' : isAlmostFull ? 'border-yellow-500/60' : 'border-cyan-400/30'} rounded-xl">
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <i class="fas fa-users ${isFull ? 'text-red-500' : isAlmostFull ? 'text-yellow-500' : 'text-cyan-400'} text-lg"></i>
-                                        <span class="text-xl font-black ${isFull ? 'text-red-500' : 'text-white'}">${room.playerCount}/${room.maxPlayers}</span>
-                                    </div>
-                                    ${isFull ? '<p class="text-[9px] text-red-400 font-bold">ممتلئة بالكامل</p>' : 
-                                      isAlmostFull ? '<p class="text-[9px] text-yellow-400 font-bold">شبه ممتلئة</p>' : 
-                                      '<p class="text-[9px] text-cyan-400 font-bold">مقاعد متاحة</p>'}
-                                </div>
-                            </div>
-
-                            <!-- Expand Arrow -->
-                            <div class="flex-shrink-0">
-                                <i class="fas fa-chevron-down text-gray-400 text-lg transition-transform room-arrow-${room.code}"></i>
-                            </div>
+                        <div class="text-xs text-white/50 mb-3 truncate">
+                            <i class="fas fa-crown" style="color:#a3e635;"></i>
+                            المضيف: <span class="font-bold text-white">${room.hostUsername}</span>
                         </div>
-                    </div>
 
-                    <div class="connecting-line connecting-line-${room.code}"></div>
-
-                    <div class="join-popup join-popup-${room.code} relative">
-                        <div class="glass rounded-2xl p-6 border-2 border-cyan-500/40 bg-gradient-to-br from-cyan-500/10 to-purple-500/5">
-                            <div class="text-center mb-5">
-                                <h3 class="text-2xl font-black text-white mb-2 neon-text">غرفة ${room.code}</h3>
-                                <div class="flex items-center justify-center gap-4 text-sm">
-                                    <div class="flex items-center gap-1">
-                                        <i class="fas fa-crown text-yellow-500"></i>
-                                        <span class="text-gray-400">المضيف:</span>
-                                        <span class="text-cyan-400 font-bold">${room.hostUsername}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <i class="fas fa-tag text-purple-400"></i>
-                                        <span class="text-gray-400">الفئة:</span>
-                                        <span class="font-bold">${cat.label}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <button onclick="joinRoom('${room.code}')" ${isFull ? 'disabled' : ''}
-                                    class="flex-1 ${isFull ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'btn-primary'} py-4 rounded-xl font-black text-base transition-all border-2 ${isFull ? 'border-gray-700' : 'border-cyan-400/50'} ${!isFull ? 'hover:scale-105 hover:shadow-[0_0_30px_rgba(0,242,255,0.4)]' : ''}">
-                                    <i class="fas fa-${isFull ? 'lock' : 'sign-in-alt'} ml-2"></i>
-                                    ${isFull ? 'الغرفة ممتلئة' : 'انضمام للغرفة'}
-                                </button>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="player-count-pill ${pillState}">
+                                <i class="fas fa-users"></i> ${room.playerCount}/${room.maxPlayers} · ${pillNote}
+                            </span>
+                            <div class="flex gap-2 flex-shrink-0">
                                 <button onclick="if(window.QR) QR.generate('${room.code}')" title="مشاركة رمز QR"
-                                    class="px-5 py-4 rounded-xl bg-purple-500/20 border-2 border-purple-500/40 hover:bg-purple-500/30 transition-all text-2xl hover:scale-110">
-                                    📲
-                                </button>
+                                    class="btn-icon-ghost w-10 h-10 rounded-lg flex items-center justify-center text-lg">📲</button>
                                 <button onclick="copyRoomCode('${room.code}')" title="نسخ الكود"
-                                    class="px-5 py-4 bg-white/5 hover:bg-white/10 border-2 border-white/20 hover:border-cyan-500/60 rounded-xl transition-all group hover:scale-110">
-                                    <i class="fas fa-copy text-lg text-gray-400 group-hover:text-cyan-400"></i>
+                                    class="btn-icon-ghost w-10 h-10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-copy"></i>
                                 </button>
                             </div>
                         </div>
+
+                        <button onclick="joinRoom('${room.code}')" ${isFull ? 'disabled' : ''}
+                            class="btn-primary w-full py-3 rounded-xl font-black text-sm ${isFull ? 'is-disabled' : ''}">
+                            <i class="fas fa-${isFull ? 'lock' : 'sign-in-alt'} ml-2"></i>
+                            ${isFull ? 'الغرفة ممتلئة' : 'انضمام للغرفة'}
+                        </button>
                     </div>
                 </div>`;
             }).join('');
         }
-
-        // UI interactions
-        window.toggleRoomDetails = function(roomId) {
-            const wasActive = activeRoomId === roomId;
-            document.querySelectorAll('.join-popup').forEach(p      => p.classList.remove('active'));
-            document.querySelectorAll('.connecting-line').forEach(l => l.classList.remove('active'));
-            document.querySelectorAll('.room-card').forEach(c       => c.classList.remove('active'));
-            document.querySelectorAll('[class*="room-arrow-"]').forEach(a => a.style.transform = 'rotate(0deg)');
-            
-            if (!wasActive) {
-                document.querySelector(`.join-popup-${roomId}`)?.classList.add('active');
-                document.querySelector(`.connecting-line-${roomId}`)?.classList.add('active');
-                document.querySelector(`[data-room-id="${roomId}"] .room-card`)?.classList.add('active');
-                const arrow = document.querySelector(`.room-arrow-${roomId}`);
-                if (arrow) arrow.style.transform = 'rotate(180deg)';
-                activeRoomId = roomId;
-            } else {
-                activeRoomId = null;
-            }
-        };
-
         // ✅ FIX: Join room with proper URL parameter
         window.joinRoom = function(roomCode) {
             const myName = localStorage.getItem('eljasus_user_name');
@@ -897,7 +698,7 @@
             navigator.clipboard.writeText(code);
             const btn = event.target.closest('button');
             const orig = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check text-green-400 text-lg"></i>';
+            btn.innerHTML = '<i class="fas fa-check text-lime-400 text-lg"></i>';
             btn.classList.add('animate__animated', 'animate__bounceIn');
             setTimeout(() => { 
                 btn.innerHTML = orig; 
@@ -963,7 +764,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="../Assets/mobile.css" media="(max-width: 768px)">
+    <link rel="stylesheet" href="../Assets/mobile.css">
     <script src="../Assets/sound-system.js" defer></script>
     <script>
         window.alert   = (msg)             => UIAlert(msg);
@@ -971,6 +772,6 @@
         window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
     </script>
     <script src="../Assets/qr-notifications.js" defer></script>
-    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../Assets/sw.js').catch(()=>{}));}</script>
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}</script>
 </body>
 </html>
