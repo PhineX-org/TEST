@@ -483,7 +483,7 @@
       max: 999,
       color: '#cd7f32',
       icon: '🥉',          // fallback glyph, only shown if the image below fails to load
-      image: 'Bronze.png'
+      image: '../Assets/Bronze.png'
     },
     silver: {
       key: 'silver',
@@ -493,7 +493,7 @@
       max: 1999,
       color: '#c0c0c0',
       icon: '🥈',
-      image: 'Silver.png'
+      image: '../Assets/Silver.png'
     },
     gold: {
       key: 'gold',
@@ -503,7 +503,7 @@
       max: 2999,
       color: '#ffd700',
       icon: '🥇',
-      image: 'Gold.png'
+      image: '../Assets/Gold.png'
     },
     platinum: {
       key: 'platinum',
@@ -513,7 +513,7 @@
       max: 4999,
       color: '#e5e4e2',
       icon: '💠',
-      image: 'Platinum.png'
+      image: '../Assets/Platinum.png'
     },
     diamond: {
       key: 'diamond',
@@ -523,7 +523,7 @@
       max: 6499,
       color: '#00f2ff',
       icon: '💎',
-      image: 'Diamond.png'
+      image: '../Assets/Diamond.png'
     },
     crown: {
       key: 'crown',
@@ -533,7 +533,7 @@
       max: 7499,
       color: '#ffd700',
       icon: '👑',
-      image: 'Crown.png'
+      image: '../Assets/Crown.png'
     },
     ace: {
       key: 'ace',
@@ -543,7 +543,7 @@
       max: Infinity,
       color: '#ffffff',
       icon: '🃏',
-      image: 'Ace.png'
+      image: '../Assets/Ace.png'
     }
   };
 
