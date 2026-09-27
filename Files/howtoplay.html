@@ -2,410 +2,724 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كيفية اللعب | El Jasus</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest" href="../Assets/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="الجاسوس">
+    <meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>إزاي تلعب الجاسوس؟ | El Jasus</title>
+    <meta name="description" content="دليل اللعب الكامل للجاسوس بالبلدي كده: الأدوار، التصنيفات، التصويت، وإزاي تكسب سواء كنت بريء أو الجاسوس نفسه.">
+    <meta name="keywords" content="الجاسوس, كيفية اللعب, دليل اللعب, El Jasus, PhineX">
+    <meta name="author" content="PhineX">
     <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../Assets/mobile.css">
-<script src="../Assets/sound-system.js" defer></script>
-<script src="../Assets/qr-notifications.js" defer></script>
+    <script src="../Assets/sound-system.js" defer></script>
+    <script src="../Assets/qr-notifications.js" defer></script>
+    <script src="../Assets/dialogs.js"></script>
+
     <style>
-        :root {
-            --primary-color: #7c30ff;
-            --bg-color: #080808;
-            --card-color: #141414;
-            --text-main: #ffffff;
-            --text-secondary: #9ca3af;
+        :root{
+            --c-black: 0,0,0;
+            --c-cyan:  0,242,255;
+            --c-lime:  163,230,53;
+            --c-white: 255,255,255;
+            --c-spy:   239,68,68;
+            --c-citizen: 34,197,94;
+            --c-gold:  251,191,36;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-            padding-left: 90px;
-            transition: background 0.5s ease;
+        *{ box-sizing:border-box; }
+
+        html{ scroll-behavior:smooth; }
+
+        body{
+            font-family:'Cairo',sans-serif;
+            background: rgba(var(--c-black),1);
+            background-image:
+                radial-gradient(ellipse 120% 60% at 50% -10%, rgba(var(--c-cyan),.14), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 20%, rgba(var(--c-lime),.06), transparent 60%),
+                radial-gradient(ellipse 80% 50% at -10% 80%, rgba(var(--c-spy),.06), transparent 60%);
+            background-attachment:fixed;
+            color:rgba(var(--c-white),.94);
+            min-height:100vh;
+            overflow-x:hidden;
+            position:relative;
         }
 
-        /* --- Icon Animations --- */
-        @keyframes book-flip {
-            0%, 100% { transform: rotateY(0deg); }
-            50% { transform: rotateY(-40deg) scale(1.1); }
+        body::before{
+            content:'';
+            position:fixed; inset:0;
+            background-image:
+                linear-gradient(rgba(var(--c-cyan),.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(var(--c-cyan),.035) 1px, transparent 1px);
+            background-size:46px 46px;
+            animation: gridMove 22s linear infinite;
+            pointer-events:none;
+            z-index:0;
         }
-        .animate-book { animation: book-flip 2s infinite ease-in-out; }
+        @keyframes gridMove{ 0%{transform:translateY(0);} 100%{transform:translateY(46px);} }
 
-        @keyframes house-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        .animate-house { animation: house-bounce 2.5s infinite ease-in-out; }
+        .font-display{ font-family:'Orbitron',sans-serif; }
 
-        @keyframes user-pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-user { animation: user-pulse 3s infinite; }
-
-        @keyframes spy-peek {
-            0%, 100% { transform: translateY(0) rotate(0); }
-            25% { transform: translateY(-3px) rotate(5deg); }
-            75% { transform: translateY(2px) rotate(-5deg); }
-        }
-        .animate-spy { animation: spy-peek 4s infinite ease-in-out; }
-
-        @keyframes dragon-glow {
-            0%, 100% { filter: drop-shadow(0 0 5px var(--primary-color)); }
-            50% { filter: drop-shadow(0 0 15px var(--primary-color)); transform: scale(1.05); }
-        }
-        .animate-dragon { animation: dragon-glow 3s infinite; }
-
-        /* --- UI Components --- */
-        .infinity-border {
-            position: absolute;
-            top: 0; right: 0; bottom: 0; width: 2px;
-            background: linear-gradient(to bottom, transparent, var(--primary-color), #fff, var(--primary-color), transparent);
-            background-size: 100% 200%;
-            animation: flow 3s linear infinite;
-        }
-        @keyframes flow { 0% { background-position: 0% 0%; } 100% { background-position: 0% 200%; } }
-
-        .glass-card {
-            background: var(--card-color);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(124, 48, 255, 0.2);
-            color: var(--text-main);
+        /* ── Glass cards ─────────────────────────── */
+        .glass{
+            background:rgba(var(--c-black),.78);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+            border:1px solid rgba(var(--c-cyan),.2);
+            box-shadow:0 8px 32px rgba(var(--c-black),.5), inset 0 1px 0 rgba(var(--c-white),.05), 0 0 26px rgba(var(--c-cyan),.06);
+            position:relative;
         }
 
-        .card-entrance {
-            animation: cardIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .animate-gradient-text {
-            background: linear-gradient(to right, #fff, var(--primary-color), #00f2ff, #fff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 4s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
-
-        .role-toggle-btn {
-            padding: 12px 28px;
-            border-radius: 20px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.4s ease;
+        /* ── Neon text ────────────────────────────── */
+        .neon-text{
+            font-family:'Orbitron',sans-serif;
+            color:rgba(var(--c-cyan),1);
+            text-shadow:0 0 10px rgba(var(--c-cyan),.7), 0 0 22px rgba(var(--c-cyan),.35);
         }
 
-        /* Logout Button Glow */
-.logout-btn-anime:hover {
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-    transform: scale(1.02);
-}
+        /* ── Buttons ──────────────────────────────── */
+        .btn-lime{
+            background:rgba(var(--c-lime),.95);
+            color:rgba(var(--c-black),.92);
+            font-weight:900;
+            box-shadow:0 4px 18px rgba(var(--c-lime),.4), inset 0 -2px 10px rgba(var(--c-black),.2);
+            transition:transform .25s ease, box-shadow .25s ease;
+        }
+        .btn-lime:hover{ transform:translateY(-2px) scale(1.015); box-shadow:0 8px 26px rgba(var(--c-lime),.55); }
 
-        .btn-inactive { color: #666; }
-        .btn-inactive:hover { color: white; background: rgba(255,255,255,0.05); }
+        .btn-ghost{
+            background:rgba(var(--c-cyan),.07);
+            border:2px solid rgba(var(--c-cyan),.5);
+            color:rgba(var(--c-white),.95);
+            transition:all .25s ease;
+        }
+        .btn-ghost:hover{ background:rgba(var(--c-cyan),.16); border-color:rgba(var(--c-cyan),.9); }
 
-        input[type="color"] { -webkit-appearance: none; border: none; width: 32px; height: 32px; cursor: pointer; background: none; }
-        input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; }
+        .clip-tag{ clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px); }
+
+        /* ── Dossier tab label ────────────────────── */
+        .dossier-tab{
+            display:inline-flex; align-items:center; gap:8px;
+            font-family:'Orbitron',sans-serif;
+            font-size:11px; font-weight:700; letter-spacing:.08em;
+            color:rgba(var(--c-cyan),.9);
+            background:rgba(var(--c-cyan),.08);
+            border:1px solid rgba(var(--c-cyan),.35);
+            padding:6px 14px;
+        }
+
+        /* ── Hero signal-lock entrance (plays once) ── */
+        @keyframes signalLock{
+            0%{ opacity:0; letter-spacing:.35em; filter:blur(8px); }
+            55%{ opacity:1; letter-spacing:0em; filter:blur(0); }
+            68%{ transform:translateX(3px); }
+            80%{ transform:translateX(-3px); }
+            100%{ transform:translateX(0); }
+        }
+        .signal-lock{ animation:signalLock 1.1s cubic-bezier(.2,.8,.2,1) both; }
+        .fade-rise{ animation:fadeRise .8s ease both; }
+        @keyframes fadeRise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+        /* ── Flip card (hero demo + role reveal art) ─ */
+        .flip-scene{ perspective:1500px; }
+        .flip-card{
+            position:relative; width:100%; height:100%;
+            transform-style:preserve-3d;
+            transition:transform .7s cubic-bezier(.22,.9,.3,1.1);
+        }
+        .flip-card.is-flipped{ transform:rotateY(180deg); }
+        .flip-face{
+            position:absolute; inset:0;
+            backface-visibility:hidden; -webkit-backface-visibility:hidden;
+            border-radius:26px;
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            text-align:center;
+        }
+        .flip-face-back{ transform:rotateY(180deg); }
+
+        /* ── Timeline connector ───────────────────── */
+        .step-icon-wrap{ width:3.5rem; height:3.5rem; }
+
+        /* ── Role toggle ──────────────────────────── */
+        .role-btn{ transition:all .3s ease; }
+        .role-btn[aria-selected="true"].role-citizen{
+            background:rgba(var(--c-citizen),.16); border-color:rgba(var(--c-citizen),.7); color:#4ade80;
+            box-shadow:0 0 20px rgba(var(--c-citizen),.25);
+        }
+        .role-btn[aria-selected="true"].role-spy{
+            background:rgba(var(--c-spy),.16); border-color:rgba(var(--c-spy),.7); color:#f87171;
+            box-shadow:0 0 20px rgba(var(--c-spy),.25);
+        }
+        .role-btn[aria-selected="false"]{ background:transparent; border-color:rgba(var(--c-white),.12); color:rgba(var(--c-white),.5); }
+
+        /* ── FAQ accordion ────────────────────────── */
+        .faq-item[open] .faq-chevron{ transform:rotate(180deg); }
+        .faq-summary{ cursor:pointer; list-style:none; }
+        .faq-summary::-webkit-details-marker{ display:none; }
+
+        /* ── Reduced motion ───────────────────────── */
+        @media (prefers-reduced-motion: reduce){
+            *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+            html{ scroll-behavior:auto; }
+        }
+
+        /* Focus visibility */
+        a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-visible{
+            outline:2px solid rgba(var(--c-lime),.9); outline-offset:3px; border-radius:6px;
+        }
+
+        ::selection{ background:rgba(var(--c-cyan),.35); }
     </style>
 </head>
-<body>
+<body class="pb-16">
 
-<style>
-@keyframes shadow-pulse {
-    0%, 100% {
-        filter: drop-shadow(0 8px 20px rgba(124, 48, 255, 0.5))
-                drop-shadow(0 0 30px rgba(124, 48, 255, 0.3));
-    }
-    25% {
-        filter: drop-shadow(0 8px 20px rgba(255, 48, 124, 0.5))
-                drop-shadow(0 0 30px rgba(255, 48, 200, 0.4));
-    }
-    50% {
-        filter: drop-shadow(0 8px 20px rgba(48, 200, 255, 0.5))
-                drop-shadow(0 0 30px rgba(48, 255, 200, 0.4));
-    }
-    75% {
-        filter: drop-shadow(0 8px 20px rgba(255, 200, 48, 0.5))
-                drop-shadow(0 0 30px rgba(255, 150, 48, 0.4));
-    }
-}
+    <!-- Fingerprint watermark, echoes the brand mark -->
+    <i class="fas fa-fingerprint pointer-events-none select-none fixed -left-16 top-24 text-[22rem] text-cyan-400/[.035] -rotate-12 z-0"></i>
 
-.animate-shadow-pulse {
-    animation: shadow-pulse 4s ease-in-out infinite;
-}
+    <!-- ══════════════ Header ══════════════ -->
+    <header class="relative z-10 max-w-5xl mx-auto px-5 sm:px-6 pt-6">
+        <a href="home.html" class="inline-flex items-center gap-2 text-white/60 hover:text-[rgba(0,242,255,1)] transition-colors duration-300 group">
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span class="text-sm font-bold">الرئيسية</span>
+        </a>
+    </header>
 
-.animate-shadow-pulse:hover {
-    animation: shadow-pulse 1.5s ease-in-out infinite;
-}
-</style>
+    <!-- ══════════════ Hero ══════════════ -->
+    <section class="relative z-10 max-w-5xl mx-auto px-5 sm:px-6 pt-10 pb-6">
+        <div class="grid lg:grid-cols-[1.15fr_.85fr] gap-12 items-center">
 
-    <a href="home.html" class="fixed top-4 right-4 z-50 text-gray-300 px-4 py-2 hover:text-white transition-colors duration-300">
-        <i class="fas fa-arrow-right"></i> الرئيسية
-    </a>
+            <div class="text-center lg:text-right">
+                <span class="dossier-tab clip-tag fade-rise" style="animation-delay:.05s">
+                    <i class="fas fa-fingerprint"></i> دليل اللعب · بالبلدي كده
+                </span>
 
-    <main class="max-w-5xl mx-auto px-6 mb-20">
-        <div class="text-center mb-10 pt-10">
-            <div class="inline-block p-3 rounded-2xl bg-[#7c30ff]/10 mb-4 animate-house">
-                <i class="fas fa-gamepad text-3xl text-[#7c30ff]"></i>
-            </div>
-            <h1 class="text-6xl font-black mb-4 tracking-tighter">دليل <span class="animate-gradient-text">اللعب</span></h1>
-            <p class="text-gray-400 text-lg flex justify-center items-center gap-2">
-                <i class="fas fa-shield-halved text-cyan-500"></i>تعلم طريقة اللعب <i class="fas fa-magnifying-glass text-cyan-500"></i>
-            </p>
-        </div>
+                <h1 class="signal-lock font-display font-black text-4xl sm:text-5xl lg:text-6xl leading-[1.15] mt-5 mb-5">
+                    فيه واحد فيكم <span class="neon-text">بيكدب</span>...
+                    <br class="hidden sm:block">
+                    وإحنا هنوريك <span class="text-[rgba(163,230,53,1)]" style="text-shadow:0 0 18px rgba(163,230,53,.5)">تمسكه إزاي</span>
+                </h1>
 
-        <div class="glass-card rounded-[35px] p-8 mb-12 relative overflow-hidden group border border-white/5">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-                <div class="flex items-center gap-5">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#7c30ff] to-cyan-500 flex items-center justify-center shadow-lg">
-                        <i class="fas fa-brush text-white text-2xl animate-user"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-black text-xl tracking-tight"> التحكم بالألوان</h3>
-                        <p class="text-xs text-cyan-400 font-bold uppercase tracking-[0.2em]">Live UI Customizer</p>
-                    </div>
-                </div>
-                
-                <div class="flex flex-wrap gap-5 justify-center items-center bg-black/40 px-6 py-4 rounded-[25px] border border-white/10">
-                    <div class="flex flex-col items-center gap-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">الخلفية</span>
-                        <input type="color" id="colorBg" value="#080808" oninput="updateLiveTheme()">
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">الكروت</span>
-                        <input type="color" id="colorCard" value="#141414" oninput="updateLiveTheme()">
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">العناوين</span>
-                        <input type="color" id="colorTextMain" value="#ffffff" oninput="updateLiveTheme()">
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">النص</span>
-                        <input type="color" id="colorTextSec" value="#9ca3af" oninput="updateLiveTheme()">
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">الأزرار</span>
-                        <input type="color" id="colorBtn" value="#7c30ff" oninput="updateLiveTheme()">
-                    </div>
-                    <div class="h-10 w-[1px] bg-white/10 mx-2"></div>
-                    <button onclick="resetTheme()" class="group flex items-center gap-2 px-5 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all font-bold text-xs">
-                        <i class="fas fa-undo-alt group-hover:rotate-[-180deg] transition-transform duration-500"></i>
-                    </button>
+                <p class="fade-rise text-white/60 text-base sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0 mb-8" style="animation-delay:.15s">
+                    الجاسوس لعبة اجتماعية بسيطة: كل اللاعبين عارفين كلمة سرية غير واحد بس.
+                    مهمتكم تكتشفوه من غير ما تفتحوا بقكم، ومهمته هو إنه يتخفى وسطكم لحد ما الوقت يخلص.
+                    خمس دقايق تعليم، وليلة كاملة ضحك على أصحابك. يلا نبدأ 😏
+                </p>
+
+                <div class="fade-rise flex flex-wrap items-center justify-center lg:justify-start gap-3" style="animation-delay:.25s">
+                    <a href="home.html" class="btn-lime clip-tag px-7 py-3.5 text-sm sm:text-base inline-flex items-center gap-2">
+                        <i class="fas fa-rocket"></i> يلا نعمل غرفة
+                    </a>
+                    <a href="#steps" class="btn-ghost clip-tag px-7 py-3.5 text-sm sm:text-base inline-flex items-center gap-2">
+                        <i class="fas fa-list-ol"></i> اعرف القوانين
+                    </a>
                 </div>
             </div>
-        </div>
 
-        <div class="flex justify-center mb-10">
-            <div class="bg-black/40 p-2 rounded-[28px] border border-white/10 flex gap-2 backdrop-blur-md">
-                <button onclick="switchRole('innocent')" id="btnInnocent" class="role-toggle-btn active-innocent">
-                    <i class="fas fa-user-shield"></i> المواطن البرئ
-                </button>
-                <button onclick="switchRole('spy')" id="btnSpy" class="role-toggle-btn btn-inactive">
-                    <i class="fas fa-user-secret"></i> الجاسوس 
-                </button>
-            </div>
-        </div>
-
-        <div id="instructionDisplay" class="min-h-[450px]"></div>
-
-        <div class="flex justify-between items-center mt-12 gap-6 max-w-3xl mx-auto">
-            <button onclick="changeStep(-1)" id="prevBtn" class="flex-1 py-5 rounded-[30px] bg-white/5 border border-white/10 text-white font-black flex items-center justify-center gap-3 transition-all hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed">
-                <i class="fas fa-chevron-right"></i> السابق
-            </button>
-            <div id="stepDots" class="flex gap-3"></div>
-            <button onclick="changeStep(1)" id="nextBtn" class="flex-1 py-5 rounded-[30px] text-white font-black flex items-center justify-center gap-3 transition-all hover:scale-[1.02] shadow-xl">
-                <span>التالي</span> <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
-    </main>
-    
-    <footer class="mt-20 border-t border-cyan-900/50 bg-black/40 backdrop-blur-md pt-12 pb-6">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-            
-            <div class="space-y-4 text-center md:text-right">
-                <div class="flex items-center justify-center md:justify-start gap-3">
-                    <i class="fas fa-dragon text-3xl text-cyan-400 drop-shadow-[0_0_8px_#00f2ff]"></i>
-                    <a href="https://phinex-org.github.io/PhineX/"><span class="text-2xl font-black tracking-tighter text-white uppercase italic">PhineX</span></a>
+            <!-- Interactive flip-card demo -->
+            <div class="fade-rise flex flex-col items-center" style="animation-delay:.3s">
+                <div id="demoScene" class="flip-scene w-56 h-80 sm:w-64 sm:h-[22rem] cursor-pointer select-none" role="button" tabindex="0"
+                     aria-label="دوس عشان تشوف عينة من كارت كشف الدور">
+                    <div id="demoCard" class="flip-card">
+                        <!-- Front -->
+                        <div class="flip-face glass" style="border-color:rgba(0,242,255,.35)">
+                            <i class="fas fa-fingerprint text-6xl text-cyan-400/70 mb-4"></i>
+                            <p class="font-display text-lg font-bold neon-text">دوس هنا</p>
+                            <p class="text-white/40 text-xs mt-2">كده بيتم كشف الدور في اللعبة</p>
+                        </div>
+                        <!-- Back: citizen -->
+                        <div id="demoBackCitizen" class="flip-face flip-face-back glass" style="border-color:rgba(34,197,94,.5); background:linear-gradient(160deg, rgba(34,197,94,.14), rgba(0,0,0,.85));">
+                            <i class="fas fa-shield-halved text-6xl text-emerald-400 mb-4"></i>
+                            <p class="font-display text-xl font-black text-emerald-400">انت بريء 🛡️</p>
+                            <p class="text-white/50 text-xs mt-2 mb-1">الكلمة السرية</p>
+                            <p class="font-display text-2xl font-black neon-text">المطعم 🍽️</p>
+                        </div>
+                        <!-- Back: spy -->
+                        <div id="demoBackSpy" class="flip-face flip-face-back glass hidden" style="border-color:rgba(239,68,68,.5); background:linear-gradient(160deg, rgba(239,68,68,.14), rgba(0,0,0,.85));">
+                            <i class="fas fa-user-secret text-6xl text-red-400 mb-4"></i>
+                            <p class="font-display text-xl font-black text-red-400">انت الجاسوس 🕵️</p>
+                            <p class="text-white/50 text-xs mt-3 max-w-[80%]">محدش هيقولك حاجة تانية... دلوقتي بقى انت المسؤول</p>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-gray-400 font-bold text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
-                    نخبة من المبرمجين المحترفين لصناعة تجارب رقمية استثنائية.
+                <p class="text-white/35 text-xs mt-4 flex items-center gap-2">
+                    <i class="fas fa-hand-pointer animate-bounce"></i> جرب دوس عليها كذا مرة
                 </p>
             </div>
+        </div>
 
-            <div class="space-y-6 text-center md:text-left">
-                <h4 class="text-[10px] font-black text-cyan-500 uppercase tracking-[0.3em]">تواصل معنا</h4>
-                <div class="flex flex-wrap justify-center md:justify-end gap-4">
-                    <a href="https://discord.gg/xBQ3ewVVHk" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#5865F2] hover:border-[#5865F2] hover:shadow-[0_0_15px_#5865F2] transition-all duration-300">
-                        <i class="fab fa-discord text-xl"></i>
-                    </a>
-                    <a href="hhttps://github.com/PhineX-org" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:border-white hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-300">
-                        <i class="fab fa-github text-xl"></i>
-                    </a>
-                    <a href="https://www.youtube.com/channel/UCslNCf9VtxpFH_gtA1VHFyQ" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#FF0000] hover:border-[#FF0000] hover:shadow-[0_0_15px_#FF0000] transition-all duration-300">
-                        <i class="fab fa-youtube text-xl"></i>
-                    </a>
-                    <a href="https://chat.whatsapp.com/IuC3Gu6x5p61MORTnAuHJA" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#25D366] hover:border-[#25D366] hover:shadow-[0_0_15px_#25D366] transition-all duration-300">
-                        <i class="fab fa-whatsapp text-xl"></i>
-                    </a>
-                    <a href="https://www.facebook.com/profile.php?id=61584765330775" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#1877F2] hover:border-[#1877F2] hover:shadow-[0_0_15px_#1877F2] transition-all duration-300">
-                        <i class="fab fa-facebook-f text-xl"></i>
+        <!-- Stat chips -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-12">
+            <div class="glass rounded-2xl px-4 py-4 text-center">
+                <i class="fas fa-users text-cyan-400 mb-2"></i>
+                <p class="font-display font-black text-lg">٣ – ١٠</p>
+                <p class="text-white/40 text-[11px]">لاعبين</p>
+            </div>
+            <div class="glass rounded-2xl px-4 py-4 text-center">
+                <i class="fas fa-user-secret text-red-400 mb-2"></i>
+                <p class="font-display font-black text-lg">١</p>
+                <p class="text-white/40 text-[11px]">جاسوس بس</p>
+            </div>
+            <div class="glass rounded-2xl px-4 py-4 text-center">
+                <i class="fas fa-layer-group text-lime-400 mb-2"></i>
+                <p class="font-display font-black text-lg">٥</p>
+                <p class="text-white/40 text-[11px]">تصنيفات</p>
+            </div>
+            <div class="glass rounded-2xl px-4 py-4 text-center">
+                <i class="fas fa-infinity text-cyan-400 mb-2"></i>
+                <p class="font-display font-black text-lg">∞</p>
+                <p class="text-white/40 text-[11px]">من غير تايمر</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ TL;DR case file ══════════════ -->
+    <section class="relative z-10 max-w-3xl mx-auto px-5 sm:px-6 mt-14">
+        <div class="glass rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+            <div class="absolute -left-6 -top-6 text-red-500/10 text-[8rem] font-display font-black rotate-[-14deg] select-none pointer-events-none">TOP SECRET</div>
+            <div class="relative z-10 flex items-start gap-4">
+                <div class="w-11 h-11 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center shrink-0">
+                    <i class="fas fa-magnifying-glass text-cyan-400"></i>
+                </div>
+                <div>
+                    <p class="font-display text-xs font-bold text-cyan-400 tracking-widest mb-2">TL;DR — باختصار كده</p>
+                    <p class="text-white/75 leading-relaxed">
+                        كل اللاعبين هيعرفوا <b class="text-white">كلمة سرية واحدة</b> غير شخص واحد بس هو <b class="text-red-400">الجاسوس</b>.
+                        الأبرياء بيسألوا أسئلة غير مباشرة عشان يفضحوا الجاسوس من غير ما يقولوا الكلمة صراحة،
+                        والجاسوس بيحاول يتخفى ويلم خيوط... أو يخمن الكلمة في اللحظة الأخيرة لو اتمسك. اللي يكسب هو اللي يفكر أسرع 🧠
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ Steps ══════════════ -->
+    <section id="steps" class="relative z-10 max-w-3xl mx-auto px-5 sm:px-6 mt-20 scroll-mt-6">
+        <div class="text-center mb-12">
+            <span class="dossier-tab clip-tag"><i class="fas fa-folder-open"></i> ملف ٠١</span>
+            <h2 class="font-display font-black text-3xl sm:text-4xl mt-4">إزاي تلعب؟ <span class="neon-text">٦ خطوات</span> وخلصنا</h2>
+        </div>
+
+        <div class="relative">
+            <!-- Step 1 -->
+            <div class="flex gap-5 mb-10">
+                <div class="relative shrink-0">
+                    <div class="step-icon-wrap rounded-2xl glass flex items-center justify-center relative z-10" style="border-color:rgba(0,242,255,.4)">
+                        <i class="fas fa-door-open text-cyan-400 text-xl"></i>
+                    </div>
+                    <div class="absolute top-full right-1/2 translate-x-1/2 w-[2px] h-10 bg-gradient-to-b from-cyan-400/50 to-transparent"></div>
+                </div>
+                <div class="pt-1">
+                    <p class="font-display text-[11px] text-cyan-400/80 tracking-widest mb-1">خطوة ٠١</p>
+                    <h3 class="font-black text-xl mb-2">اتجمعوا في غرفة 🎪</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        اعمل غرفة أو ادخل بكود صاحبك، من <b class="text-white">٣ لحد ١٠ لاعبين</b>.
+                        صاحب الغرفة (الهوست) هو اللي بيختار التصنيف ويحدد الغرفة عامة ولا خاصة.
+                        لو أصحابك مش قدامك، ابعتلهم كود الغرفة أو الـQR وخلاص، كله جاهز.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex gap-5 mb-10">
+                <div class="relative shrink-0">
+                    <div class="step-icon-wrap rounded-2xl glass flex items-center justify-center relative z-10" style="border-color:rgba(0,242,255,.4)">
+                        <i class="fas fa-shuffle text-cyan-400 text-xl"></i>
+                    </div>
+                    <div class="absolute top-full right-1/2 translate-x-1/2 w-[2px] h-10 bg-gradient-to-b from-cyan-400/50 to-transparent"></div>
+                </div>
+                <div class="pt-1">
+                    <p class="font-display text-[11px] text-cyan-400/80 tracking-widest mb-1">خطوة ٠٢</p>
+                    <h3 class="font-black text-xl mb-2">اللعبة بتوزع الأدوار من ورا ضهرك 🎲</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        في لحظة واحدة، شخص واحد بيتحول لـ<b class="text-red-400">الجاسوس</b>، والباقي كله بيبقى عارف
+                        نفس <b class="text-white">الكلمة السرية</b> (مكان، أكلة، وظيفة، شركة، أو نادي — على حسب التصنيف).
+                        محدش بيعرف مين الجاسوس غيره هو، وده بالظبط أساس اللعبة كلها.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex gap-5 mb-10">
+                <div class="relative shrink-0">
+                    <div class="step-icon-wrap rounded-2xl glass flex items-center justify-center relative z-10 overflow-hidden" style="border-color:rgba(255,255,255,.15)">
+                        <div class="absolute inset-0" style="background:linear-gradient(135deg, rgba(34,197,94,.35) 50%, rgba(239,68,68,.35) 50%)"></div>
+                        <i class="fas fa-id-badge text-white text-xl relative z-10"></i>
+                    </div>
+                    <div class="absolute top-full right-1/2 translate-x-1/2 w-[2px] h-10 bg-gradient-to-b from-cyan-400/50 to-transparent"></div>
+                </div>
+                <div class="pt-1">
+                    <p class="font-display text-[11px] text-cyan-400/80 tracking-widest mb-1">خطوة ٠٣</p>
+                    <h3 class="font-black text-xl mb-2">دورك تفتح الكارت 🃏</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        مش الكل بيفتح مع بعض — كل واحد لما يجيله دوره يدوس على كارته لوحده.
+                        لو انت بريء 🛡️ هتلاقي الكلمة قدامك واضحة. لو انت الجاسوس 🕵️...
+                        هتلاقي بس «انت الجاسوس» وسلام، مفيش أي تلميح. حافظ على وشك عادي وانت بتقفل الكارت 😅
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex gap-5 mb-10">
+                <div class="relative shrink-0">
+                    <div class="step-icon-wrap rounded-2xl glass flex items-center justify-center relative z-10" style="border-color:rgba(0,242,255,.4)">
+                        <i class="fas fa-comments text-cyan-400 text-xl"></i>
+                    </div>
+                    <div class="absolute top-full right-1/2 translate-x-1/2 w-[2px] h-10 bg-gradient-to-b from-cyan-400/50 to-transparent"></div>
+                </div>
+                <div class="pt-1">
+                    <p class="font-display text-[11px] text-cyan-400/80 tracking-widest mb-1">خطوة ٠٤</p>
+                    <h3 class="font-black text-xl mb-2">دلوقتي يبدأ الاستجواب 🗣️</h3>
+                    <p class="text-white/60 leading-relaxed mb-3">
+                        مفيش تايمر ولا حد بيستعجلك — الكلام مفتوح لحد ما <b class="text-white">نص اللاعبين على الأقل</b> يدوسوا
+                        «جاهز للتصويت». اسألوا أسئلة غير مباشرة عشان تلموا خيوط من غير ما تفضحوا الكلمة قدام الجاسوس.
+                        تقدر كمان تحط أي حد «مشتبه به» في أي وقت، وهيبان عداد تحت اسمه يوريك مين شاكك فيه.
+                    </p>
+                    <div class="glass rounded-xl px-4 py-3 flex items-start gap-3" style="border-color:rgba(239,68,68,.3)">
+                        <i class="fas fa-lightbulb text-red-400 mt-0.5"></i>
+                        <p class="text-white/55 text-sm leading-relaxed">
+                            <b class="text-red-400">ملحوظة للجاسوس:</b> عندك ٣ تلميحات بس (أول حرف، عدد الحروف، آخر حرف).
+                            استخدمهم بذكاء — لو حرقتهم على طول، هتفضحك سرعتك مش التلميح نفسه.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="flex gap-5 mb-10">
+                <div class="relative shrink-0">
+                    <div class="step-icon-wrap rounded-2xl glass flex items-center justify-center relative z-10" style="border-color:rgba(0,242,255,.4)">
+                        <i class="fas fa-square-poll-vertical text-cyan-400 text-xl"></i>
+                    </div>
+                    <div class="absolute top-full right-1/2 translate-x-1/2 w-[2px] h-10 bg-gradient-to-b from-cyan-400/50 to-transparent"></div>
+                </div>
+                <div class="pt-1">
+                    <p class="font-display text-[11px] text-cyan-400/80 tracking-widest mb-1">خطوة ٠٥</p>
+                    <h3 class="font-black text-xl mb-2">وقت التصويت 🗳️</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        كل واحد يصوّت على اللي شاكك إنه الجاسوس. لما الكل يخلص، النتيجة بتطلع أوتوماتيك بعد ثانيتين.
+                        لو فيه تعادل بين اتنين أو أكتر، هيطلع <b class="text-white">سبينر</b> (عجلة حظ) يختار واحد فيهم عشوائي —
+                        يعني حتى الحظ بقاله رأي هنا 🎡
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="flex gap-5">
+                <div class="relative shrink-0">
+                    <div class="step-icon-wrap rounded-2xl flex items-center justify-center relative z-10" style="background:rgba(163,230,53,.95)">
+                        <i class="fas fa-trophy text-black text-xl"></i>
+                    </div>
+                </div>
+                <div class="pt-1">
+                    <p class="font-display text-[11px] text-lime-400/90 tracking-widest mb-1">خطوة ٠٦</p>
+                    <h3 class="font-black text-xl mb-2">مين اللي كسب فعلاً؟ 🏆</h3>
+                    <p class="text-white/60 leading-relaxed">
+                        لو اللي طلع بالتصويت هو فعلاً الجاسوس، مش خلاص لسه: بياخد <b class="text-white">فرصة أخيرة</b> يختار
+                        الكلمة السرية من ليستة كلمات. خمّن صح؟ هو الفايز برغم إنه اتمسك! خمّن غلط؟ الأبرياء يكسبوا.
+                        وأهم حاجة: لو غلّطتوا وصوّتوا على بريء... مبروك، فضحتوا نفسكوا والجاسوس يكسب من غير ما يتعب خالص 💀
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ Role strategy tabs ══════════════ -->
+    <section class="relative z-10 max-w-3xl mx-auto px-5 sm:px-6 mt-20">
+        <div class="text-center mb-8">
+            <span class="dossier-tab clip-tag"><i class="fas fa-folder-open"></i> ملف ٠٢</span>
+            <h2 class="font-display font-black text-3xl sm:text-4xl mt-4">اختار دورك، <span class="neon-text">وشوف حركتك</span></h2>
+            <p class="text-white/50 mt-3">كل دور له لعبة مختلفة تماماً — جرب الاتنين وشوف انت أحسن في ايه</p>
+        </div>
+
+        <div class="flex justify-center mb-8">
+            <div class="glass rounded-2xl p-1.5 flex gap-1.5" role="tablist" aria-label="اختيار الدور">
+                <button id="tabCitizen" class="role-btn role-citizen border-2 rounded-xl px-6 py-3 font-black text-sm flex items-center gap-2"
+                        role="tab" aria-selected="true" aria-controls="panelCitizen" onclick="setRole('citizen')">
+                    <i class="fas fa-shield-halved"></i> المواطن البريء
+                </button>
+                <button id="tabSpy" class="role-btn role-spy border-2 rounded-xl px-6 py-3 font-black text-sm flex items-center gap-2"
+                        role="tab" aria-selected="false" aria-controls="panelSpy" onclick="setRole('spy')">
+                    <i class="fas fa-user-secret"></i> الجاسوس
+                </button>
+            </div>
+        </div>
+
+        <!-- Citizen panel -->
+        <div id="panelCitizen" role="tabpanel" class="glass rounded-3xl p-6 sm:p-8" style="border-color:rgba(34,197,94,.35)">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center">
+                    <i class="fas fa-shield-halved text-emerald-400 text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-emerald-400">لو انت بريء</h3>
+                    <p class="text-white/45 text-xs">انت عارف السر... بس متفتحوش أوي!</p>
+                </div>
+            </div>
+            <ul class="space-y-3 text-white/70">
+                <li class="flex items-start gap-3"><i class="fas fa-check text-emerald-400 mt-1 shrink-0"></i>اسأل أسئلة جانبية مش مباشرة: «تحس فيه بايه؟» أحسن بكتير من «هو مطعم؟»</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-emerald-400 mt-1 shrink-0"></i>راقب اللي بيرمي إجابات عامة زي «حلو» أو «جامد» من غير أي تفصيلة حقيقية</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-emerald-400 mt-1 shrink-0"></i>متديش كل المعلومة في سؤال واحد — الجاسوس بيسمعك برضه وبيحاول يلحق</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-emerald-400 mt-1 shrink-0"></i>حط أي حد شاكك فيه «مشتبه به» بسرعة، ده بيوجه اللعبة كلها</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-emerald-400 mt-1 shrink-0"></i>صوّت بعقلك مش بمزاجك — صحبك المفضل ممكن يبقى هو الجاسوس فعلاً 😏</li>
+            </ul>
+        </div>
+
+        <!-- Spy panel -->
+        <div id="panelSpy" role="tabpanel" class="glass rounded-3xl p-6 sm:p-8 hidden" style="border-color:rgba(239,68,68,.35)">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-12 h-12 rounded-2xl bg-red-500/15 border border-red-500/40 flex items-center justify-center">
+                    <i class="fas fa-user-secret text-red-400 text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-red-400">لو انت الجاسوس</h3>
+                    <p class="text-white/45 text-xs">معندكش السر، وده عادي — الهلع هو اللي هيفضحك</p>
+                </div>
+            </div>
+            <ul class="space-y-3 text-white/70">
+                <li class="flex items-start gap-3"><i class="fas fa-check text-red-400 mt-1 shrink-0"></i>خليك هادي وانت بتفتح الكارت، متغيرش تعبيرات وشك ولا هيئتك</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-red-400 mt-1 shrink-0"></i>سمّع كويس لكل إجابة وحاول تلمّ خيوط عن التصنيف والمكان</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-red-400 mt-1 shrink-0"></i>جاوب بإجابة عامة تتظبط مع أي حاجة، وحوّل السؤال بسرعة لحد تاني</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-red-400 mt-1 shrink-0"></i>استخدم تلميحاتك التلاتة بحكمة، مش الثلاثة مرة واحدة</li>
+                <li class="flex items-start gap-3"><i class="fas fa-check text-red-400 mt-1 shrink-0"></i>حتى لو اتصوتوا عليك، اللعبة لسه معاك — خمّن صح وتاخد الفوز في آخر لحظة</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ══════════════ Golden rules ══════════════ -->
+    <section class="relative z-10 max-w-3xl mx-auto px-5 sm:px-6 mt-20">
+        <div class="text-center mb-8">
+            <span class="dossier-tab clip-tag"><i class="fas fa-folder-open"></i> ملف ٠٣</span>
+            <h2 class="font-display font-black text-3xl sm:text-4xl mt-4">قوانين دهب قبل ما تبدأ</h2>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-6" style="border-color:rgba(163,230,53,.35)">
+                <p class="font-display text-sm font-bold text-lime-400 mb-4 flex items-center gap-2"><i class="fas fa-circle-check"></i> اعمل كده</p>
+                <ul class="space-y-3 text-white/65 text-sm">
+                    <li>اسأل بذكاء مش بفضول زيادة</li>
+                    <li>راقب ردود أفعال الكل مش بس كلامهم</li>
+                    <li>لو انت الجاسوس، اتصرف طبيعي جداً</li>
+                    <li>ركّز في التصنيف اللي الهوست اختاره</li>
+                </ul>
+            </div>
+            <div class="glass rounded-2xl p-6" style="border-color:rgba(239,68,68,.35)">
+                <p class="font-display text-sm font-bold text-red-400 mb-4 flex items-center gap-2"><i class="fas fa-circle-xmark"></i> متعملش كده</p>
+                <ul class="space-y-3 text-white/65 text-sm">
+                    <li>متقولش الكلمة صراحة ولا حتى تلمّح ليها قوي</li>
+                    <li>متصوتش عشوائي أو عشان صحبك بس</li>
+                    <li>متستخدمش كل تلميحاتك من أول لحظة</li>
+                    <li>متسيبش الشك في نفس الشخص طول الوقت من غير دليل</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ Categories ══════════════ -->
+    <section class="relative z-10 max-w-4xl mx-auto px-5 sm:px-6 mt-20">
+        <div class="text-center mb-10">
+            <span class="dossier-tab clip-tag"><i class="fas fa-folder-open"></i> ملف ٠٤</span>
+            <h2 class="font-display font-black text-3xl sm:text-4xl mt-4">التصنيفات المتاحة</h2>
+            <p class="text-white/50 mt-3">الهوست بيختار واحد منهم قبل ما اللعبة تبدأ</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div class="glass rounded-2xl p-5 text-center hover:-translate-y-1 transition-transform duration-300" style="border-color:rgba(0,242,255,.3)">
+                <p class="text-3xl mb-3">🌍</p>
+                <p class="font-black text-sm mb-2">أماكن سياحية</p>
+                <p class="text-white/40 text-[11px] leading-relaxed">المطار، السيرك، المزرعة</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center hover:-translate-y-1 transition-transform duration-300" style="border-color:rgba(0,242,255,.3)">
+                <p class="text-3xl mb-3">🍕</p>
+                <p class="font-black text-sm mb-2">أكلات مصرية</p>
+                <p class="text-white/40 text-[11px] leading-relaxed">كشري، ملوخية، حواوشي</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center hover:-translate-y-1 transition-transform duration-300" style="border-color:rgba(0,242,255,.3)">
+                <p class="text-3xl mb-3">🛠️</p>
+                <p class="font-black text-sm mb-2">مهن ووظائف</p>
+                <p class="text-white/40 text-[11px] leading-relaxed">دكتور، مهندس، طيار</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center hover:-translate-y-1 transition-transform duration-300" style="border-color:rgba(0,242,255,.3)">
+                <p class="text-3xl mb-3">🏢</p>
+                <p class="font-black text-sm mb-2">شركات عالمية</p>
+                <p class="text-white/40 text-[11px] leading-relaxed">Apple، Google، Nike</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center hover:-translate-y-1 transition-transform duration-300" style="border-color:rgba(0,242,255,.3)">
+                <p class="text-3xl mb-3">⚽</p>
+                <p class="font-black text-sm mb-2">أندية كورة</p>
+                <p class="text-white/40 text-[11px] leading-relaxed">الأهلي، الزمالك، ريال مدريد</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════ FAQ ══════════════ -->
+    <section class="relative z-10 max-w-3xl mx-auto px-5 sm:px-6 mt-20">
+        <div class="text-center mb-8">
+            <span class="dossier-tab clip-tag"><i class="fas fa-folder-open"></i> ملف ٠٥</span>
+            <h2 class="font-display font-black text-3xl sm:text-4xl mt-4">أسئلة بيسألها الكل</h2>
+        </div>
+
+        <div class="space-y-3">
+            <details class="faq-item glass rounded-2xl overflow-hidden" open>
+                <summary class="faq-summary px-5 py-4 flex items-center justify-between gap-3 font-bold">
+                    <span><i class="fas fa-users text-cyan-400 ml-2"></i>لازم نكون كام عشان نلعب؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-white/40 transition-transform duration-300"></i>
+                </summary>
+                <p class="px-5 pb-5 text-white/60 leading-relaxed">من ٣ لحد ١٠ لاعبين بالظبط. تحت ٣ اللعبة مش هتشتغل، وفوق ١٠ الغرفة هتبقى مليانة.</p>
+            </details>
+
+            <details class="faq-item glass rounded-2xl overflow-hidden">
+                <summary class="faq-summary px-5 py-4 flex items-center justify-between gap-3 font-bold">
+                    <span><i class="fas fa-clock text-cyan-400 ml-2"></i>فيه وقت محدد للنقاش؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-white/40 transition-transform duration-300"></i>
+                </summary>
+                <p class="px-5 pb-5 text-white/60 leading-relaxed">لأ خالص، اللعبة مفيهاش تايمر. الديسكشن مستمر لحد ما نص اللاعبين على الأقل يدوسوا «جاهز للتصويت»، وقتها اللعبة تنتقل تلقائي.</p>
+            </details>
+
+            <details class="faq-item glass rounded-2xl overflow-hidden">
+                <summary class="faq-summary px-5 py-4 flex items-center justify-between gap-3 font-bold">
+                    <span><i class="fas fa-scale-balanced text-cyan-400 ml-2"></i>التصويت اتعادل، يحصل ايه؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-white/40 transition-transform duration-300"></i>
+                </summary>
+                <p class="px-5 pb-5 text-white/60 leading-relaxed">بيطلع سبينر (عجلة حظ) يختار واحد من اللاعبين المتعادلين عشوائياً، وعليه يتحدد المصير.</p>
+            </details>
+
+            <details class="faq-item glass rounded-2xl overflow-hidden">
+                <summary class="faq-summary px-5 py-4 flex items-center justify-between gap-3 font-bold">
+                    <span><i class="fas fa-crosshairs text-cyan-400 ml-2"></i>الجاسوس اتمسك بس خمّن الكلمة صح، مين كسب؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-white/40 transition-transform duration-300"></i>
+                </summary>
+                <p class="px-5 pb-5 text-white/60 leading-relaxed">الجاسوس! برغم إنه اتكشف بالتصويت، تخمينه الصح للكلمة السرية بينقذه وبيقلب النتيجة لصالحه في آخر لحظة.</p>
+            </details>
+
+            <details class="faq-item glass rounded-2xl overflow-hidden">
+                <summary class="faq-summary px-5 py-4 flex items-center justify-between gap-3 font-bold">
+                    <span><i class="fas fa-qrcode text-cyan-400 ml-2"></i>ينفع نلعب مع أصحابي اللي مش قدامي؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-white/40 transition-transform duration-300"></i>
+                </summary>
+                <p class="px-5 pb-5 text-white/60 leading-relaxed">أكيد، اعمل غرفة أونلاين وابعتلهم كود الغرفة أو الـQR كود، ويدخلوا من أي مكان في مصر أو برا حتى.</p>
+            </details>
+
+            <details class="faq-item glass rounded-2xl overflow-hidden">
+                <summary class="faq-summary px-5 py-4 flex items-center justify-between gap-3 font-bold">
+                    <span><i class="fas fa-trophy text-cyan-400 ml-2"></i>فيه نقط أو رتب في اللعبة؟</span>
+                    <i class="fas fa-chevron-down faq-chevron text-white/40 transition-transform duration-300"></i>
+                </summary>
+                <p class="px-5 pb-5 text-white/60 leading-relaxed">أيوه، كل ماتش بيأثر على رصيدك ورتبتك (من برونز لحد متحدي). تابع تقدمك في <a href="leaderboard.html" class="text-cyan-400 underline">لوحة المتصدرين</a>.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- ══════════════ Final CTA ══════════════ -->
+    <section class="relative z-10 max-w-4xl mx-auto px-5 sm:px-6 mt-20">
+        <div class="glass rounded-[32px] p-8 sm:p-12 text-center relative overflow-hidden" style="border-color:rgba(163,230,53,.35)">
+            <i class="fas fa-user-secret pointer-events-none select-none absolute -left-4 -bottom-6 text-[9rem] text-white/[.03] rotate-[-8deg]"></i>
+            <h2 class="font-display font-black text-2xl sm:text-4xl mb-4">يلا بقى، مين هيبقى <span class="text-red-400">الجاسوس</span> النهاردة؟</h2>
+            <p class="text-white/55 max-w-lg mx-auto mb-8">دلوقتي انت عارف كل حاجة. اللي باقي بس إنك تجمع الشلة وتشوف مين هيتمسك أول واحد 😈</p>
+            <a href="home.html" class="btn-lime clip-tag px-9 py-4 inline-flex items-center gap-2 font-black">
+                <i class="fas fa-rocket"></i> ابدأ اللعب دلوقتي
+            </a>
+        </div>
+    </section>
+
+    <!-- ══════════════ Footer ══════════════ -->
+    <footer class="relative z-10 mt-20 border-t border-cyan-400/10 bg-black/40 backdrop-blur-md pt-12 pb-6">
+        <div class="max-w-5xl mx-auto px-5 sm:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                <div class="space-y-4 text-center md:text-right">
+                    <div class="flex items-center justify-center md:justify-start gap-3">
+                        <i class="fas fa-fingerprint text-3xl text-cyan-400" style="text-shadow:0 0 12px rgba(0,242,255,.6)"></i>
+                        <a href="https://phinex-org.github.io/PhineX/"><span class="font-display text-2xl font-black tracking-tighter text-white uppercase italic">PhineX</span></a>
+                    </div>
+                    <p class="text-white/40 font-bold text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
+                        نخبة من المبرمجين المحترفين لصناعة تجارب رقمية استثنائية.
+                    </p>
+                </div>
+
+                <div class="space-y-5 text-center md:text-left">
+                    <h4 class="font-display text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em]">تواصل معنا</h4>
+                    <div class="flex flex-wrap justify-center md:justify-end gap-3">
+                        <a href="https://discord.gg/xBQ3ewVVHk" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-[#5865F2] hover:border-[#5865F2] transition-all duration-300"><i class="fab fa-discord"></i></a>
+                        <a href="https://github.com/PhineX-org" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white hover:border-white transition-all duration-300"><i class="fab fa-github"></i></a>
+                        <a href="https://www.youtube.com/channel/UCslNCf9VtxpFH_gtA1VHFyQ" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-[#FF0000] hover:border-[#FF0000] transition-all duration-300"><i class="fab fa-youtube"></i></a>
+                        <a href="https://chat.whatsapp.com/IuC3Gu6x5p61MORTnAuHJA" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-[#25D366] hover:border-[#25D366] transition-all duration-300"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61584765330775" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-[#1877F2] hover:border-[#1877F2] transition-all duration-300"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] font-bold text-white/35 uppercase tracking-widest">
+                <p>&copy; 2026 <span class="text-cyan-400">PhineX</span>. All rights reserved.</p>
+                <a href="community.html" class="flex items-center gap-1.5 text-white/35 hover:text-cyan-400 transition-all duration-300">
+                    <i class="fas fa-shield-alt text-[12px]"></i><span>معايير المجتمع</span>
+                </a>
+                <div class="flex items-center gap-2 group">
+                    <span>Made with</span>
+                    <i class="fas fa-heart text-lime-400 animate-pulse mx-1"></i>
+                    <span>By:</span>
+                    <a href="https://www.facebook.com/A.Mo.Elgohary/" target="_blank" class="flex items-center gap-1.5 text-cyan-400 hover:text-white transition-all duration-300">
+                        <span class="underline decoration-cyan-900 underline-offset-4 group-hover:decoration-cyan-400">@Ahmed Al Gohary</span>
                     </a>
                 </div>
             </div>
         </div>
-
-        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-            <p>&copy; 2026 <span class="text-cyan-500">PhineX</span>. All rights reserved.</p>
-            
-                <div class="flex items-center gap-2 text-[11px] font-bold text-gray-500 uppercase tracking-widest group">
-            <span>Made with</span>
-            <i class="fas fa-heart text-red-600 animate-pulse mx-1"></i>
-            <span>By :</span>
-            <a href="https://www.facebook.com/A.Mo.Elgohary/" target="_blank" class="flex items-center gap-1.5 text-cyan-500 hover:text-white transition-all duration-300">
-                <i class="fas fa-laptop-code text-[14px]"></i>
-                <span class="underline decoration-cyan-900 underline-offset-4 group-hover:decoration-cyan-500">@Ahmed Al Gohary</span>
-            </a>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <script>
-        const gameData = {
-            innocent: {
-                color: '#7c30ff',
-                steps: [
-                    { icon: 'fa-question', title: 'الايقاع بالاسئلة ', text: ' بصفتك مواطن، ستعرف السر فوراً.  مهمتك هي الايقاع بالجاسوس عن طريق. الاسئلة المحيرة', anim: 'animate-house' },
-                    { icon: 'fa-search', title: ' ايجاد الجاسوس', text: 'اطرح أسئلة غير مباشرة. "هل نحتاج تذكرة للدخول؟". الجاسوس سيجد صعوبة في الإجابة بدقة.', anim: 'animate-book' },
-                    { icon: 'fa-check', title: 'جمع الملاحظات', text: 'راقب من يتردد في الإجابة أو يعطي إجابات عامة جداً مثل "المكان جميل". هذا هو هدفك!', anim: 'animate-user' },
-                    { icon: 'fa-gavel', title: 'التصويت الحاسم', text: 'عند انتهاء الوقت، صوتوا على الشخص المشبوه. إذا كشفتم الجاسوس، تفوز المجموعة بالكامل او العكس', anim: 'animate-dragon' }
-                ]
-            },
-            spy: {
-                color: '#ef4444',
-                steps: [
-                    { icon: 'fa-laugh', title: ' الثبات العالي', text: 'أنت لا تعرف السر! حافظ على برود أعصابك ولا تدع تعابير وجهك تفضحك عند رؤية كلمة "جاسوس".', anim: 'animate-spy' },
-                    { icon: 'fa-brain', title: 'الاستنتاج السريع', text: 'استمع لأسئلة الآخرين وإجاباتهم. إذا تحدثوا عن "الماء"، فربما المكان هو المسبح أو الشاطئ.', anim: 'animate-book' },
-                    { icon: 'fa-masks-theater', title: 'كسب الثقة ', text: 'عندما تُسأل، أعطِ إجابة غامضة ثم وجه سؤالاً لشخص آخر بسرعة لتنقل الضوء بعيداً عنك.', anim: 'animate-user' },
-                    { icon: 'fa-shuttle-space', title: ' الانتصار', text: 'يمكنك الفوز بطريقتين: أن يمر الوقت دون كشفك، أو أن تخمن اسم المكان بشكل صحيح.', anim: 'animate-dragon' }
-                ]
+        // ── Hero flip-card demo ──────────────────────────
+        const demoScene = document.getElementById('demoScene');
+        const demoCard  = document.getElementById('demoCard');
+        const backCitizen = document.getElementById('demoBackCitizen');
+        const backSpy      = document.getElementById('demoBackSpy');
+        let demoFlipped = false;
+
+        function toggleDemo(){
+            if (!demoFlipped){
+                if (Math.random() < 0.5){
+                    backCitizen.classList.remove('hidden');
+                    backSpy.classList.add('hidden');
+                } else {
+                    backSpy.classList.remove('hidden');
+                    backCitizen.classList.add('hidden');
+                }
             }
-        };
+            demoFlipped = !demoFlipped;
+            demoCard.classList.toggle('is-flipped', demoFlipped);
+        }
+        demoScene.addEventListener('click', toggleDemo);
+        demoScene.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleDemo(); }
+        });
 
-        let currentRole = 'innocent';
-        let currentStep = 0;
-
-        function switchRole(role) {
-            currentRole = role;
-            currentStep = 0;
-            const btnInn = document.getElementById('btnInnocent');
-            const btnSpy = document.getElementById('btnSpy');
-            
-            if(role === 'innocent') {
-                btnInn.className = "role-toggle-btn bg-[#7c30ff] text-white shadow-lg";
-                btnSpy.className = "role-toggle-btn btn-inactive";
-            } else {
-                btnSpy.className = "role-toggle-btn bg-[#ef4444] text-white shadow-lg";
-                btnInn.className = "role-toggle-btn btn-inactive";
-            }
-            renderCard();
+        // ── Role tabs ─────────────────────────────────────
+        function setRole(role){
+            const isSpy = role === 'spy';
+            document.getElementById('tabCitizen').setAttribute('aria-selected', String(!isSpy));
+            document.getElementById('tabSpy').setAttribute('aria-selected', String(isSpy));
+            document.getElementById('panelCitizen').classList.toggle('hidden', isSpy);
+            document.getElementById('panelSpy').classList.toggle('hidden', !isSpy);
         }
 
-        function renderCard() {
-            const container = document.getElementById('instructionDisplay');
-            const data = gameData[currentRole].steps[currentStep];
-            const roleColor = gameData[currentRole].color;
-
-            container.innerHTML = `
-                <div class="card-entrance glass-card p-12 rounded-[45px] max-w-3xl mx-auto relative overflow-hidden border-2" style="border-color: ${roleColor}20">
-                    <div class="absolute -top-10 -right-10 opacity-5 text-[12rem]" style="color: ${roleColor}"><i class="fas ${data.icon}"></i></div>
-                    <div class="relative z-10 text-center">
-                        <div class="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8 ${data.anim}" style="background: ${roleColor}20">
-                            <i class="fas ${data.icon} text-5xl" style="color: ${roleColor}"></i>
-                        </div>
-                        <h4 class="text-4xl font-black mb-6" style="color: var(--text-main)">0${currentStep + 1}. ${data.title}</h4>
-                        <p class="leading-relaxed text-xl" style="color: var(--text-secondary)">${data.text}</p>
-                    </div>
-                </div>
-            `;
-            updateControlsUI();
-        }
-
-        function updateControlsUI() {
-            const themeColor = gameData[currentRole].color;
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const dots = document.getElementById('stepDots');
-
-            prevBtn.disabled = currentStep === 0;
-            nextBtn.style.backgroundColor = themeColor;
-            nextBtn.querySelector('span').innerText = currentStep === 3 ? "ابدأ اللعب" : "التالي";
-
-            dots.innerHTML = [0,1,2,3].map(i => `
-                <div class="h-3 rounded-full transition-all duration-300" 
-                     style="width: ${i === currentStep ? '35px' : '12px'}; background: ${i === currentStep ? themeColor : 'rgba(255,255,255,0.1)'}">
-                </div>
-            `).join('');
-        }
-
-        function changeStep(dir) {
-            if (currentStep + dir >= 0 && currentStep + dir < 4) {
-                currentStep += dir;
-                renderCard();
-            } else if (currentStep + dir === 4) {
-                alert("بدأت اللعبة! حظاً سعيداً!"); 
-                setTimeout(() => {
-                window.location.href = "home.html";
-                }, 3000);
-            }
-        }
-
-        // --- Improved Theme Engine ---
-        window.updateLiveTheme = () => {
-            const root = document.documentElement;
-            const bg = document.getElementById('colorBg').value;
-            const card = document.getElementById('colorCard').value;
-            const textMain = document.getElementById('colorTextMain').value;
-            const textSec = document.getElementById('colorTextSec').value;
-            const primary = document.getElementById('colorBtn').value;
-
-            root.style.setProperty('--bg-color', bg);
-            root.style.setProperty('--card-color', card);
-            root.style.setProperty('--text-main', textMain);
-            root.style.setProperty('--text-secondary', textSec);
-            root.style.setProperty('--primary-color', primary);
-            
-            // Apply background to body manually for smooth transition
-            document.body.style.backgroundColor = bg;
-        };
-
-        window.resetTheme = () => {
-            document.getElementById('colorBg').value = "#080808";
-            document.getElementById('colorCard').value = "#141414";
-            document.getElementById('colorTextMain').value = "#ffffff";
-            document.getElementById('colorTextSec').value = "#9ca3af";
-            document.getElementById('colorBtn').value = "#7c30ff";
-            updateLiveTheme();
-        };
-
-        window.onload = () => switchRole('innocent');
+        // ── FAQ: single-open accordion ───────────────────
+        document.querySelectorAll('.faq-item').forEach((item) => {
+            item.addEventListener('toggle', () => {
+                if (item.open){
+                    document.querySelectorAll('.faq-item').forEach((other) => {
+                        if (other !== item) other.open = false;
+                    });
+                }
+            });
+        });
     </script>
-    <script src="../Assets/dialogs.js"></script>
-<script>
-    window.alert   = (msg)             => UIAlert(msg);
-    window.confirm = (msg)             => UIConfirm(msg);
-    window.prompt  = (msg, defaultVal) => UIPrompt(msg, { defaultValue: defaultVal });
-</script>
-<script src="../Assets/moderation.js"></script>
+    <script>
+        window.alert   = (msg)             => (typeof UIAlert === 'function')   ? UIAlert(msg)   : alert(msg);
+        window.confirm = (msg)             => (typeof UIConfirm === 'function') ? UIConfirm(msg) : confirm(msg);
+        window.prompt  = (msg, defaultVal) => (typeof UIPrompt === 'function')  ? UIPrompt(msg, { defaultValue: defaultVal }) : prompt(msg, defaultVal);
+    </script>
+    <script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../Assets/sw.js').catch(()=>{}));}</script>
 </body>
 </html>

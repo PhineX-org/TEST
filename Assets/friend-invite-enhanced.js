@@ -695,13 +695,6 @@
   }
 
   // ── Accept a game invite ────────────────────────────────────
-  // FIX: this used to hand-write `room.players` as an array of name
-  // strings ([...players, myName]), which doesn't match the real schema
-  // (players is an object keyed by uid, written by room.html's own
-  // joinRoom()). Rather than duplicate that write logic here (and get it
-  // out of sync again), we just record the target room and redirect —
-  // room.html's own joinRoom() does the actual, correct Firebase write
-  // when it loads.
   async function acceptInvite(myUid, key, data) {
     const accBtn = document.getElementById(`fi-acc-${key}`);
     const decBtn = document.getElementById(`fi-dec-${key}`);
@@ -729,7 +722,7 @@
         localStorage.setItem('isHost', 'false');
         await _update(_ref(db, `invites/${myUid}/${key}`), { status: 'accepted' });
         dismiss(myUid, key, null, true);
-        window.location.href = `/Files/room.html?room=${data.roomCode}`;
+        window.location.href = `/room.html?room=${data.roomCode}`;
       } else {
         // Game in progress — notify and wait for the round to end
         const phaseLabel = {
@@ -797,7 +790,7 @@
         showBanner(`✅ انتهت الجولة في غرفة ${roomCode} — يمكنك الانضمام الآن!`, 'success', 8000);
         localStorage.setItem('currentRoom', roomCode);
         localStorage.setItem('isHost', 'false');
-        setTimeout(() => { window.location.href = `/Files/room.html?room=${roomCode}`; }, 2500);
+        setTimeout(() => { window.location.href = `/room.html?room=${roomCode}`; }, 2500);
         if (unsubscribe) unsubscribe();
       }
     });

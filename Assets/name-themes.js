@@ -372,6 +372,216 @@
           93% { opacity: 0.5; }
         }
       `
+    },
+
+    // ── VOID / ROYAL STATIC THEMES ───────────────────────────
+    voidBlack: {
+      name: 'فراغ أسود',
+      type: 'static',
+      price: 280,
+      css: {
+        color: '#0a0a0a',
+        textShadow: '0 0 10px rgba(0,242,255,0.9), 0 0 25px rgba(0,242,255,0.6), 0 0 45px rgba(163,230,53,0.4)',
+        fontWeight: '900'
+      }
+    },
+
+    royalGold: {
+      name: 'ذهب ملكي',
+      type: 'static',
+      price: 280,
+      css: {
+        color: '#ffd700',
+        textShadow: '0 0 5px #fff8dc, 0 0 15px rgba(255,215,0,0.9), 0 0 35px rgba(255,165,0,0.7), 0 2px 0 rgba(139,90,0,0.8)',
+        fontWeight: '900'
+      }
+    },
+
+    // ── MORE ANIMATED THEMES ─────────────────────────────────
+    holographicShift: {
+      name: 'هولوغرام',
+      type: 'animated',
+      price: 500,
+      animation: 'holographicShift 4s ease-in-out infinite',
+      css: {
+        fontWeight: '900',
+        textShadow: '0 0 20px currentColor'
+      },
+      keyframes: `
+        @keyframes holographicShift {
+          0%   { color: #00f2ff; filter: hue-rotate(0deg) brightness(1.1); }
+          25%  { color: #ff6ec7; filter: hue-rotate(45deg) brightness(1.3); }
+          50%  { color: #a78bfa; filter: hue-rotate(90deg) brightness(1.2); }
+          75%  { color: #a3e635; filter: hue-rotate(135deg) brightness(1.3); }
+          100% { color: #00f2ff; filter: hue-rotate(180deg) brightness(1.1); }
+        }
+      `
+    },
+
+    matrixRain: {
+      name: 'مصفوفة رقمية',
+      type: 'animated',
+      price: 450,
+      animation: 'matrixFlicker 1.2s steps(2) infinite',
+      css: {
+        color: '#00ff41',
+        fontWeight: '900',
+        fontFamily: 'monospace'
+      },
+      keyframes: `
+        @keyframes matrixFlicker {
+          0%, 100% { text-shadow: 0 0 8px rgba(0,255,65,0.8), 0 0 16px rgba(0,255,65,0.5); opacity: 1; }
+          50% { text-shadow: 0 0 20px rgba(0,255,65,1), 0 0 40px rgba(0,255,65,0.8); opacity: 0.85; }
+        }
+      `
+    },
+
+    laserScan: {
+      name: 'مسح ليزري',
+      type: 'animated',
+      price: 480,
+      animation: 'laserScan 2.5s ease-in-out infinite',
+      css: {
+        color: '#00f2ff',
+        fontWeight: '900'
+      },
+      keyframes: `
+        @keyframes laserScan {
+          0%   { text-shadow: 0 0 8px rgba(0,242,255,0.6); }
+          45%  { text-shadow: 0 0 25px rgba(0,242,255,1), 0 0 45px rgba(255,255,255,0.9); }
+          55%  { text-shadow: 0 0 25px rgba(0,242,255,1), 0 0 45px rgba(255,255,255,0.9); }
+          100% { text-shadow: 0 0 8px rgba(0,242,255,0.6); }
+        }
+      `
+    },
+
+    infernoPulse: {
+      name: 'جحيم نابض',
+      type: 'animated',
+      price: 600,
+      animation: 'infernoPulse 1.2s ease-in-out infinite',
+      css: {
+        color: '#ff2200',
+        fontWeight: '900'
+      },
+      keyframes: `
+        @keyframes infernoPulse {
+          0%, 100% {
+            color: #ff2200;
+            text-shadow: 0 0 15px rgba(255,34,0,0.9), 0 0 35px rgba(255,102,0,0.8), 0 0 60px rgba(255,180,0,0.5);
+            transform: scale(1);
+          }
+          50% {
+            color: #ffcc00;
+            text-shadow: 0 0 25px rgba(255,204,0,1), 0 0 55px rgba(255,102,0,1), 0 0 90px rgba(255,34,0,0.7);
+            transform: scale(1.05);
+          }
+        }
+      `
+    },
+
+    // ── MORE PARTICLE THEMES ─────────────────────────────────
+    emberStorm: {
+      name: 'عاصفة الجمر',
+      type: 'particle',
+      price: 700,
+      css: {
+        color: '#ff5500',
+        fontWeight: '900',
+        textShadow: '0 0 15px rgba(255,85,0,0.9), 0 0 30px rgba(255,150,0,0.6)',
+        position: 'relative'
+      },
+      particles: {
+        count: 8,
+        type: 'ember',
+        animation: 'emberRise 2.5s ease-in infinite'
+      },
+      keyframes: `
+        @keyframes emberRise {
+          0% { transform: translateY(10px) scale(0.6); opacity: 0; }
+          15% { opacity: 1; }
+          100% { transform: translateY(-35px) scale(1.1); opacity: 0; }
+        }
+      `
+    },
+
+    crownRain: {
+      name: 'مطر التيجان',
+      type: 'particle',
+      price: 750,
+      css: {
+        color: '#ffd700',
+        fontWeight: '900',
+        textShadow: '0 0 15px rgba(255,215,0,0.9), 0 0 35px rgba(255,215,0,0.5)',
+        position: 'relative'
+      },
+      particles: {
+        count: 6,
+        type: 'crown',
+        animation: 'crownFloat 3.5s ease-in-out infinite'
+      },
+      keyframes: `
+        @keyframes crownFloat {
+          0% { transform: translateY(15px) rotate(-10deg) scale(0.7); opacity: 0; }
+          15% { opacity: 1; }
+          50% { transform: translateY(-15px) rotate(10deg) scale(1.1); }
+          85% { opacity: 1; }
+          100% { transform: translateY(-30px) rotate(-10deg) scale(0.7); opacity: 0; }
+        }
+      `
+    },
+
+    galaxyDust: {
+      name: 'غبار المجرة',
+      type: 'particle',
+      price: 800,
+      css: {
+        color: '#a78bfa',
+        fontWeight: '900',
+        textShadow: '0 0 15px rgba(167,139,250,0.9), 0 0 35px rgba(0,242,255,0.5), 0 0 55px rgba(163,230,53,0.3)',
+        position: 'relative'
+      },
+      particles: {
+        count: 10,
+        type: 'galaxy',
+        animation: 'galaxyDrift 4s ease-in-out infinite'
+      },
+      keyframes: `
+        @keyframes galaxyDrift {
+          0%   { transform: translate(0,0) scale(0.5) rotate(0deg); opacity: 0; }
+          20%  { opacity: 1; }
+          50%  { transform: translate(8px,-15px) scale(1.2) rotate(180deg); opacity: 0.8; }
+          80%  { opacity: 0.9; }
+          100% { transform: translate(-8px,-30px) scale(0.4) rotate(360deg); opacity: 0; }
+        }
+      `
+    },
+
+    butterflyGarden: {
+      name: 'حديقة الفراشات',
+      type: 'particle',
+      price: 650,
+      css: {
+        color: '#ff69b4',
+        fontWeight: '900',
+        textShadow: '0 0 15px rgba(255,105,180,0.9), 0 0 30px rgba(167,139,250,0.5)',
+        position: 'relative'
+      },
+      particles: {
+        count: 5,
+        type: 'butterfly',
+        animation: 'butterflyDance 4s ease-in-out infinite'
+      },
+      keyframes: `
+        @keyframes butterflyDance {
+          0%   { transform: translate(0,0) rotate(0deg) scale(0.8); opacity: 0; }
+          20%  { opacity: 1; }
+          40%  { transform: translate(10px,-10px) rotate(15deg) scale(1); }
+          60%  { transform: translate(-8px,-18px) rotate(-10deg) scale(1.1); }
+          80%  { opacity: 1; }
+          100% { transform: translate(6px,-28px) rotate(5deg) scale(0.7); opacity: 0; }
+        }
+      `
     }
   };
 
@@ -466,7 +676,8 @@
       color: '#ffe100',
       bgColor: 'rgba(255, 0, 0, 0.15)',
       border: '1px solid rgba(255, 196, 0, 0.4)',
-      price: null // Special tag, not purchasable
+      price: null, // display only — never used for an affordability check
+      purchasable: false // authoritative flag: can ONLY be granted by editing the database directly, never through the shop
     }
   };
 
@@ -760,7 +971,11 @@
       snow: '❄️',
       sparkle: '✨',
       heart: '💖',
-      lightning: '⚡'
+      lightning: '⚡',
+      ember: '🔥',
+      crown: '👑',
+      galaxy: '🌠',
+      butterfly: '🦋'
     };
     
     for (let i = 0; i < config.particles.count; i++) {

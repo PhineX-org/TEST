@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="الجاسوس">
-    <meta name="theme-color" content="#0a0e1a">
+    <meta name="theme-color" content="#000000">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الأصدقاء | El Jasus</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,13 +23,16 @@
     
     <style>
         :root { 
-            --bg-color: #0a0e1a;
+            --bg-color: #000000;
             --primary-color: #00f2ff;
-            --secondary-color: #7c30ff;
+            --secondary-color: #a3e635;
         }
         body { 
             font-family: 'Cairo', sans-serif; 
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background: #000000;
+            background-image:
+                radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,0.12), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,0.07), transparent 60%);
             background-attachment: fixed;
             color: #ffffff; 
             min-height: 100vh; 
@@ -41,8 +44,8 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0,242,255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: gridMove 20s linear infinite;
             pointer-events: none; z-index: 0;
@@ -52,19 +55,19 @@
             100% { transform: translateY(50px); }
         }
         .glass { 
-            background: linear-gradient(135deg, rgba(15, 20, 35, 0.9), rgba(25, 30, 50, 0.8));
+            background: linear-gradient(135deg, rgba(0,0,0, 0.9), rgba(0,0,0, 0.8));
             backdrop-filter: blur(20px);
             border: 2px solid;
-            border-image: linear-gradient(135deg, rgba(0, 242, 255, 0.3), rgba(124, 48, 255, 0.3)) 1;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 30px rgba(0, 242, 255, 0.1);
+            border-image: linear-gradient(135deg, rgba(0,242,255, 0.3), rgba(163,230,53, 0.3)) 1;
+            box-shadow: 0 8px 32px rgba(0,0,0, 0.4), inset 0 1px 0 rgba(255,255,255, 0.1), 0 0 30px rgba(0,242,255, 0.1);
             position: relative; overflow: hidden;
         }
         .neon-text {
             font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.8), 0 0 20px rgba(0, 242, 255, 0.6);
+            text-shadow: 0 0 10px rgba(0,242,255, 0.8), 0 0 20px rgba(0,242,255, 0.6);
         }
-        .online-indicator { width:12px; height:12px; border-radius:50%; background:#00ff00; box-shadow:0 0 10px #00ff00; animation:pulse 2s infinite; }
-        .offline-indicator { width:12px; height:12px; border-radius:50%; background:#666; }
+        .online-indicator { width:12px; height:12px; border-radius:50%; background:#a3e635; box-shadow:0 0 10px #a3e635; animation:pulse 2s infinite; }
+        .offline-indicator { width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,.25); }
         @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
         @keyframes slideInDown { from{transform:translate(-50%,-100%);opacity:0;} to{transform:translate(-50%,0);opacity:1;} }
         @keyframes slideOutUp  { from{transform:translate(-50%,0);opacity:1;} to{transform:translate(-50%,-100%);opacity:0;} }
@@ -82,7 +85,7 @@
         }
         #invite-modal-overlay.open { display:flex; }
         #invite-modal {
-            background:linear-gradient(135deg,rgba(15,20,35,.98),rgba(25,30,50,.98));
+            background:linear-gradient(135deg,rgba(0,0,0,.98),rgba(0,0,0,.98));
             border:2px solid rgba(0,242,255,.4); border-radius:24px;
             padding:32px 28px; max-width:440px; width:100%;
             font-family:'Cairo',sans-serif;
@@ -92,7 +95,7 @@
         @keyframes inviteIn { from{opacity:0;transform:scale(.95);} to{opacity:1;transform:scale(1);} }
         #invite-modal h3 { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:#00f2ff; margin-bottom:6px; }
         #invite-modal p  { font-size:13px; color:rgba(255,255,255,.5); margin-bottom:20px; }
-        .inv-field-label { font-size:10px; font-weight:900; color:#666; text-transform:uppercase; letter-spacing:.1em; display:block; margin-bottom:5px; }
+        .inv-field-label { font-size:10px; font-weight:900; color:rgba(255,255,255,.25); text-transform:uppercase; letter-spacing:.1em; display:block; margin-bottom:5px; }
         .inv-input {
             width:100%; padding:11px 14px; border-radius:12px;
             background:rgba(255,255,255,.05); border:1px solid rgba(0,242,255,.25);
@@ -106,11 +109,11 @@
             font-weight:900; font-size:13px; cursor:pointer; transition:all .2s; border:2px solid;
         }
         .inv-btn-send {
-            background:linear-gradient(135deg,#00f2ff,#7c30ff); border-color:transparent; color:#fff;
+            background:linear-gradient(135deg,#00f2ff,#a3e635); border-color:transparent; color:#fff;
         }
         .inv-btn-send:hover { opacity:.88; }
         .inv-btn-cancel {
-            background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12); color:#888;
+            background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12); color:rgba(255,255,255,.35);
         }
         .inv-btn-cancel:hover { background:rgba(255,255,255,.1); }
         .inv-btn:disabled { opacity:.5; cursor:not-allowed; }
@@ -119,8 +122,8 @@
         #inv-status { font-size:12px; font-weight:700; padding:8px 12px; border-radius:10px; margin-bottom:12px; display:none; }
         .inv-status-creating { background:rgba(0,242,255,.08); border:1px solid rgba(0,242,255,.2); color:#00f2ff; }
         .inv-status-sending   { background:rgba(0,242,255,.08); border:1px solid rgba(0,242,255,.2); color:#00f2ff; }
-        .inv-status-success   { background:rgba(34,197,94,.1);  border:1px solid rgba(34,197,94,.4); color:#22c55e; }
-        .inv-status-error     { background:rgba(239,68,68,.1);  border:1px solid rgba(239,68,68,.4); color:#ef4444; }
+        .inv-status-success   { background:rgba(163,230,53,.1);  border:1px solid rgba(163,230,53,.4); color:#a3e635; }
+        .inv-status-error     { background:rgba(163,230,53,.1);  border:1px solid rgba(163,230,53,.4); color:#a3e635; }
     </style>
 </head>
 <body class="p-4">

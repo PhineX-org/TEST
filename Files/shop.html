@@ -15,14 +15,17 @@
     
     <style>
         :root {
-            --bg-dark: #0a0e1a;
+            --bg-dark: #000000;
             --primary: #00f2ff;
-            --secondary: #7c30ff;
+            --secondary: #a3e635;
         }
         
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background: #000000;
+            background-image:
+                radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,0.12), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,0.07), transparent 60%);
             background-attachment: fixed;
             color: #ffffff;
             min-height: 100vh;
@@ -47,7 +50,7 @@
         }
         
         .glass {
-            background: linear-gradient(135deg, rgba(15,20,35,0.9), rgba(25,30,50,0.8));
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(20px);
             border: 2px solid rgba(0,242,255,0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.4);
@@ -83,6 +86,40 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-color: var(--primary);
             box-shadow: 0 0 20px rgba(0,242,255,0.5);
+            color: #000000;
+        }
+
+        .filter-chip {
+            transition: all 0.2s;
+            border: 1px solid rgba(0,242,255,0.25);
+            background: rgba(0,0,0,0.4);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .filter-chip.active {
+            background: rgba(163,230,53,0.18);
+            border-color: rgba(163,230,53,0.7);
+            color: #a3e635;
+        }
+
+        .new-ribbon {
+            position: absolute;
+            top: -1px;
+            inset-inline-end: -1px;
+            background: linear-gradient(135deg, #a3e635, #84cc16);
+            color: #000000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 3px 10px;
+            border-radius: 0 14px 0 12px;
+            letter-spacing: .05em;
+            box-shadow: 0 2px 10px rgba(163,230,53,0.5);
+        }
+
+        .locked-item {
+            opacity: 0.9;
+            border-color: rgba(0,242,255,0.15) !important;
         }
     </style>
 </head>
@@ -91,7 +128,7 @@
     <div class="max-w-6xl mx-auto relative z-10">
         
         <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="glass rounded-2xl flex items-center justify-between mb-6 px-5 py-4">
             <a href="home.html" class="flex items-center gap-2 text-gray-400 hover:text-cyan-400 transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -103,13 +140,13 @@
                 🛒 المتجر
             </h1>
             
-            <div class="flex items-center gap-2 glass rounded-xl px-4 py-2">
+            <div class="flex items-center gap-2 rounded-xl px-4 py-2" style="background: rgba(163,230,53,0.12); border: 1px solid rgba(163,230,53,0.4);">
                 <span class="text-sm font-bold">🪙</span>
-                <span id="coinBalance" class="font-black" style="font-family: 'Orbitron', sans-serif;">0</span>
+                <span id="coinBalance" class="font-black" style="font-family: 'Orbitron', sans-serif; color: #a3e635;">0</span>
             </div>
         </div>
         <!-- Error message container -->
-        <div id="shopError" class="hidden glass rounded-2xl p-4 mb-4 bg-red-500/20 border-red-500 text-center text-red-300"></div>
+        <div id="shopError" class="hidden glass rounded-2xl p-4 mb-4 text-center" style="border-color: rgba(163,230,53,0.5); color: #a3e635;"></div>
         <!-- Tabs -->
         <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
             <button class="tab-btn active px-6 py-3 rounded-xl font-black text-sm" data-tab="themes">
@@ -118,16 +155,31 @@
             <button class="tab-btn px-6 py-3 rounded-xl font-black text-sm" data-tab="tags">
                 🏷️ الالقاب
             </button>
+            <button class="tab-btn px-6 py-3 rounded-xl font-black text-sm" data-tab="ranks">
+                🎖️ الرتب
+            </button>
         </div>
         
         <!-- Themes Tab -->
         <div id="tab-themes" class="tab-content">
+            <div class="flex gap-2 mb-5 overflow-x-auto pb-1" id="themeFilterChips">
+                <button class="filter-chip active px-4 py-1.5 rounded-full text-xs font-bold" data-filter="all">الكل</button>
+                <button class="filter-chip px-4 py-1.5 rounded-full text-xs font-bold" data-filter="static">ثابت</button>
+                <button class="filter-chip px-4 py-1.5 rounded-full text-xs font-bold" data-filter="animated">متحرك</button>
+                <button class="filter-chip px-4 py-1.5 rounded-full text-xs font-bold" data-filter="particle">جزيئات</button>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="themesGrid"></div>
         </div>
         
         <!-- Tags Tab -->
         <div id="tab-tags" class="tab-content hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tagsGrid"></div>
+        </div>
+
+        <!-- Ranks Tab -->
+        <div id="tab-ranks" class="tab-content hidden">
+            <p class="text-sm text-gray-400 mb-4">الرتب تُكتسب تلقائياً من نقاط الرتبة أثناء اللعب، وهي غير قابلة للشراء.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="ranksGrid"></div>
         </div>
         
     </div>
@@ -155,6 +207,7 @@
         let userActiveTheme = 'default';
         let userActiveTag = null;
         let userCoins = 0;
+        let userRankPoints = 0;
         let userInventory = { nameThemes: [], nameTags: [] };
         
         onAuthStateChanged(auth, async (user) => {
@@ -192,8 +245,8 @@ function hideError() {
         async function loadUserData() {
     try {
         const snapshot = await get(ref(db, `players/${currentUser.uid}`));
+        const data = snapshot.exists() ? snapshot.val() : {};
         if (snapshot.exists()) {
-            const data = snapshot.val();
             userCoins = data.coins || 0;
             userRankPoints = parseInt(data.rankPoints) || 0;
             
@@ -230,6 +283,9 @@ function hideError() {
 
 }
         
+        const NEW_THEME_KEYS = ['voidBlack','royalGold','holographicShift','matrixRain','laserScan','infernoPulse','emberStorm','crownRain','galaxyDust','butterflyGarden'];
+        let activeThemeFilter = 'all';
+
         function renderThemes() {
     const grid = document.getElementById('themesGrid');
     if (!grid) return;
@@ -244,21 +300,34 @@ function hideError() {
         // التأكد من أن userInventory.nameThemes مصفوفة
         const ownedThemes = Array.isArray(userInventory.nameThemes) ? userInventory.nameThemes : ['default'];
         
-        grid.innerHTML = Object.keys(themes).map(key => {
+        const keys = Object.keys(themes)
+            .filter(key => activeThemeFilter === 'all' || themes[key].type === activeThemeFilter)
+            .sort((a, b) => (themes[a].price || 0) - (themes[b].price || 0));
+
+        if (keys.length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center text-gray-400 p-4">لا توجد ثيمات في هذا التصنيف</div>';
+            return;
+        }
+
+        grid.innerHTML = keys.map(key => {
             const theme = themes[key];
             const owned = ownedThemes.includes(key);
-        const isActive = userActiveTheme === key;
+            const isActive = userActiveTheme === key;
+            const isNew = NEW_THEME_KEYS.includes(key);
+            const typeLabel = theme.type === 'animated' ? 'متحرك' : theme.type === 'particle' ? 'جزيئات' : 'ثابت';
+            const typePillStyle = theme.type === 'animated'
+                ? 'background: rgba(163,230,53,0.16); color: #a3e635; border: 1px solid rgba(163,230,53,0.4);'
+                : theme.type === 'particle'
+                    ? 'background: linear-gradient(135deg, rgba(0,242,255,0.2), rgba(163,230,53,0.2)); color: #ffffff; border: 1px solid rgba(0,242,255,0.4);'
+                    : 'background: rgba(0,242,255,0.16); color: #00f2ff; border: 1px solid rgba(0,242,255,0.4);';
             
             return `
-                <div class="glass rounded-2xl p-5 shop-item ${owned ? 'border-green-500' : ''}">
+                <div class="glass rounded-2xl p-5 shop-item relative" style="${owned ? 'border-color: rgba(163,230,53,0.6);' : ''}">
+                    ${isNew ? '<span class="new-ribbon">جديد</span>' : ''}
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="font-black text-lg">${theme.name}</h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-black ${
-                            theme.type === 'animated' ? 'bg-purple-500/20 text-purple-400' :
-                            theme.type === 'particle' ? 'bg-yellow-500/20 text-yellow-400' :
-                            'bg-blue-500/20 text-blue-400'
-                        }">
-                            ${theme.type === 'animated' ? 'متحرك' : theme.type === 'particle' ? 'جزيئات' : 'ثابت'}
+                        <span class="px-3 py-1 rounded-full text-xs font-black" style="${typePillStyle}">
+                            ${typeLabel}
                         </span>
                     </div>
                     
@@ -276,17 +345,19 @@ function hideError() {
                         ${owned ? `
                             <div class="flex flex-col gap-1 items-end">
                                 ${isActive
-                                    ? '<span class="text-xs text-cyan-400 font-black">⚡ مفعّل</span>'
-                                    : '<span class="text-xs text-green-400 font-bold">✓ مملوك</span>'
+                                    ? '<span class="text-xs font-black" style="color:#00f2ff;">⚡ مفعّل</span>'
+                                    : '<span class="text-xs font-bold" style="color:#a3e635;">✓ مملوك</span>'
                                 }
                                 <button onclick="window.activateTheme('${key}')"
-                                    class="px-4 py-1.5 rounded-lg ${isActive ? 'bg-gray-500/20 text-gray-400 border border-gray-500/50 cursor-default' : 'bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-400 border border-cyan-500/50 hover:scale-105'} text-xs font-black transition-all">
+                                    class="px-4 py-1.5 rounded-lg text-xs font-black transition-all ${isActive ? 'cursor-default' : 'hover:scale-105'}"
+                                    style="${isActive ? 'background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.15);' : 'background: rgba(0,242,255,0.16); color: #00f2ff; border: 1px solid rgba(0,242,255,0.45);'}">
                                     ${isActive ? 'مفعّل' : 'تفعيل'}
                                 </button>
                             </div>
                         ` : `
                             <button onclick="window.buyTheme('${key}')"
-                                class="px-6 py-2 rounded-xl font-black text-sm bg-gradient-to-r from-cyan-500 to-purple-500 hover:scale-105 transition-all">
+                                class="px-6 py-2 rounded-xl font-black text-sm hover:scale-105 transition-all"
+                                style="background: linear-gradient(135deg, #00f2ff, #a3e635); color: #000000;">
                                 شراء
                             </button>
                         `}
@@ -297,7 +368,7 @@ function hideError() {
         
         // تطبيق معاينة الثيمات
         setTimeout(() => {
-            Object.keys(themes).forEach(key => {
+            keys.forEach(key => {
                 const el = document.getElementById(`preview-${key}`);
                 if (el) {
                     try {
@@ -311,9 +382,18 @@ function hideError() {
         
     } catch (error) {
         console.error('خطأ في renderThemes:', error);
-        grid.innerHTML = '<div class="col-span-full text-center text-red-400 p-4">حدث خطأ أثناء تحميل الثيمات</div>';
+        grid.innerHTML = '<div class="col-span-full text-center p-4" style="color:#a3e635;">حدث خطأ أثناء تحميل الثيمات</div>';
     }
 }
+
+        document.querySelectorAll('#themeFilterChips .filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                activeThemeFilter = chip.dataset.filter;
+                document.querySelectorAll('#themeFilterChips .filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                renderThemes();
+            });
+        });
         
         function renderTags() {
     const grid = document.getElementById('tagsGrid');
@@ -331,10 +411,36 @@ function hideError() {
         grid.innerHTML = Object.keys(tags).map(key => {
             const tag = tags[key];
             const owned = ownedTags.includes(key);
-        const isActive = userActiveTag === key;
+            const isActive = userActiveTag === key;
+            const purchasable = tag.purchasable !== false; // explicit false = admin/database-only grant
             
+            let actionHtml;
+            if (owned) {
+                actionHtml = `
+                    <div class="flex flex-col gap-1 items-end">
+                        <span class="text-xs font-bold" style="color:#a3e635;">✓ مملوك</span>
+                        <button onclick="window.activateTag('${key}')"
+                            class="px-4 py-1.5 rounded-lg text-xs font-black transition-all hover:scale-105"
+                            style="background: rgba(0,242,255,0.16); color: #00f2ff; border: 1px solid rgba(0,242,255,0.45);">
+                            تفعيل
+                        </button>
+                    </div>`;
+            } else if (!purchasable) {
+                actionHtml = `
+                    <span class="px-4 py-2 rounded-xl text-xs font-black" style="background: rgba(0,242,255,0.08); color: rgba(0,242,255,0.6); border: 1px dashed rgba(0,242,255,0.35);">
+                        🔒 يُمنح إدارياً فقط
+                    </span>`;
+            } else {
+                actionHtml = `
+                    <button onclick="window.buyTag('${key}')"
+                        class="px-6 py-2 rounded-xl font-black text-sm hover:scale-105 transition-all"
+                        style="background: linear-gradient(135deg, #00f2ff, #a3e635); color: #000000;">
+                        شراء
+                    </button>`;
+            }
+
             return `
-                <div class="glass rounded-2xl p-5 shop-item ${owned ? 'border-green-500' : ''}">
+                <div class="glass rounded-2xl p-5 shop-item ${!purchasable && !owned ? 'locked-item' : ''}" style="${owned ? 'border-color: rgba(163,230,53,0.6);' : ''}">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="text-4xl">${tag.icon}</span>
                         <div>
@@ -348,25 +454,16 @@ function hideError() {
                     
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="text-2xl">🪙</span>
-                            <span class="font-black text-xl" style="font-family: 'Orbitron', sans-serif; color: var(--primary);">
-                                ${tag.price}
-                            </span>
+                            ${purchasable ? `
+                                <span class="text-2xl">🪙</span>
+                                <span class="font-black text-xl" style="font-family: 'Orbitron', sans-serif; color: var(--primary);">
+                                    ${tag.price}
+                                </span>
+                            ` : `
+                                <span class="text-xs font-bold" style="color: rgba(255,255,255,0.4);">غير معروض للبيع</span>
+                            `}
                         </div>
-                        ${owned ? `
-                            <div class="flex flex-col gap-1 items-end">
-                                <span class="text-xs text-green-400 font-bold">✓ مملوك</span>
-                                <button onclick="window.activateTag('${key}')"
-                                    class="px-4 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-400 border border-cyan-500/50 text-xs font-black transition-all hover:scale-105">
-                                    تفعيل
-                                </button>
-                            </div>
-                        ` : `
-                            <button onclick="window.buyTag('${key}')"
-                                class="px-6 py-2 rounded-xl font-black text-sm bg-gradient-to-r from-cyan-500 to-purple-500 hover:scale-105 transition-all">
-                                شراء
-                            </button>
-                        `}
+                        ${actionHtml}
                     </div>
                 </div>
             `;
@@ -374,7 +471,7 @@ function hideError() {
         
     } catch (error) {
         console.error('خطأ في renderTags:', error);
-        grid.innerHTML = '<div class="col-span-full text-center text-red-400 p-4">حدث خطأ أثناء تحميل الوسوم</div>';
+        grid.innerHTML = '<div class="col-span-full text-center p-4" style="color:#a3e635;">حدث خطأ أثناء تحميل الوسوم</div>';
     }
 }
         
@@ -487,6 +584,11 @@ window.buyTag = async function(tagKey) {
         const tag = window.NameThemes.tags[tagKey];
         if (!tag) {
             showError('اللقب غير موجود');
+            return;
+        }
+        
+        if (tag.purchasable === false) {
+            showError('🔒 هذا اللقب يُمنح إدارياً فقط ولا يمكن شراؤه من المتجر');
             return;
         }
         

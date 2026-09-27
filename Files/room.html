@@ -17,13 +17,13 @@
 
     <style>
         :root {
-            --bg-dark: #0a0e1a;
-            --card-bg: rgba(15, 20, 35, 0.95);
+            --bg-dark: #000000;
+            --card-bg: rgba(0,0,0, 0.95);
             --primary: #00f2ff;
-            --secondary: #7c30ff;
-            --danger: #ef4444;
-            --success: #22c55e;
-            --warning: #fbbf24;
+            --secondary: #a3e635;
+            --danger: #a3e635;
+            --success: #a3e635;
+            --warning: #00f2ff;
             --text: #ffffff;
             --text-muted: rgba(255,255,255,0.6);
             --border: rgba(0,242,255,0.2);
@@ -33,7 +33,10 @@
 
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background: #000000;
+            background-image:
+                radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,0.12), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,0.07), transparent 60%);
             background-attachment: fixed;
             color: var(--text);
             min-height: 100vh;
@@ -61,7 +64,7 @@
 
         /* Glass morphism */
         .glass {
-            background: linear-gradient(135deg, rgba(15,20,35,0.9), rgba(25,30,50,0.8));
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(0,0,0,0.8));
             backdrop-filter: blur(20px);
             border: 2px solid var(--border);
             box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
@@ -111,19 +114,19 @@
             text-transform: uppercase;
         }
         .status-disconnected {
-            background: rgba(239,68,68,0.15);
-            border: 1px solid rgba(239,68,68,0.3);
-            color: #ef4444;
+            background: rgba(163,230,53,0.15);
+            border: 1px solid rgba(163,230,53,0.3);
+            color: #a3e635;
         }
         .status-idle {
-            background: rgba(251,191,36,0.15);
-            border: 1px solid rgba(251,191,36,0.3);
-            color: #fbbf24;
+            background: rgba(0,242,255,0.15);
+            border: 1px solid rgba(0,242,255,0.3);
+            color: #00f2ff;
         }
         .status-online {
-            background: rgba(34,197,94,0.15);
-            border: 1px solid rgba(34,197,94,0.3);
-            color: #22c55e;
+            background: rgba(163,230,53,0.15);
+            border: 1px solid rgba(163,230,53,0.3);
+            color: #a3e635;
         }
 
         /* Suspect counter */
@@ -131,8 +134,8 @@
             position: absolute;
             top: -8px;
             right: -8px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
+            background: linear-gradient(135deg, #a3e635, #84cc16);
+            color: #000000;
             font-size: 11px;
             font-weight: 900;
             width: 24px;
@@ -141,16 +144,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #0a0e1a;
-            box-shadow: 0 0 15px rgba(239,68,68,0.6);
+            border: 2px solid #000000;
+            box-shadow: 0 0 15px rgba(163,230,53,0.6);
         }
 
         /* Suspect badges - NEW for multiple suspects */
         .suspect-badge {
             display: inline-block;
-            background: rgba(239,68,68,0.2);
-            border: 1px solid rgba(239,68,68,0.4);
-            color: #ef4444;
+            background: rgba(163,230,53,0.2);
+            border: 1px solid rgba(163,230,53,0.4);
+            color: #a3e635;
             font-size: 10px;
             font-weight: 900;
             padding: 2px 8px;
@@ -236,7 +239,7 @@
             align-items: center;
             gap: 16px;
             padding: 10px max(10px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
-            background: linear-gradient(180deg, transparent, rgba(10,14,26,0.9) 45%, rgba(10,14,26,0.98));
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.98));
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-top: 1px solid rgba(0,242,255,0.12);
@@ -308,9 +311,9 @@
             right: -4px;
             width: 16px;
             height: 16px;
-            background: #ef4444;
+            background: #a3e635;
             border-radius: 50%;
-            border: 2px solid #0a0e1a;
+            border: 2px solid #000000;
             animation: pulse 1.5s infinite;
         }
 
@@ -348,12 +351,12 @@
 
         .vote-card.voted {
             border-color: var(--success);
-            box-shadow: 0 0 20px rgba(34,197,94,0.4);
+            box-shadow: 0 0 20px rgba(163,230,53,0.4);
         }
 
         .vote-card.most-voted {
             border-color: var(--danger);
-            box-shadow: 0 0 20px rgba(239,68,68,0.5);
+            box-shadow: 0 0 20px rgba(163,230,53,0.5);
         }
 
         /* Spinner */
@@ -361,13 +364,13 @@
             width: 280px;
             height: 280px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #7c30ff, #ef4444);
+            background: linear-gradient(135deg, #00f2ff, #a3e635);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             border: 6px solid var(--warning);
-            box-shadow: 0 0 50px rgba(251,191,36,0.5);
+            box-shadow: 0 0 50px rgba(0,242,255,0.5);
         }
 
         .spinner-wheel.spinning {
@@ -445,7 +448,7 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            border: 2px solid #0a0e1a;
+            border: 2px solid #000000;
         }
 
         .friend-status-dot.online {
@@ -453,15 +456,15 @@
         }
 
         .friend-status-dot.offline {
-            background: #666;
+            background: rgba(255,255,255,.25);
         }
 
         /* IMPROVED REPORT PANEL STYLES */
         .report-panel-header {
-            background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.1));
+            background: linear-gradient(135deg, rgba(163,230,53,0.15), rgba(163,230,53,0.1));
             padding: 20px;
             border-radius: 20px 20px 0 0;
-            border-bottom: 2px solid rgba(239,68,68,0.3);
+            border-bottom: 2px solid rgba(163,230,53,0.3);
             margin: -24px -24px 20px -24px;
         }
 
@@ -483,7 +486,7 @@
         .report-textarea {
             width: 100%;
             background: rgba(0,0,0,0.4);
-            border: 2px solid rgba(239,68,68,0.25);
+            border: 2px solid rgba(163,230,53,0.25);
             border-radius: 12px;
             padding: 12px 16px;
             color: white;
@@ -495,13 +498,13 @@
 
         .report-select:focus,
         .report-textarea:focus {
-            border-color: rgba(239,68,68,0.5);
+            border-color: rgba(163,230,53,0.5);
             background: rgba(0,0,0,0.6);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+            box-shadow: 0 0 0 3px rgba(163,230,53,0.1);
         }
 
         .report-select option {
-            background: #1a1535;
+            background: #000000;
             padding: 8px;
         }
 
@@ -518,8 +521,8 @@
 
         .report-reason-option {
             padding: 12px;
-            background: rgba(239,68,68,0.08);
-            border: 2px solid rgba(239,68,68,0.2);
+            background: rgba(163,230,53,0.08);
+            border: 2px solid rgba(163,230,53,0.2);
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -529,24 +532,24 @@
         }
 
         .report-reason-option:hover {
-            background: rgba(239,68,68,0.15);
-            border-color: rgba(239,68,68,0.4);
+            background: rgba(163,230,53,0.15);
+            border-color: rgba(163,230,53,0.4);
             transform: translateY(-2px);
         }
 
         .report-reason-option.selected {
-            background: rgba(239,68,68,0.25);
-            border-color: rgba(239,68,68,0.6);
-            box-shadow: 0 0 15px rgba(239,68,68,0.3);
+            background: rgba(163,230,53,0.25);
+            border-color: rgba(163,230,53,0.6);
+            box-shadow: 0 0 15px rgba(163,230,53,0.3);
         }
 
         .report-submit-btn {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, #a3e635, #84cc16);
             border: none;
             border-radius: 16px;
-            color: white;
+            color: #000000;
             font-family: 'Cairo', sans-serif;
             font-size: 16px;
             font-weight: 900;
@@ -554,12 +557,12 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            box-shadow: 0 4px 20px rgba(239,68,68,0.4);
+            box-shadow: 0 4px 20px rgba(163,230,53,0.4);
         }
 
         .report-submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(239,68,68,0.6);
+            box-shadow: 0 6px 30px rgba(163,230,53,0.6);
         }
 
         .report-submit-btn:active {
@@ -567,8 +570,8 @@
         }
 
         .report-info-box {
-            background: rgba(251,191,36,0.1);
-            border: 1px solid rgba(251,191,36,0.3);
+            background: rgba(0,242,255,0.1);
+            border: 1px solid rgba(0,242,255,0.3);
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 20px;
@@ -577,7 +580,7 @@
         }
 
         .report-info-box i {
-            color: #fbbf24;
+            color: #00f2ff;
             margin-left: 8px;
         }
     </style>
@@ -738,26 +741,26 @@
 
                 <!-- Spy Hint Section (only visible to spy) -->
                 <div id="spyHintSection" class="hidden mb-6 rounded-2xl p-4 border-2" 
-                     style="background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(220,38,38,.06));border-color:rgba(239,68,68,.35);">
+                     style="background:linear-gradient(135deg,rgba(163,230,53,.1),rgba(163,230,53,.06));border-color:rgba(163,230,53,.35);">
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
                         <div class="flex items-center gap-2">
                             <span style="font-size:22px;">🕵️</span>
                             <div>
-                                <p class="text-xs font-black" style="color:#f87171;">تلميح للجاسوس فقط</p>
+                                <p class="text-xs font-black" style="color:#a3e635;">تلميح للجاسوس فقط</p>
                                 <p class="text-xs text-gray-400">
-                                    تلميحات متبقية: <span id="hintBalance" class="font-black" style="color:#f87171;">3</span> / 3
+                                    تلميحات متبقية: <span id="hintBalance" class="font-black" style="color:#a3e635;">3</span> / 3
                                 </p>
                             </div>
                         </div>
                         <button id="useHintBtn" onclick="useHint()"
                             class="px-4 py-2 rounded-xl font-black text-xs transition-all"
-                            style="background:linear-gradient(135deg,rgba(239,68,68,.35),rgba(220,38,38,.2));border:2px solid rgba(239,68,68,.6);color:#fca5a5;">
+                            style="background:linear-gradient(135deg,rgba(163,230,53,.35),rgba(163,230,53,.2));border:2px solid rgba(163,230,53,.6);color:#a3e635;">
                             اكشف تلميحاً 🔍
                         </button>
                     </div>
                     <div id="hintDisplay" class="hidden rounded-xl p-3" 
-                         style="background:rgba(0,0,0,.3);border:1px solid rgba(239,68,68,.2);">
-                        <p class="text-xs font-bold mb-2" style="color:#9ca3af;">تلميحات مكشوفة:</p>
+                         style="background:rgba(0,0,0,.3);border:1px solid rgba(163,230,53,.2);">
+                        <p class="text-xs font-bold mb-2" style="color:rgba(255,255,255,.55);">تلميحات مكشوفة:</p>
                         <div id="hintList" class="flex flex-col gap-1"></div>
                     </div>
                 </div>
@@ -904,12 +907,12 @@
     <div id="panelDock">
         <div class="dock-group-left">
             <button id="chatBtn" class="panel-btn" 
-                    style="background:rgba(6,182,212,0.18);border-color:rgba(6,182,212,0.5);color:#06b6d4;"
+                    style="background:rgba(0,242,255,0.18);border-color:rgba(0,242,255,0.5);color:#00f2ff;"
                     onclick="toggleChatPanel()" title="الدردشة الكتابية">
                 💬
             </button>
             <button id="voiceBtn" class="panel-btn"
-                    style="background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.3);color:#22c55e;"
+                    style="background:rgba(163,230,53,0.15);border-color:rgba(163,230,53,0.3);color:#a3e635;"
                     onclick="toggleVoicePanel()" title="الدردشة الصوتية">
                 🎙️
             </button>
@@ -918,12 +921,12 @@
         <!-- Side Panel Buttons - RIGHT (Friends & Reports) -->
         <div class="dock-group-right">
             <button id="friendsBtn" class="panel-btn"
-                    style="background:rgba(124,48,255,0.12);border-color:rgba(124,48,255,0.35);color:#a78bfa;"
+                    style="background:rgba(163,230,53,0.12);border-color:rgba(163,230,53,0.35);color:#a3e635;"
                     onclick="toggleFriendsPanel()" title="الأصدقاء">
                 👥
             </button>
             <button id="reportsBtn" class="panel-btn"
-                    style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#ef4444;"
+                    style="background:rgba(163,230,53,0.1);border-color:rgba(163,230,53,0.3);color:#a3e635;"
                     onclick="toggleReportsPanel()" title="الإبلاغ">
                 🚩
             </button>
@@ -1001,11 +1004,11 @@
             <div class="report-panel-header">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <h3 class="text-2xl font-black mb-1" style="color:#f87171;">🚩 الإبلاغ عن لاعب</h3>
+                        <h3 class="text-2xl font-black mb-1" style="color:#a3e635;">🚩 الإبلاغ عن لاعب</h3>
                         <p class="text-xs opacity-70">ساعدنا في الحفاظ على مجتمع آمن وممتع للجميع</p>
                     </div>
                     <button onclick="toggleReportsPanel()" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
-                        <i class="fas fa-times text-xl" style="color:#f87171;"></i>
+                        <i class="fas fa-times text-xl" style="color:#a3e635;"></i>
                     </button>
                 </div>
             </div>
@@ -1136,6 +1139,7 @@
                 const unsub = onChildAdded(reference, callback);
                 return unsub;
             },
+            onDisconnect: (reference) => onDisconnect(reference),
             serverTimestamp: () => serverTimestamp(),
         };
 
@@ -1429,6 +1433,8 @@ async function joinRoom(uid, username) {
                 
                 // Update players list
                 updatePlayersList();
+                // Refresh per-player voice switches without changing the game UI structure.
+                if (window.voiceChatInstance?.updateUI) window.voiceChatInstance.updateUI();
 
                 // Keep this player's presence.phase in sync with the room's real
                 // status, so a friend looking at "is this person in a waiting
@@ -1566,11 +1572,26 @@ async function joinRoom(uid, username) {
                             </div>
                             ${statusTag}
                         </div>
-                        ${window.gameState.isHost && !isMe ? `
-                            <button onclick="kickPlayer('${uid}')" class="p-2 rounded-lg bg-danger/20 hover:bg-danger/30 transition-colors" title="طرد">
-                                <i class="fas fa-user-times text-danger text-xs"></i>
-                            </button>
-                        ` : ''}
+                        <div class="flex items-center gap-1 flex-shrink-0">
+                            ${!isMe ? `
+                                <button id="voiceQuick-${uid}" onclick="toggleRemotePlayerSound('${uid}')"
+                                    class="w-9 h-9 rounded-lg border border-cyan-400/20 bg-cyan-400/5 hover:bg-cyan-400/12 text-cyan-300 transition-all"
+                                    title="كتم/تشغيل صوت اللاعب" aria-label="كتم/تشغيل صوت اللاعب">
+                                    <i class="fas fa-volume-high text-xs"></i>
+                                </button>
+                            ` : `
+                                <button onclick="toggleMyVoiceMute()"
+                                    class="w-9 h-9 rounded-lg border border-lime-400/20 bg-lime-400/5 hover:bg-lime-400/12 text-lime-300 transition-all"
+                                    title="كتم/تشغيل الميكروفون" aria-label="كتم/تشغيل الميكروفون">
+                                    <i class="fas fa-microphone text-xs"></i>
+                                </button>
+                            `}
+                            ${window.gameState.isHost && !isMe ? `
+                                <button onclick="kickPlayer('${uid}')" class="p-2 rounded-lg bg-danger/20 hover:bg-danger/30 transition-colors" title="طرد">
+                                    <i class="fas fa-user-times text-danger text-xs"></i>
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
                 `;
                 container.appendChild(playerCard);
@@ -2675,27 +2696,79 @@ async function joinRoom(uid, username) {
         // VOICE CHAT - Initialize when DOM ready
         // ═══════════════════════════════════════════════════════════
 
-        window.toggleVoicePanel = function() {
-            if (window.VoiceChat) {
-                // Check if voice chat instance already exists
-                if (!window.voiceChatInstance) {
-                    const playerData = window.gameState.players[window.gameState.currentUser.uid];
-                    window.voiceChatInstance = new VoiceChat(
-                        db,
-                        window.gameState.roomCode,
-                        window.gameState.currentUser.uid,
-                        playerData?.username || 'لاعب'
-                    );
-                }
-                // Toggle panel
-                window.voiceChatInstance._togglePanel();
-            } else {
+        function ensureVoiceChatInstance() {
+            if (!window.VoiceChat) {
                 console.warn('VoiceChat not loaded');
-                if (window.showToast) {
-                    showToast('⛔ الدردشة الصوتية غير متوفرة');
-                }
+                if (window.showToast) showToast('⛔ الدردشة الصوتية غير متوفرة');
+                return null;
             }
+
+            const uid = window.gameState.currentUser?.uid;
+            const playerData = uid ? window.gameState.players[uid] : null;
+            if (!uid || !window.gameState.roomCode) return null;
+
+            if (!window.voiceChatInstance ||
+                window.voiceChatInstance.uid !== uid ||
+                window.voiceChatInstance.roomCode !== window.gameState.roomCode) {
+                window.voiceChatInstance?.leave(false);
+                window.voiceChatInstance = new VoiceChat(
+                    db,
+                    window.gameState.roomCode,
+                    uid,
+                    playerData?.username || window.gameState.currentUser?.username || 'لاعب'
+                );
+            }
+            return window.voiceChatInstance;
+        }
+
+        window.toggleVoicePanel = function() {
+            const vc = ensureVoiceChatInstance();
+            if (vc) vc._togglePanel();
         };
+
+        // PUBG-style local speaker controls. Each button affects only the current
+        // player's hearing of one target; it never mutes that target for anyone else.
+        window.toggleRemotePlayerSound = function(uid) {
+            const vc = ensureVoiceChatInstance();
+            if (!vc || uid === vc.uid) return;
+            vc.toggleRemoteMute(uid);
+            updateAllVoiceQuickButtons();
+        };
+
+        window.toggleMyVoiceMute = function() {
+            const vc = ensureVoiceChatInstance();
+            if (!vc) return;
+            if (!vc.active) {
+                vc._togglePanel(true);
+                return;
+            }
+            vc.toggleMute();
+            updateAllVoiceQuickButtons();
+        };
+
+        function updateAllVoiceQuickButtons() {
+            const vc = window.voiceChatInstance;
+            Object.entries(window.gameState.players || {}).forEach(([uid]) => {
+                if (uid === window.gameState.currentUser?.uid) return;
+                const btn = document.getElementById(`voiceQuick-${uid}`);
+                if (!btn) return;
+                const muted = !!vc?.isRemoteMuted(uid);
+                btn.innerHTML = muted ? '<i class="fas fa-volume-xmark text-xs"></i>' : '<i class="fas fa-volume-high text-xs"></i>';
+                btn.style.color = muted ? '#ef4444' : '#67e8f9';
+                btn.style.borderColor = muted ? 'rgba(239,68,68,.4)' : 'rgba(34,211,238,.2)';
+                btn.style.background = muted ? 'rgba(239,68,68,.1)' : 'rgba(34,211,238,.05)';
+            });
+
+            const me = window.gameState.currentUser?.uid;
+            const meBtn = me ? document.querySelector(`#voiceQuick-${me}`) : null;
+            if (meBtn && vc) {
+                const muted = !!vc.muted;
+                meBtn.innerHTML = muted ? '<i class="fas fa-microphone-slash text-xs"></i>' : '<i class="fas fa-microphone text-xs"></i>';
+            }
+        }
+
+        // Keep room player cards synchronized when voice state changes.
+        setInterval(updateAllVoiceQuickButtons, 700);
 
         // ═══════════════════════════════════════════════════════════
         // FRIENDS SYSTEM
