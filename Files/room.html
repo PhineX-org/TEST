@@ -1848,9 +1848,8 @@ async function joinRoom(uid, username) {
         // ═══════════════════════════════════════════════════════════
 
         async function handleDiscussionStatus() {
-            // ✅ FIX: Reset spy hints at start of discussion
             window.gameState.spyHintsUsed = 0;
-            document.getElementById('hintBalance').textContent = '3';
+            document.getElementById('hintBalance').textContent = '2';
             document.getElementById('hintList').innerHTML = '';
             document.getElementById('hintDisplay').classList.add('hidden');
             
@@ -1965,7 +1964,7 @@ async function joinRoom(uid, username) {
 
         window.useHint = async function() {
             if (window.gameState.myRole !== 'spy') return;
-            if (window.gameState.spyHintsUsed >= 3) {
+            if (window.gameState.spyHintsUsed >= 2) {
                 alert('لقد استخدمت جميع التلميحات');
                 return;
             }
@@ -1977,9 +1976,8 @@ async function joinRoom(uid, username) {
             if (!secretWord) return;
 
             const hints = [
-                `يبدأ بحرف: ${secretWord[0]}`,
                 `عدد الحروف: ${secretWord.length}`,
-                `ينتهي بحرف: ${secretWord[secretWord.length - 1]}`
+                `${secretWordSpec}`
             ];
             
             const hint = hints[window.gameState.spyHintsUsed];
@@ -2503,7 +2501,6 @@ async function joinRoom(uid, username) {
             return outcome; // null if this round was already processed
         }
 
-        // ✅ FIX: Reset spy hints when returning to waiting
         window.returnToWaiting = async function() {
             if (!window.gameState.isHost) {
                 alert('فقط المضيف يمكنه إعادة اللعب');

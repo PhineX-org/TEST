@@ -6,11 +6,11 @@
     <title>لوحة الإدارة | El Jasus</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-    <link rel="icon" type="image/png" href="ElJasus.png">
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="dialogs.js"></script>
+    <script src="../Assets/dialogs.js"></script>
     <style>
         /* ═══════════════════════════════════════════════════
            CLASSIC ADMIN DASHBOARD — design system
@@ -208,7 +208,7 @@
 
         <aside id="admin-sidebar">
             <div class="admin-logo">
-                <img src="ElJasus.png" alt="">
+                <img src="../Assets/ElJasus.jpg" alt="">
                 <div>
                     <h1>EL JASUS</h1>
                     <p>لوحة الإدارة</p>
@@ -585,17 +585,6 @@ onAuthStateChanged(auth, async (user) => {
         const snap = await get(ref(db, `players/${user.uid}`));
         const data = snap.val();
         if (!data || data.isAdmin !== true) {
-            // FIX: this used to show a code-entry modal that, on a match,
-            // had the CLIENT itself write isAdmin:true to its own record —
-            // meaning the "code" was the only thing standing between any
-            // logged-in player and full admin access, and that code was
-            // sitting in this file's plaintext source. There is no safe way
-            // to self-grant admin from client code, full stop — so instead
-            // of pretending otherwise, this is now a clear, honest dead end:
-            // an existing admin has to grant access (from the Players tab),
-            // and the very first admin has to be set directly in the
-            // Firebase console. See the Security card in Settings for the
-            // rule that actually enforces this.
             document.body.innerHTML = `
                 <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0b0e14;">
                     <div style="max-width:420px;text-align:center;font-family:'Cairo',sans-serif;color:#e8eaf0;">

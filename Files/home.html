@@ -2009,7 +2009,7 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
                 const patch = { uid: user.uid, email: user.email || prev.email || '' };
                 if (!prev.username) patch.username = user.displayName || 'Agent';
                 if (prev.coins == null) patch.coins = 100;
-                if (prev.hints == null) patch.hints = 3;
+                if (prev.hints == null) patch.hints = 2;
                 if (prev.rankPoints == null) patch.rankPoints = 0;
                 if (!prev.rank) patch.rank = 'Bronze';
                 if (!prev.activeTheme) patch.activeTheme = 'cyan';
