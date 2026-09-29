@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="الجاسوس">
-    <meta name="theme-color" content="#0a0e1a">
+    <meta name="theme-color" content="#000000">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الإحصائيات | El Jasus</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,17 +16,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../Assets/mobile.css">
     <style>
-        :root{--primary:#00f2ff;--secondary:#7c30ff;}
-        body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%,#1a1535 50%,#0f0c1d 100%);
+        :root{--primary:#00f2ff;--secondary:#a3e635;}
+        body{font-family:'Cairo',sans-serif;background:#000000;background-image:radial-gradient(ellipse 120% 70% at 50% -10%,rgba(0,242,255,.12),transparent 60%),radial-gradient(ellipse 90% 55% at 100% 105%,rgba(163,230,53,.07),transparent 60%);
             background-attachment:fixed;color:#fff;min-height:100vh;overflow-x:hidden;}
         body::before{content:'';position:fixed;inset:0;
             background-image:linear-gradient(rgba(0,242,255,.03) 1px,transparent 1px),
             linear-gradient(90deg,rgba(0,242,255,.03) 1px,transparent 1px);
             background-size:50px 50px;animation:gridMove 20s linear infinite;pointer-events:none;z-index:0;}
         @keyframes gridMove{to{transform:translateY(50px);}}
-        .glass{background:linear-gradient(135deg,rgba(15,20,35,.92),rgba(25,30,50,.85));
+        .glass{background:linear-gradient(135deg,rgba(0,0,0,.92),rgba(0,0,0,.85));
             backdrop-filter:blur(20px);border:2px solid;position:relative;overflow:hidden;
-            border-image:linear-gradient(135deg,rgba(0,242,255,.3),rgba(124,48,255,.3)) 1;
+            border-image:linear-gradient(135deg,rgba(0,242,255,.3),rgba(163,230,53,.3)) 1;
             box-shadow:0 8px 32px rgba(0,0,0,.4);}
         .neon{font-family:'Orbitron',sans-serif;text-shadow:0 0 10px rgba(0,242,255,.8);}
         .stat-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;}
@@ -35,6 +35,16 @@
         .perf-fill{height:100%;border-radius:4px;transition:width 1s ease;}
         .report-tag{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:900;cursor:pointer;transition:all .2s;}
         .report-tag:hover{transform:scale(1.05);}
+        /* ── classic-edition palette: remap Tailwind colour utilities (black / cyan / lime) ── */
+        .text-cyan-400{color:rgb(0 242 255 / 1) !important;}
+        .text-green-400{color:rgb(163 230 53 / 1) !important;}
+        .text-orange-400{color:rgb(0 242 255 / 1) !important;}
+        .text-red-400{color:rgb(0 242 255 / 1) !important;}
+        .bg-green-500\/20{background-color:rgb(163 230 53 / 0.2) !important;}
+        .bg-red-500\/20{background-color:rgb(0 242 255 / 0.2) !important;}
+        .border-green-500\/30{border-color:rgb(163 230 53 / 0.3) !important;}
+        .border-red-500\/30{border-color:rgb(0 242 255 / 0.3) !important;}
+        .hover\:text-cyan-400:hover{color:rgb(0 242 255 / 1) !important;}
     </style>
 </head>
 <body class="p-4 has-mobile-nav">
@@ -50,7 +60,7 @@
         </a>
         <div class="text-center">
             <h1 class="text-3xl font-black neon uppercase">الإحصائيات</h1>
-            <p style="font-family:'Orbitron',sans-serif;font-size:10px;color:#555;letter-spacing:3px;">ANALYTICS</p>
+            <p style="font-family:'Orbitron',sans-serif;font-size:10px;color:rgba(255,255,255,.4);letter-spacing:3px;">ANALYTICS</p>
         </div>
         <div class="w-24"></div>
     </div>
@@ -83,9 +93,9 @@
             <h3 class="neon text-lg font-black mb-4">توزيع الانتصارات</h3>
             <canvas id="donutChart"></canvas>
             <div class="flex justify-center gap-6 mt-4 text-sm">
-                <span class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#ef4444;display:inline-block;"></span> جاسوس</span>
-                <span class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block;"></span> بريء</span>
-                <span class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#6b7280;display:inline-block;"></span> خسارة</span>
+                <span class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#00f2ff;display:inline-block;"></span> جاسوس</span>
+                <span class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#a3e635;display:inline-block;"></span> بريء</span>
+                <span class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.25);display:inline-block;"></span> خسارة</span>
             </div>
         </div>
 
@@ -174,7 +184,7 @@ function renderCharts(s, cats) {
         type: 'doughnut',
         data: { labels:['جاسوس','بريء','خسارة'], datasets:[{
             data:[spy,inno,Math.max(loss,0)],
-            backgroundColor:['#ef4444','#22c55e','#374151'],
+            backgroundColor:['#00f2ff','#a3e635','rgba(255,255,255,.25)'],
             borderColor:'transparent', hoverOffset:8
         }]},
         options:{ plugins:{ legend:{ display:false } }, cutout:'70%',
@@ -196,8 +206,8 @@ function renderCharts(s, cats) {
         options:{
             plugins:{ legend:{display:false} },
             scales:{
-                x:{ ticks:{ color:'#aaa', font:{family:'Cairo'} }, grid:{ color:'rgba(255,255,255,.05)' } },
-                y:{ ticks:{ color:'#aaa' }, grid:{ color:'rgba(255,255,255,.05)' } }
+                x:{ ticks:{ color:'rgba(255,255,255,.6)', font:{family:'Cairo'} }, grid:{ color:'rgba(255,255,255,.05)' } },
+                y:{ ticks:{ color:'rgba(255,255,255,.6)' }, grid:{ color:'rgba(255,255,255,.05)' } }
             },
             responsive:true
         }
@@ -206,9 +216,9 @@ function renderCharts(s, cats) {
 
 function renderPerfMetrics(s) {
     const metrics = [
-        { label:'معدل كشف الجاسوس', val: s.spyDetectionRate||0, max:100, color:'#00f2ff', suffix:'%' },
-        { label:'معدل الفوز كجاسوس', val: s.totalGames ? Math.round((s.spyWins||0)/Math.max(s.spyGames||1,1)*100):0, max:100, color:'#ef4444', suffix:'%' },
-        { label:'معدل الفوز كبريء',  val: s.totalGames ? Math.round((s.innocentWins||0)/Math.max((s.totalGames||1)-(s.spyGames||0),1)*100):0, max:100, color:'#22c55e', suffix:'%' },
+        { label:'معدل كشف الجاسوس', val: s.spyDetectionRate||0, max:100, color:'#ffffff', suffix:'%' },
+        { label:'معدل الفوز كجاسوس', val: s.totalGames ? Math.round((s.spyWins||0)/Math.max(s.spyGames||1,1)*100):0, max:100, color:'#00f2ff', suffix:'%' },
+        { label:'معدل الفوز كبريء',  val: s.totalGames ? Math.round((s.innocentWins||0)/Math.max((s.totalGames||1)-(s.spyGames||0),1)*100):0, max:100, color:'#a3e635', suffix:'%' },
     ];
     document.getElementById('perf-metrics').innerHTML = metrics.map(m => `
         <div>

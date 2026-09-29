@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="الجاسوس">
-    <meta name="theme-color" content="#0a0e1a">
+    <meta name="theme-color" content="#000000">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الحساب | El Jasus</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,9 +19,9 @@
    <script src="../Assets/dialogs.js"></script>
     <style>
         :root { 
-            --bg-color: #0a0e1a;
+            --bg-color: #000000;
             --primary-color: #00f2ff;
-            --secondary-color: #7c30ff;
+            --secondary-color: #a3e635;
         }
 
         /* Ensure visibility */
@@ -38,7 +38,10 @@
         
         body { 
             font-family: 'Cairo', sans-serif; 
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background: #000000;
+            background-image:
+                radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,0.12), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,0.07), transparent 60%);
             background-attachment: fixed;
             color: #ffffff; 
             min-height: 100vh; 
@@ -54,8 +57,8 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0,242,255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: gridMove 20s linear infinite;
             pointer-events: none;
@@ -68,14 +71,14 @@
         }
         
         .glass { 
-            background: linear-gradient(135deg, rgba(15, 20, 35, 0.9), rgba(25, 30, 50, 0.8));
+            background: linear-gradient(135deg, rgba(0,0,0, 0.9), rgba(0,0,0, 0.8));
             backdrop-filter: blur(20px);
             border: 2px solid;
-            border-image: linear-gradient(135deg, rgba(0, 242, 255, 0.3), rgba(124, 48, 255, 0.3)) 1;
+            border-image: linear-gradient(135deg, rgba(0,242,255, 0.3), rgba(163,230,53, 0.3)) 1;
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                0 0 30px rgba(0, 242, 255, 0.1);
+                0 8px 32px rgba(0,0,0, 0.4),
+                inset 0 1px 0 rgba(255,255,255, 0.1),
+                0 0 30px rgba(0,242,255, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -90,7 +93,7 @@
             background: linear-gradient(
                 45deg,
                 transparent,
-                rgba(0, 242, 255, 0.05),
+                rgba(0,242,255, 0.05),
                 transparent
             );
             animation: shimmer 3s infinite;
@@ -105,25 +108,25 @@
         .neon-text {
             font-family: 'Orbitron', sans-serif;
             text-shadow: 
-                0 0 10px rgba(0, 242, 255, 0.8),
-                0 0 20px rgba(0, 242, 255, 0.6);
+                0 0 10px rgba(0,242,255, 0.8),
+                0 0 20px rgba(0,242,255, 0.6);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: 2px solid rgba(0, 242, 255, 0.5);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            border: 2px solid rgba(0,242,255, 0.5);
+            box-shadow: 0 0 20px rgba(0,242,255, 0.4);
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
+            box-shadow: 0 0 30px rgba(0,242,255, 0.6);
         }
 
         .stat-badge {
-            background: linear-gradient(135deg, rgba(0, 242, 255, 0.2), rgba(124, 48, 255, 0.2));
-            border: 2px solid rgba(0, 242, 255, 0.3);
+            background: linear-gradient(135deg, rgba(0,242,255, 0.2), rgba(163,230,53, 0.2));
+            border: 2px solid rgba(0,242,255, 0.3);
         }
 
         .avatar-ring {
@@ -131,8 +134,8 @@
         }
 
         @keyframes avatarPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(0, 242, 255, 0.8); }
+            0%, 100% { box-shadow: 0 0 20px rgba(0,242,255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0,242,255, 0.8); }
         }
 
         .animate__animated {
@@ -147,6 +150,32 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        /* ── classic-edition palette: remap Tailwind colour utilities (black / cyan / lime) ── */
+        .text-cyan-400{color:rgb(0 242 255 / 1) !important;}
+        .text-green-400{color:rgb(163 230 53 / 1) !important;}
+        .text-purple-400{color:rgb(163 230 53 / 1) !important;}
+        .text-red-400{color:rgb(163 230 53 / 1) !important;}
+        .bg-cyan-500\/20{background-color:rgb(0 242 255 / 0.2) !important;}
+        .bg-purple-500\/20{background-color:rgb(163 230 53 / 0.2) !important;}
+        .bg-red-500\/20{background-color:rgb(163 230 53 / 0.2) !important;}
+        .border-cyan-500\/30{border-color:rgb(0 242 255 / 0.3) !important;}
+        .border-purple-500\/30{border-color:rgb(163 230 53 / 0.3) !important;}
+        .border-red-500\/30{border-color:rgb(163 230 53 / 0.3) !important;}
+        .border-red-500\/50{border-color:rgb(163 230 53 / 0.5) !important;}
+        .from-cyan-500{--tw-gradient-from:rgb(0 242 255 / 1) var(--tw-gradient-from-position) !important;--tw-gradient-to:rgb(0 242 255 / 0) var(--tw-gradient-to-position) !important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to) !important;}
+        .to-purple-500{--tw-gradient-to:rgb(163 230 53 / 1) var(--tw-gradient-to-position) !important;}
+        .hover\:text-cyan-300:hover{color:rgb(0 242 255 / 1) !important;}
+        .hover\:text-cyan-400:hover{color:rgb(0 242 255 / 1) !important;}
+        .hover\:bg-red-500\/30:hover{background-color:rgb(163 230 53 / 0.3) !important;}
+        .hover\:border-cyan-500\/50:hover{border-color:rgb(0 242 255 / 0.5) !important;}
+        .hover\:border-purple-500\/50:hover{border-color:rgb(163 230 53 / 0.5) !important;}
+        .hover\:border-red-500\/50:hover{border-color:rgb(163 230 53 / 0.5) !important;}
+        .group:hover .group-hover\:text-cyan-400{color:rgb(0 242 255 / 1) !important;}
+        .group:hover .group-hover\:text-purple-400{color:rgb(163 230 53 / 1) !important;}
+        /* readable dark text/icons on solid cyan→lime fills (home.html convention: lime fill = black text) */
+        .btn-primary, .inv-btn-send { color:#000000 !important; }
+        .bg-gradient-to-r.from-cyan-500, .bg-gradient-to-br.from-cyan-500 { color:#000000 !important; }
+        .bg-gradient-to-r.from-cyan-500 .text-white, .bg-gradient-to-br.from-cyan-500 .text-white { color:#000000 !important; }
     </style>
 </head>
 <body class="p-4">

@@ -12,18 +12,18 @@
     <style>
         :root {
             --cyber-cyan: #00f2ff;
-            --cyber-purple: #b026ff;
-            --cyber-pink: #ff006e;
-            --cyber-green: #39ff14;
-            --cyber-blue: #0066ff;
+            --cyber-purple: #a3e635;
+            --cyber-pink: #a3e635;
+            --cyber-green: #a3e635;
+            --cyber-blue: #00f2ff;
             --dark-bg: #000000;
-            --dark-surface: #0a0a0f;
-            --dark-surface-2: #151520;
-            --critical: #ff0055;
-            --heavy: #ff6b00;
-            --medium: #ffaa00;
-            --low: #00ccff;
-            --improvement: #39ff14;
+            --dark-surface: #000000;
+            --dark-surface-2: #000000;
+            --critical: #a3e635;
+            --heavy: #00f2ff;
+            --medium: #65a30d;
+            --low: #0891b2;
+            --improvement: #ffffff;
         }
 
         * {
@@ -34,7 +34,7 @@
 
         body {
             font-family: 'Cairo', sans-serif;
-            background: radial-gradient(circle at 50% 50%, #0a0515 0%, #000 100%);
+            background: radial-gradient(circle at 50% 50%, #000000 0%, #000 100%);
             color: #ffffff;
             min-height: 100vh;
             position: relative;
@@ -119,8 +119,8 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.8rem 1.5rem;
-            background: rgba(0, 242, 255, 0.1);
-            border: 1px solid rgba(0, 242, 255, 0.3);
+            background: rgba(0,242,255, 0.1);
+            border: 1px solid rgba(0,242,255, 0.3);
             color: var(--cyber-cyan);
             text-decoration: none;
             font-family: 'Orbitron', sans-serif;
@@ -132,9 +132,9 @@
         }
 
         .back-button:hover {
-            background: rgba(0, 242, 255, 0.2);
+            background: rgba(0,242,255, 0.2);
             border-color: var(--cyber-cyan);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0,242,255, 0.4);
             transform: translateX(5px);
         }
 
@@ -153,7 +153,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(0, 242, 255, 0.3);
+            text-shadow: 0 0 30px rgba(0,242,255, 0.3);
             animation: titlePulse 4s ease-in-out infinite;
         }
 
@@ -169,19 +169,19 @@
         .page-subtitle {
             font-family: 'Rajdhani', sans-serif;
             font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255,255,255, 0.6);
             font-weight: 300;
             letter-spacing: 0.2em;
         }
 
         /* Report Card */
         .report-card {
-            background: rgba(10, 10, 15, 0.9);
+            background: rgba(0,0,0, 0.9);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 242, 255, 0.2);
+            border: 1px solid rgba(0,242,255, 0.2);
             border-radius: 20px;
             padding: 3rem 2rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 60px rgba(0,0,0, 0.5);
             position: relative;
             overflow: hidden;
         }
@@ -193,7 +193,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0, 242, 255, 0.03), rgba(176, 38, 255, 0.03));
+            background: linear-gradient(135deg, rgba(0,242,255, 0.03), rgba(163,230,53, 0.03));
             pointer-events: none;
         }
 
@@ -241,8 +241,8 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255, 0.03);
+            border: 2px solid rgba(255,255,255, 0.1);
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -251,7 +251,7 @@
         }
 
         .category-label:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255, 0.05);
             transform: translateY(-3px);
         }
 
@@ -270,13 +270,13 @@
         /* Category Colors */
         .category-option input:checked + .category-label {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,242,255, 0.3);
         }
 
         .category-option.critical input:checked + .category-label {
-            background: rgba(255, 0, 85, 0.1);
+            background: rgba(163,230,53, 0.1);
             border-color: var(--critical);
-            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.4);
+            box-shadow: 0 10px 30px rgba(163,230,53, 0.4);
         }
 
         .category-option.critical .category-icon {
@@ -284,9 +284,9 @@
         }
 
         .category-option.heavy input:checked + .category-label {
-            background: rgba(255, 107, 0, 0.1);
+            background: rgba(0,242,255, 0.1);
             border-color: var(--heavy);
-            box-shadow: 0 10px 30px rgba(255, 107, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0,242,255, 0.4);
         }
 
         .category-option.heavy .category-icon {
@@ -294,9 +294,9 @@
         }
 
         .category-option.medium input:checked + .category-label {
-            background: rgba(255, 170, 0, 0.1);
+            background: rgba(101,163,13, 0.1);
             border-color: var(--medium);
-            box-shadow: 0 10px 30px rgba(255, 170, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(101,163,13, 0.4);
         }
 
         .category-option.medium .category-icon {
@@ -304,9 +304,9 @@
         }
 
         .category-option.low input:checked + .category-label {
-            background: rgba(0, 204, 255, 0.1);
+            background: rgba(8,145,178, 0.1);
             border-color: var(--low);
-            box-shadow: 0 10px 30px rgba(0, 204, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(8,145,178, 0.4);
         }
 
         .category-option.low .category-icon {
@@ -314,9 +314,9 @@
         }
 
         .category-option.improvement input:checked + .category-label {
-            background: rgba(57, 255, 20, 0.1);
+            background: rgba(255,255,255, 0.1);
             border-color: var(--improvement);
-            box-shadow: 0 10px 30px rgba(57, 255, 20, 0.4);
+            box-shadow: 0 10px 30px rgba(255,255,255, 0.4);
         }
 
         .category-option.improvement .category-icon {
@@ -328,8 +328,8 @@
         .form-textarea {
             width: 100%;
             padding: 1rem 1.2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(0, 242, 255, 0.2);
+            background: rgba(255,255,255, 0.05);
+            border: 2px solid rgba(0,242,255, 0.2);
             border-radius: 10px;
             color: #fff;
             font-family: 'Cairo', sans-serif;
@@ -340,14 +340,14 @@
 
         .form-input::placeholder,
         .form-textarea::placeholder {
-            color: rgba(255, 255, 255, 0.3);
+            color: rgba(255,255,255, 0.3);
         }
 
         .form-input:focus,
         .form-textarea:focus {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255, 0.08);
             border-color: var(--cyber-cyan);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0,242,255, 0.2);
         }
 
         .form-textarea {
@@ -373,7 +373,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0,242,255, 0.3);
         }
 
         .submit-button::before {
@@ -393,7 +393,7 @@
 
         .submit-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 50px rgba(0, 242, 255, 0.5);
+            box-shadow: 0 0 50px rgba(0,242,255, 0.5);
         }
 
         .submit-button:active {
@@ -431,13 +431,13 @@
         }
 
         .message.success {
-            background: rgba(57, 255, 20, 0.1);
+            background: rgba(255,255,255, 0.1);
             border: 1px solid var(--improvement);
             color: var(--improvement);
         }
 
         .message.error {
-            background: rgba(255, 0, 85, 0.1);
+            background: rgba(163,230,53, 0.1);
             border: 1px solid var(--critical);
             color: var(--critical);
         }
@@ -450,8 +450,8 @@
         .footer {
             margin-top: 6rem;
             padding: 4rem 2rem 2rem;
-            background: linear-gradient(180deg, transparent 0%, rgba(10, 5, 21, 0.8) 100%);
-            border-top: 1px solid rgba(0, 242, 255, 0.2);
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0, 0.8) 100%);
+            border-top: 1px solid rgba(0,242,255, 0.2);
             position: relative;
             overflow: hidden;
         }
@@ -465,7 +465,7 @@
             font-family: 'Orbitron', sans-serif;
             font-size: clamp(6rem, 15vw, 12rem);
             font-weight: 900;
-            color: rgba(0, 242, 255, 0.03);
+            color: rgba(0,242,255, 0.03);
             white-space: nowrap;
             pointer-events: none;
             z-index: 0;
@@ -502,7 +502,7 @@
         }
 
         .footer-section a {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255,255,255, 0.6);
             text-decoration: none;
             transition: color 0.3s ease;
             font-family: 'Cairo', sans-serif;
@@ -524,17 +524,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 242, 255, 0.1);
-            border: 1px solid rgba(0, 242, 255, 0.3);
+            background: rgba(0,242,255, 0.1);
+            border: 1px solid rgba(0,242,255, 0.3);
             border-radius: 50%;
             transition: all 0.3s ease;
             color: var(--cyber-cyan);
         }
 
         .social-link:hover {
-            background: rgba(0, 242, 255, 0.2);
+            background: rgba(0,242,255, 0.2);
             border-color: var(--cyber-cyan);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0,242,255, 0.5);
             transform: translateY(-3px);
         }
 
@@ -547,9 +547,9 @@
 
         .footer-bottom {
             padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255,255,255, 0.1);
             text-align: center;
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255,255,255, 0.5);
             font-size: 0.9rem;
         }
 
@@ -725,7 +725,7 @@
                 <div class="footer-section">
                     <img src="ElJasus.jpg" alt="El Jasus" class="footer-logo">
                     <h3>الجاسوس</h3>
-                    <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+                    <p style="color: rgba(255,255,255, 0.6); font-size: 0.9rem;">
                         لعبة جماعية مثيرة تجمع الأصدقاء في تجربة مليئة بالتشويق والإثارة
                     </p>
                     <div class="social-links" style="margin-top: 1.5rem;">

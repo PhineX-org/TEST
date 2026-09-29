@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="الجاسوس">
-    <meta name="theme-color" content="#0a0e1a">
+    <meta name="theme-color" content="#000000">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الملف الشخصي | El Jasus</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,14 +22,17 @@
 
     <style>
         :root { 
-            --bg-color: #0a0e1a;
+            --bg-color: #000000;
             --primary-color: #00f2ff;
-            --secondary-color: #7c30ff;
+            --secondary-color: #a3e635;
         }
         
         body { 
             font-family: 'Cairo', sans-serif; 
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1535 50%, #0f0c1d 100%);
+            background: #000000;
+            background-image:
+                radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,0.12), transparent 60%),
+                radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,0.07), transparent 60%);
             background-attachment: fixed;
             color: #ffffff; 
             min-height: 100vh; 
@@ -45,8 +48,8 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0,242,255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,242,255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: gridMove 20s linear infinite;
             pointer-events: none;
@@ -59,14 +62,14 @@
         }
         
         .glass { 
-            background: linear-gradient(135deg, rgba(15, 20, 35, 0.9), rgba(25, 30, 50, 0.8));
+            background: linear-gradient(135deg, rgba(0,0,0, 0.9), rgba(0,0,0, 0.8));
             backdrop-filter: blur(20px);
             border: 2px solid;
-            border-image: linear-gradient(135deg, rgba(0, 242, 255, 0.3), rgba(124, 48, 255, 0.3)) 1;
+            border-image: linear-gradient(135deg, rgba(0,242,255, 0.3), rgba(163,230,53, 0.3)) 1;
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                0 0 30px rgba(0, 242, 255, 0.1);
+                0 8px 32px rgba(0,0,0, 0.4),
+                inset 0 1px 0 rgba(255,255,255, 0.1),
+                0 0 30px rgba(0,242,255, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -78,7 +81,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 242, 255, 0.05), transparent);
+            background: linear-gradient(45deg, transparent, rgba(0,242,255, 0.05), transparent);
             animation: shimmer 3s infinite;
             pointer-events: none;
         }
@@ -90,7 +93,7 @@
 
         .neon-text {
             font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.8), 0 0 20px rgba(0, 242, 255, 0.6);
+            text-shadow: 0 0 10px rgba(0,242,255, 0.8), 0 0 20px rgba(0,242,255, 0.6);
         }
 
         .stat-card {
@@ -99,20 +102,20 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(0, 242, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0,242,255, 0.3);
         }
 
         .progress-bar {
             position: relative;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255, 0.1);
             border-radius: 10px;
             height: 12px;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00f2ff, #7c30ff);
+            background: linear-gradient(90deg, #00f2ff, #a3e635);
             border-radius: 10px;
             transition: width 1s ease;
             position: relative;
@@ -126,7 +129,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255, 0.3), transparent);
             animation: progressShine 2s infinite;
         }
 
@@ -137,27 +140,27 @@
 
         .rank-bronze {
             background: linear-gradient(135deg, #cd7f32, #e09856);
-            border-color: rgba(205, 127, 50, 0.5);
+            border-color: rgba(205,127,50, 0.5);
         }
 
         .rank-silver {
             background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
-            border-color: rgba(192, 192, 192, 0.5);
+            border-color: rgba(192,192,192, 0.5);
         }
 
         .rank-gold {
             background: linear-gradient(135deg, #ffd700, #ffed4e);
-            border-color: rgba(255, 215, 0, 0.5);
+            border-color: rgba(255,215,0, 0.5);
         }
 
         .rank-platinum {
             background: linear-gradient(135deg, #e5e4e2, #f5f5f5);
-            border-color: rgba(229, 228, 226, 0.5);
+            border-color: rgba(229,228,226, 0.5);
         }
 
         .rank-diamond {
-            background: linear-gradient(135deg, #00f2ff, #7c30ff);
-            border-color: rgba(0, 242, 255, 0.5);
+            background: linear-gradient(135deg, #00f2ff, #a3e635);
+            border-color: rgba(0,242,255, 0.5);
         }
 
         .glow-pulse {
@@ -165,8 +168,8 @@
         }
 
         @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(0, 242, 255, 0.8); }
+            0%, 100% { box-shadow: 0 0 20px rgba(0,242,255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0,242,255, 0.8); }
         }
 
         .animate-delay-1 { animation-delay: 0.1s; }
@@ -174,6 +177,41 @@
         .animate-delay-3 { animation-delay: 0.3s; }
         .animate-delay-4 { animation-delay: 0.4s; }
         .animate-delay-5 { animation-delay: 0.5s; }
+        /* ── classic-edition palette: remap Tailwind colour utilities (black / cyan / lime) ── */
+        .text-blue-400{color:rgb(0 242 255 / 1) !important;}
+        .text-cyan-400{color:rgb(0 242 255 / 1) !important;}
+        .text-green-400{color:rgb(163 230 53 / 1) !important;}
+        .text-orange-400{color:rgb(0 242 255 / 1) !important;}
+        .text-purple-400{color:rgb(163 230 53 / 1) !important;}
+        .text-red-400{color:rgb(163 230 53 / 1) !important;}
+        .text-yellow-400{color:rgb(0 242 255 / 1) !important;}
+        .bg-blue-500\/20{background-color:rgb(0 242 255 / 0.2) !important;}
+        .bg-green-500\/20{background-color:rgb(163 230 53 / 0.2) !important;}
+        .bg-orange-500\/20{background-color:rgb(0 242 255 / 0.2) !important;}
+        .bg-purple-500\/20{background-color:rgb(163 230 53 / 0.2) !important;}
+        .bg-red-500\/20{background-color:rgb(163 230 53 / 0.2) !important;}
+        .bg-yellow-500\/20{background-color:rgb(0 242 255 / 0.2) !important;}
+        .border-blue-500\/30{border-color:rgb(0 242 255 / 0.3) !important;}
+        .border-cyan-500\/30{border-color:rgb(0 242 255 / 0.3) !important;}
+        .border-green-500\/30{border-color:rgb(163 230 53 / 0.3) !important;}
+        .border-orange-500\/30{border-color:rgb(0 242 255 / 0.3) !important;}
+        .border-purple-500\/30{border-color:rgb(163 230 53 / 0.3) !important;}
+        .border-red-500\/30{border-color:rgb(163 230 53 / 0.3) !important;}
+        .border-yellow-500\/30{border-color:rgb(0 242 255 / 0.3) !important;}
+        .border-yellow-500\/50{border-color:rgb(0 242 255 / 0.5) !important;}
+        .from-cyan-500{--tw-gradient-from:rgb(0 242 255 / 1) var(--tw-gradient-from-position) !important;--tw-gradient-to:rgb(0 242 255 / 0) var(--tw-gradient-to-position) !important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to) !important;}
+        .from-cyan-500\/20{--tw-gradient-from:rgb(0 242 255 / 0.2) var(--tw-gradient-from-position) !important;--tw-gradient-to:rgb(0 242 255 / 0) var(--tw-gradient-to-position) !important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to) !important;}
+        .from-green-500\/20{--tw-gradient-from:rgb(163 230 53 / 0.2) var(--tw-gradient-from-position) !important;--tw-gradient-to:rgb(163 230 53 / 0) var(--tw-gradient-to-position) !important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to) !important;}
+        .from-yellow-500\/20{--tw-gradient-from:rgb(0 242 255 / 0.2) var(--tw-gradient-from-position) !important;--tw-gradient-to:rgb(0 242 255 / 0) var(--tw-gradient-to-position) !important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to) !important;}
+        .to-cyan-500\/10{--tw-gradient-to:rgb(0 242 255 / 0.1) var(--tw-gradient-to-position) !important;}
+        .to-green-500\/10{--tw-gradient-to:rgb(163 230 53 / 0.1) var(--tw-gradient-to-position) !important;}
+        .to-purple-500{--tw-gradient-to:rgb(163 230 53 / 1) var(--tw-gradient-to-position) !important;}
+        .to-yellow-500\/10{--tw-gradient-to:rgb(0 242 255 / 0.1) var(--tw-gradient-to-position) !important;}
+        .hover\:text-cyan-400:hover{color:rgb(0 242 255 / 1) !important;}
+        /* readable dark text/icons on solid cyan→lime fills (home.html convention: lime fill = black text) */
+        .btn-primary, .inv-btn-send { color:#000000 !important; }
+        .bg-gradient-to-r.from-cyan-500, .bg-gradient-to-br.from-cyan-500 { color:#000000 !important; }
+        .bg-gradient-to-r.from-cyan-500 .text-white, .bg-gradient-to-br.from-cyan-500 .text-white { color:#000000 !important; }
     </style>
 </head>
 <body class="p-4">
@@ -408,15 +446,10 @@ const firebaseConfig = {
         async function loadProfile(uid) {
             const userRef = ref(db, `players/${uid}`);
             const snapshot = await get(userRef);
-            
-            if (!snapshot.exists()) {
-                // Initialize default stats
-                await initializeDefaultStats(uid);
-                await loadProfile(uid);
-                return;
-            }
 
-            const data = snapshot.val();
+            // A brand-new player has no record yet: render the default (empty) profile
+            // instead of re-fetching forever (the old code recursed endlessly here).
+            const data = snapshot.exists() ? snapshot.val() : {};
             const stats = data.stats || {};
             const rankPoints = data.rankPoints || 0;
             const achievements = data.achievements || {};
