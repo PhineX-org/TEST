@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
    <meta charset="UTF-8">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="../Assets/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="الجاسوس">
@@ -1218,6 +1218,9 @@
                     <button id="setOnline" onclick="switchMode('online')" class="mode-btn px-6 py-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all">
                         <span>أونلاين</span>
                     </button>
+                    <button id="setAI" onclick="switchMode('ai')" class="mode-btn px-6 py-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all">
+                        <span>AI</span>
+                    </button>
                 </div>
             </div>
             <p id="modeHint" class="mode-hint">🏠 العب من نفس الجهاز — مرّروا الموبايل بينكم بالدور</p>
@@ -1289,6 +1292,34 @@
                     </a>
                 </div>
                 <p id="onlineModeHint" class="mode-hint">🌐 هتحتاج تسجّل دخول عشان تلعب أونلاين مع أصدقائك من أي مكان</p>
+            </div>
+
+            <!-- AI Game Fields -->
+            <div id="ai-fields" class="hidden space-y-4">
+                <input type="text" id="aiPName" placeholder="اسمك..." class="w-full border-2 p-4 rounded-xl text-center outline-none font-bold">
+
+                <div class="flex items-center justify-between px-1 bg-black/40 p-4 rounded-xl" style="border:1px solid rgba(0,242,255,0.2);">
+                    <label class="text-[11px] font-black uppercase tracking-wider" style="font-family: 'Orbitron', sans-serif;">🤖 عدد لاعبي الـ AI</label>
+                    <div class="flex items-center gap-4">
+                        <button onclick="changeAiCount(-1)" class="counter-btn" aria-label="تقليل عدد لاعبي الذكاء الاصطناعي">-</button>
+                        <span id="aiCountDisplay" class="font-black dynamic-text-primary text-2xl" style="font-family: 'Orbitron', sans-serif;">3</span>
+                        <button onclick="changeAiCount(1)" class="counter-btn plus" aria-label="زيادة عدد لاعبي الذكاء الاصطناعي">+</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-black opacity-50 uppercase block mb-3 px-1 tracking-wider" style="font-family: 'Orbitron', sans-serif;">🎯 مستوى الصعوبة</label>
+                    <select id="aiDifficulty" class="w-full p-4 rounded-xl border-2 outline-none text-sm appearance-none cursor-pointer font-bold">
+                        <option value="easy">سهل — الذكاء الاصطناعي بيغلط وبيرمي تلميحات واضحة</option>
+                        <option value="medium" selected>متوسط — لعب متوازن</option>
+                        <option value="hard">صعب — بلف ذكي وأسئلة ماكرة</option>
+                    </select>
+                </div>
+
+                <button onclick="startAiGame()" class="w-full btn-main py-5 rounded-xl mt-2 shadow-lg text-lg font-black uppercase tracking-wider">
+                    🤖 ابدأ مع الذكاء الاصطناعي
+                </button>
+                <p class="mode-hint">🎙️ لو دخلت الدردشة الصوتية، الذكاء الاصطناعي هيتكلم معاكم صوتياً في دوره</p>
             </div>
         </div>
 
@@ -1741,12 +1772,16 @@
         window.switchMode = (mode) => {
             document.getElementById('setLocal').classList.toggle('active', mode === 'local');
             document.getElementById('setOnline').classList.toggle('active', mode === 'online');
-            document.getElementById('local-fields').classList.toggle('hidden', mode === 'online');
-            document.getElementById('online-fields').classList.toggle('hidden', mode === 'local');
+            document.getElementById('setAI').classList.toggle('active', mode === 'ai');
+            document.getElementById('local-fields').classList.toggle('hidden', mode !== 'local');
+            document.getElementById('online-fields').classList.toggle('hidden', mode !== 'online');
+            document.getElementById('ai-fields').classList.toggle('hidden', mode !== 'ai');
             const hint = document.getElementById('modeHint');
             if (hint) {
                 hint.textContent = mode === 'local'
                     ? '🏠 العب من نفس الجهاز — مرّروا الموبايل بينكم بالدور'
+                    : mode === 'ai'
+                    ? '🤖 العب مع لاعبين وهميين يتحكم فيهم الذكاء الاصطناعي'
                     : '🌍 العب مع أصدقائك من أي مكان عبر الإنترنت';
             }
         };
@@ -1920,6 +1955,63 @@ async function handleJoinRoom() {
 }
 document.getElementById('joinBtn').onclick = handleJoinRoom;
 
+        // ── AI GAME ──────────────────────────────────────────────────
+        let aiPlayerCount = 3;
+        const AI_BOT_NAMES = ['كريم','يوسف','ليلى','سارة','عمر','نور','زياد','ملك','حسن','جنى','مصطفى','رنا','آدم','هنا','طارق'];
+
+        window.changeAiCount = (val) => {
+            aiPlayerCount = Math.max(2, Math.min(8, aiPlayerCount + val));
+            document.getElementById('aiCountDisplay').innerText = aiPlayerCount;
+        };
+
+        async function startAiGame() {
+            myName = document.getElementById('aiPName').value.trim();
+            if (!myName) return alert("الاسم مطلوب");
+
+            if (guestMode) { pendingAuthAction = 'ai'; openAuthModal('login'); return; }
+
+            if (window.MOD) {
+                const ban = await MOD.checkBan?.();
+                if (ban) { MOD.checkOnLoad(); return; }
+            }
+
+            localStorage.setItem('eljasus_user_name', myName);
+            myRoom = Math.random().toString(36).substring(2, 6).toUpperCase();
+            isHost = true;
+
+            const userID = currentUser.uid;
+            const difficulty = document.getElementById('aiDifficulty').value;
+            const botNames = [...AI_BOT_NAMES].sort(() => Math.random() - 0.5).slice(0, aiPlayerCount);
+
+            const players = {
+                [userID]: { username: myName, uid: userID, joinedAt: serverTimestamp(), connected: true, status: 'online', isGuest: false, isHost: true }
+            };
+            botNames.forEach((name, i) => {
+                players[`ai_${i + 1}`] = { username: name, uid: `ai_${i + 1}`, joinedAt: serverTimestamp(), connected: true, status: 'online', isAI: true, isHost: false };
+            });
+
+            try {
+                await set(ref(db, 'rooms/' + myRoom), {
+                    hostId: userID,
+                    mode: 'ai',
+                    aiConfig: { count: aiPlayerCount, difficulty },
+                    category: document.getElementById('gameCat').value,
+                    visibility: 'private',
+                    status: 'waiting',
+                    createdAt: serverTimestamp(),
+                    players
+                });
+                localStorage.setItem('currentRoom', myRoom);
+                localStorage.setItem('isHost', 'true');
+                localStorage.setItem('guestMode', false);
+                window.location.href = `room.html?room=${myRoom}`;
+            } catch (e) {
+                console.error('Create AI room error:', e);
+                alert('فشل إنشاء الغرفة: ' + e.message);
+            }
+        }
+        window.startAiGame = startAiGame;
+
         // Public-rooms browse link also requires sign-in
         document.getElementById('publicRoomsLink').addEventListener('click', (e) => {
             if (guestMode) {
@@ -2009,7 +2101,7 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
                 const patch = { uid: user.uid, email: user.email || prev.email || '' };
                 if (!prev.username) patch.username = user.displayName || 'Agent';
                 if (prev.coins == null) patch.coins = 100;
-                if (prev.hints == null) patch.hints = 2;
+                if (prev.hints == null) patch.hints = 3;
                 if (prev.rankPoints == null) patch.rankPoints = 0;
                 if (!prev.rank) patch.rank = 'Bronze';
                 if (!prev.activeTheme) patch.activeTheme = 'cyan';
@@ -2034,6 +2126,7 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
             closeAuthModal();
             if (action === 'create') handleCreateRoom();
             else if (action === 'join') handleJoinRoom();
+            else if (action === 'ai') startAiGame();
             else if (action === 'rooms') window.location.href = 'onlinerooms.html';
         }
 
@@ -2104,7 +2197,7 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
     </script>
 
 
-    <link rel="stylesheet" href="../Assets/mobile.css">
+    <link rel="stylesheet" href="mobile.css">
 <style>
 /* ─────────────────────────────────────────────────────
    FIX 1
@@ -2143,8 +2236,8 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
     display: none !important;
 }
 </style>
-    <script src="../Assets/sound-system.js" defer></script>
-    <script src="../Assets/qr-notifications.js" defer></script>
+    <script src="sound-system.js" defer></script>
+    <script src="qr-notifications.js" defer></script>
 
     <!-- ── ANNOUNCEMENTS BANNER ──────────────── -->
     <div id="ann-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9980;

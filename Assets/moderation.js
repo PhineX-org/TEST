@@ -2,51 +2,6 @@
 // EL JASUS — JMS (El Jasus Moderation System) v4.0
 // Tokenized detection engine + fairness/precision pass
 // ============================================================
-//
-// Changes from v3.1, and why:
-//
-// 1. FAIRNESS — removed rules that punished protected identity/
-//    expression rather than abuse:
-//      - The offensive-emoji list treated pride/trans flags and
-//        the symbols of multiple religions (cross, Star of David,
-//        Om, Dharma wheel, Khanda, menorah, yin-yang, peace sign)
-//        as severe profanity, on par with explicit sexual emoji.
-//        A player could be auto-banned for sending a religious or
-//        pride symbol. That list now only contains unambiguous,
-//        explicit content.
-//      - Neutral, self-identifying words ("gay", Arabic "مثلي",
-//        "autistic", standard Arabic disability terms like "معاق")
-//        were filed under slurs/hate-speech, so simply describing
-//        yourself could trigger a ban. Removed; the actual slurs
-//        in each category are still blocked.
-//      - Bare words like "cancer", "die", "مرض" (illness), "موت"
-//        (death) were single-word hate-speech triggers, banning
-//        ordinary conversation (e.g. discussing a relative's
-//        diagnosis). Removed; phrases that actually direct self-
-//        harm at someone ("kill yourself", "kys", "اشنق نفسك")
-//        are still blocked.
-//
-// 2. PRECISION — the old scanner generated every substring of the
-//    (fully space-stripped) message and did a "contains" check
-//    against every blocked word. That flags ordinary words that
-//    merely contain a short blocked root ("hello" contains "hell",
-//    "class" contains "ass", "Essex" contains "sex" — the classic
-//    "Scunthorpe problem"). Detection is now tokenized: short/
-//    ambiguous words require an exact token match, longer/distinct
-//    words allow a "contains" match, and a small allow-list covers
-//    known collision words. A separate, narrower pass still catches
-//    deliberately spaced-out evasion ("a s s h o l e") and no-space
-//    gibberish blobs, without scanning ordinary sentences for it.
-//
-// 3. PERFORMANCE — blocked-word normalization is precomputed once
-//    at load time (into exact-match maps + a short "long word" list)
-//    instead of being redone for every word on every message, and
-//    leet-speak expansion runs per token instead of across the
-//    whole message, removing the biggest cost in the old scanner.
-//
-// Everything else (ban levels, durations, UI, Firebase wiring,
-// public API) is unchanged and drop-in compatible with v3.1.
-// ============================================================
 
 (function () {
 'use strict';

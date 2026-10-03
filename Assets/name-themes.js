@@ -25,7 +25,7 @@
     },
     
     neonCyan: {
-      name: 'سيان نيون',
+      name: 'سماوي نيون',
       type: 'static',
       price: 100,
       css: {
