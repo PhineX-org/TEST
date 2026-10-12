@@ -26,20 +26,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="../Assets/dialogs.js"></script>
     <script src="../Assets/moderation.js"></script>
-    <script src="../Assets/room-invites.js"></script>
-    <script src="../Assets/friends-panel.js"></script>
     <script src="../Assets/name-themes.js"></script>
+    <script src="../Assets/game-words.js"></script>
+    <script src="../Assets/inbox.js"></script>
    <script src="../Assets/friend-invite-enhanced.js" defer></script>
    <script src="../Assets/profile-viewer.js" defer></script>
-    
     <style>
         /* ═══════════════════════════════════════════════════════════
            EL JASUS — DESIGN TOKENS
-           Palette rule: black + cyan (structure/brand) + lime (action/
-           success) — every color is rgba(), and the two accent hues are
-           never blended into one gradient (each gradient fades a single
-           hue to transparent, or the two hues sit as separate solid
-           elements side by side).
            ═══════════════════════════════════════════════════════════ */
         :root {
             --c-black: 0, 0, 0;
@@ -1219,7 +1213,7 @@
                         <span>أونلاين</span>
                     </button>
                     <button id="setAI" onclick="switchMode('ai')" class="mode-btn px-6 py-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all">
-                        <span>AI</span>
+                        <span>🤖 AI</span>
                     </button>
                 </div>
             </div>
@@ -1293,7 +1287,6 @@
                 </div>
                 <p id="onlineModeHint" class="mode-hint">🌐 هتحتاج تسجّل دخول عشان تلعب أونلاين مع أصدقائك من أي مكان</p>
             </div>
-
             <!-- AI Game Fields -->
             <div id="ai-fields" class="hidden space-y-4">
                 <input type="text" id="aiPName" placeholder="اسمك..." class="w-full border-2 p-4 rounded-xl text-center outline-none font-bold">
@@ -1606,64 +1599,9 @@
 });
 
         // ── GAME DATA ────────────────────────────────────────────────
-        const gameData = {
-            places: [
-                "المدرسة", "المستشفى", "حديقة الحيوان", "المطار", "النادي", "السينما", "المطعم", "البحر", "المزرعة", "السيرك",
-                "المكتبة", "المسجد", "المحل", "الصيدلية", "البنك", "المحكمة", "السجن", "الغابة", "الصحراء",
-                "الجبل", "القلعة", "القصر", "الفندق", "المتحف", "المسرح", "المخبز", "المقهى (القهوة)", "السوبر ماركت", "محطة القطار",
-                "محطة المترو", "الورشة", "الاستاد", "الجيم", "الحضانة", "الجامعة", "صالون الحلاقة", "المعمل", "المنزل", "المطبخ",
-                "غرفة النوم", "الحمام", "السطوح", "الشارع", "الكوبري", "الميناء", "السفارة", "المرصد", "المخيم", "الشلال",
-                "البحيرة", "الكهف", "المسبح (البيسين)", "المصنع", "المكتب", "الأتوبيس", "الطيارة", "المركب", "الفضاء", "القمر",
-                "المريخ", "السوق", "الملاهي", "حديقة عامة", "الشقة", "الفيلا", "الخيمة", "الجراج", "المصلحة الحكومية", "البريد",
-                "قسم الشرطة", "المطافئ", "الإسعاف", "العيادة", "المول", "محل الموبايلات", "السايبر", "استوديو تصوير", "قاعة أفراح", "عزاء",
-                "معرض سيارات", "محل ورد", "محل هدايا", "كشك", "بنزينة", "موقف ميكروباصات", "مغسلة سيارات", "محل حلويات", "فرن عيش", "محل سمك",
-                "محل جزارة", "محل بقالة", "صالة بولينج", "تنس طاولة", "ملعب كورة", "البورصة", "المدبح", "الجزيرة", "المنارة", "المقابر"
-            ],
-            football_teams: [
-                "الأهلي المصري", "الزمالك", "الإسماعيلي", "المصري البورسعيدي", "الاتحاد السكندري", "بيراميدز", "سموحة", "مودرن فيوتشر", "المقاولون العرب", "غزل المحلة", "الجونة", "البنك الأهلي", "سيراميكا كليوباترا", "إنبي", "طلائع الجيش", "حرس الحدود", "أسوان",
-                "الهلال السعودي", "النصر السعودي", "الاتحاد السعودي", "الأهلي السعودي", "الشباب السعودي", "العين الإماراتي", "شباب الأهلي", "الوداد المغربي", "الرجاء المغربي", "الجيش الملكي", "الترجي التونسي", "النجم الساحلي", "الإفريقي التونسي", "السد القطري", "الدحيل", "الكويت الكويتي", "القادسية الكويتي", "الوحدات الأردني", "الزوراء العراقي",
-                "ليفربول", "مانشستر سيتي", "مانشستر يونايتد", "أرسنال", "تشيلسي", "توتنهام", "أستون فيلا", "نيوكاسل يونايتد", "ليستر سيتي", "وست هام",
-                "ريال مدريد", "برشلونة", "أتلتيكو مدريد", "إشبيلية", "فالنسيا", "ريال سوسيداد", "فياريال", "بيلباو",
-                "يوفنتوس", "إيه سي ميلان", "إنتر ميلان", "نابولي", "روما", "لاتسيو", "فيورنتينا", "بايرن ميونخ", "بوروسيا دورتموند", "باير ليفركوزن", "لايبزيج", "باريس سان جيرمان", "مارسيليا", "ليون", "موناكو", "أياكس أمستردام", "بنفيكا", "بورتو",
-                "منتخب مصر", "منتخب السعودية", "منتخب المغرب", "منتخب الجزائر", "منتخب تونس", "منتخب قطر", "منتخب البرازيل", "منتخب الأرجنتين", "منتخب فرنسا", "منتخب ألمانيا", "منتخب إسبانيا", "منتخب إيطاليا", "منتخب إنجلترا", "منتخب البرتغال", "منتخب بلجيكا", "منتخب كرواتيا", "منتخب هولندا", "منتخب الأوروغواي", "منتخب اليابان", "منتخب كوريا الجنوبية", "منتخب السنغال", "منتخب نيجيريا", "منتخب الكاميرون"
-            ],
-            food: [
-                "كشري", "ملوخية", "فول", "طعمية (فلافل)", "فتة باللحمة", "حواوشي", "محشي كرنب", "محشي ورق عنب", "ممبار", "كوارع",
-                "فتة كوارع", "كفتة مشوية", "طرب", "كباب", "كبدة إسكندراني", "سجق شرقي", "مكرونة بشاميل", "رقاق باللحمة", "جلاش", "أرز بلبن",
-                "أم علي", "بسبوسة", "كنافة", "لقيمات (قاضي)", "فطير مشلتت", "مش وجبنة قديمة", "عسل أسود وطحينة", "كشك", "بصارة", "عدس",
-                "شوربة لسان عصفور", "أرز معمر", "مسقعة", "تورلي خضار", "بامية باللحمة", "قلقاس", "سبانخ", "أرز بالشعرية", "فراخ محمرة", "حمام محشي",
-                "بط", "أرانب", "سمك بلطي", "سمك بوري", "جمبري", "سبيط", "فسيخ", "رنجة", "ملوحة", "بطاطس محمرة", "بابا غنوج", "سلطة خضراء", "مخلل (طرشي)",
-                "باذنجان مخلل", "بيض بالبسطرمة", "شكشوكة", "عجة", "مخ بانيه", "كبدة وقوانص", "كفتة",
-                "كفتة أرز", "أرز صيادية", "كيكة برتقال", "رز بلبن", "مهلبية", "قمر الدين", "عاشورا", "زلابيا", "بلح الشام", "صوابع زينب",
-                "كحك العيد", "بسكويت نشادر", "غريبة", "بيتيفور", "منين (قراقيش)", "قرص بعجوة", "عيش بلدي", "عيش فينو", "شاورما مصري", "فراخ بانيه",
-                "صينية بطاطس", "مكرونة بالصلصة", "ساندوتش جبنة", "شاي بلبن", "سحلب", "عصير قصب", "عرقسوس", "تمرهندي", "خروب", "سوبيا",
-                "مدمس", "بيض مسلوق", "جبنة بيضا", "لانشون", "بسطرمة", "مخروطة", "كوسة بالبشاميل", "أرز بالخلطة", "كبدة جملي", "فريك"
-            ],
-            jobs: [
-                "دكتور", "مهندس", "مدرس", "ضابط", "محامي", "محاسب", "ممرض", "صيدلي", "طيار", "سواق",
-                "نجار", "سباك", "كهربائي", "نقاش", "بنا", "ميكانيكي", "حلاق", "خياط", "طباخ", "جزار",
-                "بائع", "صحفي", "مذيع", "ممثل", "مغني", "رسام", "مصور", "لاعب كورة", "مدرب", "حكم",
-                "عامل نظافة", "بواب", "عامل دليفري", "نجار مسلح", "حداد", "فلاح", "صياد", "قاضي", "رجل إطفاء", "عسكري",
-                "مأذون", "إمام مسجد", "قسيس", "مألف", "شاعر", "مخرج", "مونتير", "مصمم جرافيك", "مبرمج", "هكر",
-                "عالم", "رائد فضاء", "غطاس", "طيار حربي", "مضيفة طيران", "مترجم", "سكرتير", "مدير", "وزير", "رئيس",
-                "خبير تجميل", "موديل", "يوتيوبر", "تيكتوكر", "بلوجر", "عامل بنزينة", "صراف", "جرسون", "شيف", "حلواني",
-                "خفير", "بودي جارد", "محقق", "جاسوس", "رجل أعمال", "بائع خضار", "بائع فاكهة", "بائع لبن", "مكوجي", "منجد",
-                "عامل بناء", "فني تكييف", "فني راديو", "ساحر", "مهرج", "راقص", "مدرب جيم", "سباح محترف", "عامل منجم", "عامل شحن",
-                "ساعي بريد", "موظف استقبال", "طبيب بيطري", "طبيب أسنان", "طبيب عيون", "محلل كورة", "سمسار", "تاجر", "مقاول", "طيار درون"
-            ],
-            companies: [
-                "Apple", "Google", "Microsoft", "Amazon", "Facebook", "Instagram", "WhatsApp", "YouTube", "TikTok", "Netflix",
-                "Samsung", "Huawei", "Xiaomi", "Oppo", "Sony", "LG", "Dell", "HP", "Intel", "Canon",
-                "Tesla", "Toyota", "Mercedes", "BMW", "Audi", "Ferrari", "Lamborghini", "Ford", "Chevrolet", "Jeep",
-                "Nike", "Adidas", "Puma", "Zara", "H&M", "Gucci", "Prada", "Rolex", "Lacoste", "Chanel",
-                "McDonald's", "KFC", "Burger King", "Pizza Hut", "Subway", "Starbucks", "Pepsi", "Coca-Cola", "Red Bull", "KitKat",
-                "Disney", "Marvel", "DC Comics", "Warner Bros", "Paramount", "Pixar", "Universal", "Spotify", "Snapchat", "Telegram",
-                "Visa", "Mastercard", "PayPal", "Binance", "Amazon", "eBay", "Alibaba", "AliExpress", "Shein", "Noon",
-                "Uber", "Careem", "Airbnb", "Booking", "FedEx", "DHL", "Aramex", "IKEA", "Walmart", "Carrefour",
-                "Nestle", "Dove", "Nivea", "L'Oreal", "Johnson's", "Colgate", "Gillette", "Rolex", "Casio", "Nikon",
-                "Lego", "Barbie", "Hot Wheels", "PlayStation", "Xbox", "Nintendo", "Zoom", "Skype", "Slack", "LinkedIn"
-            ]
-        };
+        // Word lists now live in Assets/game-words.js (shared with room.html so online
+        // and AI rooms use the same full lists). Copy so admin merges never mutate the source.
+        const gameData = JSON.parse(JSON.stringify((window.EJ_WORDS && window.EJ_WORDS.lists) || {}));
 
         let myName = "", myRoom = "", isHost = false;
 
@@ -1680,23 +1618,31 @@
 
             snap.forEach(child => {
                 const catId  = child.key;
-                const catVal = child.val();
+                const catVal = child.val() || {};
+
+                // admin.html stores words as keys ({word:true}); older data uses {words:[...]}
+                const wordsOf = (v) => {
+                    if (Array.isArray(v.words)) return v.words.filter(Boolean);
+                    if (v.words && typeof v.words === 'object') return Object.values(v.words).filter(Boolean);
+                    return Object.keys(v).filter(k => k && !['_init','name','emoji','words','about'].includes(k));
+                };
+                const words = wordsOf(catVal);
 
                 // Skip if it's a built-in category key (already in HTML)
                 const builtIn = ['places','food','jobs','companies','football_teams'];
                 if (builtIn.includes(catId)) {
                     // If admin updated a built-in category's word list, merge the words
-                    if (Array.isArray(catVal.words) && catVal.words.length > 0) {
-                        gameData[catId] = [...(gameData[catId] || []), ...catVal.words];
+                    if (words.length > 0) {
+                        gameData[catId] = [...new Set([...(gameData[catId] || []), ...words])];
                     }
                     return;
                 }
 
                 // It's a NEW custom category from admin
-                if (!catVal.words || catVal.words.length === 0) return; // skip empty
+                if (!words.length) return; // skip empty
 
                 // Add to gameData so startLocalGame can find it
-                gameData[catId] = Array.isArray(catVal.words) ? catVal.words : Object.values(catVal.words);
+                gameData[catId] = words;
 
                 // Add to the <select> dropdown
                 const emoji  = catVal.emoji || '🗂️';
@@ -2101,7 +2047,7 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
                 const patch = { uid: user.uid, email: user.email || prev.email || '' };
                 if (!prev.username) patch.username = user.displayName || 'Agent';
                 if (prev.coins == null) patch.coins = 100;
-                if (prev.hints == null) patch.hints = 3;
+                if (prev.hints == null) patch.hints = 2;
                 if (prev.rankPoints == null) patch.rankPoints = 0;
                 if (!prev.rank) patch.rank = 'Bronze';
                 if (!prev.activeTheme) patch.activeTheme = 'cyan';
@@ -2122,6 +2068,8 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
             if (displayName) localStorage.setItem('eljasus_user_name', displayName);
             const nameField = document.getElementById('pName');
             if (nameField && !nameField.value) nameField.value = displayName;
+            const aiNameField = document.getElementById('aiPName');
+            if (aiNameField && !aiNameField.value) aiNameField.value = displayName;
             const action = pendingAuthAction;
             closeAuthModal();
             if (action === 'create') handleCreateRoom();
@@ -2197,7 +2145,7 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
     </script>
 
 
-    <link rel="stylesheet" href="mobile.css">
+    <link rel="stylesheet" href="../Assets/mobile.css">
 <style>
 /* ─────────────────────────────────────────────────────
    FIX 1
@@ -2236,8 +2184,8 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
     display: none !important;
 }
 </style>
-    <script src="sound-system.js" defer></script>
-    <script src="qr-notifications.js" defer></script>
+    <script src="../Assets/sound-system.js" defer></script>
+    <script src="../Assets/qr-notifications.js" defer></script>
 
     <!-- ── ANNOUNCEMENTS BANNER ──────────────── -->
     <div id="ann-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9980;
@@ -2354,7 +2302,12 @@ document.getElementById('joinBtn').onclick = handleJoinRoom;
             const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js');
             const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js');
 
-            const apps = getApps();
+            // Never create the default app here: this runs while the page's own module
+            // script is still starting, and winning that race made the page's
+            // initializeApp() throw 'duplicate-app' (which killed auth + the inbox).
+            // Wait for the page's app instead; create one only if the page never does.
+            let apps = getApps();
+            for (let i = 0; i < 100 && !apps.length; i++) { await new Promise(r => setTimeout(r, 60)); apps = getApps(); }
             const app  = apps.length ? apps[0] : initializeApp({
                 apiKey:"AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
                 authDomain:"el-jasus.firebaseapp.com",

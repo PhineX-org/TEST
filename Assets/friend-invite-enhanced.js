@@ -1,18 +1,37 @@
 // ============================================================
-// EL JASUS — ENHANCED FRIEND INVITE SYSTEM v3.0
-// - Game invites (room member -> friend, "come join me")
-// - Join requests (friend -> room member, "let me join you",
-//   only sent when that friend is in a waiting-stage room —
-//   PUBG-style, requires their explicit accept)
-// - A persistent inbox (mailbox icon + unread badge) so a
-//   missed 5-second prompt is never actually lost
-// Applies inviter's theme to notifications. Works on every
-// page that loads this file (home.html, room.html, friends.html).
+// EL JASUS — SOCIAL CORE  (friend-invite-enhanced.js)  v4.0
+//
+// Logic only — it draws NO inbox / toast UI of its own. All visible
+// notification UI lives in Assets/inbox.js (window.EJInbox), which this
+// file loads automatically if the page forgot the <script> tag, wires up
+// and starts for the signed-in player. Works on every page that loads it.
+//
+//   window.FI
+//     .ready                      Promise -> { db, auth }   (Firebase is up)
+//     .sendInvite / .sendJoinRequest / .showBanner      (room invites)
+//     .friends  : getMyCode, regenerateCode, watchMyCode, lookup, sendRequest,
+//                 sendRequestToUid, accept, decline, cancel, remove, relation
+//     .chat     : chatId, send, markRead, history, listen
+//     .proposeRoom(friendUid, friendName, category)     (room is created only
+//                                                        when the friend accepts)
+//
+// Data written (see the rules block in the delivery notes):
+//   friendCodes/{CODE}                 {uid, createdAt, usedBy?, usedAt?}
+//   emailIndex/{email with . -> ,}     uid
+//   players/{uid}/friendCode           current one-use code
+//   players/{uid}/friendRequests/{from}  incoming requests (existing path)
+//   players/{uid}/sentRequests/{to}      outgoing requests
+//   notifications/{uid}/{id}           small personal notices
+//   chats/{a_b}/messages/{id}          chat messages
+//   userChats/{uid}/{friend}           per-friend unread counter + last message
+//   invites/{uid}/{key}                room invites  (type:'proposal' = no room yet)
+//   inviteReplies/{uid}/{key}          answer to a room proposal
 // ============================================================
-
 (function () {
   'use strict';
+  if (window.FI && window.FI.__v >= 4) return;
 
+  const FB = 'https://www.gstatic.com/firebasejs/12.7.0/';
   const FIREBASE_CONFIG = {
     apiKey: 'AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk',
     authDomain: 'el-jasus.firebaseapp.com',
@@ -22,861 +41,572 @@
     messagingSenderId: '415659587906',
     appId: '1:415659587906:web:782f7940176ea4097eb0db',
   };
+  const INVITE_TTL = 5 * 60 * 1000;
+  const MAX_ROOM_PLAYERS = 10;
 
-  const INVITE_TTL   = 5 * 60 * 1000; // 5 minutes — how long an item stays valid / sits in the inbox
-  const SHRINK_DELAY = 5000;          // 5 seconds — the quick-decision window before a toast shrinks
+  // ── where things live (works under /TEST2/Files/… on GitHub Pages and at the site root) ──
+  const SCRIPT_URL = (document.currentScript && document.currentScript.src) || '';
+  const ASSETS_BASE = SCRIPT_URL ? new URL('.', SCRIPT_URL).href : '';
+  const FILES_BASE = ASSETS_BASE ? new URL('../Files/', ASSETS_BASE).href : '';
+  const pageUrl = (name) => (FILES_BASE || '') + name;
+  const roomUrl = (code) => pageUrl('room.html?room=' + encodeURIComponent(code));
+  const chatUrl = (uid) => pageUrl('chat.html?with=' + encodeURIComponent(uid));
 
-  // ── CSS injection ──────────────────────────────────────────
-  const css = `
-    /* ═══ GLOBAL INVITE TOASTS (bottom-center) ═══ */
-    #fi-container {
-      position: fixed; bottom: calc(84px + env(safe-area-inset-bottom)); left: 50%;
-      transform: translateX(-50%);
-      z-index: 10500;
-      display: flex; flex-direction: column; gap: 10px;
-      align-items: center; pointer-events: none;
-      width: min(420px, 94vw);
-    }
-    
-    /* ═══ HOME.HTML NOTIFICATION PANEL (top-right) ═══ */
-    #fi-home-panel {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 10500;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 380px;
-      pointer-events: none;
-    }
-    
-    @media (max-width: 640px) {
-      #fi-home-panel {
-        top: 10px;
-        right: 10px;
-        max-width: calc(100vw - 20px);
-      }
-    }
-    
-    /* ═══ TOAST CARD STYLES ═══ */
-    .fi-toast {
-      width: 100%;
-      background: linear-gradient(135deg, rgba(10,14,26,.97), rgba(20,25,45,.97));
-      border: 2px solid rgba(0,242,255,.45);
-      border-radius: 20px;
-      padding: 16px 18px;
-      font-family: 'Cairo', sans-serif;
-      box-shadow: 0 8px 32px rgba(0,0,0,.55), 0 0 24px rgba(0,242,255,.15);
-      backdrop-filter: blur(20px);
-      pointer-events: all;
-      animation: fi-slideIn .35s cubic-bezier(.4,0,.2,1);
-      direction: rtl;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    
-    .fi-toast.fi-shrunk {
-      padding: 10px 12px;
-      border-radius: 50px;
-      max-width: 80px;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    
-    .fi-toast.fi-shrunk .fi-expandable {
-      display: none;
-    }
-    
-    .fi-toast.fi-shrunk .fi-mini-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-    }
-    
-    .fi-mini-icon {
-      display: none;
-    }
-    
-    .fi-toast.fi-leaving {
-      animation: fi-slideOut .3s ease forwards;
-    }
-
-    /* Join-request toasts get their own accent (still cyan family, just
-       a second border tone) so they read as visually distinct from a
-       regular "come join me" invite at a glance. */
-    .fi-toast.fi-join-request {
-      border-color: rgba(163,230,53,.5);
-      box-shadow: 0 8px 32px rgba(0,0,0,.55), 0 0 24px rgba(163,230,53,.18);
-    }
-    
-    /* ═══ THEMED INVITES ═══ */
-    .fi-toast.themed-fire {
-      background: linear-gradient(135deg, rgba(139,0,0,.97), rgba(255,69,0,.95));
-      border-color: rgba(255,140,0,.6);
-      box-shadow: 0 8px 32px rgba(255,69,0,.4), 0 0 30px rgba(255,140,0,.3);
-    }
-    
-    .fi-toast.themed-ice {
-      background: linear-gradient(135deg, rgba(0,50,100,.97), rgba(100,150,200,.95));
-      border-color: rgba(136,221,255,.6);
-      box-shadow: 0 8px 32px rgba(100,180,255,.4), 0 0 30px rgba(136,221,255,.3);
-    }
-    
-    .fi-toast.themed-neon {
-      background: linear-gradient(135deg, rgba(20,0,40,.97), rgba(80,20,120,.95));
-      border-color: rgba(124,48,255,.6);
-      box-shadow: 0 8px 32px rgba(124,48,255,.5), 0 0 30px rgba(124,48,255,.4);
-    }
-    
-    .fi-toast.themed-gold {
-      background: linear-gradient(135deg, rgba(50,40,0,.97), rgba(100,80,0,.95));
-      border-color: rgba(255,215,0,.6);
-      box-shadow: 0 8px 32px rgba(255,215,0,.4), 0 0 30px rgba(255,215,0,.3);
-    }
-    
-    .fi-toast.themed-emerald {
-      background: linear-gradient(135deg, rgba(0,50,40,.97), rgba(0,100,60,.95));
-      border-color: rgba(0,255,136,.6);
-      box-shadow: 0 8px 32px rgba(0,200,100,.4), 0 0 30px rgba(0,255,136,.3);
-    }
-    
-    /* ═══ ANIMATIONS ═══ */
-    @keyframes fi-slideIn {
-      from { opacity:0; transform:translateY(18px) scale(.96); }
-      to   { opacity:1; transform:translateY(0)   scale(1); }
-    }
-    
-    @keyframes fi-slideOut {
-      to   { opacity:0; transform:translateY(18px) scale(.95); }
-    }
-    
-    @keyframes fi-pulse {
-      0%, 100% { opacity:1; }
-      50% { opacity:.45; }
-    }
-    
-    /* ═══ CARD CONTENTS ═══ */
-    .fi-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
-    }
-    
-    .fi-avatar {
-      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg,#00f2ff,#7c30ff);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; color: white;
-    }
-    
-    .fi-info { flex: 1; }
-    .fi-title { font-size: 13px; font-weight: 900; color: #fff; }
-    .fi-sub   { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 1px; }
-    
-    .fi-timer-bar {
-      height: 3px; border-radius: 2px;
-      background: rgba(255,255,255,.1);
-      overflow: hidden; margin-bottom: 12px;
-    }
-    
-    .fi-timer-fill {
-      height: 100%; border-radius: 2px;
-      background: linear-gradient(90deg,#00f2ff,#7c30ff);
-      transition: width .5s linear;
-    }
-    
-    .fi-timer-fill.fi-urgent {
-      background: linear-gradient(90deg,#f97316,#ef4444);
-    }
-    
-    .fi-timer-label {
-      font-size: 10px; color: rgba(255,255,255,.4);
-      text-align: left; direction: ltr;
-      margin-bottom: 10px; font-family: 'Orbitron', monospace;
-    }
-    
-    .fi-btns { display: flex; gap: 10px; }
-    
-    .fi-btn {
-      flex: 1; padding: 10px; border-radius: 12px;
-      font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 13px;
-      cursor: pointer; border: 2px solid; transition: all .2s;
-    }
-    
-    .fi-btn-accept {
-      background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.5); color: #22c55e;
-    }
-    
-    .fi-btn-accept:hover { background: rgba(34,197,94,.3); }
-    
-    .fi-btn-decline {
-      background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.4); color: #ef4444;
-    }
-    
-    .fi-btn-decline:hover { background: rgba(239,68,68,.25); }
-    
-    .fi-btn:disabled { opacity: .5; cursor: not-allowed; }
-    
-    .fi-waiting-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
-      background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.35); color: #fbbf24;
-      margin-bottom: 10px;
-    }
-    
-    .fi-pulse { animation: fi-pulse 1.4s ease-in-out infinite; }
-    
-    .fi-close-btn {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: rgba(239,68,68,.15);
-      border: 1px solid rgba(239,68,68,.3);
-      color: #ef4444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 900;
-      transition: all 0.2s;
-      z-index: 10;
-    }
-    
-    .fi-close-btn:hover {
-      background: rgba(239,68,68,.25);
-      transform: scale(1.1);
-    }
-
-    /* ═══ INBOX TRIGGER (top-right on every page) ═══ */
-    #fi-inbox-btn {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 10450;
-      width: 44px; height: 44px;
-      border-radius: 14px;
-      background: rgba(0,0,0,.55);
-      border: 1.5px solid rgba(0,242,255,.35);
-      backdrop-filter: blur(14px);
-      display: flex; align-items: center; justify-content: center;
-      color: rgba(0,242,255,1);
-      font-size: 18px;
-      cursor: pointer;
-      transition: all .2s ease;
-    }
-    #fi-inbox-btn:hover {
-      background: rgba(0,242,255,.12);
-      border-color: rgba(0,242,255,.6);
-      transform: scale(1.06);
-    }
-    #fi-inbox-badge {
-      position: absolute;
-      top: -6px; left: -6px;
-      min-width: 18px; height: 18px;
-      padding: 0 4px;
-      border-radius: 9px;
-      background: rgba(163,230,53,1);
-      color: rgba(0,0,0,.9);
-      font-size: 10px; font-weight: 900;
-      display: none;
-      align-items: center; justify-content: center;
-      font-family: 'Cairo', sans-serif;
-      box-shadow: 0 0 8px rgba(163,230,53,.6);
-    }
-    #fi-inbox-badge.fi-show { display: flex; }
-
-    /* ═══ INBOX PANEL ═══ */
-    #fi-inbox-backdrop {
-      position: fixed; inset: 0; z-index: 10600;
-      background: rgba(0,0,0,.75);
-      backdrop-filter: blur(6px);
-      display: none;
-      align-items: center; justify-content: center;
-      padding: 16px;
-    }
-    #fi-inbox-backdrop.fi-open { display: flex; }
-    #fi-inbox-panel {
-      width: 100%; max-width: 400px; max-height: 82dvh;
-      background: rgba(10,14,26,.98);
-      border: 1px solid rgba(0,242,255,.3);
-      border-radius: 22px;
-      display: flex; flex-direction: column;
-      overflow: hidden;
-      direction: rtl;
-      font-family: 'Cairo', sans-serif;
-      box-shadow: 0 20px 60px rgba(0,0,0,.6);
-    }
-    #fi-inbox-head {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 18px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    #fi-inbox-head h3 {
-      font-size: 14px; font-weight: 900; color: #fff; margin: 0;
-      font-family: 'Orbitron', sans-serif; letter-spacing: .04em;
-    }
-    #fi-inbox-close {
-      width: 30px; height: 30px; border-radius: 9px;
-      background: rgba(255,255,255,.06); border: none; color: rgba(255,255,255,.6);
-      cursor: pointer; font-size: 13px;
-    }
-    #fi-inbox-list {
-      flex: 1; overflow-y: auto;
-      padding: 10px 14px 16px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    #fi-inbox-empty {
-      text-align: center; padding: 40px 10px; color: rgba(255,255,255,.35); font-size: 13px;
-    }
-    .fi-inbox-item {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      padding: 12px 14px;
-    }
-    .fi-inbox-item.fi-inbox-jr { border-color: rgba(163,230,53,.25); }
-    .fi-inbox-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;
-    }
-    .fi-inbox-kind {
-      font-size: 10px; font-weight: 800; color: rgba(0,242,255,.9);
-      background: rgba(0,242,255,.1); border-radius: 8px; padding: 2px 8px;
-    }
-    .fi-inbox-jr .fi-inbox-kind { color: rgba(163,230,53,.95); background: rgba(163,230,53,.12); }
-    .fi-inbox-time { font-size: 10px; color: rgba(255,255,255,.35); }
-  `;
-  
-  const styleEl = document.createElement('style');
-  styleEl.textContent = css;
-  document.head.appendChild(styleEl);
-
-  // ── Containers ─────────────────────────────────────────────
-  const globalContainer = document.createElement('div');
-  globalContainer.id = 'fi-container';
-  document.body.appendChild(globalContainer);
-
-  const homeContainer = document.createElement('div');
-  homeContainer.id = 'fi-home-panel';
-  document.body.appendChild(homeContainer);
-
-  // Inbox trigger + panel (universal on every page that loads this file)
-  const inboxBtn = document.createElement('button');
-  inboxBtn.id = 'fi-inbox-btn';
-  inboxBtn.setAttribute('aria-label', 'صندوق الدعوات');
-  inboxBtn.innerHTML = '<i class="fas fa-envelope"></i><span id="fi-inbox-badge">0</span>';
-  document.body.appendChild(inboxBtn);
-
-  const inboxBackdrop = document.createElement('div');
-  inboxBackdrop.id = 'fi-inbox-backdrop';
-  inboxBackdrop.innerHTML = `
-    <div id="fi-inbox-panel">
-      <div id="fi-inbox-head">
-        <h3>📬 صندوق الدعوات</h3>
-        <button id="fi-inbox-close">✕</button>
-      </div>
-      <div id="fi-inbox-list"></div>
-    </div>
-  `;
-  document.body.appendChild(inboxBackdrop);
-
-  inboxBtn.addEventListener('click', () => { inboxBackdrop.classList.add('fi-open'); renderInbox(); });
-  inboxBackdrop.addEventListener('click', (e) => { if (e.target === inboxBackdrop) inboxBackdrop.classList.remove('fi-open'); });
-  inboxBackdrop.querySelector('#fi-inbox-close').addEventListener('click', () => inboxBackdrop.classList.remove('fi-open'));
-
-  // ── Active toasts + inbox model ─────────────────────────────
-  const active = {};       // key -> { el, interval, shrinkTimeout }  (live toast elements)
-  const pending = {};      // key -> { kind:'invite'|'join-request', data }  (drives the inbox + badge)
-
-  function upsertPending(kind, key, data) {
-    pending[key] = { kind, data };
-    updateBadge();
-  }
-  function removePending(key) {
-    delete pending[key];
-    updateBadge();
-  }
-  function updateBadge() {
-    const count = Object.keys(pending).length;
-    const badge = document.getElementById('fi-inbox-badge');
-    if (!badge) return;
-    badge.textContent = count > 9 ? '9+' : String(count);
-    badge.classList.toggle('fi-show', count > 0);
-    if (inboxBackdrop.classList.contains('fi-open')) renderInbox();
-  }
-
-  function relTime(ts) {
-    const s = Math.max(0, Math.floor((Date.now() - ts) / 1000));
-    if (s < 60) return 'الآن';
-    const m = Math.floor(s / 60);
-    if (m < 60) return `منذ ${m} د`;
-    return `منذ ${Math.floor(m / 60)} س`;
-  }
-
-  function renderInbox() {
-    const list = document.getElementById('fi-inbox-list');
-    if (!list) return;
-    const items = Object.entries(pending).sort((a, b) => (b[1].data.timestamp || 0) - (a[1].data.timestamp || 0));
-    if (!items.length) {
-      list.innerHTML = '<div id="fi-inbox-empty">لا توجد دعوات في الوقت الحالي</div>';
-      return;
-    }
-    list.innerHTML = items.map(([key, item]) => {
-      const isJR = item.kind === 'join-request';
-      const label = isJR ? '🤝 طلب انضمام' : '🎮 دعوة لعب';
-      const text  = isJR
-        ? `<strong>${item.data.fromName}</strong> يريد الانضمام إلى غرفتك`
-        : `دعوة من <strong>${item.data.fromName}</strong> — كود: ${item.data.roomCode}`;
-      return `
-        <div class="fi-inbox-item ${isJR ? 'fi-inbox-jr' : ''}">
-          <div class="fi-inbox-row">
-            <span class="fi-inbox-kind">${label}</span>
-            <span class="fi-inbox-time">${relTime(item.data.timestamp || Date.now())}</span>
-          </div>
-          <p style="font-size:13px;color:#fff;margin:0 0 10px;">${text}</p>
-          <div class="fi-btns">
-            <button class="fi-btn fi-btn-accept" data-ibx-acc="${key}">✅ قبول</button>
-            <button class="fi-btn fi-btn-decline" data-ibx-dec="${key}">❌ رفض</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    list.querySelectorAll('[data-ibx-acc]').forEach(btn => {
-      btn.onclick = () => {
-        const key = btn.getAttribute('data-ibx-acc');
-        const item = pending[key];
-        if (!item) return;
-        if (item.kind === 'invite') acceptInvite(currentUser.uid, key, item.data);
-        else acceptJoinRequest(currentUser.uid, key, item.data);
-      };
-    });
-    list.querySelectorAll('[data-ibx-dec]').forEach(btn => {
-      btn.onclick = () => {
-        const key = btn.getAttribute('data-ibx-dec');
-        const item = pending[key];
-        if (!item) return;
-        if (item.kind === 'invite') dismiss(currentUser.uid, key, 'declined');
-        else declineJoinRequest(currentUser.uid, key);
-      };
-    });
-  }
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const fail = (msg, code) => Object.assign(new Error(msg), { code: code || 'fi' });
 
   // ── Firebase bootstrap ─────────────────────────────────────
-  let db, auth, currentUser;
-  let _ref, _update, _remove, _get, _onChildAdded, _onChildRemoved, _onValue, _set, _push, _serverTimestamp;
+  // IMPORTANT: this file never creates the default app while the page is
+  // still starting up. Pages call initializeApp(theirOwnConfig) themselves;
+  // if we won that race the page's call threw "duplicate-app" and the
+  // whole page script died. So we wait for the page's app and only create
+  // our own when the page has none.
+  let db, auth, currentUser, M = {};
+  let resolveReady, rejectReady;
+  const ready = new Promise((res, rej) => { resolveReady = res; rejectReady = rej; });
+  ready.catch(() => {});
 
-  async function init() {
-    const { initializeApp, getApps } = await import(
-      'https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js'
-    );
-    const authMod = await import(
-      'https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js'
-    );
-    const dbMod = await import(
-      'https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js'
-    );
+  async function waitForApp(appMod, ms) {
+    const t0 = Date.now();
+    while (!appMod.getApps().length && Date.now() - t0 < ms) await sleep(60);
+    if (appMod.getApps().length) return appMod.getApps()[0];
+    try { return appMod.initializeApp(FIREBASE_CONFIG); } catch (e) { return appMod.getApp(); }
+  }
 
-    const app = getApps().length ? getApps()[0] : initializeApp(FIREBASE_CONFIG);
+  async function boot() {
+    const appMod = await import(FB + 'firebase-app.js');
+    const authMod = await import(FB + 'firebase-auth.js');
+    const dbMod = await import(FB + 'firebase-database.js');
+    const app = await waitForApp(appMod, 6000);
     auth = authMod.getAuth(app);
-    db   = dbMod.getDatabase(app);
+    db = dbMod.getDatabase(app);
+    M = dbMod;
+    API.db = db; API.auth = auth; API.fb = dbMod;
+    resolveReady({ db, auth });
+    authMod.onAuthStateChanged(auth, onUser);
+  }
 
-    _ref             = dbMod.ref;
-    _update          = dbMod.update;
-    _remove          = dbMod.remove;
-    _get             = dbMod.get;
-    _onChildAdded    = dbMod.onChildAdded;
-    _onChildRemoved  = dbMod.onChildRemoved;
-    _onValue         = dbMod.onValue;
-    _set             = dbMod.set;
-    _push            = dbMod.push;
-    _serverTimestamp = dbMod.serverTimestamp;
-
-    authMod.onAuthStateChanged(auth, user => {
-      currentUser = user;
-      if (user) {
-        listenInvites(user.uid);
-        listenJoinRequests(user.uid);
-      }
+  // ── Inbox loader ───────────────────────────────────────────
+  function ensureInbox() {
+    if (window.EJInbox) return Promise.resolve(true);
+    if (!ASSETS_BASE) return Promise.resolve(false);
+    return new Promise((res) => {
+      const s = document.createElement('script');
+      s.src = ASSETS_BASE + 'inbox.js';
+      s.onload = () => res(!!window.EJInbox);
+      s.onerror = () => { console.warn('[FI] could not load inbox.js'); res(false); };
+      document.head.appendChild(s);
     });
   }
 
-  // ── Determine theme from inviter's nameTheme ───────────────
-  function getInviteThemeClass(nameTheme) {
-    if (!nameTheme || nameTheme === 'default') return '';
-    
-    const themeMap = {
-      fireGold: 'themed-fire',
-      fireFlicker: 'themed-fire',
-      bloodRed: 'themed-fire',
-      iceBlue: 'themed-ice',
-      snowfall: 'themed-ice',
-      neonPurple: 'themed-neon',
-      pulseGlow: 'themed-neon',
-      neonCyan: 'themed-neon',
-      emeraldGreen: 'themed-emerald',
-      starField: 'themed-gold',
-      sparkles: 'themed-gold'
-    };
-    
-    return themeMap[nameTheme] || '';
+  // ── small helpers ──────────────────────────────────────────
+  const val = async (path) => (await M.get(M.ref(db, path))).val();
+  const exists = async (path) => (await M.get(M.ref(db, path))).exists();
+  const myUid = () => (currentUser && currentUser.uid) || '';
+  function need() { if (!db || !currentUser) throw fail('سجّل الدخول أولاً', 'auth'); }
+  async function myName() {
+    try { const n = await val(`players/${myUid()}/username`); if (n) return n; } catch (e) {}
+    return currentUser.displayName || localStorage.getItem('eljasus_user_name') || 'لاعب';
   }
+  const emailKey = (email) => String(email || '').trim().toLowerCase().replace(/[.#$\[\]\/]/g, ',');
+  const chatIdOf = (a, b) => [a, b].sort().join('_');
+  const newKey = () => M.push(M.ref(db, 'tmp')).key; // push-id generator (no write happens)
 
-  // ── Fetch inviter's name theme ─────────────────────────────
-  async function fetchInviterTheme(fromUid) {
-    try {
-      const snapshot = await _get(_ref(db, `players/${fromUid}/nameTheme`));
-      return snapshot.val() || 'default';
-    } catch (e) {
-      console.error('Error fetching inviter theme:', e);
-      return 'default';
+  // ═══════════════════════════════════════════════════════════
+  // FRIENDS
+  // ═══════════════════════════════════════════════════════════
+  const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L — easy to read out loud
+  const CODE_LEN = 8;
+  function randomCode() {
+    const a = new Uint32Array(CODE_LEN); crypto.getRandomValues(a);
+    return Array.from(a, (x) => CODE_ALPHABET[x % CODE_ALPHABET.length]).join('');
+  }
+  const normCode = (s) => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const fmtCode = (c) => (c && c.length === CODE_LEN ? c.slice(0, 4) + '-' + c.slice(4) : c || '');
+
+  // Claims a code nobody holds. The transaction makes the claim atomic, so two
+  // players can never end up with the same code even if they draw it at once.
+  async function claimCode(uid) {
+    for (let i = 0; i < 20; i++) {
+      const code = randomCode();
+      const r = await M.runTransaction(M.ref(db, 'friendCodes/' + code), (cur) => (cur === null ? { uid, createdAt: Date.now() } : undefined));
+      if (r.committed) return code;
     }
+    throw fail('تعذر إنشاء كود جديد، حاول مرة أخرى');
   }
 
-  // ── Listen for incoming game invites ───────────────────────
-  function listenInvites(uid) {
-    const invRef = _ref(db, `invites/${uid}`);
-    _onChildAdded(invRef, snap => {
-      const key  = snap.key;
-      const data = snap.val();
-      if (!data || data.status !== 'pending') return;
-      if (data.expiresAt < Date.now()) { 
-        _remove(_ref(db, `invites/${uid}/${key}`)); 
-        return; 
-      }
-      upsertPending('invite', key, data);
+  async function rotateCode() {
+    const uid = myUid();
+    const old = await val(`players/${uid}/friendCode`);
+    const code = await claimCode(uid);
+    await M.set(M.ref(db, `players/${uid}/friendCode`), code);
+    if (old && old !== code) {
+      try { const e = await val('friendCodes/' + old); if (e && e.uid === uid) await M.remove(M.ref(db, 'friendCodes/' + old)); } catch (e) {}
+    }
+    return code;
+  }
 
-      // Fetch inviter theme
-      fetchInviterTheme(data.fromUid).then(theme => {
-        if (!active[key]) showInvite(uid, key, data, theme);
-      });
+  async function getMyCode() {
+    need();
+    const uid = myUid();
+    const cur = await val(`players/${uid}/friendCode`);
+    if (cur) {
+      const e = await val('friendCodes/' + cur);
+      if (e && e.uid === uid && !e.usedBy) return cur; // still valid
+    }
+    return rotateCode(); // none yet, or it was used / lost -> new one
+  }
+
+  // Calls cb(code, info) now and whenever the code changes. When somebody uses
+  // the code a fresh one is generated automatically (one use per code).
+  function watchMyCode(cb) {
+    let stop = false, offs = [];
+    ready.then(async () => {
+      try { await whenUser(); } catch (e) { return; }
+      if (stop) return;
+      const uid = myUid();
+      let busy = false, last = null;
+      const check = async (info) => {
+        if (busy || stop) return; busy = true;
+        try { const c = await getMyCode(); if (c !== last) { last = c; cb(c, info || {}); } } catch (e) { cb(null, { error: e.message }); }
+        busy = false;
+      };
+      offs.push(M.onValue(M.ref(db, `players/${uid}/friendCode`), () => check()));
+      let codeOff = null, watching = null;
+      offs.push(M.onValue(M.ref(db, `players/${uid}/friendCode`), (s) => {
+        const c = s.val(); if (!c || c === watching) return; watching = c; if (codeOff) codeOff();
+        codeOff = M.onValue(M.ref(db, 'friendCodes/' + c), (cs) => { const v = cs.val(); if (v && v.usedBy) check({ usedBy: v.usedBy }); });
+      }));
+      offs.push(() => { if (codeOff) codeOff(); });
     });
-    _onChildRemoved(invRef, snap => removePending(snap.key));
+    return () => { stop = true; offs.forEach((f) => { try { f(); } catch (e) {} }); };
   }
 
-  // ── Listen for incoming join requests ("ask to join") ──────
-  function listenJoinRequests(uid) {
-    const jrRef = _ref(db, `joinRequests/${uid}`);
-    _onChildAdded(jrRef, snap => {
-      const key  = snap.key;
-      const data = snap.val();
-      if (!data || data.status !== 'pending') return;
-      if (data.expiresAt < Date.now()) {
-        _remove(_ref(db, `joinRequests/${uid}/${key}`));
-        return;
-      }
-      upsertPending('join-request', key, data);
-      if (!active[key]) showJoinRequest(uid, key, data);
-    });
-    _onChildRemoved(jrRef, snap => removePending(snap.key));
-  }
+  async function regenerateCode() { need(); return rotateCode(); }
 
-  // ── Shared toast shell ──────────────────────────────────────
-  // kind: 'invite' | 'join-request' — only the copy/handlers differ
-  function buildToast(key, kind, data) {
-    const isJR = kind === 'join-request';
-    const toast = document.createElement('div');
-    toast.className = `fi-toast${isJR ? ' fi-join-request' : ''}`;
-    const title = isJR
-      ? `<strong>${data.fromName}</strong> يريد الانضمام`
-      : `دعوة من <strong>${data.fromName}</strong>`;
-    const sub = isJR
-      ? 'يطلب الانضمام إلى غرفتك الحالية'
-      : 'دعوة للانضمام إلى غرفة اللعب';
-    const badge = isJR
-      ? `<span>طلب انضمام لغرفتك</span>`
-      : `<span>كود الغرفة: <strong>${data.roomCode}</strong></span>`;
-    const miniIcon = isJR ? '🤝' : '🎮';
-
-    toast.innerHTML = `
-      <button class="fi-close-btn" id="fi-close-${key}">✕</button>
-      <div class="fi-mini-icon">${miniIcon}</div>
-      <div class="fi-expandable">
-        <div class="fi-header">
-          <div class="fi-avatar"><i class="fas fa-user-friends"></i></div>
-          <div class="fi-info">
-            <div class="fi-title">${title}</div>
-            <div class="fi-sub">${sub}</div>
-          </div>
-        </div>
-        <div class="fi-waiting-badge">
-          <span class="fi-pulse">●</span>
-          ${badge}
-        </div>
-        <div class="fi-timer-bar">
-          <div class="fi-timer-fill" id="fi-fill-${key}" style="width:100%;"></div>
-        </div>
-        <div class="fi-timer-label" id="fi-label-${key}">5:00</div>
-        <div class="fi-btns">
-          <button class="fi-btn fi-btn-accept"  id="fi-acc-${key}">✅ قبول</button>
-          <button class="fi-btn fi-btn-decline" id="fi-dec-${key}">❌ رفض</button>
-        </div>
-      </div>
-    `;
-    return toast;
-  }
-
-  function mountToast(key, toast) {
-    const isHomePage = window.location.pathname.includes('home.html') || window.location.pathname === '/';
-    const container = isHomePage ? homeContainer : globalContainer;
-    container.appendChild(toast);
-
-    // Quick-decision window: the full card shows for SHRINK_DELAY (5s), then
-    // shrinks to a small icon — the item itself stays valid/actionable via
-    // the inbox for the rest of INVITE_TTL, it isn't lost when it shrinks.
-    const shrinkTimeout = setTimeout(() => {
-      toast.classList.add('fi-shrunk');
-    }, SHRINK_DELAY);
-
-    toast.addEventListener('click', () => {
-      if (toast.classList.contains('fi-shrunk')) {
-        toast.classList.remove('fi-shrunk');
-        clearTimeout(shrinkTimeout);
-      }
-    });
-
-    return shrinkTimeout;
-  }
-
-  // ── Show game-invite toast ──────────────────────────────────
-  function showInvite(myUid, key, data, nameTheme) {
-    const themeClass = getInviteThemeClass(nameTheme);
-    const toast = buildToast(key, 'invite', data);
-    if (themeClass) toast.classList.add(themeClass);
-
-    const shrinkTimeout = mountToast(key, toast);
-
-    const fill  = toast.querySelector(`#fi-fill-${key}`);
-    const label = toast.querySelector(`#fi-label-${key}`);
-    const interval = setInterval(() => {
-      const remaining = data.expiresAt - Date.now();
-      if (remaining <= 0) { dismiss(myUid, key, 'expired'); return; }
-      const pct = (remaining / INVITE_TTL) * 100;
-      fill.style.width = pct + '%';
-      if (pct < 33) fill.classList.add('fi-urgent');
-      const m = Math.floor(remaining / 60000);
-      const s = Math.floor((remaining % 60000) / 1000);
-      label.textContent = `${m}:${s.toString().padStart(2,'0')}`;
-    }, 500);
-
-    toast.querySelector(`#fi-acc-${key}`).onclick = (e) => { e.stopPropagation(); acceptInvite(myUid, key, data); };
-    toast.querySelector(`#fi-dec-${key}`).onclick  = (e) => { e.stopPropagation(); dismiss(myUid, key, 'declined'); };
-    toast.querySelector(`#fi-close-${key}`).onclick = (e) => { e.stopPropagation(); dismiss(myUid, key, 'declined'); };
-
-    active[key] = { el: toast, interval, shrinkTimeout };
-  }
-
-  // ── Show join-request toast ("X wants to join you") ────────
-  function showJoinRequest(myUid, key, data) {
-    const toast = buildToast(key, 'join-request', data);
-    const shrinkTimeout = mountToast(key, toast);
-
-    const fill  = toast.querySelector(`#fi-fill-${key}`);
-    const label = toast.querySelector(`#fi-label-${key}`);
-    const interval = setInterval(() => {
-      const remaining = data.expiresAt - Date.now();
-      if (remaining <= 0) { dismiss(myUid, key, 'expired', false, true); return; }
-      const pct = (remaining / INVITE_TTL) * 100;
-      fill.style.width = pct + '%';
-      if (pct < 33) fill.classList.add('fi-urgent');
-      const m = Math.floor(remaining / 60000);
-      const s = Math.floor((remaining % 60000) / 1000);
-      label.textContent = `${m}:${s.toString().padStart(2,'0')}`;
-    }, 500);
-
-    toast.querySelector(`#fi-acc-${key}`).onclick = (e) => { e.stopPropagation(); acceptJoinRequest(myUid, key, data); };
-    toast.querySelector(`#fi-dec-${key}`).onclick  = (e) => { e.stopPropagation(); declineJoinRequest(myUid, key); };
-    toast.querySelector(`#fi-close-${key}`).onclick = (e) => { e.stopPropagation(); declineJoinRequest(myUid, key); };
-
-    active[key] = { el: toast, interval, shrinkTimeout };
-  }
-
-  // ── Accept a game invite ────────────────────────────────────
-  async function acceptInvite(myUid, key, data) {
-    const accBtn = document.getElementById(`fi-acc-${key}`);
-    const decBtn = document.getElementById(`fi-dec-${key}`);
-    if (accBtn) { accBtn.disabled = true; accBtn.textContent = '...'; }
-    if (decBtn) decBtn.disabled = true;
-
-    try {
-      const roomSnap = await _get(_ref(db, `rooms/${data.roomCode}`));
-      if (!roomSnap.exists()) {
-        showBanner('❌ الغرفة لم تعد موجودة', 'error');
-        dismiss(myUid, key, 'expired');
-        return;
-      }
-
-      const room = roomSnap.val();
-      const playerCount = Object.keys(room.players || {}).length;
-
-      if (room.status === 'waiting') {
-        if (playerCount >= 10) {
-          showBanner('❌ الغرفة ممتلئة', 'error');
-          dismiss(myUid, key, 'expired');
-          return;
+  // Finds a player by friend code OR e-mail. Resolves {uid, username, via, code?}.
+  async function lookup(input) {
+    need();
+    const q = String(input || '').trim();
+    if (!q) throw fail('اكتب كود الصديق أو بريده الإلكتروني');
+    let uid = null, via, code = null;
+    if (q.includes('@')) {
+      via = 'email';
+      const email = q.toLowerCase();
+      uid = await val('emailIndex/' + emailKey(email)).catch(() => null);
+      if (!uid) { // players that never opened the new friends page are not indexed yet — ask the database instead
+        for (const candidate of [...new Set([q, email])]) {
+          try {
+            const s = await M.get(M.query(M.ref(db, 'players'), M.orderByChild('email'), M.equalTo(candidate)));
+            if (s.exists()) { uid = Object.keys(s.val())[0]; break; }
+          } catch (e) { /* no permission / no index — ignore */ }
         }
-        localStorage.setItem('currentRoom', data.roomCode);
-        localStorage.setItem('isHost', 'false');
-        await _update(_ref(db, `invites/${myUid}/${key}`), { status: 'accepted' });
-        dismiss(myUid, key, null, true);
-        window.location.href = `/room.html?room=${data.roomCode}`;
-      } else {
-        // Game in progress — notify and wait for the round to end
-        const phaseLabel = {
-          playing:    'جارٍ تقديم الأدوار',
-          discussion: 'مرحلة النقاش',
-          voting:     'مرحلة التصويت',
-          reveal:     'مرحلة الكشف',
-        }[room.status] || room.status;
-        showBanner(`⏳ الغرفة الآن في مرحلة "${phaseLabel}" — ستنضم تلقائياً عند انتهاء الجولة`, 'warning', 6000);
-        localStorage.setItem('fi_pending_room', data.roomCode);
-        localStorage.setItem('fi_pending_name', data.fromName);
-        await _update(_ref(db, `invites/${myUid}/${key}`), { status: 'accepted' });
-        dismiss(myUid, key, null, true);
-        watchRoomForWaiting(data.roomCode);
       }
+      if (!uid) throw fail('لا يوجد حساب بهذا البريد الإلكتروني', 'notfound');
+    } else {
+      via = 'code'; code = normCode(q);
+      if (code.length !== CODE_LEN) throw fail('الكود يتكون من 8 أحرف وأرقام (مثال: K7QM-4TXR)', 'badcode');
+      const e = await val('friendCodes/' + code);
+      if (!e) throw fail('هذا الكود غير موجود أو تم استخدامه', 'notfound');
+      if (e.usedBy) throw fail('هذا الكود تم استخدامه بالفعل', 'used');
+      uid = e.uid;
+    }
+    if (uid === myUid()) throw fail('هذا هو كودك أنت 😅 — أرسله لصديقك', 'self');
+    const username = (await val(`players/${uid}/username`)) || 'لاعب';
+    return { uid, username, via, code };
+  }
+
+  // 'self' | 'friend' | 'sent' | 'received' | 'none'
+  async function relation(uid) {
+    need();
+    if (uid === myUid()) return 'self';
+    if (await exists(`players/${myUid()}/friends/${uid}`)) return 'friend';
+    if (await exists(`players/${myUid()}/friendRequests/${uid}`)) return 'received';
+    if (await exists(`players/${uid}/friendRequests/${myUid()}`)) return 'sent';
+    return 'none';
+  }
+
+  // Sends a friend REQUEST. Nobody becomes a friend until the other player accepts.
+  async function sendRequest(target) {
+    need();
+    const me = myUid(), uid = target.uid;
+    if (!uid) throw fail('لاعب غير معروف');
+    if (uid === me) throw fail('لا يمكنك إضافة نفسك');
+    const rel = await relation(uid);
+    if (rel === 'friend') throw fail('أنتما أصدقاء بالفعل', 'friend');
+    if (rel === 'sent') throw fail('أرسلت له طلباً بالفعل — بانتظار رده', 'sent');
+    if (rel === 'received') { await accept(uid); return { autoAccepted: true, username: target.username }; } // they already asked us
+    if (target.via === 'code' && target.code) { // one use: mark the code as used (fails if somebody got there first)
+      const r = await M.runTransaction(M.ref(db, 'friendCodes/' + target.code), (cur) => (cur && !cur.usedBy && cur.uid === uid ? Object.assign({}, cur, { usedBy: me, usedAt: Date.now() }) : undefined));
+      if (!r.committed) throw fail('هذا الكود تم استخدامه بالفعل', 'used');
+    }
+    const name = await myName();
+    await M.set(M.ref(db, `players/${uid}/friendRequests/${me}`), { from: { uid: me, username: name }, timestamp: Date.now(), via: target.via || 'room', status: 'pending' });
+    await M.set(M.ref(db, `players/${me}/sentRequests/${uid}`), { to: { uid, username: target.username || '' }, timestamp: Date.now() }).catch(() => {});
+    return { sent: true, username: target.username };
+  }
+  async function sendRequestToUid(uid, username) { return sendRequest({ uid, username, via: 'room' }); }
+
+  async function accept(fromUid) {
+    need();
+    const me = myUid();
+    const req = await val(`players/${me}/friendRequests/${fromUid}`);
+    if (!req) throw fail('الطلب لم يعد موجوداً');
+    const fromName = (req.from && req.from.username) || (await val(`players/${fromUid}/username`)) || 'صديق';
+    const name = await myName();
+    const now = Date.now();
+    const upd = {
+      [`players/${me}/friends/${fromUid}`]: { username: fromName, addedAt: now },
+      [`players/${fromUid}/friends/${me}`]: { username: name, addedAt: now },
+      [`players/${me}/friendRequests/${fromUid}`]: null,
+      [`players/${fromUid}/sentRequests/${me}`]: null,
+    };
+    try { await M.update(M.ref(db), upd); }
+    catch (e) { // fall back to one write at a time if the rules reject the combined one
+      await M.set(M.ref(db, `players/${me}/friends/${fromUid}`), upd[`players/${me}/friends/${fromUid}`]);
+      await M.set(M.ref(db, `players/${fromUid}/friends/${me}`), upd[`players/${fromUid}/friends/${me}`]);
+      await M.remove(M.ref(db, `players/${me}/friendRequests/${fromUid}`));
+      await M.remove(M.ref(db, `players/${fromUid}/sentRequests/${me}`)).catch(() => {});
+    }
+    notify(fromUid, { type: 'friend_accepted', text: `${name} قبل طلب صداقتك 🎉` });
+    return { uid: fromUid, username: fromName };
+  }
+
+  async function decline(fromUid) {
+    need();
+    const me = myUid();
+    await M.remove(M.ref(db, `players/${me}/friendRequests/${fromUid}`));
+    await M.remove(M.ref(db, `players/${fromUid}/sentRequests/${me}`)).catch(() => {});
+    notify(fromUid, { type: 'friend_declined', text: `${await myName()} رفض طلب الصداقة` });
+  }
+
+  async function cancel(toUid) {
+    need();
+    await M.remove(M.ref(db, `players/${toUid}/friendRequests/${myUid()}`));
+    await M.remove(M.ref(db, `players/${myUid()}/sentRequests/${toUid}`)).catch(() => {});
+  }
+
+  async function removeFriend(uid) {
+    need();
+    const me = myUid();
+    const upd = { [`players/${me}/friends/${uid}`]: null, [`players/${uid}/friends/${me}`]: null };
+    try { await M.update(M.ref(db), upd); }
+    catch (e) { await M.remove(M.ref(db, `players/${me}/friends/${uid}`)); await M.remove(M.ref(db, `players/${uid}/friends/${me}`)); }
+  }
+
+  // small personal notice shown in the inbox's notifications tab
+  async function notify(uid, data) {
+    try {
+      await M.push(M.ref(db, `notifications/${uid}`), Object.assign({ fromUid: myUid(), fromName: await myName(), ts: Date.now() }, data));
+    } catch (e) { /* best effort */ }
+  }
+
+  // lets the emailed-lookup work: emailIndex/{email} -> uid (own entry only)
+  async function ensureIdentity(user) {
+    try {
+      if (!user.email) return;
+      const k = 'emailIndex/' + emailKey(user.email);
+      const cur = await val(k);
+      if (cur !== user.uid) await M.set(M.ref(db, k), user.uid);
+    } catch (e) { /* rules may not be deployed yet */ }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // CHAT
+  // ═══════════════════════════════════════════════════════════
+  const MAX_MSG = 500;
+  async function chatSend(friendUid, text, friendName) {
+    need();
+    text = String(text || '').trim().slice(0, MAX_MSG);
+    if (!text) throw fail('الرسالة فارغة');
+    const me = myUid();
+    if (!(await exists(`players/${me}/friends/${friendUid}`))) throw fail('يمكنك مراسلة أصدقائك فقط', 'notfriend');
+    if (window.MOD && typeof window.MOD.scan === 'function') {
+      try { if (await window.MOD.scan(text)) return null; } catch (e) { /* fail open */ }
+    }
+    const cid = chatIdOf(me, friendUid), ts = Date.now(), mid = newKey(), mine = await myName();
+    if (!friendName) friendName = (await val(`players/${me}/friends/${friendUid}/username`)) || 'صديق';
+    const preview = text.slice(0, 120);
+    await M.update(M.ref(db), {
+      [`chats/${cid}/messages/${mid}`]: { from: me, text, ts },
+      [`userChats/${me}/${friendUid}`]: { with: friendUid, name: friendName, lastText: preview, lastFrom: me, lastTs: ts, unread: 0 },
+      [`userChats/${friendUid}/${me}/with`]: me,
+      [`userChats/${friendUid}/${me}/name`]: mine,
+      [`userChats/${friendUid}/${me}/lastText`]: preview,
+      [`userChats/${friendUid}/${me}/lastFrom`]: me,
+      [`userChats/${friendUid}/${me}/lastTs`]: ts,
+      [`userChats/${friendUid}/${me}/unread`]: M.increment(1),
+    });
+    return { id: mid, from: me, text, ts };
+  }
+  async function chatMarkRead(friendUid) {
+    if (!db || !currentUser) return;
+    try {
+      const p = `userChats/${myUid()}/${friendUid}/unread`;
+      if ((await val(p)) > 0) await M.set(M.ref(db, p), 0);
+    } catch (e) {}
+  }
+  async function chatHistory(friendUid, n) {
+    need();
+    const s = await M.get(M.query(M.ref(db, `chats/${chatIdOf(myUid(), friendUid)}/messages`), M.limitToLast(n || 30)));
+    const o = s.val() || {};
+    return Object.keys(o).map((id) => Object.assign({ id }, o[id])).sort((a, b) => a.ts - b.ts);
+  }
+  function chatListen(friendUid, cb, n) {
+    need();
+    return M.onChildAdded(M.query(M.ref(db, `chats/${chatIdOf(myUid(), friendUid)}/messages`), M.limitToLast(n || 60)), (s) => cb(Object.assign({ id: s.key }, s.val())));
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // ROOM INVITES  (a room that already exists)
+  // ═══════════════════════════════════════════════════════════
+  async function sendInvite(friendUid, friendName, roomCode, fromName) {
+    need();
+    await M.push(M.ref(db, `invites/${friendUid}`), {
+      fromUid: myUid(), fromName: fromName || (await myName()), roomCode,
+      timestamp: Date.now(), expiresAt: Date.now() + INVITE_TTL, status: 'pending',
+    });
+  }
+
+  // "Ask to join" — only when the target friend is in a waiting-stage room.
+  async function sendJoinRequest(targetUid) {
+    need();
+    const presence = (await val(`players/${targetUid}/presence`)) || {};
+    if (!presence.inGame || presence.phase !== 'waiting' || !presence.room) throw fail('هذا الصديق ليس في غرفة انتظار حالياً');
+    await M.push(M.ref(db, `joinRequests/${targetUid}`), {
+      fromUid: myUid(), fromName: await myName(), roomCode: presence.room,
+      timestamp: Date.now(), expiresAt: Date.now() + INVITE_TTL, status: 'pending',
+    });
+  }
+
+  // ── room proposal: the room is created ONLY when the friend accepts ──
+  async function proposeRoom(friendUid, friendName, category) {
+    need();
+    const me = myUid();
+    if (!(await exists(`players/${me}/friends/${friendUid}`))) throw fail('يمكنك دعوة أصدقائك فقط');
+    const key = newKey();
+    await M.set(M.ref(db, `invites/${friendUid}/${key}`), {
+      type: 'proposal', fromUid: me, fromName: await myName(), category: category || 'places',
+      timestamp: Date.now(), expiresAt: Date.now() + INVITE_TTL, status: 'pending',
+    });
+    return key;
+  }
+
+  async function acceptProposal(myUidV, key, data) {
+    // the inviter must still be around — otherwise we would create an empty room
+    const pres = (await val(`players/${data.fromUid}/presence`)) || {};
+    if (!pres.online) { showBanner('❌ صاحب الدعوة غير متصل الآن', 'error'); await dismiss(myUidV, key, 'expired'); return false; }
+    const name = await myName();
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+      const c = Math.random().toString(36).substring(2, 6).toUpperCase();
+      if (c.length === 4 && !(await exists('rooms/' + c))) { code = c; break; }
+    }
+    if (!code) throw fail('تعذر إنشاء غرفة، حاول مرة أخرى');
+    await M.set(M.ref(db, 'rooms/' + code), {
+      hostId: myUidV, status: 'waiting', category: data.category || 'places', visibility: 'private', createdAt: M.serverTimestamp(),
+      players: { [myUidV]: { username: name, uid: myUidV, joinedAt: M.serverTimestamp(), connected: true, status: 'online', isHost: true } },
+    });
+    await M.update(M.ref(db, `invites/${myUidV}/${key}`), { status: 'accepted', roomCode: code }).catch(() => {});
+    await M.push(M.ref(db, `inviteReplies/${data.fromUid}`), { status: 'accepted', roomCode: code, fromUid: myUidV, fromName: name, ts: Date.now(), proposalKey: key });
+    await M.remove(M.ref(db, `invites/${myUidV}/${key}`)).catch(() => {});
+    localStorage.setItem('currentRoom', code); localStorage.setItem('isHost', 'true'); localStorage.setItem('eljasus_user_name', name);
+    window.location.href = roomUrl(code);
+    return true;
+  }
+
+  async function declineProposal(myUidV, key, data) {
+    await M.remove(M.ref(db, `invites/${myUidV}/${key}`)).catch(() => {});
+    await M.push(M.ref(db, `inviteReplies/${data.fromUid}`), { status: 'declined', fromUid: myUidV, fromName: await myName(), ts: Date.now(), proposalKey: key }).catch(() => {});
+  }
+
+  // the inviter hears the answer (on any page) and is taken to the room
+  function listenInviteReplies(uid) {
+    M.onChildAdded(M.ref(db, `inviteReplies/${uid}`), async (snap) => {
+      const r = snap.val(); if (!r) return;
+      M.remove(M.ref(db, `inviteReplies/${uid}/${snap.key}`)).catch(() => {});
+      if (Date.now() - (r.ts || 0) > 3 * 60 * 1000) return; // stale
+      if (r.status === 'accepted' && r.roomCode) {
+        const inRoom = /room\.html/i.test(location.pathname);
+        showBanner(`✅ ${r.fromName || 'صديقك'} قبل دعوتك — ${inRoom ? 'غرفته: ' + r.roomCode : 'جارٍ الانتقال للغرفة…'}`, 'success', 6000);
+        if (!inRoom) {
+          localStorage.setItem('currentRoom', r.roomCode); localStorage.setItem('isHost', 'false');
+          setTimeout(() => { window.location.href = roomUrl(r.roomCode); }, 1300);
+        }
+      } else if (r.status === 'declined') {
+        showBanner(`${r.fromName || 'صديقك'} رفض دعوة الغرفة`, 'warning');
+      }
+    });
+  }
+
+  // ── accept / dismiss (used by the inbox handlers) ───────────
+  // Resolves true when the player is joining; false keeps the inbox open.
+  async function acceptInvite(myUidV, key, data) {
+    try {
+      if (data.type === 'proposal') return await acceptProposal(myUidV, key, data);
+      const room = await val(`rooms/${data.roomCode}`);
+      if (!room) { showBanner('❌ الغرفة لم تعد موجودة', 'error'); dismiss(myUidV, key, 'expired'); return false; }
+      const count = Object.keys(room.players || {}).length;
+      if (room.status === 'waiting') {
+        if (count >= MAX_ROOM_PLAYERS) { showBanner('❌ الغرفة ممتلئة', 'error'); dismiss(myUidV, key, 'expired'); return false; }
+        localStorage.setItem('currentRoom', data.roomCode); localStorage.setItem('isHost', 'false');
+        await M.update(M.ref(db, `invites/${myUidV}/${key}`), { status: 'accepted' });
+        window.location.href = roomUrl(data.roomCode);
+        return true;
+      }
+      const phaseLabel = { playing: 'جارٍ تقديم الأدوار', discussion: 'مرحلة النقاش', voting: 'مرحلة التصويت', reveal: 'مرحلة الكشف' }[room.status] || room.status;
+      showBanner(`⏳ الغرفة الآن في مرحلة "${phaseLabel}" — ستنضم تلقائياً عند انتهاء الجولة`, 'warning', 6000);
+      localStorage.setItem('fi_pending_room', data.roomCode); localStorage.setItem('fi_pending_name', data.fromName || '');
+      await M.update(M.ref(db, `invites/${myUidV}/${key}`), { status: 'accepted' });
+      watchRoomForWaiting(data.roomCode);
+      return true;
     } catch (e) {
-      showBanner('❌ خطأ: ' + e.message, 'error');
-      if (accBtn) { accBtn.disabled = false; accBtn.textContent = '✅ قبول'; }
-      if (decBtn) decBtn.disabled = false;
+      showBanner('❌ خطأ: ' + (e.message || e), 'error');
+      return false;
     }
   }
 
-  // ── Accept a join request ("let them into my room") ────────
-  // Reuses the exact same invite pipeline to notify the requester —
-  // approving a join request just becomes a normal invite sent back to
-  // them, so they get the same toast/inbox/accept experience either way.
-  async function acceptJoinRequest(myUid, key, data) {
-    const accBtn = document.getElementById(`fi-acc-${key}`);
-    const decBtn = document.getElementById(`fi-dec-${key}`);
-    if (accBtn) { accBtn.disabled = true; accBtn.textContent = '...'; }
-    if (decBtn) decBtn.disabled = true;
+  async function declineInvite(myUidV, key, data) {
+    if (data && data.type === 'proposal') return declineProposal(myUidV, key, data);
+    return dismiss(myUidV, key, 'declined');
+  }
 
+  // "let them into my room": turns the request into a normal invite back to them
+  async function acceptJoinRequest(myUidV, key, data) {
     try {
-      const presSnap = await _get(_ref(db, `players/${myUid}/presence`));
-      const presence = presSnap.val() || {};
+      const presence = (await val(`players/${myUidV}/presence`)) || {};
       if (!presence.inGame || presence.phase !== 'waiting' || !presence.room) {
         showBanner('❌ لم تعد في غرفة انتظار — لا يمكن قبول الطلب', 'error');
-        await _update(_ref(db, `joinRequests/${myUid}/${key}`), { status: 'declined' });
-        dismiss(myUid, key, null, true);
-        return;
+        await M.update(M.ref(db, `joinRequests/${myUidV}/${key}`), { status: 'declined' });
+        return false;
       }
-
-      const myName = currentUser.displayName || localStorage.getItem('eljasus_user_name') || 'لاعب';
-      await FIApi.sendInvite(data.fromUid, data.fromName, presence.room, myName);
-      await _update(_ref(db, `joinRequests/${myUid}/${key}`), { status: 'accepted' });
+      await sendInvite(data.fromUid, data.fromName, presence.room, await myName());
+      await M.update(M.ref(db, `joinRequests/${myUidV}/${key}`), { status: 'accepted' });
       showBanner(`✅ تم قبول ${data.fromName} — بانتظار انضمامه`, 'success');
-      dismiss(myUid, key, null, true);
-    } catch (e) {
-      showBanner('❌ خطأ: ' + e.message, 'error');
-      if (accBtn) { accBtn.disabled = false; accBtn.textContent = '✅ قبول'; }
-      if (decBtn) decBtn.disabled = false;
-    }
+      return true;
+    } catch (e) { showBanner('❌ خطأ: ' + (e.message || e), 'error'); return false; }
   }
+  function declineJoinRequest(myUidV, key) { return M.update(M.ref(db, `joinRequests/${myUidV}/${key}`), { status: 'declined' }).catch(() => {}); }
 
-  function declineJoinRequest(myUid, key) {
-    _update(_ref(db, `joinRequests/${myUid}/${key}`), { status: 'declined' }).catch(() => {});
-    dismiss(myUid, key, null, true);
-  }
-
-  // ── Watch room until 'waiting' ─────────────────────────────
   function watchRoomForWaiting(roomCode) {
-    let unsubscribe;
-    const unsub = _onValue(_ref(db, `rooms/${roomCode}/status`), snap => {
+    let off = null;
+    off = M.onValue(M.ref(db, `rooms/${roomCode}/status`), (snap) => {
       if (snap.val() === 'waiting') {
         showBanner(`✅ انتهت الجولة في غرفة ${roomCode} — يمكنك الانضمام الآن!`, 'success', 8000);
-        localStorage.setItem('currentRoom', roomCode);
-        localStorage.setItem('isHost', 'false');
-        setTimeout(() => { window.location.href = `/room.html?room=${roomCode}`; }, 2500);
-        if (unsubscribe) unsubscribe();
+        localStorage.setItem('currentRoom', roomCode); localStorage.setItem('isHost', 'false');
+        setTimeout(() => { window.location.href = roomUrl(roomCode); }, 2500);
+        if (off) off();
       }
     });
-    unsubscribe = unsub;
   }
 
-  // ── Dismiss a toast (and, unless skipDb, write a status) ────
-  function dismiss(myUid, key, status, skipDb = false, isJoinRequest = false) {
-    const entry = active[key];
-    if (entry) {
-      clearInterval(entry.interval);
-      if (entry.shrinkTimeout) clearTimeout(entry.shrinkTimeout);
-      entry.el.classList.add('fi-leaving');
-      setTimeout(() => { entry.el.remove(); delete active[key]; }, 310);
-    }
-    removePending(key);
+  function dismiss(myUidV, key, status) {
+    return M.update(M.ref(db, `invites/${myUidV}/${key}`), { status: status || 'declined' }).catch(() => {});
+  }
 
-    if (!skipDb && status) {
-      const path = isJoinRequest ? `joinRequests/${myUid}/${key}` : `invites/${myUid}/${key}`;
-      _update(_ref(db, path), { status }).catch(() => {});
+  // expired invites / requests are swept away so they never pile up
+  async function sweepExpired(uid) {
+    for (const node of ['invites', 'joinRequests']) {
+      try {
+        const o = (await val(`${node}/${uid}`)) || {};
+        for (const k of Object.keys(o)) { const v = o[k]; if (v && v.expiresAt && v.expiresAt < Date.now()) M.remove(M.ref(db, `${node}/${uid}/${k}`)).catch(() => {}); }
+      } catch (e) {}
     }
   }
 
-  // ── Banner notification ────────────────────────────────────
-  function showBanner(msg, type = 'info', duration = 4500) {
+  // ── inviter's name-theme -> accent colour in the inbox ─────
+  function getInviteThemeClass(nameTheme) {
+    if (!nameTheme || nameTheme === 'default') return '';
+    const map = { fireGold: 'themed-fire', fireFlicker: 'themed-fire', bloodRed: 'themed-fire', iceBlue: 'themed-ice', snowfall: 'themed-ice', neonPurple: 'themed-neon', pulseGlow: 'themed-neon', neonCyan: 'themed-neon', emeraldGreen: 'themed-emerald', starField: 'themed-gold', sparkles: 'themed-gold' };
+    return map[nameTheme] || '';
+  }
+  async function fetchInviterTheme(fromUid) {
+    try { return (await val(`players/${fromUid}/nameTheme`)) || 'default'; } catch (e) { return 'default'; }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // presence + user lifecycle
+  // ═══════════════════════════════════════════════════════════
+  function keepOnline(uid) {
+    try {
+      const pr = M.ref(db, `players/${uid}/presence`);
+      M.onValue(M.ref(db, '.info/connected'), (s) => {
+        if (s.val() !== true) return;
+        M.onDisconnect(pr).update({ online: false, lastSeen: Date.now() });
+        M.update(pr, { online: true, lastSeen: Date.now() }).catch(() => {});
+      });
+    } catch (e) {}
+  }
+
+  let userWaiters = [];
+  function whenUser() { return currentUser ? Promise.resolve(currentUser) : new Promise((res) => userWaiters.push(res)); }
+
+  async function startInbox(user) {
+    const uid = user.uid;
+    if (!(await ensureInbox())) return;
+    window.EJInbox.setHandlers({
+      acceptInvite: (inv) => acceptInvite(uid, inv.key, inv),
+      declineInvite: (inv) => declineInvite(uid, inv.key, inv),
+      acceptRequest: (req) => acceptJoinRequest(uid, req.key, req),
+      declineRequest: (req) => declineJoinRequest(uid, req.key),
+      getTheme: async (fromUid) => getInviteThemeClass(await fetchInviterTheme(fromUid)),
+      acceptFriend: (fromUid) => accept(fromUid),
+      declineFriend: (fromUid) => decline(fromUid),
+      sendReply: (friendUid, text, name) => chatSend(friendUid, text, name),
+      loadMessages: (friendUid, n) => chatHistory(friendUid, n || 6),
+      markChatRead: (friendUid) => chatMarkRead(friendUid),
+      dismissNotice: (id) => M.remove(M.ref(db, `notifications/${uid}/${id}`)),
+      chatUrl,
+    });
+    window.EJInbox.init(db, user, {
+      onJoin: (code) => { localStorage.setItem('currentRoom', code); localStorage.setItem('isHost', 'false'); window.location.href = roomUrl(code); },
+    });
+  }
+
+  function onUser(user) {
+    currentUser = user;
+    if (!user) return;
+    userWaiters.splice(0).forEach((f) => f(user));
+    sweepExpired(user.uid);
+    listenInviteReplies(user.uid);
+    ensureIdentity(user);
+    keepOnline(user.uid);
+    startInbox(user).catch((e) => console.warn('[FI] inbox failed to start', e));
+  }
+
+  // ── Banner (small, classic palette) ────────────────────────
+  function showBanner(msg, type, duration) {
+    type = type || 'info'; duration = duration || 4500;
     const colors = {
-      success: 'rgba(34,197,94,.18);border-color:rgba(34,197,94,.5);color:#22c55e',
-      warning: 'rgba(251,191,36,.14);border-color:rgba(251,191,36,.5);color:#fbbf24',
-      error:   'rgba(239,68,68,.15);border-color:rgba(239,68,68,.5);color:#ef4444',
-      info:    'rgba(0,242,255,.1);border-color:rgba(0,242,255,.4);color:#00f2ff',
+      success: 'border-color:#a3e635;color:#a3e635;box-shadow:0 0 24px rgba(163,230,53,.3)',
+      warning: 'border-color:#00f2ff;color:#00f2ff;box-shadow:0 0 24px rgba(0,242,255,.25)',
+      error: 'border-color:#ff5d5d;color:#ff9a9a;box-shadow:0 0 24px rgba(255,93,93,.25)',
+      info: 'border-color:#00f2ff;color:#e8fff4;box-shadow:0 0 24px rgba(0,242,255,.2)',
     };
     const b = document.createElement('div');
-    b.style.cssText = `position:fixed;top:12px;left:50%;transform:translateX(-50%);
-      z-index:10600;padding:13px 28px;border-radius:16px;font-family:'Cairo',sans-serif;
-      font-weight:700;font-size:13px;text-align:center;backdrop-filter:blur(14px);
-      background:${colors[type] || colors.info};border:2px solid;
-      box-shadow:0 8px 28px rgba(0,0,0,.45);direction:rtl;min-width:280px;`;
+    b.setAttribute('role', 'status');
+    b.style.cssText = `position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:10600;padding:12px 22px;border-radius:14px;
+      font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;text-align:center;background:#000;border:1.5px solid;
+      direction:rtl;width:max-content;max-width:min(92vw,460px);${colors[type] || colors.info}`;
     b.textContent = msg;
     document.body.appendChild(b);
-    setTimeout(() => { 
-      b.style.opacity='0'; 
-      b.style.transition='opacity .4s'; 
-      setTimeout(()=>b.remove(),420); 
-    }, duration);
+    setTimeout(() => { b.style.opacity = '0'; b.style.transition = 'opacity .4s'; setTimeout(() => b.remove(), 420); }, duration);
   }
 
   // ── Public API ─────────────────────────────────────────────
-  const FIApi = {
-    async sendInvite(friendUid, friendName, roomCode, fromName) {
-      if (!db || !currentUser) throw new Error('Firebase not ready');
-      const invRef = _ref(db, `invites/${friendUid}`);
-      await _push(invRef, {
-        fromUid:   currentUser.uid,
-        fromName:  fromName || currentUser.displayName || 'لاعب',
-        roomCode,
-        timestamp: Date.now(),
-        expiresAt: Date.now() + INVITE_TTL,
-        status:    'pending',
-      });
+  const API = {
+    __v: 4, ready, whenUser,
+    sendInvite, sendJoinRequest, proposeRoom, showBanner,
+    roomUrl, chatUrl, pageUrl,
+    friends: {
+      getMyCode, regenerateCode, watchMyCode, lookup, relation,
+      sendRequest, sendRequestToUid, accept, decline, cancel, remove: removeFriend,
+      fmtCode, normCode, emailKey,
     },
-
-    // "Ask to join" — only meaningful (and only shown in the UI) when the
-    // target friend is currently in a waiting-stage room. Verifies that
-    // fresh from their presence record rather than trusting stale caller
-    // data, and requires their explicit accept before any room write happens.
-    async sendJoinRequest(targetUid, targetName) {
-      if (!db || !currentUser) throw new Error('Firebase not ready');
-      const presSnap = await _get(_ref(db, `players/${targetUid}/presence`));
-      const presence = presSnap.val() || {};
-      if (!presence.inGame || presence.phase !== 'waiting' || !presence.room) {
-        throw new Error('هذا الصديق ليس في غرفة انتظار حالياً');
-      }
-      const myName = currentUser.displayName || localStorage.getItem('eljasus_user_name') || 'لاعب';
-      await _push(_ref(db, `joinRequests/${targetUid}`), {
-        fromUid:   currentUser.uid,
-        fromName:  myName,
-        roomCode:  presence.room,
-        timestamp: Date.now(),
-        expiresAt: Date.now() + INVITE_TTL,
-        status:    'pending',
-      });
-    },
-
-    showBanner,
+    chat: { chatId: chatIdOf, send: chatSend, markRead: chatMarkRead, history: chatHistory, listen: chatListen },
+    get user() { return currentUser; },
   };
-  window.FI = FIApi;
+  window.FI = API;
 
-  init().catch(console.error);
+  boot().catch((e) => { console.error('[FI] Firebase failed to start', e); rejectReady(e); });
 })();

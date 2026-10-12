@@ -1,16 +1,21 @@
 // ============================================================
-// EL JASUS — PROFILE VIEWER v1.0
-// View other users' profiles (inventory, rank, stats, achievements)
-// Used in friends.html and room.html friends panel
+// EL JASUS — PROFILE VIEWER v2.0  (Classic Edition)
+// A full player card: rank + progress, live status, stats, role
+// performance, favourite categories, recent games, achievements,
+// inventory, mutual friends — and actions (chat, invite, add, remove).
+//
+// API (unchanged):  ProfileViewer.open(uid, username) / close() / init()
+//
+// IMPORTANT: this file never creates the default Firebase app while a
+// page is still starting up (that used to make the page's own
+// initializeApp() throw "duplicate-app"). It waits for the page's app
+// and only creates one if the page never does.
 // ============================================================
-
-(function() {
+(function () {
   'use strict';
+  if (window.ProfileViewer && window.ProfileViewer.__v >= 2) return;
 
-  // ═══════════════════════════════════════════════════════════
-  // FIREBASE SETUP
-  // ═══════════════════════════════════════════════════════════
-  
+  const FB = 'https://www.gstatic.com/firebasejs/12.7.0/';
   const FIREBASE_CONFIG = {
     apiKey: 'AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk',
     authDomain: 'el-jasus.firebaseapp.com',
@@ -21,615 +26,411 @@
     appId: '1:415659587906:web:782f7940176ea4097eb0db',
   };
 
-  let db, _ref, _get;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = (v) => { v = Number(v); return isFinite(v) ? v : 0; };
 
-  async function initFirebase() {
-    const { initializeApp, getApps } = await import(
-      'https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js'
-    );
-    const dbMod = await import(
-      'https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js'
-    );
+  const CAT_NAMES = {
+    places: '🌍 أماكن سياحية', food: '🍕 أكلات مصرية', jobs: '🛠️ مهن ووظائف',
+    companies: '🏢 شركات عالمية', football_teams: '⚽ أندية ومنتخبات', animals: '🐾 حيوانات',
+  };
+  const catName = (k) => CAT_NAMES[k] || k;
 
-    const app = getApps().length ? getApps()[0] : initializeApp(FIREBASE_CONFIG);
-    db = dbMod.getDatabase(app);
-    _ref = dbMod.ref;
-    _get = dbMod.get;
+  const ACHIEVEMENTS = {
+    firstWin: { name: 'الفوز الأول', icon: '🎉', desc: 'فز بأول مباراة' },
+    masterDeceiver: { name: 'خبير الخداع', icon: '🕵️', desc: 'افز 10 مباريات كجاسوس' },
+    eagleEye: { name: 'عين الصقر', icon: '🦅', desc: 'اكشف الجاسوس 5 مرات' },
+    perfectGame: { name: 'مباراة مثالية', icon: '🎯', desc: 'خمن الكلمة كجاسوس' },
+    centuryClub: { name: 'نادي المئة', icon: '💯', desc: 'العب 100 مباراة' },
+    hotStreak: { name: 'سلسلة نارية', icon: '🔥', desc: 'افز 5 مباريات متتالية' },
+    diamondPlayer: { name: 'لاعب ألماسي', icon: '💎', desc: 'وصل لرتبة الألماس' },
+  };
+
+  // ── Firebase (late-bound) ──────────────────────────────────
+  let db = null, M = null, auth = null, dbPromise = null;
+  function getDb() {
+    if (dbPromise) return dbPromise;
+    dbPromise = (async () => {
+      const appMod = await import(FB + 'firebase-app.js');
+      M = await import(FB + 'firebase-database.js');
+      const authMod = await import(FB + 'firebase-auth.js');
+      const t0 = Date.now();
+      while (!appMod.getApps().length && Date.now() - t0 < 6000) await sleep(60);
+      let app;
+      if (appMod.getApps().length) app = appMod.getApps()[0];
+      else { try { app = appMod.initializeApp(FIREBASE_CONFIG); } catch (e) { app = appMod.getApp(); } }
+      db = M.getDatabase(app);
+      auth = authMod.getAuth(app);
+      return db;
+    })();
+    dbPromise.catch(() => { dbPromise = null; });
+    return dbPromise;
   }
+  async function myUid() {
+    if (window.FI && window.FI.user) return window.FI.user.uid;
+    await getDb();
+    if (auth.currentUser) return auth.currentUser.uid;
+    if (window.FI) { try { await Promise.race([window.FI.whenUser(), sleep(2500)]); } catch (e) {} if (window.FI.user) return window.FI.user.uid; }
+    return auth.currentUser ? auth.currentUser.uid : null;
+  }
+  async function getVal(path) { await getDb(); const s = await M.get(M.ref(db, path)); return s.val(); }
 
-  // ═══════════════════════════════════════════════════════════
-  // CSS STYLES
-  // ═══════════════════════════════════════════════════════════
-  
+  // ── Styles (Classic palette: black / lime / cyan) ──────────
   function injectStyles() {
-    if (document.getElementById('profile-viewer-styles')) return;
-    
-    const css = `
-      #profile-modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(12px);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        animation: fadeIn 0.3s ease;
-      }
-      
-      #profile-modal-overlay.open {
-        display: flex;
-      }
-      
-      #profile-modal {
-        background: linear-gradient(135deg, rgba(15,20,35,0.98), rgba(25,30,50,0.98));
-        border: 2px solid rgba(0,242,255,0.4);
-        border-radius: 24px;
-        max-width: 600px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        padding: 0;
-        font-family: 'Cairo', sans-serif;
-        box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0,242,255,0.1);
-        animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      
-      @keyframes modalSlideIn {
-        from { 
-          opacity: 0; 
-          transform: translateY(20px) scale(0.95); 
-        }
-        to { 
-          opacity: 1; 
-          transform: translateY(0) scale(1); 
-        }
-      }
-      
-      .pv-header {
-        padding: 24px 28px;
-        border-bottom: 2px solid rgba(0,242,255,0.2);
-        position: relative;
-      }
-      
-      .pv-close {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: rgba(239,68,68,0.15);
-        border: 1px solid rgba(239,68,68,0.3);
-        color: #ef4444;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: 900;
-        transition: all 0.2s;
-      }
-      
-      .pv-close:hover {
-        background: rgba(239,68,68,0.25);
-        transform: scale(1.1);
-      }
-      
-      .pv-avatar-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-      }
-      
-      .pv-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #00f2ff, #7c30ff);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        color: white;
-        box-shadow: 0 0 30px rgba(0,242,255,0.5);
-        animation: avatarPulse 3s ease-in-out infinite;
-      }
-      
-      @keyframes avatarPulse {
-        0%, 100% { box-shadow: 0 0 20px rgba(0,242,255,0.5); }
-        50% { box-shadow: 0 0 40px rgba(0,242,255,0.8); }
-      }
-      
-      .pv-name-display {
-        text-align: center;
-      }
-      
-      .pv-username {
-        font-size: 20px;
-        font-weight: 900;
-        color: #fff;
-        margin-bottom: 4px;
-      }
-      
-      .pv-rank-info {
-        font-size: 13px;
-        color: rgba(255,255,255,0.6);
-        font-family: 'Orbitron', sans-serif;
-      }
-      
-      .pv-content {
-        padding: 20px 28px 28px;
-      }
-      
-      .pv-section {
-        margin-bottom: 24px;
-      }
-      
-      .pv-section-title {
-        font-size: 14px;
-        font-weight: 900;
-        color: #00f2ff;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 12px;
-        font-family: 'Orbitron', sans-serif;
-      }
-      
-      .pv-stats-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-      
-      .pv-stat-card {
-        background: rgba(0,242,255,0.05);
-        border: 1px solid rgba(0,242,255,0.2);
-        border-radius: 12px;
-        padding: 12px;
-        text-align: center;
-      }
-      
-      .pv-stat-value {
-        font-size: 24px;
-        font-weight: 900;
-        color: #00f2ff;
-        font-family: 'Orbitron', sans-serif;
-      }
-      
-      .pv-stat-label {
-        font-size: 11px;
-        color: rgba(255,255,255,0.5);
-        margin-top: 4px;
-      }
-      
-      .pv-achievements-list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-      
-      .pv-achievement {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 10px;
-        padding: 10px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.2s;
-      }
-      
-      .pv-achievement.unlocked {
-        background: rgba(255,215,0,0.1);
-        border-color: rgba(255,215,0,0.3);
-      }
-      
-      .pv-achievement.locked {
-        opacity: 0.4;
-      }
-      
-      .pv-achievement-icon {
-        font-size: 24px;
-      }
-      
-      .pv-achievement-info {
-        flex: 1;
-      }
-      
-      .pv-achievement-name {
-        font-size: 11px;
-        font-weight: 900;
-        color: #fff;
-      }
-      
-      .pv-achievement-desc {
-        font-size: 9px;
-        color: rgba(255,255,255,0.4);
-      }
-      
-      .pv-inventory-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
-      
-      .pv-item {
-        background: rgba(0,242,255,0.05);
-        border: 1px solid rgba(0,242,255,0.2);
-        border-radius: 10px;
-        padding: 12px;
-        text-align: center;
-        transition: all 0.2s;
-      }
-      
-      .pv-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,242,255,0.2);
-      }
-      
-      .pv-item-name {
-        font-size: 11px;
-        font-weight: 700;
-        color: #fff;
-        margin-top: 6px;
-      }
-      
-      .pv-item-type {
-        font-size: 9px;
-        color: rgba(255,255,255,0.4);
-      }
-      
-      .pv-empty {
-        grid-column: 1 / -1;
-        text-align: center;
-        color: rgba(255,255,255,0.3);
-        padding: 20px;
-        font-size: 13px;
-      }
-      
-      .pv-loading {
-        text-align: center;
-        padding: 40px 20px;
-        color: rgba(255,255,255,0.5);
-        font-size: 14px;
-      }
-      
-      .pv-spinner {
-        border: 3px solid rgba(0,242,255,0.1);
-        border-top-color: #00f2ff;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 16px;
-      }
-      
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-      
-      @media (max-width: 640px) {
-        #profile-modal {
-          max-width: 100%;
-          margin: 10px;
-        }
-        
-        .pv-stats-grid,
-        .pv-achievements-list,
-        .pv-inventory-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    `;
-    
-    const style = document.createElement('style');
-    style.id = 'profile-viewer-styles';
-    style.textContent = css;
-    document.head.appendChild(style);
+    if (document.getElementById('pv2-styles')) return;
+    const s = document.createElement('style');
+    s.id = 'pv2-styles';
+    s.textContent = `
+#pv2-overlay{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:'Cairo',system-ui,sans-serif;direction:rtl}
+#pv2-overlay.open{display:flex;animation:pv2f .2s ease}
+@keyframes pv2f{from{opacity:0}to{opacity:1}}
+@keyframes pv2u{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+#pv2{position:relative;width:100%;max-width:640px;max-height:min(92vh,880px);max-height:min(92dvh,880px);display:flex;flex-direction:column;background:#000;color:#fff;border:2px solid rgba(0,242,255,.45);border-radius:22px;box-shadow:0 0 0 1px rgba(163,230,53,.12),0 20px 60px rgba(0,0,0,.8),0 0 40px rgba(0,242,255,.12);overflow:hidden;animation:pv2u .28s cubic-bezier(.2,.8,.2,1)}
+.pv2-x{position:absolute;top:12px;left:12px;z-index:3;width:36px;height:36px;border-radius:12px;border:2px solid rgba(255,107,125,.5);background:rgba(0,0,0,.6);color:#ff6b7d;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.pv2-x:hover{background:rgba(255,107,125,.18)}
+.pv2-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pv2-head{position:relative;padding:26px 20px 16px;text-align:center;background:radial-gradient(ellipse 90% 120% at 50% -20%,rgba(0,242,255,.16),transparent 70%),radial-gradient(ellipse 70% 90% at 100% 120%,rgba(163,230,53,.10),transparent 70%);border-bottom:1px solid rgba(0,242,255,.18)}
+.pv2-rank{display:inline-flex;margin-bottom:6px;filter:drop-shadow(0 0 18px rgba(0,242,255,.35))}
+.pv2-name{font-size:24px;font-weight:900;line-height:1.3;word-break:break-word}
+.pv2-sub{margin-top:2px;font-size:12px;color:rgba(255,255,255,.6);font-family:'Orbitron','Cairo',sans-serif;letter-spacing:.03em}
+.pv2-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.pv2-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid rgba(0,242,255,.3);background:rgba(0,242,255,.07);color:#00f2ff}
+.pv2-chip.lime{border-color:rgba(163,230,53,.4);background:rgba(163,230,53,.08);color:#a3e635}
+.pv2-chip.dim{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:rgba(255,255,255,.65)}
+.pv2-dot{width:8px;height:8px;border-radius:50%;background:#555;display:inline-block}
+.pv2-dot.on{background:#a3e635;box-shadow:0 0 8px #a3e635}
+.pv2-prog{margin:14px auto 0;max-width:360px;text-align:right}
+.pv2-prog-row{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.55);margin-bottom:4px}
+.pv2-bar{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.pv2-bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#00f2ff,#a3e635);transition:width .6s ease}
+.pv2-body{padding:16px 18px 20px;display:flex;flex-direction:column;gap:18px}
+.pv2-h{font-size:12px;font-weight:900;color:#00f2ff;letter-spacing:.06em;margin:0 0 10px;font-family:'Orbitron','Cairo',sans-serif;display:flex;align-items:center;gap:6px}
+.pv2-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,242,255,.3),transparent)}
+.pv2-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pv2-stat{background:rgba(0,242,255,.05);border:1px solid rgba(0,242,255,.2);border-radius:14px;padding:10px 6px;text-align:center}
+.pv2-stat b{display:block;font-size:20px;font-weight:900;color:#00f2ff;font-family:'Orbitron',sans-serif;line-height:1.2}
+.pv2-stat.lime b{color:#a3e635}.pv2-stat.lime{border-color:rgba(163,230,53,.25);background:rgba(163,230,53,.05)}
+.pv2-stat small{display:block;margin-top:3px;font-size:10px;color:rgba(255,255,255,.55)}
+.pv2-rows{display:flex;flex-direction:column;gap:10px}
+.pv2-row .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.pv2-row .top span:last-child{font-family:'Orbitron',sans-serif;color:#a3e635;font-size:11px}
+.pv2-row .pv2-bar.cy>i{background:#00f2ff}
+.pv2-games{display:flex;flex-direction:column;gap:6px}
+.pv2-game{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:12px}
+.pv2-game .ic{font-size:18px}.pv2-game .nm{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv2-game .dt{color:rgba(255,255,255,.45);font-size:10px}
+.pv2-res{padding:2px 10px;border-radius:99px;font-weight:900;font-size:11px}
+.pv2-res.w{background:rgba(163,230,53,.15);color:#a3e635;border:1px solid rgba(163,230,53,.4)}
+.pv2-res.l{background:rgba(255,107,125,.12);color:#ff6b7d;border:1px solid rgba(255,107,125,.35)}
+.pv2-ach{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.pv2-a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.pv2-a.on{border-color:rgba(163,230,53,.45);background:rgba(163,230,53,.08)}
+.pv2-a:not(.on){opacity:.38;filter:grayscale(.8)}
+.pv2-a .ic{font-size:22px}.pv2-a b{display:block;font-size:12px}.pv2-a small{display:block;font-size:9px;color:rgba(255,255,255,.5);line-height:1.3}
+.pv2-inv{display:flex;flex-wrap:wrap;gap:8px}
+.pv2-item{padding:6px 11px;border-radius:12px;border:1px solid rgba(0,242,255,.25);background:rgba(0,242,255,.05);font-size:12px;font-weight:700;display:inline-flex;gap:6px;align-items:center}
+.pv2-item small{color:rgba(255,255,255,.45);font-weight:400;font-size:10px}
+.pv2-mut{display:flex;flex-wrap:wrap;gap:6px}
+.pv2-empty{color:rgba(255,255,255,.4);font-size:12px;padding:6px 2px}
+.pv2-load{padding:50px 20px;text-align:center;color:rgba(255,255,255,.55);font-size:14px}
+.pv2-spin{width:38px;height:38px;border-radius:50%;margin:0 auto 14px;border:3px solid rgba(0,242,255,.12);border-top-color:#00f2ff;animation:pv2s 1s linear infinite}
+@keyframes pv2s{to{transform:rotate(360deg)}}
+.pv2-actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(0,242,255,.2);background:rgba(0,0,0,.92);flex-shrink:0}
+.pv2-btn{flex:1 1 auto;min-width:96px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 12px;border-radius:12px;border:2px solid rgba(0,242,255,.4);background:rgba(0,242,255,.08);color:#00f2ff;font:inherit;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.pv2-btn:hover{background:rgba(0,242,255,.18)}
+.pv2-btn.lime{border-color:rgba(163,230,53,.55);background:rgba(163,230,53,.12);color:#a3e635}.pv2-btn.lime:hover{background:rgba(163,230,53,.22)}
+.pv2-btn.red{flex:0 0 auto;min-width:0;border-color:rgba(255,107,125,.45);background:rgba(255,107,125,.08);color:#ff6b7d}
+.pv2-btn:disabled{opacity:.5;cursor:default}
+.pv2-toast{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);max-width:90%;padding:8px 14px;border-radius:12px;background:#000;border:2px solid rgba(163,230,53,.6);color:#a3e635;font-size:12px;font-weight:700;z-index:5;text-align:center}
+.pv2-toast.err{border-color:rgba(255,107,125,.6);color:#ff6b7d}
+@media (max-width:640px){
+  #pv2-overlay{padding:0;align-items:flex-end}
+  #pv2{max-width:none;max-height:94vh;max-height:94dvh;border-radius:22px 22px 0 0;border-bottom:none}
+  .pv2-name{font-size:21px}
+  .pv2-body{padding:14px 14px 18px}
+  .pv2-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .pv2-stat b{font-size:17px}
+  .pv2-ach{grid-template-columns:1fr}
+  .pv2-btn{flex:1 1 110px;min-width:0;padding:11px 8px}.pv2-btn.red{flex:0 0 auto}
+}`;
+    document.head.appendChild(s);
   }
 
-  // ═══════════════════════════════════════════════════════════
-  // MODAL CREATION
-  // ═══════════════════════════════════════════════════════════
-  
+  // ── Modal shell ────────────────────────────────────────────
+  let openToken = 0;
   function createModal() {
-    if (document.getElementById('profile-modal-overlay')) return;
-    
-    const overlay = document.createElement('div');
-    overlay.id = 'profile-modal-overlay';
-    overlay.innerHTML = `
-      <div id="profile-modal">
-        <div class="pv-header">
-          <button class="pv-close" id="pv-close-btn">✕</button>
-          <div class="pv-avatar-section">
-            <div class="pv-avatar" id="pv-avatar">👤</div>
-            <div class="pv-name-display">
-              <div class="pv-username" id="pv-username">جاري التحميل...</div>
-              <div class="pv-rank-info" id="pv-rank-info">---</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="pv-content" id="pv-content">
-          <div class="pv-loading">
-            <div class="pv-spinner"></div>
-            <div>جاري تحميل البيانات...</div>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(overlay);
-    
-    // Close handlers
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) closeModal();
-    });
-    
-    document.getElementById('pv-close-btn').addEventListener('click', closeModal);
+    if (document.getElementById('pv2-overlay')) return;
+    const o = document.createElement('div');
+    o.id = 'pv2-overlay';
+    o.innerHTML = `<div id="pv2" role="dialog" aria-modal="true"><button class="pv2-x" id="pv2-x" type="button" aria-label="إغلاق">✕</button><div class="pv2-scroll" id="pv2-scroll"></div><div class="pv2-actions" id="pv2-actions" style="display:none"></div></div>`;
+    document.body.appendChild(o);
+    o.addEventListener('click', (e) => { if (e.target === o) closeModal(); });
+    document.getElementById('pv2-x').addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
   }
-
   function closeModal() {
-    const overlay = document.getElementById('profile-modal-overlay');
-    if (overlay) {
-      overlay.classList.remove('open');
-    }
+    openToken++;
+    const o = document.getElementById('pv2-overlay');
+    if (o) o.classList.remove('open');
   }
 
-  // ═══════════════════════════════════════════════════════════
-  // DATA LOADING
-  // ═══════════════════════════════════════════════════════════
-  
-  async function loadUserProfile(uid) {
-    try {
-      const snapshot = await _get(_ref(db, `players/${uid}`));
-      
-      if (!snapshot.exists()) {
-        return null;
-      }
-      
-      const data = snapshot.val();
-      return {
-        username: data.username || 'Player',
-        rankPoints: data.rankPoints || 0,
-        stats: data.stats || {},
-        achievements: data.achievements || {},
-        inventory: data.inventory || {
-          nameThemes: [],
-          nameTags: []
-        },
-        nameTheme: data.nameTheme || 'default',
-        nameTag: data.nameTag || null
-      };
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      return null;
-    }
+  function toast(msg, err) {
+    const box = document.getElementById('pv2'); if (!box) return;
+    const old = box.querySelector('.pv2-toast'); if (old) old.remove();
+    const t = document.createElement('div'); t.className = 'pv2-toast' + (err ? ' err' : ''); t.textContent = msg;
+    box.appendChild(t); setTimeout(() => t.remove(), 3200);
   }
 
-  // ═══════════════════════════════════════════════════════════
-  // PROFILE RENDERING
-  // ═══════════════════════════════════════════════════════════
-  
-  function renderProfile(profileData) {
-    // Update header
-    document.getElementById('pv-username').textContent = profileData.username;
-    
-    // Calculate rank
-    const rank = window.NameThemes ? 
-      window.NameThemes.getRank(profileData.rankPoints) : 
-      { nameAr: 'برونز', icon: '🥉', division: 'Division I' };
-    
-    document.getElementById('pv-rank-info').textContent = 
-      `${rank.icon} ${rank.nameAr} · ${rank.division} · ${profileData.rankPoints} نقطة`;
-    
-    // Render content
-    const content = document.getElementById('pv-content');
-    
-    // Calculate stats
-    const stats = profileData.stats;
-    const totalWins = (stats.spyWins || 0) + (stats.innocentWins || 0);
-    const totalGames = stats.totalGames || 0;
-    const totalLosses = Math.max(0, totalGames - totalWins);
-    const winRate = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : 0;
-    
-    content.innerHTML = `
-      <!-- STATS SECTION -->
-      <div class="pv-section">
-        <div class="pv-section-title">📊 الإحصائيات</div>
-        <div class="pv-stats-grid">
-          <div class="pv-stat-card">
-            <div class="pv-stat-value">${totalWins}</div>
-            <div class="pv-stat-label">انتصارات</div>
-          </div>
-          <div class="pv-stat-card">
-            <div class="pv-stat-value">${totalLosses}</div>
-            <div class="pv-stat-label">خسائر</div>
-          </div>
-          <div class="pv-stat-card">
-            <div class="pv-stat-value">${winRate}%</div>
-            <div class="pv-stat-label">نسبة الفوز</div>
-          </div>
-          <div class="pv-stat-card">
-            <div class="pv-stat-value">${totalGames}</div>
-            <div class="pv-stat-label">إجمالي المباريات</div>
-          </div>
-          <div class="pv-stat-card">
-            <div class="pv-stat-value">${stats.spyWins || 0}</div>
-            <div class="pv-stat-label">فوز كجاسوس</div>
-          </div>
-          <div class="pv-stat-card">
-            <div class="pv-stat-value">${stats.currentStreak || 0}</div>
-            <div class="pv-stat-label">سلسلة حالية</div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- ACHIEVEMENTS SECTION -->
-      <div class="pv-section">
-        <div class="pv-section-title">🏆 الإنجازات</div>
-        <div class="pv-achievements-list" id="pv-achievements"></div>
-      </div>
-      
-      <!-- INVENTORY SECTION -->
-      <div class="pv-section">
-        <div class="pv-section-title">🎒 المخزون</div>
-        <div class="pv-inventory-grid" id="pv-inventory"></div>
-      </div>
-    `;
-    
-    // Render achievements
-    renderAchievements(profileData.achievements);
-    
-    // Render inventory
-    renderInventory(profileData.inventory);
-  }
-
-  function renderAchievements(achievements) {
-    const container = document.getElementById('pv-achievements');
-    
-    const allAchievements = {
-      firstWin: { name: 'الفوز الأول', icon: '🎉', desc: 'فز بأول مباراة' },
-      masterDeceiver: { name: 'خبير الخداع', icon: '🕵️', desc: 'افز 10 مباريات كجاسوس' },
-      eagleEye: { name: 'عين الصقر', icon: '🦅', desc: 'اكشف الجاسوس 5 مرات' },
-      perfectGame: { name: 'مباراة مثالية', icon: '🎯', desc: 'خمن الكلمة كجاسوس' },
-      centuryClub: { name: 'نادي المئة', icon: '💯', desc: 'العب 100 مباراة' },
-      hotStreak: { name: 'سلسلة نارية', icon: '🔥', desc: 'افز 5 مباريات متتالية' },
-      diamondPlayer: { name: 'لاعب ألماسي', icon: '💎', desc: 'وصل لرتبة الألماس' }
+  // ── Data ───────────────────────────────────────────────────
+  async function loadProfile(uid) {
+    const d = await getVal('players/' + uid);
+    if (!d) return null;
+    let hist = d.gameHistory || [];
+    if (!Array.isArray(hist)) hist = Object.values(hist);
+    hist = hist.filter(Boolean).sort((a, b) => num(a.timestamp) - num(b.timestamp));
+    const inv = d.inventory || {};
+    return {
+      uid,
+      username: d.username || 'لاعب',
+      rankPoints: num(d.rankPoints),
+      stats: d.stats || {},
+      achievements: d.achievements || {},
+      inventory: { nameThemes: Object.values(inv.nameThemes || {}), nameTags: Object.values(inv.nameTags || {}) },
+      nameTheme: d.nameTheme || 'default',
+      nameTag: d.nameTag || null,
+      presence: d.presence || {},
+      categoryStats: d.categoryStats || {},
+      history: hist,
+      createdAt: d.createdAt || null,
+      friendIds: Object.keys(d.friends || {}),
+      friendCount: Object.keys(d.friends || {}).length,
     };
-    
-    container.innerHTML = Object.keys(allAchievements).map(key => {
-      const ach = allAchievements[key];
-      const unlocked = achievements[key];
-      
-      return `
-        <div class="pv-achievement ${unlocked ? 'unlocked' : 'locked'}">
-          <div class="pv-achievement-icon">${ach.icon}</div>
-          <div class="pv-achievement-info">
-            <div class="pv-achievement-name">${ach.name}</div>
-            <div class="pv-achievement-desc">${ach.desc}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
   }
 
-  function renderInventory(inventory) {
-    const container = document.getElementById('pv-inventory');
-    
+  function fmtDate(ts) { try { return new Date(ts).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) { return ''; } }
+  function fmtShort(ts) { try { return new Date(ts).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }); } catch (e) { return ''; } }
+  function ago(ts) {
+    ts = num(ts); if (!ts) return '';
+    const d = Date.now() - ts;
+    if (d < 120000) return 'قبل لحظات';
+    if (d < 3600000) return 'قبل ' + Math.floor(d / 60000) + ' دقيقة';
+    if (d < 86400000) return 'قبل ' + Math.floor(d / 3600000) + ' ساعة';
+    if (d < 30 * 86400000) return 'قبل ' + Math.floor(d / 86400000) + ' يوم';
+    return fmtDate(ts);
+  }
+  const pct = (a, b) => (b > 0 ? Math.round((a / b) * 100) : 0);
+
+  // ── Render ─────────────────────────────────────────────────
+  function statusChip(p) {
+    const pr = p.presence || {};
+    if (pr.online && pr.inGame) return `<span class="pv2-chip lime"><span class="pv2-dot on"></span>🎮 يلعب الآن${pr.phase === 'waiting' ? ' (غرفة انتظار)' : ''}</span>`;
+    if (pr.online) return `<span class="pv2-chip lime"><span class="pv2-dot on"></span>متصل الآن</span>`;
+    return `<span class="pv2-chip dim"><span class="pv2-dot"></span>${pr.lastSeen ? 'آخر ظهور ' + esc(ago(pr.lastSeen)) : 'غير متصل'}</span>`;
+  }
+
+  function render(p, ctx) {
+    const sc = document.getElementById('pv2-scroll');
+    const st = p.stats;
+    const spyGames = num(st.spyGames), innGames = num(st.innocentGames);
+    const spyWins = num(st.spyWins), innWins = num(st.innocentWins);
+    const wins = spyWins + innWins;
+    const games = num(st.totalGames) || (spyGames + innGames);
+    const losses = Math.max(0, games - wins);
+    const detect = num(st.spyDetectionRate);
+
+    // categories
+    const cats = Object.keys(p.categoryStats).map((k) => [k, num(p.categoryStats[k])]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 4);
+    // recent games
+    const recent = p.history.slice(-5).reverse();
+    // inventory (resolve names via NameThemes when present)
+    const NT = window.NameThemes || {};
     const items = [];
-    
-    // Add name themes
-    if (inventory.nameThemes && inventory.nameThemes.length > 0) {
-      inventory.nameThemes.forEach(theme => {
-        const themeData = window.NameThemes?.themes[theme];
-        if (themeData) {
-          items.push({
-            name: themeData.name,
-            type: 'ثيم اسم',
-            icon: '✨'
-          });
-        }
-      });
-    }
-    
-    // Add name tags
-    if (inventory.nameTags && inventory.nameTags.length > 0) {
-      inventory.nameTags.forEach(tag => {
-        const tagData = window.NameThemes?.tags[tag];
-        if (tagData) {
-          items.push({
-            name: tagData.name,
-            type: 'وسم',
-            icon: tagData.icon
-          });
-        }
-      });
-    }
-    
-    if (items.length === 0) {
-      container.innerHTML = '<div class="pv-empty">لا توجد عناصر في المخزون</div>';
-      return;
-    }
-    
-    container.innerHTML = items.map(item => `
-      <div class="pv-item">
-        <div style="font-size: 24px;">${item.icon}</div>
-        <div class="pv-item-name">${item.name}</div>
-        <div class="pv-item-type">${item.type}</div>
+    p.inventory.nameThemes.forEach((k) => { const t = NT.themes && NT.themes[k]; if (t) items.push({ n: t.name || k, t: 'ثيم اسم', i: '✨' }); });
+    p.inventory.nameTags.forEach((k) => { const t = NT.tags && NT.tags[k]; if (t) items.push({ n: t.name || k, t: 'وسم', i: t.icon || '🏷️' }); });
+
+    const chips = [statusChip(p)];
+    if (ctx.relation === 'friend') chips.push(`<span class="pv2-chip">🤝 صديقك${ctx.since ? ' منذ ' + esc(fmtDate(ctx.since)) : ''}</span>`);
+    if (ctx.relation === 'sent') chips.push('<span class="pv2-chip dim">⏳ طلب الصداقة مُرسل</span>');
+    if (ctx.relation === 'received') chips.push('<span class="pv2-chip lime">📩 أرسل لك طلب صداقة</span>');
+    if (p.createdAt) chips.push(`<span class="pv2-chip dim">📅 عضو منذ ${esc(fmtDate(p.createdAt))}</span>`);
+    chips.push(`<span class="pv2-chip dim">👥 ${p.friendCount} صديق</span>`);
+
+    sc.innerHTML = `
+      <div class="pv2-head">
+        <div class="pv2-rank" id="pv2-rankicon"></div>
+        <div class="pv2-name" id="pv2-name">${esc(p.username)}</div>
+        <div class="pv2-sub" id="pv2-sub"></div>
+        <div class="pv2-chips">${chips.join('')}</div>
+        <div class="pv2-prog" id="pv2-prog"></div>
       </div>
-    `).join('');
+      <div class="pv2-body">
+        <section><h4 class="pv2-h">📊 الإحصائيات</h4>
+          <div class="pv2-grid">
+            <div class="pv2-stat lime"><b>${wins}</b><small>انتصارات</small></div>
+            <div class="pv2-stat"><b>${losses}</b><small>خسائر</small></div>
+            <div class="pv2-stat lime"><b>${pct(wins, games)}%</b><small>نسبة الفوز</small></div>
+            <div class="pv2-stat"><b>${games}</b><small>المباريات</small></div>
+            <div class="pv2-stat"><b>${num(st.currentStreak)}</b><small>سلسلة حالية</small></div>
+            <div class="pv2-stat lime"><b>${num(st.longestWinStreak)}</b><small>أطول سلسلة</small></div>
+          </div>
+        </section>
+        <section><h4 class="pv2-h">🎭 الأداء حسب الدور</h4>
+          <div class="pv2-rows">
+            <div class="pv2-row"><div class="top"><span>🕵️ جاسوس — ${spyWins}/${spyGames} فوز</span><span>${pct(spyWins, spyGames)}%</span></div><div class="pv2-bar"><i style="width:${pct(spyWins, spyGames)}%"></i></div></div>
+            <div class="pv2-row"><div class="top"><span>🛡️ بريء — ${innWins}/${innGames} فوز</span><span>${pct(innWins, innGames)}%</span></div><div class="pv2-bar cy"><i style="width:${pct(innWins, innGames)}%"></i></div></div>
+            <div class="pv2-row"><div class="top"><span>🔎 اكتشاف الجاسوس</span><span>${Math.round(detect)}%</span></div><div class="pv2-bar cy"><i style="width:${Math.min(100, Math.max(0, detect))}%"></i></div></div>
+            ${num(st.timesCaughtAsSpy) ? `<div class="pv2-empty">انكشف كجاسوس ${num(st.timesCaughtAsSpy)} مرة</div>` : ''}
+          </div>
+        </section>
+        <section><h4 class="pv2-h">🗂️ الفئات المفضلة</h4>
+          ${cats.length ? `<div class="pv2-rows">${cats.map((c) => `<div class="pv2-row"><div class="top"><span>${esc(catName(c[0]))}</span><span>${c[1]}</span></div><div class="pv2-bar"><i style="width:${Math.round((c[1] / cats[0][1]) * 100)}%"></i></div></div>`).join('')}</div>` : '<div class="pv2-empty">لا توجد بيانات بعد</div>'}
+        </section>
+        <section><h4 class="pv2-h">🕒 آخر المباريات</h4>
+          ${recent.length ? `<div class="pv2-games">${recent.map((g) => `<div class="pv2-game"><span class="ic">${g.role === 'spy' ? '🕵️' : '🛡️'}</span><span class="nm">${esc(catName(g.category || 'عام'))}</span><span class="dt">${esc(fmtShort(g.timestamp))}</span><span class="pv2-res ${g.won ? 'w' : 'l'}">${g.won ? 'فوز' : 'خسارة'}</span></div>`).join('')}</div>` : '<div class="pv2-empty">لا توجد مباريات مسجلة</div>'}
+        </section>
+        <section><h4 class="pv2-h">🏆 الإنجازات (${Object.keys(ACHIEVEMENTS).filter((k) => p.achievements[k]).length}/${Object.keys(ACHIEVEMENTS).length})</h4>
+          <div class="pv2-ach">${Object.keys(ACHIEVEMENTS).map((k) => { const a = ACHIEVEMENTS[k]; return `<div class="pv2-a${p.achievements[k] ? ' on' : ''}"><span class="ic">${a.icon}</span><div><b>${a.name}</b><small>${a.desc}</small></div></div>`; }).join('')}</div>
+        </section>
+        <section><h4 class="pv2-h">🎒 المخزون</h4>
+          ${items.length ? `<div class="pv2-inv">${items.map((i) => `<span class="pv2-item">${esc(i.i)} ${esc(i.n)} <small>${esc(i.t)}</small></span>`).join('')}</div>` : '<div class="pv2-empty">لا توجد عناصر في المخزون</div>'}
+        </section>
+        ${ctx.mutual && ctx.mutual.length ? `<section><h4 class="pv2-h">👥 أصدقاء مشتركون (${ctx.mutual.length})</h4><div class="pv2-mut">${ctx.mutual.slice(0, 12).map((n) => `<span class="pv2-chip">${esc(n)}</span>`).join('')}${ctx.mutual.length > 12 ? `<span class="pv2-chip dim">+${ctx.mutual.length - 12}</span>` : ''}</div></section>` : ''}
+      </div>`;
+
+    // rank (uses the existing rank system as-is)
+    try {
+      if (NT.getRank) {
+        const rank = NT.getRank(p.rankPoints);
+        document.getElementById('pv2-sub').textContent = `${rank.nameAr || ''} ${rank.division ? '· ' + rank.division : ''} · ${p.rankPoints} نقطة`;
+        if (NT.createRankIcon) document.getElementById('pv2-rankicon').appendChild(NT.createRankIcon(p.rankPoints, 84));
+        if (NT.getProgress) {
+          const pr = NT.getProgress(p.rankPoints);
+          document.getElementById('pv2-prog').innerHTML = pr.next
+            ? `<div class="pv2-prog-row"><span>${esc(pr.rank.nameAr || '')}</span><span>${pr.pointsForNextTier} نقطة للـ ${esc(pr.next.nameAr || '')}</span></div><div class="pv2-bar"><i style="width:${Math.round(pr.progressPercent)}%"></i></div>`
+            : `<div class="pv2-prog-row"><span>🏅 أعلى رتبة</span><span></span></div><div class="pv2-bar"><i style="width:100%"></i></div>`;
+        }
+      } else document.getElementById('pv2-sub').textContent = p.rankPoints + ' نقطة';
+      if (NT.applyPlayerStyle) NT.applyPlayerStyle(document.getElementById('pv2-name'), { username: p.username, nameTheme: p.nameTheme, nameTag: p.nameTag, rankPoints: p.rankPoints });
+    } catch (e) { /* decoration only */ }
+
+    renderActions(p, ctx);
   }
 
-  // ═══════════════════════════════════════════════════════════
-  // PUBLIC API
-  // ═══════════════════════════════════════════════════════════
-  
-  async function openProfile(uid, username) {
-    const overlay = document.getElementById('profile-modal-overlay');
-    if (!overlay) return;
-    
-    // Show modal with loading state
-    overlay.classList.add('open');
-    document.getElementById('pv-username').textContent = username || 'جاري التحميل...';
-    document.getElementById('pv-rank-info').textContent = '---';
-    document.getElementById('pv-content').innerHTML = `
-      <div class="pv-loading">
-        <div class="pv-spinner"></div>
-        <div>جاري تحميل البيانات...</div>
-      </div>
-    `;
-    
-    // Load profile data
-    const profileData = await loadUserProfile(uid);
-    
-    if (!profileData) {
-      document.getElementById('pv-content').innerHTML = `
-        <div class="pv-empty">تعذر تحميل البيانات</div>
-      `;
-      return;
+  // ── Actions ────────────────────────────────────────────────
+  function chatHref(uid) {
+    if (window.FI && window.FI.chatUrl) return window.FI.chatUrl(uid);
+    return 'chat.html?with=' + encodeURIComponent(uid);
+  }
+  function renderActions(p, ctx) {
+    const bar = document.getElementById('pv2-actions');
+    if (ctx.relation === 'self') { bar.style.display = 'none'; return; }
+    const pr = p.presence || {};
+    const b = [];
+    if (ctx.relation === 'friend') {
+      b.push(`<a class="pv2-btn lime" href="${esc(chatHref(p.uid))}"><i class="fas fa-comment"></i> دردشة</a>`);
+      if (pr.online && !pr.inGame) b.push('<button class="pv2-btn" data-pv="invite" type="button">🎮 دعوة للعب</button>');
+      if (pr.inGame && pr.phase === 'waiting' && pr.room) b.push('<button class="pv2-btn" data-pv="join" type="button">🚪 اطلب الانضمام</button>');
+      b.push('<button class="pv2-btn red" data-pv="remove" type="button" title="إزالة من الأصدقاء">🗑️</button>');
+    } else if (ctx.relation === 'received') {
+      b.push('<button class="pv2-btn lime" data-pv="accept" type="button">✔ قبول الطلب</button>');
+      b.push('<button class="pv2-btn red" data-pv="decline" type="button">✖ رفض</button>');
+    } else if (ctx.relation === 'sent') {
+      b.push('<button class="pv2-btn" data-pv="cancel" type="button">إلغاء الطلب</button>');
+    } else {
+      b.push('<button class="pv2-btn lime" data-pv="add" type="button">➕ إرسال طلب صداقة</button>');
     }
-    
-    renderProfile(profileData);
+    bar.innerHTML = b.join('');
+    bar.style.display = 'flex';
+    bar.onclick = async (e) => {
+      const btn = e.target.closest('[data-pv]'); if (!btn) return;
+      const act = btn.dataset.pv;
+      const F = window.FI;
+      if (!F) { toast('نظام الأصدقاء لم يُحمّل بعد', true); return; }
+      btn.disabled = true;
+      try {
+        await F.ready; await F.whenUser();
+        if (act === 'add') { const r = await F.friends.sendRequestToUid(p.uid, p.username); toast(r && r.autoAccepted ? '🎉 أصبحتما أصدقاء' : '✅ تم إرسال طلب الصداقة'); ctx.relation = r && r.autoAccepted ? 'friend' : 'sent'; render(p, ctx); }
+        else if (act === 'accept') { await F.friends.accept(p.uid); ctx.relation = 'friend'; ctx.since = Date.now(); toast('🎉 أصبحتما أصدقاء'); render(p, ctx); }
+        else if (act === 'decline') { await F.friends.decline(p.uid); ctx.relation = 'none'; toast('تم رفض الطلب'); render(p, ctx); }
+        else if (act === 'cancel') { await F.friends.cancel(p.uid); ctx.relation = 'none'; toast('تم إلغاء الطلب'); render(p, ctx); }
+        else if (act === 'remove') {
+          const ok = window.UIConfirm ? await window.UIConfirm('إزالة ' + p.username + ' من أصدقائك؟', { title: 'إزالة صديق', type: 'warning', confirmText: 'إزالة', icon: '⚠️' }) : true;
+          if (ok) { await F.friends.remove(p.uid); ctx.relation = 'none'; toast('تمت إزالة الصديق'); render(p, ctx); } else btn.disabled = false;
+        }
+        else if (act === 'join') { await F.sendJoinRequest(p.uid); toast('✅ تم إرسال طلب الانضمام'); btn.disabled = false; }
+        else if (act === 'invite') {
+          const cat = await pickCategory(p.username);
+          if (!cat) { btn.disabled = false; return; }
+          await F.proposeRoom(p.uid, p.username, cat);
+          toast('✅ تم إرسال الدعوة — ستنتقلان للغرفة فور قبوله'); btn.disabled = false;
+        }
+      } catch (err) { toast(err.message || 'حدث خطأ', true); btn.disabled = false; }
+    };
+  }
+
+  function pickCategory(name) {
+    return new Promise((resolve) => {
+      const box = document.getElementById('pv2');
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:absolute;inset:0;z-index:6;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:18px;';
+      wrap.innerHTML = `<div style="width:100%;max-width:320px;border:2px solid rgba(163,230,53,.5);border-radius:18px;padding:18px;background:#000;text-align:center">
+        <div style="font-weight:900;color:#a3e635;margin-bottom:4px">🎮 دعوة ${esc(name)}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:12px;line-height:1.5">تُنشأ الغرفة فقط عندما يقبل</div>
+        <select id="pv2-cat" style="width:100%;padding:10px;border-radius:12px;background:#0b0b0b;color:#fff;border:2px solid rgba(0,242,255,.3);font:inherit;margin-bottom:12px">
+          ${Object.keys(CAT_NAMES).filter((k) => k !== 'animals').map((k) => `<option value="${k}">${CAT_NAMES[k]}</option>`).join('')}
+        </select>
+        <div style="display:flex;gap:8px"><button class="pv2-btn lime" id="pv2-go" type="button">إرسال</button><button class="pv2-btn" id="pv2-no" type="button">إلغاء</button></div></div>`;
+      box.appendChild(wrap);
+      wrap.querySelector('#pv2-go').onclick = () => { const v = wrap.querySelector('#pv2-cat').value; wrap.remove(); resolve(v); };
+      wrap.querySelector('#pv2-no').onclick = () => { wrap.remove(); resolve(null); };
+    });
+  }
+
+  // ── Public API ─────────────────────────────────────────────
+  async function openProfile(uid, username) {
+    if (!uid) return;
+    injectStyles(); createModal();
+    const token = ++openToken;
+    const o = document.getElementById('pv2-overlay');
+    o.classList.add('open');
+    document.getElementById('pv2-actions').style.display = 'none';
+    document.getElementById('pv2-scroll').innerHTML = `<div class="pv2-load"><div class="pv2-spin"></div><div>${username ? 'جاري تحميل ملف ' + esc(username) : 'جاري التحميل...'}</div></div>`;
+    try {
+      const [p, me] = await Promise.all([loadProfile(uid), myUid().catch(() => null)]);
+      if (token !== openToken) return; // closed or another profile opened meanwhile
+      if (!p) { document.getElementById('pv2-scroll').innerHTML = '<div class="pv2-load">تعذر العثور على هذا اللاعب</div>'; return; }
+      const ctx = { relation: 'none', since: null, mutual: [] };
+      if (me) {
+        if (me === uid) ctx.relation = 'self';
+        else {
+          const [fr, recv, sent, myFriends] = await Promise.all([
+            getVal(`players/${me}/friends/${uid}`).catch(() => null),
+            getVal(`players/${me}/friendRequests/${uid}`).catch(() => null),
+            getVal(`players/${uid}/friendRequests/${me}`).catch(() => null),
+            getVal(`players/${me}/friends`).catch(() => null),
+          ]);
+          ctx.relation = fr ? 'friend' : recv ? 'received' : sent ? 'sent' : 'none';
+          ctx.since = fr && fr.addedAt || null;
+          const mine = myFriends || {};
+          ctx.mutual = p.friendIds.filter((id) => mine[id]).map((id) => (mine[id] && mine[id].username) || 'لاعب');
+        }
+      }
+      if (token !== openToken) return;
+      render(p, ctx);
+    } catch (e) {
+      console.error('[ProfileViewer]', e);
+      if (token === openToken) document.getElementById('pv2-scroll').innerHTML = '<div class="pv2-load">تعذر تحميل البيانات</div>';
+    }
   }
 
   window.ProfileViewer = {
-    /**
-     * Open a user's profile
-     * @param {string} uid - User ID
-     * @param {string} username - Optional username for display
-     */
+    __v: 2,
     open: openProfile,
-    
-    /**
-     * Close the profile modal
-     */
     close: closeModal,
-    
-    /**
-     * Initialize the profile viewer
-     */
-    init() {
-      injectStyles();
-      createModal();
-    }
+    init() { injectStyles(); createModal(); },
   };
 
-  // Auto-initialize
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', async () => {
-      await initFirebase();
-      window.ProfileViewer.init();
-    });
-  } else {
-    initFirebase().then(() => window.ProfileViewer.init());
-  }
+  // Build the (hidden) shell as soon as the DOM exists. Firebase is NOT touched until a profile is opened.
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => window.ProfileViewer.init());
+  else window.ProfileViewer.init();
 })();

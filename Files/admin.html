@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="../Assets/dialogs.js"></script>
-    <script src="../Assets/inbox.js"></script>
     <style>
         /* ═══════════════════════════════════════════════════
            CLASSIC ADMIN DASHBOARD — design system
@@ -200,6 +199,101 @@
         .db-tree-node { font-family: 'Consolas', monospace; font-size: 12px; }
         .db-tree-key { color: var(--accent); cursor: pointer; }
         .db-tree-val { color: #d1d5db; }
+
+        /* ═══ NEWS MANAGER / AUDIT / SCANNER v2 ═══ */
+        html { overflow-x: hidden; } /* off-canvas sidebar must never create a horizontal scrollbar on phones */
+        .news-grid { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: 16px; align-items: start; margin-bottom: 16px; }
+        .pad { padding: 18px; }
+        .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .f-row > div, .f-col { min-width: 0; }
+        .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+        .seg button { padding: 7px 14px; font-size: 12px; font-weight: 800; background: transparent; color: var(--text-dim); border: 0; cursor: pointer; font-family: inherit; }
+        .seg button.on { background: var(--accent); color: #05161a; }
+        .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chip-btn { padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text-dim); font-size: 11.5px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .chip-btn:hover, .chip-btn.on { border-color: var(--border-accent); color: var(--accent); }
+        .chip-btn.on { background: rgba(0,229,255,.1); }
+        .md-bar { display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+        .md-bar button { min-width: 34px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text); cursor: pointer; font-family: inherit; font-weight: 800; font-size: 12px; padding: 0 9px; }
+        .md-bar button:hover { border-color: var(--border-accent); color: var(--accent); }
+        .check-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; margin-bottom: 8px; }
+        .check-row input { width: 16px; height: 16px; accent-color: var(--accent); }
+        .hint { font-size: 11px; color: var(--text-faint); margin-top: 4px; line-height: 1.6; }
+        .pv { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: #070a10; direction: ltr; display: grid; grid-template-columns: minmax(0,38%) minmax(0,1fr); min-height: 260px; }
+        .pv > div { direction: rtl; min-width: 0; }
+        .pv-list { border-right: 1px solid var(--border); padding: 8px; background: rgba(0,0,0,.3); }
+        .pv-it { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); font-size: 12px; font-weight: 800; margin-bottom: 6px; color: var(--text-dim); }
+        .pv-it.sel { border-color: var(--accent); background: rgba(0,229,255,.1); color: #fff; }
+        .pv-it small { display: block; font-weight: 600; font-size: 10px; color: var(--text-faint); margin-top: 3px; }
+        .pv-detail { padding: 14px 16px; overflow-wrap: anywhere; }
+        .pv-detail h3 { font-size: 17px; font-weight: 900; margin: 8px 0 4px; color: #fff; }
+        .pv-detail .meta { font-size: 10.5px; color: var(--text-faint); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed var(--border); }
+        .pv-body { font-size: 12.5px; line-height: 1.9; color: var(--text); }
+        .pv-body h4 { color: var(--accent); font-size: 13.5px; font-weight: 900; margin: 8px 0 3px; }
+        .pv-body ul { padding-inline-start: 18px; margin: 3px 0; }
+        .pv-body p { margin: 0 0 4px; }
+        .pv-act { display: inline-block; margin-top: 10px; padding: 6px 14px; border-radius: 9px; background: var(--accent); color: #05161a; font-size: 12px; font-weight: 900; }
+        .tag-chip { display: inline-block; font-size: 10.5px; font-weight: 800; padding: 1px 9px; border-radius: 999px; border: 1px solid var(--border-accent); color: var(--accent); white-space: nowrap; }
+        .news-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+        .news-row:last-child { border-bottom: 0; }
+        .news-row .nr-main { flex: 1; min-width: 0; }
+        .news-row .nr-title { font-weight: 800; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .news-row .nr-sub { font-size: 11px; color: var(--text-faint); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .news-row.off { opacity: .55; }
+        .nr-btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+        .banner-state { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,.03); font-size: 12.5px; line-height: 1.7; margin-bottom: 12px; }
+        .banner-state.live { border-color: rgba(34,197,94,.4); background: rgba(34,197,94,.06); }
+
+        .tools-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+        .tools-bar .admin-input, .tools-bar .admin-select { width: auto; min-width: 150px; flex: 1 1 150px; max-width: 260px; }
+        .audit-row { display: grid; grid-template-columns: 150px 140px 1fr; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 12px; align-items: start; }
+        .audit-row:last-child { border-bottom: 0; }
+        .audit-row .a-time { color: var(--text-faint); font-size: 11px; }
+        .audit-row .a-who { font-weight: 800; }
+        .audit-row .a-act { display: inline-flex; gap: 6px; align-items: center; font-weight: 800; }
+        .audit-row .a-det { color: var(--text-dim); font-size: 11.5px; margin-top: 2px; overflow-wrap: anywhere; }
+
+        .sc-top { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 20px; align-items: center; padding: 18px; margin-bottom: 14px; }
+        .sc-ring { position: relative; width: 112px; height: 112px; }
+        .sc-ring svg { transform: rotate(-90deg); }
+        .sc-ring .n { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 28px; line-height: 1; }
+        .sc-ring .n small { font-size: 10px; font-weight: 700; color: var(--text-faint); margin-top: 4px; }
+        .sc-sum h3 { font-size: 16px; font-weight: 900; margin-bottom: 4px; }
+        .sc-sum p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+        .sc-spark { margin-top: 8px; display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-faint); flex-wrap: wrap; }
+        .sc-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+        .sc-cats { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; -webkit-overflow-scrolling: touch; }
+        .sc-cats .chip-btn { flex: 0 0 auto; }
+        .sc-f { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,.02); margin-bottom: 8px; }
+        .sc-f.sev-critical { border-color: rgba(239,68,68,.4); background: rgba(239,68,68,.05); }
+        .sc-f.sev-warn { border-color: rgba(245,158,11,.32); background: rgba(245,158,11,.04); }
+        .sc-f.sev-ok { border-color: rgba(34,197,94,.22); }
+        .sc-f-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+        .sc-f-head b { font-size: 12.5px; }
+        .sc-cat { font-size: 10.5px; color: var(--text-faint); border: 1px solid var(--border); border-radius: 999px; padding: 0 8px; }
+        .sc-f p { font-size: 11.5px; color: var(--text-dim); line-height: 1.7; overflow-wrap: anywhere; }
+        .sc-items { margin-top: 6px; font-size: 11px; }
+        .sc-items summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+        .sc-items div { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+        .sc-items span { background: rgba(255,255,255,.05); border: 1px solid var(--border); border-radius: 7px; padding: 1px 8px; direction: ltr; overflow-wrap: anywhere; }
+        .sc-fixrow { margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .sc-safe { font-size: 10px; color: var(--ok); border: 1px solid rgba(34,197,94,.4); border-radius: 999px; padding: 0 8px; }
+        .sc-timings { font-size: 10.5px; color: var(--text-faint); margin-top: 12px; line-height: 1.9; direction: ltr; text-align: left; }
+        .rules-pre { background: rgba(0,0,0,.4); padding: 12px; border-radius: 10px; font-size: 11px; margin-top: 10px; overflow-x: auto; direction: ltr; text-align: left; line-height: 1.6; }
+
+        @media (max-width: 980px) { .news-grid { grid-template-columns: minmax(0,1fr); } }
+        @media (max-width: 640px) {
+            .f-row { grid-template-columns: minmax(0,1fr); }
+            .pv { grid-template-columns: minmax(0,1fr); }
+            .pv-list { border-right: 0; border-bottom: 1px solid var(--border); }
+            .news-row { flex-wrap: wrap; }
+            .nr-btns { width: 100%; justify-content: flex-start; }
+            .audit-row { grid-template-columns: minmax(0,1fr); gap: 4px; }
+            .sc-top { grid-template-columns: minmax(0,1fr); justify-items: center; text-align: center; }
+            .sc-spark { justify-content: center; }
+            .tools-bar .admin-input, .tools-bar .admin-select { max-width: none; }
+            .seg button { padding: 7px 10px; }
+        }
     </style>
 </head>
 <body>
@@ -224,7 +318,8 @@
                 <div class="nav-section">الإشراف</div>
                 <div class="nav-item" data-sec="reports" onclick="showSection('reports')"><i class="fas fa-flag"></i><span>البلاغات</span><span class="nav-count" id="nc-reports">0</span></div>
                 <div class="nav-item" data-sec="bans" onclick="showSection('bans')"><i class="fas fa-ban"></i><span>الحظر</span></div>
-                <div class="nav-item" data-sec="announcements" onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i><span>الإعلانات</span></div>
+                <div class="nav-item" data-sec="announcements" onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i><span>الأخبار والإعلانات</span></div>
+                <div class="nav-item" data-sec="audit" onclick="showSection('audit')"><i class="fas fa-clipboard-list"></i><span>سجل الإدارة</span></div>
 
                 <div class="nav-section">المحتوى</div>
                 <div class="nav-item" data-sec="words" onclick="showSection('words')"><i class="fas fa-font"></i><span>الكلمات والفئات</span></div>
@@ -295,7 +390,7 @@
                                 <th>الكود</th><th>المضيف</th><th>الحالة</th><th>الفئة</th>
                                 <th>اللاعبون</th><th>النوع</th><th>أُنشئت</th><th></th>
                             </tr></thead>
-                            <tbody id="rooms-table"><tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint);">جاري التحميل...</td></tr></tbody>
+                            <tbody id="rooms-table"><tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-faint);">جاري التحميل...</td></tr></tbody>
                         </table>
                     </div>
                 </section>
@@ -312,14 +407,14 @@
                 <section class="admin-section" id="sec-players">
                     <div class="section-head">
                         <div><h2>اللاعبون</h2><p>بحث، تعديل، وإصلاح سجلات اللاعبين</p></div>
-                        <input class="admin-input" style="width:220px;" placeholder="بحث باسم المستخدم..." oninput="searchPlayers(this.value)">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;"><input class="admin-input" style="width:220px;max-width:100%;" placeholder="بحث باسم المستخدم..." oninput="searchPlayers(this.value)"><button class="btn btn-ghost" onclick="exportPlayersCSV()"><i class="fas fa-file-csv"></i> CSV</button></div>
                     </div>
 
                     <div class="card table-wrap" style="margin-bottom:18px;">
                         <table>
                             <thead><tr>
                                 <th>اللاعب</th><th>البريد</th><th>الرتبة</th><th>نقاط</th>
-                                <th>ألعاب</th><th>حالة</th><th>مدير</th><th></th>
+                                <th>عملات</th><th>ألعاب</th><th>حالة</th><th>مدير</th><th></th>
                             </tr></thead>
                             <tbody id="players-table"></tbody>
                         </table>
@@ -398,28 +493,125 @@
                 <!-- ═══ ANNOUNCEMENTS ═══ -->
                 <section class="admin-section" id="sec-announcements">
                     <div class="section-head">
-                        <div><h2>الإعلانات</h2><p>بث رسالة لكل اللاعبين المتصلين</p></div>
+                        <div><h2>الأخبار والإعلانات</h2><p>تظهر للاعبين في صندوق الوارد (قائمة أخبار + تفاصيل) وكشريط اختياري أعلى الصفحة</p></div>
                     </div>
-                    <div class="card" style="padding:20px;max-width:560px;">
-                        <label class="field-label">نص الإعلان</label>
-                        <textarea id="ann-text-input" class="admin-input" rows="3" style="margin-bottom:12px;"></textarea>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-                            <div>
-                                <label class="field-label">الأولوية</label>
-                                <select id="ann-priority" class="admin-select">
-                                    <option value="info">معلومة</option>
-                                    <option value="warning">تحذير</option>
-                                    <option value="critical">حرج</option>
-                                </select>
+                    <div class="news-grid">
+                        <div class="card pad" id="news-composer">
+                            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+                                <div class="seg" id="news-aud">
+                                    <button type="button" class="on" data-aud="all" onclick="setNewsAudience('all')">كل اللاعبين</button>
+                                    <button type="button" data-aud="user" onclick="setNewsAudience('user')">لاعب محدد</button>
+                                </div>
+                                <span id="news-edit-flag" class="badge badge-warn" style="display:none;">وضع التعديل</span>
                             </div>
-                            <div>
-                                <label class="field-label">المدة (ثانية)</label>
-                                <input id="ann-duration" class="admin-input" type="number" value="30">
+                            <div id="news-target-row" style="display:none;margin-bottom:12px;">
+                                <label class="field-label">اللاعب المستلم</label>
+                                <select id="news-target-uid" class="admin-select"></select>
+                                <div class="hint">تصل كرسالة شخصية في صندوق وارد هذا اللاعب فقط.</div>
+                            </div>
+                            <label class="field-label">قوالب سريعة</label>
+                            <div class="chip-row" style="margin-bottom:14px;">
+                                <button type="button" class="chip-btn" onclick="applyNewsTemplate('update')">🚀 تحديث</button>
+                                <button type="button" class="chip-btn" onclick="applyNewsTemplate('announcement')">📢 إعلان</button>
+                                <button type="button" class="chip-btn" onclick="applyNewsTemplate('event')">🎉 حدث</button>
+                                <button type="button" class="chip-btn" onclick="applyNewsTemplate('maintenance')">🛠️ صيانة</button>
+                            </div>
+                            <div class="f-row">
+                                <div><label class="field-label">التصنيف</label>
+                                    <select id="news-cat" class="admin-select" oninput="updateNewsPreview()">
+                                        <option value="update">🚀 تحديث</option><option value="announcement">📢 إعلان</option>
+                                        <option value="event">🎉 حدث</option><option value="maintenance">🛠️ صيانة</option>
+                                    </select></div>
+                                <div><label class="field-label">وسم قصير (اختياري)</label>
+                                    <input id="news-tag" class="admin-input" maxlength="14" placeholder="v3.0" oninput="updateNewsPreview()"></div>
+                            </div>
+                            <label class="field-label">العنوان</label>
+                            <input id="news-title" class="admin-input" maxlength="140" placeholder="تحديث v3.0 متاح الآن!" oninput="updateNewsPreview()" style="margin-bottom:12px;">
+                            <label class="field-label">التفاصيل</label>
+                            <div class="md-bar">
+                                <button type="button" onclick="mdInsert('h')" title="عنوان فرعي">H</button>
+                                <button type="button" onclick="mdInsert('b')" title="عريض"><b>B</b></button>
+                                <button type="button" onclick="mdInsert('li')" title="نقطة">• قائمة</button>
+                                <button type="button" onclick="mdInsert('link')" title="رابط https">🔗</button>
+                            </div>
+                            <textarea id="news-body" class="admin-input" rows="8" maxlength="6000" placeholder="## ما الجديد&#10;- ميزة جديدة&#10;- تحسينات" oninput="updateNewsPreview()" style="margin-bottom:12px;"></textarea>
+                            <div class="f-row">
+                                <div><label class="field-label">نص الزر (اختياري)</label>
+                                    <input id="news-alabel" class="admin-input" maxlength="40" placeholder="العب الآن" oninput="updateNewsPreview()"></div>
+                                <div><label class="field-label">رابط الزر</label>
+                                    <input id="news-aurl" class="admin-input" style="direction:ltr;text-align:left;" placeholder="https://… أو home.html" oninput="updateNewsPreview()"></div>
+                            </div>
+                            <div class="f-row">
+                                <div><label class="field-label">ينتهي بعد</label>
+                                    <select id="news-exp" class="admin-select">
+                                        <option value="0">لا ينتهي</option><option value="1">يوم</option><option value="7" selected>7 أيام</option><option value="30">30 يوماً</option>
+                                    </select></div>
+                                <div id="news-pin-row"><label class="field-label">خيارات</label>
+                                    <label class="check-row"><input type="checkbox" id="news-pin" onchange="updateNewsPreview()"> 📌 تثبيت في أعلى القائمة</label></div>
+                            </div>
+                            <div id="news-banner-box" style="border:1px dashed var(--border);border-radius:12px;padding:12px;margin-bottom:14px;">
+                                <label class="check-row" style="margin-bottom:0;"><input type="checkbox" id="news-banner" onchange="document.getElementById('news-banner-opts').style.display=this.checked?'grid':'none'"> بثّ أيضاً كشريط أعلى الصفحة الرئيسية</label>
+                                <div id="news-banner-opts" class="f-row" style="display:none;margin:10px 0 0;">
+                                    <div><label class="field-label">الأولوية</label><select id="news-bprio" class="admin-select"><option value="info">معلومة</option><option value="warning">تحذير</option><option value="critical">حرج</option></select></div>
+                                    <div><label class="field-label">مدة الشريط (ثانية)</label><input id="news-bdur" class="admin-input" type="number" min="5" max="86400" value="60"></div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <button class="btn btn-primary" id="news-publish-btn" onclick="publishNews()"><i class="fas fa-paper-plane"></i> نشر</button>
+                                <button class="btn btn-ghost" onclick="resetNewsForm()">مسح / إلغاء التعديل</button>
                             </div>
                         </div>
-                        <button class="btn btn-primary" onclick="sendAnnouncement()"><i class="fas fa-bullhorn"></i> بث الآن</button>
-                        <button class="btn btn-ghost" onclick="clearAnnouncement()">إلغاء الحالي</button>
+
+                        <div class="f-col" style="display:flex;flex-direction:column;gap:16px;">
+                            <div class="card pad">
+                                <h3 style="font-size:13px;font-weight:900;margin-bottom:10px;">👁️ معاينة صندوق الوارد</h3>
+                                <div class="pv">
+                                    <div class="pv-list" id="pv-list"></div>
+                                    <div class="pv-detail" id="pv-detail"></div>
+                                </div>
+                            </div>
+                            <div class="card pad">
+                                <h3 style="font-size:13px;font-weight:900;margin-bottom:10px;">📣 الشريط العلوي الحالي</h3>
+                                <div id="ann-state" class="banner-state">—</div>
+                                <label class="field-label">بث سريع (شريط فقط)</label>
+                                <textarea id="ann-quick-text" class="admin-input" rows="2" style="margin-bottom:10px;"></textarea>
+                                <div class="f-row" style="margin-bottom:10px;">
+                                    <div><select id="ann-priority" class="admin-select"><option value="info">معلومة</option><option value="warning">تحذير</option><option value="critical">حرج</option></select></div>
+                                    <div><input id="ann-duration" class="admin-input" type="number" min="5" value="30" title="المدة بالثواني"></div>
+                                </div>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                    <button class="btn btn-primary btn-sm" onclick="sendAnnouncement()"><i class="fas fa-bullhorn"></i> بث الآن</button>
+                                    <button class="btn btn-ghost btn-sm" onclick="clearAnnouncement()">إلغاء الحالي</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="card">
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);">
+                            <h3 style="font-size:13px;font-weight:900;">الأخبار المنشورة</h3>
+                            <button class="btn btn-ghost btn-sm" onclick="loadNews()"><i class="fas fa-rotate"></i></button>
+                        </div>
+                        <div id="news-list"></div>
+                    </div>
+                </section>
+
+                <!-- ═══ ADMIN AUDIT LOG ═══ -->
+                <section class="admin-section" id="sec-audit">
+                    <div class="section-head">
+                        <div><h2>سجل الإدارة</h2><p>كل إجراء إداري (حظر، عملات، أخبار، إصلاحات…) مع اسم المنفّذ والوقت</p></div>
+                        <button class="btn btn-ghost" onclick="loadAudit()"><i class="fas fa-rotate"></i> تحديث</button>
+                    </div>
+                    <div class="tools-bar">
+                        <select id="audit-filter" class="admin-select" onchange="renderAudit()">
+                            <option value="">كل الإجراءات</option><option value="ban">الحظر</option><option value="room">الغرف</option>
+                            <option value="admin">الصلاحيات</option><option value="report">البلاغات</option><option value="coins">العملات</option>
+                            <option value="news">الأخبار</option><option value="word">الكلمات</option><option value="db">قاعدة البيانات</option><option value="scan">الفاحص</option><option value="msg">الرسائل</option>
+                        </select>
+                        <input id="audit-q" class="admin-input" placeholder="بحث بالمنفّذ أو الهدف…" oninput="renderAudit()">
+                        <button class="btn btn-ghost" onclick="exportAuditCSV()"><i class="fas fa-file-csv"></i> تصدير CSV</button>
+                    </div>
+                    <div class="card" id="audit-list"></div>
                 </section>
 
                 <!-- ═══ WORDS / CATEGORIES ═══ -->
@@ -486,16 +678,32 @@
                 <!-- ═══ DIAGNOSTICS / TEST SUITE (NEW) ═══ -->
                 <section class="admin-section" id="sec-diagnostics">
                     <div class="section-head">
-                        <div><h2>فحص النظام</h2><p>فحص تلقائي لتناسق البيانات ووظائف اللعبة، مصنّف حسب الخطورة</p></div>
-                        <button class="btn btn-primary" id="run-diag-btn" onclick="runDiagnostics()"><i class="fas fa-play"></i> تشغيل الفحص</button>
+                        <div><h2>فحص النظام</h2><p>فحص موازٍ لكل البيانات مع درجة صحة وإصلاحات آمنة بضغطة واحدة</p></div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-success" id="fix-safe-btn" onclick="fixAllSafe()" disabled><i class="fas fa-wand-magic-sparkles"></i> إصلاح كل الآمن</button>
+                            <button class="btn btn-primary" id="run-diag-btn" onclick="runDiagnostics()"><i class="fas fa-play"></i> تشغيل الفحص</button>
+                        </div>
                     </div>
-                    <div class="kpi-grid" style="margin-bottom:18px;">
-                        <div class="card kpi-card"><div class="kpi-icon" style="background:rgba(239,68,68,.12);color:var(--danger);"><i class="fas fa-circle-exclamation"></i></div><div class="kpi-num" id="diag-critical" style="color:var(--danger);">0</div><div class="kpi-label">حرج</div></div>
-                        <div class="card kpi-card"><div class="kpi-icon" style="background:rgba(245,158,11,.12);color:var(--warn);"><i class="fas fa-triangle-exclamation"></i></div><div class="kpi-num" id="diag-warn" style="color:var(--warn);">0</div><div class="kpi-label">تحذير</div></div>
-                        <div class="card kpi-card"><div class="kpi-icon" style="background:rgba(34,197,94,.12);color:var(--ok);"><i class="fas fa-circle-check"></i></div><div class="kpi-num" id="diag-ok" style="color:var(--ok);">0</div><div class="kpi-label">سليم</div></div>
-                        <div class="card kpi-card"><div class="kpi-icon"><i class="fas fa-circle-info"></i></div><div class="kpi-num" id="diag-info">0</div><div class="kpi-label">معلومة</div></div>
+                    <div class="card sc-top">
+                        <div class="sc-ring" id="sc-ring"></div>
+                        <div class="sc-sum">
+                            <h3 id="sc-verdict">لم يُشغَّل الفحص بعد</h3>
+                            <p id="sc-sub">اضغط «تشغيل الفحص» لفحص الغرف واللاعبين والأمان والإشراف والمحتوى والأخبار.</p>
+                            <div class="sc-spark" id="sc-spark"></div>
+                        </div>
                     </div>
+                    <div class="sc-bar">
+                        <div class="chip-row" id="sc-sev"></div>
+                        <span style="flex:1"></span>
+                        <label style="font-size:11.5px;color:var(--text-dim);display:flex;align-items:center;gap:6px;">فحص تلقائي
+                            <select id="scan-auto" class="admin-select" style="width:auto;padding:5px 9px;" onchange="setScanAuto(this.value)">
+                                <option value="0">متوقف</option><option value="300">كل 5 دقائق</option><option value="900">كل 15 دقيقة</option>
+                            </select></label>
+                        <button class="btn btn-ghost btn-sm" onclick="exportScanJSON()"><i class="fas fa-download"></i> JSON</button>
+                    </div>
+                    <div class="sc-cats" id="sc-cats"></div>
                     <div id="diag-results"></div>
+                    <div class="sc-timings" id="sc-timings"></div>
                 </section>
 
                 <!-- ═══ SETTINGS / SECURITY (NEW) ═══ -->
@@ -518,6 +726,29 @@
 }</pre>
                         <p style="font-size:11px;color:var(--text-faint);margin-top:8px;">هذا يمنع أي مستخدم من منح نفسه <code>isAdmin: true</code> — فقط من كان مديراً بالفعل يمكنه تعديل هذا الحقل (أو إزالته عن نفسه). منح صلاحية مدير جديدة يجب أن يتم يدوياً من Firebase Console.</p>
                         <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="showSection('diagnostics');runDiagnostics();">عرض كل الحسابات التي لديها isAdmin حالياً</button>
+                    </div>
+
+                    <div class="card" style="padding:20px;margin-bottom:16px;">
+                        <h3 style="font-size:13px;font-weight:900;margin-bottom:8px;"><i class="fas fa-newspaper"></i> قواعد Firebase المطلوبة للأخبار وسجل الإدارة</h3>
+                        <p style="font-size:12px;color:var(--text-dim);line-height:1.9;">أضف هذه المسارات داخل <code>rules</code> في Firebase Console حتى تعمل الأخبار والرسائل الشخصية وسجل الإدارة. اللاعبون يقرؤون فقط؛ الكتابة للمديرين.</p>
+                        <pre class="rules-pre" id="rules-pre">"news": {
+  ".read": "auth != null",
+  ".write": "root.child('players').child(auth.uid).child('isAdmin').val() === true"
+},
+"userNews": {
+  "$uid": {
+    ".read": "auth != null && auth.uid === $uid",
+    ".write": "root.child('players').child(auth.uid).child('isAdmin').val() === true"
+  }
+},
+"adminLogs": {
+  ".read": "root.child('players').child(auth.uid).child('isAdmin').val() === true",
+  ".write": "root.child('players').child(auth.uid).child('isAdmin').val() === true"
+}</pre>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                            <button class="btn btn-ghost btn-sm" onclick="copyRules()"><i class="fas fa-copy"></i> نسخ القواعد</button>
+                            <button class="btn btn-ghost btn-sm" onclick="dbExportJSON()"><i class="fas fa-download"></i> نسخة احتياطية JSON</button>
+                        </div>
                     </div>
 
                     <div class="card" style="padding:20px;">
@@ -556,7 +787,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import {
-    getDatabase, ref, get, set, update, remove, push, onValue, serverTimestamp, child
+    getDatabase, ref, get, set, update, remove, push, onValue, serverTimestamp, child, query, limitToLast, runTransaction
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -621,6 +852,7 @@ function boot() {
     loadBans();
     loadWords();
     loadCurrentAnnouncement();
+    initScanAuto();
 }
 
 window.refreshAll = function() { boot(); };
@@ -633,12 +865,14 @@ window.showSection = function(id) {
     const titles = {
         overview: ['نظرة عامة',''], rooms: ['الغرف النشطة','مراقبة الغرف مباشرة'],
         players: ['اللاعبون','بحث وتعديل وإصلاح'], reports: ['البلاغات','مراجعة بلاغات اللاعبين'],
-        bans: ['الحظر','إدارة الحظر'], announcements: ['الإعلانات','بث رسائل للاعبين'],
+        bans: ['الحظر','إدارة الحظر'], announcements: ['الأخبار والإعلانات','صندوق الوارد والشريط العلوي'], audit: ['سجل الإدارة','كل الإجراءات الإدارية'],
         words: ['الكلمات والفئات','إدارة محتوى اللعبة'], database: ['قاعدة البيانات','تصفح وتعديل مباشر'],
         diagnostics: ['فحص النظام','فحص تلقائي للأخطاء'], settings: ['الإعدادات والأمان','']
     };
     document.getElementById('page-title').textContent = titles[id]?.[0] || id;
     document.getElementById('page-sub').textContent = titles[id]?.[1] || '';
+    if (id === 'announcements') { loadNews(); loadCurrentAnnouncement(); updateNewsPreview(); }
+    if (id === 'audit') loadAudit();
     closeSidebar();
 };
 window.openSidebar  = () => { document.getElementById('admin-sidebar').classList.add('open'); document.getElementById('sidebar-backdrop').classList.add('show'); };
@@ -704,7 +938,7 @@ async function loadRooms() {
         document.getElementById('nc-rooms').textContent = Object.keys(roomsCache).length;
         renderRoomsTable(roomsCache);
     } catch (e) {
-        document.getElementById('rooms-table').innerHTML = `<tr><td colspan="8" style="color:var(--danger);text-align:center;padding:20px;">خطأ: ${esc(e.message)}</td></tr>`;
+        document.getElementById('rooms-table').innerHTML = `<tr><td colspan="9" style="color:var(--danger);text-align:center;padding:20px;">خطأ: ${esc(e.message)}</td></tr>`;
     }
 }
 window.loadRooms = loadRooms;
@@ -712,7 +946,7 @@ window.loadRooms = loadRooms;
 function renderRoomsTable(rooms) {
     const entries = Object.entries(rooms);
     const tbody = document.getElementById('rooms-table');
-    if (!entries.length) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint);">لا توجد غرف نشطة</td></tr>`; return; }
+    if (!entries.length) { tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-faint);">لا توجد غرف نشطة</td></tr>`; return; }
     const statusLabel = { waiting:'انتظار', playing:'جارية', discussion:'نقاش', voting:'تصويت', reveal:'كشف' };
     tbody.innerHTML = entries.sort((a,b) => (b[1].createdAt||0)-(a[1].createdAt||0)).map(([code, r]) => {
         const playerCount = Object.keys(r.players || {}).length;
@@ -766,6 +1000,7 @@ window.closeRoom = async function(code) {
     if (!await UIConfirm(`إنهاء وحذف الغرفة ${code} نهائياً؟ سيتم إخراج كل اللاعبين.`)) return;
     try {
         await remove(ref(db, `rooms/${code}`));
+        logAdmin('room.close', code, '');
         UIAlert('تم حذف الغرفة');
         loadRooms();
     } catch (e) { UIAlert('خطأ: ' + e.message); }
@@ -780,8 +1015,9 @@ async function loadPlayers() {
         playersCache = snap.val() || {};
         renderPlayersTable(playersCache);
         populatePatchDropdown(playersCache);
+        fillNewsTargets();
     } catch (e) {
-        document.getElementById('players-table').innerHTML = `<tr><td colspan="8" style="color:var(--danger);text-align:center;padding:20px;">خطأ: ${esc(e.message)}</td></tr>`;
+        document.getElementById('players-table').innerHTML = `<tr><td colspan="9" style="color:var(--danger);text-align:center;padding:20px;">خطأ: ${esc(e.message)}</td></tr>`;
     }
 }
 window.loadPlayers = loadPlayers;
@@ -789,13 +1025,14 @@ window.loadPlayers = loadPlayers;
 function renderPlayersTable(players) {
     const entries = Object.entries(players);
     const tbody = document.getElementById('players-table');
-    if (!entries.length) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-faint);">لا يوجد لاعبون</td></tr>`; return; }
+    if (!entries.length) { tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text-faint);">لا يوجد لاعبون</td></tr>`; return; }
     tbody.innerHTML = entries.slice(0, 200).map(([uid, p]) => `
         <tr>
             <td style="font-weight:700;">${esc(p.username || '(بدون اسم)')}</td>
             <td style="color:var(--text-faint);font-size:11px;">${esc(p.email || '—')}</td>
             <td>${esc(p.rank || '—')}</td>
             <td>${p.rankPoints ?? 0}</td>
+            <td>${p.coins ?? 0}</td>
             <td>${p.stats?.totalGames ?? 0}</td>
             <td>${p.presence?.online ? '<span class="badge badge-ok">متصل</span>' : '<span class="badge badge-info">غير متصل</span>'}</td>
             <td>
@@ -804,7 +1041,11 @@ function renderPlayersTable(players) {
                     ${p.isAdmin ? '👑' : ''}
                 </label>
             </td>
-            <td><button class="btn btn-ghost btn-sm" onclick="showSection('database');dbNavigate('players/${uid}')"><i class="fas fa-database"></i></button></td>
+            <td style="white-space:nowrap;">
+                <button class="btn btn-ghost btn-sm" title="تعديل العملات" onclick="adjustCoins('${esc(uid)}')"><i class="fas fa-coins"></i></button>
+                <button class="btn btn-ghost btn-sm" title="رسالة شخصية" onclick="messagePlayer('${esc(uid)}')"><i class="fas fa-envelope"></i></button>
+                <button class="btn btn-ghost btn-sm" onclick="showSection('database');dbNavigate('players/${uid}')"><i class="fas fa-database"></i></button>
+            </td>
         </tr>`).join('');
 }
 
@@ -820,6 +1061,7 @@ window.toggleAdmin = async function(uid, makeAdmin) {
     if (!await UIConfirm(`${label} صلاحية المدير ${makeAdmin?'لـ':'من'} ${playersCache[uid]?.username || uid}؟`)) { loadPlayers(); return; }
     try {
         await update(ref(db, `players/${uid}`), { isAdmin: makeAdmin, adminSince: makeAdmin ? Date.now() : null });
+        logAdmin(makeAdmin ? 'admin.grant' : 'admin.revoke', playersCache[uid]?.username || uid, '');
         UIAlert('تم التحديث');
         loadPlayers();
     } catch (e) {
@@ -949,6 +1191,7 @@ window.viewReportDetail = function(id) {
 window.resolveReport = async function(id, status) {
     try {
         await update(ref(db, `reports/${id}`), { status, resolvedAt: Date.now(), resolvedBy: currentAdmin?.username });
+        logAdmin('report.resolve', reportsCache[id]?.reportedUsername || id, status);
         document.getElementById('report-detail-modal').style.display = 'none';
         UIAlert('تم التحديث');
         loadReports();
@@ -964,6 +1207,7 @@ window.banFromReport = async function(id) {
             permanent: true, bannedByName: currentAdmin?.username
         });
         await update(ref(db, `reports/${id}`), { status: 'banned', resolvedAt: Date.now(), resolvedBy: currentAdmin?.username });
+        logAdmin('ban', r.reportedUsername || id, r.reason || '');
         document.getElementById('report-detail-modal').style.display = 'none';
         UIAlert('تم الحظر');
         loadReports(); loadBans();
@@ -999,7 +1243,7 @@ function renderBans() {
 
 window.unbanPlayer = async function(uid) {
     if (!await UIConfirm('إلغاء الحظر عن هذا اللاعب؟')) return;
-    try { await remove(ref(db, `bans/${uid}`)); UIAlert('تم إلغاء الحظر'); loadBans(); }
+    try { await remove(ref(db, `bans/${uid}`)); logAdmin('unban', bansCache[uid]?.username || uid, ''); UIAlert('تم إلغاء الحظر'); loadBans(); }
     catch (e) { UIAlert('خطأ: ' + e.message); }
 };
 
@@ -1011,32 +1255,224 @@ window.openManualBanModal = async function() {
     const reason = await UIPrompt('سبب الحظر:');
     try {
         await set(ref(db, `bans/${uid}`), { username, reason: reason||'مخالفة القواعد', bannedAt: Date.now(), permanent: true, bannedByName: currentAdmin?.username });
+        logAdmin('ban', username, reason || 'مخالفة القواعد');
         UIAlert('تم الحظر'); loadBans();
     } catch (e) { UIAlert('خطأ: ' + e.message); }
 };
 
-// ── ANNOUNCEMENTS ────────────────────────────────────────────
-async function loadCurrentAnnouncement() {
-    try {
-        const snap = await get(ref(db, 'announcements/current'));
-        const a = snap.val();
-        if (a && a.active) document.getElementById('ann-text-input').value = a.text || '';
-    } catch (e) {}
+// ── NEWS & ANNOUNCEMENTS (player inbox) ──────────────────────
+// news/{id}            -> shown to every player in the inbox "News" tab
+// userNews/{uid}/{id}  -> personal notice for ONE player
+// announcements/current-> optional top banner on home.html (carries newsId)
+const NEWS_CATS = {
+    update:       { ico: '🚀', label: 'تحديث' },
+    announcement: { ico: '📢', label: 'إعلان' },
+    event:        { ico: '🎉', label: 'حدث' },
+    maintenance:  { ico: '🛠️', label: 'صيانة' }
+};
+const NEWS_TPL = {
+    update:       { category: 'update', tag: 'v3.0', title: 'تحديث v3.0 متاح الآن!', body: '## ما الجديد\n- ميزة جديدة هنا\n- تحسين آخر هنا\n\n## إصلاحات\n- إصلاح مشكلة ...\n\nشكراً لدعمكم **الجاسوس** 💚', alabel: 'العب الآن', aurl: 'home.html' },
+    announcement: { category: 'announcement', tag: '', title: 'إعلان جديد', body: 'اكتب نص الإعلان هنا.', alabel: '', aurl: '' },
+    event:        { category: 'event', tag: 'حدث', title: 'حدث خاص نهاية الأسبوع!', body: '## التفاصيل\n- الموعد: ...\n- الجائزة: ...\n\nشاركوا واربحوا!', alabel: '', aurl: '' },
+    maintenance:  { category: 'maintenance', tag: 'صيانة', title: 'صيانة مجدولة', body: 'سيتوقف الخادم مؤقتاً للصيانة.\n\n- الموعد: ...\n- المدة المتوقعة: ...', alabel: '', aurl: '' }
+};
+let newsCache = {}, newsEditId = null, newsAudience = 'all';
+const nv = id => document.getElementById(id);
+
+function validActionUrl(u) {
+    u = String(u || '').trim();
+    if (/^https:\/\/[^\s"'<>]+$/i.test(u)) return true;
+    return /^(?!\/\/)[A-Za-z0-9_\-\/.]*\.html(\?[A-Za-z0-9_=&%\-]*)?(#[A-Za-z0-9_\-]*)?$/.test(u) && !u.includes('..');
 }
-window.sendAnnouncement = async function() {
-    const text = document.getElementById('ann-text-input').value.trim();
+function fmtPreview(body) {
+    const inl = t => esc(t).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" style="color:var(--accent)">$1</a>');
+    const out = []; let list = false;
+    String(body || '').split(/\r?\n/).forEach(line => {
+        let m;
+        if ((m = line.match(/^\s*-\s+(.*)$/))) { if (!list) { out.push('<ul>'); list = true; } out.push('<li>' + inl(m[1]) + '</li>'); return; }
+        if (list) { out.push('</ul>'); list = false; }
+        if ((m = line.match(/^\s*#{1,3}\s+(.*)$/))) out.push('<h4>' + inl(m[1]) + '</h4>');
+        else if (line.trim()) out.push('<p>' + inl(line) + '</p>');
+    });
+    if (list) out.push('</ul>');
+    return out.join('');
+}
+function fillNewsTargets() {
+    const sel = nv('news-target-uid'); if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = Object.entries(playersCache).sort((a, b) => (a[1].username || '').localeCompare(b[1].username || ''))
+        .map(([uid, p]) => `<option value="${esc(uid)}">${esc(p.username || '(بدون اسم)')} — ${esc(uid.slice(0, 6))}</option>`).join('');
+    if (cur) sel.value = cur;
+}
+window.setNewsAudience = function (a) {
+    newsAudience = a;
+    document.querySelectorAll('#news-aud button').forEach(b => b.classList.toggle('on', b.dataset.aud === a));
+    nv('news-target-row').style.display = a === 'user' ? 'block' : 'none';
+    nv('news-pin-row').style.display = a === 'user' ? 'none' : '';
+    nv('news-banner-box').style.display = a === 'user' ? 'none' : '';
+    if (a === 'user') fillNewsTargets();
+    updateNewsPreview();
+};
+window.applyNewsTemplate = function (k) {
+    const t = NEWS_TPL[k]; if (!t) return;
+    nv('news-cat').value = t.category; nv('news-tag').value = t.tag; nv('news-title').value = t.title;
+    nv('news-body').value = t.body; nv('news-alabel').value = t.alabel; nv('news-aurl').value = t.aurl;
+    updateNewsPreview();
+};
+window.mdInsert = function (kind) {
+    const ta = nv('news-body'), s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e);
+    let ins = sel;
+    if (kind === 'b') ins = `**${sel || 'نص عريض'}**`;
+    else if (kind === 'h') ins = `${s && ta.value[s - 1] !== '\n' ? '\n' : ''}## ${sel || 'عنوان فرعي'}`;
+    else if (kind === 'li') ins = `${s && ta.value[s - 1] !== '\n' ? '\n' : ''}- ${sel || 'نقطة'}`;
+    else if (kind === 'link') ins = sel && /^https:\/\//.test(sel) ? sel : 'https://';
+    ta.setRangeText(ins, s, e, 'end'); ta.focus(); updateNewsPreview();
+};
+window.updateNewsPreview = function () {
+    const cat = NEWS_CATS[nv('news-cat').value] || NEWS_CATS.announcement;
+    const title = nv('news-title').value.trim() || 'عنوان الخبر';
+    const tag = nv('news-tag').value.trim();
+    const label = nv('news-alabel').value.trim(), url = nv('news-aurl').value.trim();
+    const pinned = nv('news-pin').checked && newsAudience === 'all';
+    nv('pv-list').innerHTML =
+        `<div class="pv-it sel">${pinned ? '📌 ' : ''}${esc(title)}<small>${cat.ico} ${esc(tag || cat.label)} · الآن</small></div>` +
+        `<div class="pv-it">تحديث v2.8 متاح<small>🚀 v2.8 · منذ 12 ي</small></div>` +
+        `<div class="pv-it">إعلان جديد<small>📢 إعلان · منذ 20 ي</small></div>`;
+    nv('pv-detail').innerHTML =
+        `<span class="tag-chip">${cat.ico} ${cat.label}</span>${tag ? ` <span class="tag-chip">${esc(tag)}</span>` : ''}${newsAudience === 'user' ? ' <span class="tag-chip">رسالة لك</span>' : ''}` +
+        `<h3>${esc(title)}</h3><div class="meta">من ${esc(currentAdmin?.username || 'الإدارة')} · ${new Date().toLocaleDateString('ar-EG')}</div>` +
+        `<div class="pv-body">${fmtPreview(nv('news-body').value) || '<p style="color:var(--text-faint)">التفاصيل تظهر هنا…</p>'}</div>` +
+        (label && url && validActionUrl(url) ? `<span class="pv-act">${esc(label)} ↗</span>` : '');
+};
+window.resetNewsForm = function () {
+    newsEditId = null;
+    ['news-tag', 'news-title', 'news-body', 'news-alabel', 'news-aurl'].forEach(i => nv(i).value = '');
+    nv('news-cat').value = 'update'; nv('news-exp').value = '7'; nv('news-pin').checked = false;
+    nv('news-banner').checked = false; nv('news-banner-opts').style.display = 'none';
+    nv('news-edit-flag').style.display = 'none';
+    nv('news-publish-btn').innerHTML = '<i class="fas fa-paper-plane"></i> نشر';
+    updateNewsPreview();
+};
+window.publishNews = async function () {
+    const title = nv('news-title').value.trim(), body = nv('news-body').value.trim();
+    if (!title) return UIAlert('اكتب عنوان الخبر');
+    if (!body) return UIAlert('اكتب تفاصيل الخبر');
+    const aUrl = nv('news-aurl').value.trim(), aLabel = nv('news-alabel').value.trim();
+    if (aUrl && !validActionUrl(aUrl)) return UIAlert('رابط الزر غير صالح: استخدم https:// أو اسم صفحة من الموقع مثل home.html');
+    if (aUrl && !aLabel) return UIAlert('اكتب نص الزر أو احذف الرابط');
+    const personal = newsAudience === 'user';
+    const uid = nv('news-target-uid').value;
+    if (personal && !uid) return UIAlert('اختر اللاعب المستلم');
+    const now = Date.now(), days = parseInt(nv('news-exp').value) || 0;
+    const old = newsEditId ? newsCache[newsEditId] : null;
+    const rec = {
+        title: title.slice(0, 140), body: body.slice(0, 6000), category: nv('news-cat').value,
+        tag: nv('news-tag').value.trim() || null, pinned: !personal && nv('news-pin').checked, visible: old ? old.visible !== false : true,
+        createdAt: old?.createdAt || now, updatedAt: now, expiresAt: days ? now + days * 86400000 : null,
+        sentBy: currentAdmin?.username || 'الإدارة', actionLabel: aUrl ? aLabel : null, actionUrl: aUrl || null
+    };
+    const btn = nv('news-publish-btn'); btn.disabled = true;
+    try {
+        if (personal) {
+            const r = await push(ref(db, `userNews/${uid}`), rec);
+            logAdmin('msg.send', playersCache[uid]?.username || uid, title);
+            UIAlert('تم إرسال الرسالة الشخصية'); resetNewsForm(); return;
+        }
+        let id = newsEditId;
+        if (id) await set(ref(db, `news/${id}`), rec);
+        else { const r = await push(ref(db, 'news'), rec); id = r.key; }
+        if (nv('news-banner').checked) {
+            await set(ref(db, 'announcements/current'), {
+                text: title, priority: nv('news-bprio').value, duration: Math.max(5, parseInt(nv('news-bdur').value) || 60),
+                active: true, sentAt: now, sentBy: currentAdmin?.username, newsId: id
+            });
+        }
+        logAdmin(newsEditId ? 'news.edit' : 'news.publish', id, title);
+        UIAlert(newsEditId ? 'تم حفظ التعديل' : 'تم النشر — سيصل اللاعبين فوراً');
+        resetNewsForm(); loadNews(); loadCurrentAnnouncement();
+    } catch (e) { UIAlert('خطأ: ' + e.message + ' — تأكد من إضافة قواعد news في تبويب الإعدادات'); }
+    finally { btn.disabled = false; }
+};
+async function loadNews() {
+    const el = nv('news-list'); if (!el) return;
+    try {
+        const snap = await get(ref(db, 'news'));
+        newsCache = snap.val() || {};
+        renderNewsList();
+    } catch (e) { el.innerHTML = `<div style="padding:20px;color:var(--danger);font-size:12px;">تعذرت قراءة news: ${esc(e.message)} — أضف القواعد من تبويب الإعدادات.</div>`; }
+}
+window.loadNews = loadNews;
+function renderNewsList() {
+    const now = Date.now();
+    const rows = Object.entries(newsCache).sort((a, b) => (b[1].pinned ? 1 : 0) - (a[1].pinned ? 1 : 0) || (b[1].createdAt || 0) - (a[1].createdAt || 0));
+    nv('news-list').innerHTML = rows.map(([id, n]) => {
+        const c = NEWS_CATS[n.category] || NEWS_CATS.announcement;
+        const expired = n.expiresAt && n.expiresAt < now, hidden = n.visible === false;
+        return `<div class="news-row ${hidden || expired ? 'off' : ''}">
+            <div class="nr-main"><div class="nr-title">${n.pinned ? '📌 ' : ''}${esc(n.title)}</div>
+            <div class="nr-sub"><span class="tag-chip">${c.ico} ${esc(n.tag || c.label)}</span><span>${timeAgo(n.createdAt)}</span><span>${esc(n.sentBy || '')}</span>
+            ${hidden ? '<span class="badge badge-warn">مخفي</span>' : ''}${expired ? '<span class="badge badge-info">منتهي</span>' : ''}</div></div>
+            <div class="nr-btns">
+                <button class="btn btn-ghost btn-sm" onclick="editNews('${esc(id)}')"><i class="fas fa-pen"></i></button>
+                <button class="btn btn-ghost btn-sm" onclick="newsToggle('${esc(id)}','pinned')" title="تثبيت">📌</button>
+                <button class="btn btn-ghost btn-sm" onclick="newsToggle('${esc(id)}','visible')" title="إخفاء/إظهار"><i class="fas ${hidden ? 'fa-eye' : 'fa-eye-slash'}"></i></button>
+                <button class="btn btn-danger btn-sm" onclick="deleteNews('${esc(id)}')"><i class="fas fa-trash"></i></button>
+            </div></div>`;
+    }).join('') || '<div style="padding:30px;text-align:center;color:var(--text-faint);font-size:12.5px;">لا توجد أخبار منشورة بعد. اكتب أول خبر من النموذج أعلاه.</div>';
+}
+window.editNews = function (id) {
+    const n = newsCache[id]; if (!n) return;
+    newsEditId = id; setNewsAudience('all');
+    nv('news-cat').value = n.category || 'announcement'; nv('news-tag').value = n.tag || '';
+    nv('news-title').value = n.title || ''; nv('news-body').value = n.body || '';
+    nv('news-alabel').value = n.actionLabel || ''; nv('news-aurl').value = n.actionUrl || '';
+    nv('news-pin').checked = !!n.pinned;
+    nv('news-edit-flag').style.display = ''; nv('news-publish-btn').innerHTML = '<i class="fas fa-floppy-disk"></i> حفظ التعديل';
+    updateNewsPreview(); nv('news-composer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+window.newsToggle = async function (id, field) {
+    const n = newsCache[id]; if (!n) return;
+    const val = field === 'pinned' ? !n.pinned : n.visible === false;
+    try { await update(ref(db, `news/${id}`), { [field]: val }); logAdmin('news.' + field, id, `${n.title} → ${val}`); loadNews(); }
+    catch (e) { UIAlert('خطأ: ' + e.message); }
+};
+window.deleteNews = async function (id) {
+    const n = newsCache[id]; if (!n || !await UIConfirm(`حذف الخبر «${n.title}» نهائياً؟`)) return;
+    try {
+        await remove(ref(db, `news/${id}`));
+        const cur = (await get(ref(db, 'announcements/current'))).val();
+        if (cur && cur.newsId === id) await update(ref(db, 'announcements/current'), { active: false });
+        logAdmin('news.delete', id, n.title); loadNews(); loadCurrentAnnouncement();
+    } catch (e) { UIAlert('خطأ: ' + e.message); }
+};
+
+// ── Top banner (announcements/current) ───────────────────────
+async function loadCurrentAnnouncement() {
+    const el = nv('ann-state'); if (!el) return;
+    try {
+        const a = (await get(ref(db, 'announcements/current'))).val();
+        const end = a && (Number(a.expiresAt) || (a.sentAt && a.duration ? a.sentAt + a.duration * 1000 : 0));
+        const live = a && a.active !== false && (a.text || a.message) && (!end || end > Date.now());
+        el.className = 'banner-state' + (live ? ' live' : '');
+        el.innerHTML = live
+            ? `<b>نشط الآن</b> — ${esc(a.text || a.message)}<br><span style="color:var(--text-faint);font-size:11px;">${esc(a.priority || 'info')} · ${end ? 'ينتهي ' + new Date(end).toLocaleTimeString('ar-EG') : 'بلا نهاية'}${a.newsId ? ' · مرتبط بخبر' : ''}</span>`
+            : 'لا يوجد شريط نشط حالياً.';
+    } catch (e) { el.textContent = 'تعذرت القراءة: ' + e.message; }
+}
+window.sendAnnouncement = async function () {
+    const text = nv('ann-quick-text').value.trim();
     if (!text) return UIAlert('اكتب نص الإعلان');
     try {
         await set(ref(db, 'announcements/current'), {
-            text, priority: document.getElementById('ann-priority').value,
-            duration: parseInt(document.getElementById('ann-duration').value) || 30,
+            text, priority: nv('ann-priority').value, duration: Math.max(5, parseInt(nv('ann-duration').value) || 30),
             active: true, sentAt: Date.now(), sentBy: currentAdmin?.username
         });
-        UIAlert('تم البث');
+        logAdmin('news.banner', 'announcements/current', text);
+        nv('ann-quick-text').value = ''; UIAlert('تم البث'); loadCurrentAnnouncement();
     } catch (e) { UIAlert('خطأ: ' + e.message); }
 };
-window.clearAnnouncement = async function() {
-    try { await update(ref(db, 'announcements/current'), { active: false }); UIAlert('تم الإلغاء'); }
+window.clearAnnouncement = async function () {
+    try { await update(ref(db, 'announcements/current'), { active: false }); logAdmin('news.banner.clear', 'announcements/current', ''); UIAlert('تم الإلغاء'); loadCurrentAnnouncement(); }
     catch (e) { UIAlert('خطأ: ' + e.message); }
 };
 
@@ -1087,12 +1523,12 @@ window.addWord = async function() {
     if (!selectedCategory) return UIAlert('اختر فئة أولاً');
     const w = document.getElementById('new-word-input').value.trim();
     if (!w) return;
-    try { await set(ref(db, `wordLists/${selectedCategory}/${w}`), true); document.getElementById('new-word-input').value=''; loadWords(); }
+    try { await set(ref(db, `wordLists/${selectedCategory}/${w}`), true); logAdmin('word.add', selectedCategory, w); document.getElementById('new-word-input').value=''; loadWords(); }
     catch (e) { UIAlert('خطأ: ' + e.message); }
 };
 window.deleteWord = async function(w) {
     if (!selectedCategory || !await UIConfirm(`حذف "${w}"؟`)) return;
-    try { await remove(ref(db, `wordLists/${selectedCategory}/${w}`)); loadWords(); }
+    try { await remove(ref(db, `wordLists/${selectedCategory}/${w}`)); logAdmin('word.delete', selectedCategory, w); loadWords(); }
     catch (e) { UIAlert('خطأ: ' + e.message); }
 };
 
@@ -1172,6 +1608,7 @@ window.dbSave = async function() {
     if (!await UIConfirm(warn)) return;
     try {
         await set(ref(db, dbCurrentPath || '/'), parsed);
+        logAdmin('db.write', '/' + dbCurrentPath, 'set');
         UIAlert('تم الحفظ');
         dbNavigate(dbCurrentPath);
     } catch (e) { UIAlert('فشل الحفظ: ' + e.message); }
@@ -1183,155 +1620,457 @@ window.dbDeletePath = async function() {
     if (!await UIConfirm(`تأكيد أخير: حذف /${dbCurrentPath}؟`)) return;
     try {
         await remove(ref(db, dbCurrentPath));
+        logAdmin('db.delete', '/' + dbCurrentPath, '');
         UIAlert('تم الحذف');
         const parent = dbCurrentPath.split('/').slice(0, -1).join('/');
         dbNavigate(parent);
     } catch (e) { UIAlert('فشل الحذف: ' + e.message); }
 };
 
-// ── DIAGNOSTICS / TEST SUITE (NEW) ───────────────────────────
-// Each check pushes { severity, title, detail, fixLabel?, fixFn? } — severity
-// is one of critical / warn / ok / info. These specifically target failure
-// patterns found by hand in this exact codebase (missing hostId, orphaned
-// presence, empty categories, etc.) rather than generic sanity checks.
-window.runDiagnostics = async function() {
-    const btn = document.getElementById('run-diag-btn');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الفحص...';
-    const results = [];
-    const push = (severity, title, detail, extra) => results.push({ severity, title, detail, ...extra });
+// ── SYSTEM SCANNER v2 ────────────────────────────────────────
+// One parallel read of the database (each read timed), then independent checks.
+// Each finding: { sev: critical|warn|info|ok, cat, title, detail, items?, fix? }
+// fix: { label, safe, confirm?, fn }  — "safe" fixes can run together via "إصلاح كل الآمن".
+// Hard rule: the scanner NEVER writes rank / rankPoints (enforced inside multiUpdate).
+const SCAN_HIST_KEY = 'ej_admin_scan_hist_v1', SCAN_AUTO_KEY = 'ej_admin_scan_auto_v1';
+const SC_CATS = {
+    rooms: ['الغرف', 'fa-door-open'], players: ['اللاعبون', 'fa-users'], security: ['الأمان', 'fa-shield-halved'],
+    moderation: ['الإشراف', 'fa-flag'], content: ['المحتوى', 'fa-font'], news: ['الأخبار', 'fa-newspaper'],
+    cleanup: ['التنظيف', 'fa-broom'], system: ['النظام', 'fa-server']
+};
+const SC_SEV = { critical: 'حرج', warn: 'تحذير', info: 'معلومة', ok: 'سليم' };
+const SC_ICON = { critical: 'fa-circle-exclamation', warn: 'fa-triangle-exclamation', ok: 'fa-circle-check', info: 'fa-circle-info' };
+let scanState = { running: false, findings: [], sev: 'all', cat: 'all', score: null, at: 0, timings: {} };
+let scanTimer = null;
+const lsj = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch (e) { return d; } };
+const lsw = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 
-    try {
-        // 0. Connectivity baseline
-        try {
-            await get(ref(db, 'players'));
-            push('ok', 'الاتصال بقاعدة البيانات', 'القراءة تعمل بشكل طبيعي');
-        } catch (e) {
-            push('critical', 'تعذر الاتصال بقاعدة البيانات', e.message);
-            renderDiagResults(results); btn.disabled = false; btn.innerHTML = '<i class="fas fa-play"></i> تشغيل الفحص'; return;
-        }
-
-        // Read each path independently — a permission error on one path
-        // (e.g. invites/joinRequests, which are rules-scoped to their
-        // owner only, with no admin exception) used to abort the entire
-        // scan via Promise.all. Now it's reported as its own finding and
-        // everything else still runs, using {} for whatever couldn't be read.
-        async function safeRead(path) {
-            try { const snap = await get(ref(db, path)); return snap.val() || {}; }
-            catch (e) {
-                push('critical', `تعذرت قراءة "${path}"`, `${e.message} — على الأغلب قواعد الأمان لا تمنح المدير صلاحية قراءة هذا المسار بالكامل (راجع تبويب الإعدادات).`);
-                return {};
-            }
-        }
-        const players  = await safeRead('players');
-        const rooms    = await safeRead('rooms');
-        const words    = await safeRead('wordLists');
-        const invites  = await safeRead('invites');
-        const joinReqs = await safeRead('joinRequests');
-        const bans     = await safeRead('bans');
-
-        // 1. Room host integrity — the exact isHost/hostId bug class found earlier
-        let badHostRooms = 0;
-        Object.entries(rooms).forEach(([code, r]) => {
-            if (!r.hostId) { push('critical', `غرفة ${code}: لا يوجد hostId`, 'لن تظهر عناصر تحكم المضيف لأي أحد في هذه الغرفة.'); badHostRooms++; return; }
-            const players_ = r.players || {};
-            const hostMatch = Object.entries(players_).find(([uid,p]) => uid === r.hostId);
-            if (!hostMatch) { push('warn', `غرفة ${code}: hostId لا يطابق أي لاعب حالي`, `hostId=${r.hostId} لكنه غير موجود في قائمة اللاعبين — على الأغلب المضيف غادر.`); }
-            else if (!hostMatch[1].isHost) { push('warn', `غرفة ${code}: isHost غير مطابق`, 'صاحب hostId موجود لكن isHost:true غير مضبوط على سجله.'); }
-        });
-        if (!badHostRooms && Object.keys(rooms).length) push('ok', 'تكامل استضافة الغرف', `${Object.keys(rooms).length} غرفة، كلها تملك hostId صالح`);
-
-        // 2. Orphaned / empty rooms
-        const emptyRooms = Object.entries(rooms).filter(([,r]) => !Object.keys(r.players||{}).length);
-        if (emptyRooms.length) push('warn', `${emptyRooms.length} غرفة بدون لاعبين`, 'غرف مهجورة يُفضّل حذفها: ' + emptyRooms.map(([c])=>c).join(', '), {
-            fixLabel: 'حذف الكل', fixFn: async () => { for (const [c] of emptyRooms) await remove(ref(db, `rooms/${c}`)); }
-        });
-
-        // 3. Stale waiting rooms (>24h)
-        const dayAgo = Date.now() - 86400000;
-        const staleRooms = Object.entries(rooms).filter(([,r]) => r.status === 'waiting' && r.createdAt && r.createdAt < dayAgo);
-        if (staleRooms.length) push('info', `${staleRooms.length} غرفة انتظار قديمة (+24 ساعة)`, staleRooms.map(([c])=>c).join(', '));
-
-        // 4. Player record completeness
-        const requiredFields = ['username','coins','hints','rankPoints','rank'];
-        const incomplete = Object.entries(players).filter(([,p]) => requiredFields.some(f => p[f] === undefined || p[f] === null));
-        if (incomplete.length) push('warn', `${incomplete.length} سجل لاعب ناقص`, 'حقول أساسية مفقودة (اسم مستخدم/عملات/رتبة). استخدم "إصلاح جماعي" في تبويب اللاعبون.', {
-            fixLabel: 'الذهاب للإصلاح', fixFn: () => { showSection('players'); }
-        });
-        else if (Object.keys(players).length) push('ok', 'اكتمال سجلات اللاعبين', `${Object.keys(players).length} سجل، كلها كاملة`);
-
-        // 5. Stale presence — inGame:true pointing at a room that no longer exists
-        const stalePresence = Object.entries(players).filter(([,p]) => p.presence?.inGame && p.presence?.room && !rooms[p.presence.room]);
-        if (stalePresence.length) push('warn', `${stalePresence.length} لاعب لديهم حضور قديم (presence)`, 'inGame:true يشير لغرفة محذوفة — سيظهرون لأصدقائهم وكأنهم في غرفة انتظار فعلياً غير موجودة.', {
-            fixLabel: 'تصحيح الكل', fixFn: async () => { for (const [uid] of stalePresence) await update(ref(db, `players/${uid}/presence`), { inGame:false, phase:null, room:null }); }
-        });
-
-        // 6. isAdmin audit — directly relevant to the security issue
-        const admins = Object.entries(players).filter(([,p]) => p.isAdmin === true);
-        push('info', `${admins.length} حساب لديه صلاحية مدير`, admins.map(([,p]) => p.username).join(', ') || '—');
-
-        // 7. Expired but uncleaned invites / join requests
-        let staleInv = 0;
-        Object.values(invites).forEach(u => Object.values(u||{}).forEach(inv => { if (inv.status==='pending' && inv.expiresAt < Date.now()) staleInv++; }));
-        let staleJr = 0;
-        Object.values(joinReqs).forEach(u => Object.values(u||{}).forEach(jr => { if (jr.status==='pending' && jr.expiresAt < Date.now()) staleJr++; }));
-        if (staleInv || staleJr) push('info', `${staleInv+staleJr} دعوة/طلب منتهي لم يُنظّف بعد`, 'غير ضار — يُنظَّف تلقائياً عند فتح المستخدم للتطبيق التالي.');
-
-        // 8. Empty word categories
-        const emptyCats = Object.entries(words).filter(([,list]) => {
-            const keys = Object.keys(list||{}).filter(k => k !== '_init');
-            return keys.length === 0;
-        });
-        if (emptyCats.length) push('critical', `${emptyCats.length} فئة كلمات فارغة`, 'اختيار هذه الفئة في غرفة سيمنع بدء اللعب: ' + emptyCats.map(([c])=>c).join(', '));
-        else if (Object.keys(words).length) push('ok', 'فئات الكلمات', `${Object.keys(words).length} فئة، كلها تحتوي كلمات`);
-
-        // 9. Orphaned bans (uid no longer in players)
-        const orphanBans = Object.keys(bans).filter(uid => !players[uid]);
-        if (orphanBans.length) push('info', `${orphanBans.length} حظر لحسابات محذوفة`, 'غير ضار، مجرد بيانات قديمة.');
-
-        renderDiagResults(results);
-    } catch (e) {
-        push('critical', 'خطأ أثناء الفحص', e.message);
-        renderDiagResults(results);
+async function multiUpdate(map) {
+    const keys = Object.keys(map);
+    const bad = keys.find(k => /(^|\/)(rank|rankPoints)(\/|$)/.test(k));
+    if (bad) throw new Error('الفاحص لا يعدّل نظام الرتب: ' + bad);
+    for (let i = 0; i < keys.length; i += 150) {
+        const chunk = {}; keys.slice(i, i + 150).forEach(k => chunk[k] = map[k]);
+        await update(ref(db), chunk);
     }
-    btn.disabled = false; btn.innerHTML = '<i class="fas fa-play"></i> تشغيل الفحص';
+}
+function scanScore(c, w, i) {
+    return Math.max(0, Math.min(100, Math.round(100 - Math.min(45, c * 12) - Math.min(40, w * 3) - Math.min(8, i * 0.5))));
+}
+
+window.runDiagnostics = async function (opts) {
+    if (scanState.running) return;
+    scanState.running = true;
+    const btn = nv('run-diag-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الفحص...'; }
+    const F = [], timings = {}, unreadable = {};
+    const add = (sev, cat, title, detail, extra) => F.push({ sev, cat, title, detail, ...(extra || {}) });
+    const now = Date.now(), H = 3600000, D = 86400000;
+
+    async function rd(path, critical) {
+        const t = performance.now();
+        try { const snap = await get(ref(db, path)); timings[path] = Math.round(performance.now() - t); return snap.val() || {}; }
+        catch (e) {
+            timings[path] = Math.round(performance.now() - t); unreadable[path] = e.message;
+            add(critical ? 'critical' : 'warn', 'system', `تعذرت قراءة "${path}"`, `${e.message} — على الأغلب قواعد الأمان لا تسمح للمدير بقراءة هذا المسار (راجع تبويب الإعدادات). الفحوص المعتمدة عليه تم تخطيها.`);
+            return {};
+        }
+    }
+    try {
+        const t0 = performance.now();
+        const [players, rooms, words, invites, joinReqs, bans, reports, news, ann] = await Promise.all([
+            rd('players', true), rd('rooms', true), rd('wordLists'), rd('invites'), rd('joinRequests'),
+            rd('bans'), rd('reports'), rd('news'), rd('announcements/current')
+        ]);
+        timings._total = Math.round(performance.now() - t0);
+        if (unreadable.players && unreadable.rooms) {
+            add('critical', 'system', 'تعذر الاتصال بقاعدة البيانات', 'فشلت قراءة اللاعبين والغرف معاً.');
+        } else add('ok', 'system', 'الاتصال بقاعدة البيانات', `القراءة تعمل (${timings._total}ms لكل المسارات معاً)`);
+
+        const obj = x => x && typeof x === 'object' ? x : {};
+        const roomEntries = Object.entries(rooms).filter(([, r]) => r && typeof r === 'object');
+        const rp = r => obj(r.players);
+        const playerEntries = Object.entries(players).filter(([, p]) => p && typeof p === 'object');
+        const pname = uid => players[uid]?.username || uid;
+        const where = {}; roomEntries.forEach(([c, r]) => Object.keys(rp(r)).forEach(u => (where[u] = where[u] || []).push(c)));
+
+        // ── ROOMS ───────────────────────────────────────────
+        if (!unreadable.rooms) {
+            const noHost = roomEntries.filter(([, r]) => !r.hostId && Object.keys(rp(r)).length);
+            if (noHost.length) add('critical', 'rooms', `${noHost.length} غرفة بدون hostId`, 'لن تظهر عناصر تحكم المضيف لأي لاعب فيها.', {
+                items: noHost.map(([c]) => c),
+                fix: { label: 'تعيين أول لاعب مضيفاً', safe: false, confirm: 'سيتم تعيين أول لاعب في كل غرفة كمضيف. متابعة؟', fn: async () => {
+                    const m = {}; noHost.forEach(([c, r]) => { const u = Object.keys(rp(r))[0]; m[`rooms/${c}/hostId`] = u; m[`rooms/${c}/players/${u}/isHost`] = true; }); await multiUpdate(m); } }
+            });
+            const hostGone = roomEntries.filter(([, r]) => r.hostId && Object.keys(rp(r)).length && !rp(r)[r.hostId]);
+            if (hostGone.length) add('warn', 'rooms', `${hostGone.length} غرفة مضيفها غادر`, 'hostId لا يطابق أي لاعب حالي في الغرفة.', {
+                items: hostGone.map(([c, r]) => `${c} (${r.hostId})`),
+                fix: { label: 'ترقية أول لاعب مضيفاً', safe: false, confirm: 'سيتم ترقية أول لاعب متبقٍ في كل غرفة. متابعة؟', fn: async () => {
+                    const m = {}; hostGone.forEach(([c, r]) => { const u = Object.keys(rp(r))[0]; m[`rooms/${c}/hostId`] = u; m[`rooms/${c}/players/${u}/isHost`] = true; }); await multiUpdate(m); } }
+            });
+            const flagBad = roomEntries.filter(([, r]) => r.hostId && rp(r)[r.hostId] && rp(r)[r.hostId].isHost !== true);
+            if (flagBad.length) add('warn', 'rooms', `${flagBad.length} غرفة isHost غير مضبوط`, 'صاحب hostId موجود لكن isHost:true غير مضبوط على سجله.', {
+                items: flagBad.map(([c]) => c),
+                fix: { label: 'ضبط isHost', safe: true, fn: async () => { const m = {}; flagBad.forEach(([c, r]) => m[`rooms/${c}/players/${r.hostId}/isHost`] = true); await multiUpdate(m); } }
+            });
+            const emptyR = roomEntries.filter(([, r]) => !Object.keys(rp(r)).length);
+            if (emptyR.length) {
+                const old = emptyR.filter(([, r]) => !r.createdAt || r.createdAt < now - 10 * 60000);
+                add('warn', 'rooms', `${emptyR.length} غرفة بدون لاعبين`, 'غرف مهجورة (الأحدث من 10 دقائق لا تُحذف تلقائياً).', {
+                    items: emptyR.map(([c]) => c),
+                    fix: old.length ? { label: `حذف ${old.length}`, safe: true, fn: async () => { const m = {}; old.forEach(([c]) => m[`rooms/${c}`] = null); await multiUpdate(m); } } : undefined
+                });
+            }
+            const staleWait = roomEntries.filter(([, r]) => r.status === 'waiting' && r.createdAt && r.createdAt < now - D && Object.keys(rp(r)).length);
+            if (staleWait.length) add('info', 'rooms', `${staleWait.length} غرفة انتظار قديمة (+24 ساعة)`, 'ما زال فيها لاعبون لكن لم تبدأ منذ يوم.', { items: staleWait.map(([c]) => c) });
+            const stuck = roomEntries.filter(([, r]) => r.status && r.status !== 'waiting' && (r.updatedAt || r.phaseStartedAt || r.startedAt) && now - (r.updatedAt || r.phaseStartedAt || r.startedAt) > 6 * H);
+            if (stuck.length) add('warn', 'rooms', `${stuck.length} لعبة عالقة منذ +6 ساعات`, 'حالة الغرفة لم تتغير منذ وقت طويل — على الأغلب لعبة متروكة.', {
+                items: stuck.map(([c, r]) => `${c} (${r.status})`),
+                fix: { label: 'إغلاق الغرف العالقة', safe: false, confirm: `حذف ${stuck.length} غرفة عالقة؟ سيُخرج هذا لاعبيها.`, fn: async () => { const m = {}; stuck.forEach(([c]) => m[`rooms/${c}`] = null); await multiUpdate(m); } }
+            });
+            const ghosts = [];
+            roomEntries.forEach(([c, r]) => Object.keys(rp(r)).forEach(u => {
+                const pr = players[u]?.presence;
+                if (pr && pr.online === false && pr.lastSeen && now - pr.lastSeen > 30 * 60000) ghosts.push([c, u]);
+            }));
+            if (ghosts.length) add('warn', 'rooms', `${ghosts.length} لاعب شبح داخل غرف`, 'غير متصلين منذ +30 دقيقة لكنهم ما زالوا مسجلين داخل الغرفة.', {
+                items: ghosts.map(([c, u]) => `${c}: ${pname(u)}`),
+                fix: { label: 'إزالتهم من الغرف', safe: false, confirm: `إزالة ${ghosts.length} لاعب غير متصل من غرفهم؟`, fn: async () => { const m = {}; ghosts.forEach(([c, u]) => m[`rooms/${c}/players/${u}`] = null); await multiUpdate(m); } }
+            });
+            const multi = Object.entries(where).filter(([, cs]) => cs.length > 1);
+            if (multi.length) add('warn', 'rooms', `${multi.length} لاعب في أكثر من غرفة`, 'نفس الحساب مسجل في غرفتين أو أكثر.', { items: multi.map(([u, cs]) => `${pname(u)}: ${cs.join(', ')}`) });
+            if (!F.some(f => f.cat === 'rooms' && f.sev !== 'info') && roomEntries.length) add('ok', 'rooms', 'تكامل الغرف', `${roomEntries.length} غرفة سليمة`);
+        }
+
+        // ── PLAYERS ─────────────────────────────────────────
+        if (!unreadable.players) {
+            const broken = Object.entries(players).filter(([, p]) => !p || typeof p !== 'object');
+            if (broken.length) add('warn', 'players', `${broken.length} سجل لاعب تالف`, 'القيمة ليست كائناً.', { items: broken.map(([u]) => u) });
+            const noCoin = playerEntries.filter(([, p]) => p.coins === undefined || p.coins === null || p.hints === undefined || p.hints === null);
+            if (noCoin.length) add('warn', 'players', `${noCoin.length} لاعب بلا عملات/تلميحات`, 'حقول coins/hints مفقودة. يُملأ الناقص فقط (100 عملة، 3 تلميحات).', {
+                items: noCoin.map(([u, p]) => p.username || u),
+                fix: { label: 'ملء الناقص', safe: true, fn: async () => { const m = {}; noCoin.forEach(([u, p]) => { if (p.coins == null) m[`players/${u}/coins`] = 100; if (p.hints == null) m[`players/${u}/hints`] = 3; }); await multiUpdate(m); } }
+            });
+            const noRank = playerEntries.filter(([, p]) => p.rank == null || p.rankPoints == null);
+            if (noRank.length) add('info', 'players', `${noRank.length} لاعب بحقول رتبة ناقصة`, 'الفاحص لا يلمس نظام الرتب أبداً. استخدم «إصلاح جماعي» في تبويب اللاعبين إن أردت.', {
+                items: noRank.map(([u, p]) => p.username || u), fix: { label: 'الذهاب للاعبين', safe: false, fn: async () => showSection('players') }
+            });
+            const noName = playerEntries.filter(([, p]) => !p.username);
+            if (noName.length) add('warn', 'players', `${noName.length} لاعب بلا اسم مستخدم`, 'لن يظهروا بشكل صحيح للأصدقاء. استخدم «إصلاح سجل يدوياً».', { items: noName.map(([u]) => u) });
+            const badNum = playerEntries.filter(([, p]) => (p.coins != null && !(Number.isFinite(p.coins) && p.coins >= 0)) || (p.hints != null && !(Number.isFinite(p.hints) && p.hints >= 0)));
+            if (badNum.length) add('warn', 'players', `${badNum.length} لاعب بقيم عملات/تلميحات غير صالحة`, 'سالبة أو ليست أرقاماً.', {
+                items: badNum.map(([u, p]) => `${p.username || u}: ${JSON.stringify(p.coins)}/${JSON.stringify(p.hints)}`),
+                fix: { label: 'ضبطها إلى 0', safe: false, confirm: 'ضبط القيم غير الصالحة إلى 0؟', fn: async () => { const m = {}; badNum.forEach(([u, p]) => { if (p.coins != null && !(Number.isFinite(p.coins) && p.coins >= 0)) m[`players/${u}/coins`] = 0; if (p.hints != null && !(Number.isFinite(p.hints) && p.hints >= 0)) m[`players/${u}/hints`] = 0; }); await multiUpdate(m); } }
+            });
+            const byName = {}; playerEntries.forEach(([u, p]) => { if (p.username) (byName[String(p.username).trim().toLowerCase()] = byName[String(p.username).trim().toLowerCase()] || []).push(u); });
+            const dups = Object.entries(byName).filter(([, us]) => us.length > 1);
+            if (dups.length) add('warn', 'players', `${dups.length} اسم مستخدم مكرر`, 'أكثر من حساب بنفس الاسم (بغض النظر عن حالة الأحرف).', { items: dups.map(([n, us]) => `${n} ×${us.length}`) });
+            const badStats = playerEntries.filter(([, p]) => p.stats && Number.isFinite(p.stats.wins) && Number.isFinite(p.stats.totalGames) && p.stats.wins > p.stats.totalGames);
+            if (badStats.length) add('info', 'players', `${badStats.length} لاعب انتصاراته أكثر من ألعابه`, 'إحصاءات غير متسقة.', { items: badStats.map(([u, p]) => p.username || u) });
+            const stalePres = playerEntries.filter(([, p]) => p.presence?.inGame && p.presence?.room && !rooms[p.presence.room]);
+            if (stalePres.length) add('warn', 'players', `${stalePres.length} لاعب بحضور قديم (presence)`, 'inGame:true يشير لغرفة محذوفة — سيظهرون لأصدقائهم كأنهم في لعبة.', {
+                items: stalePres.map(([u, p]) => p.username || u),
+                fix: { label: 'تصحيح الكل', safe: true, fn: async () => { const m = {}; stalePres.forEach(([u]) => { m[`players/${u}/presence/inGame`] = false; m[`players/${u}/presence/phase`] = null; m[`players/${u}/presence/room`] = null; }); await multiUpdate(m); } }
+            });
+            const staleOn = playerEntries.filter(([u, p]) => p.presence?.online === true && p.presence.lastSeen && now - p.presence.lastSeen > 6 * H && !where[u]);
+            if (staleOn.length) add('info', 'players', `${staleOn.length} لاعب "متصل" منذ +6 ساعات`, 'على الأغلب انقطع الاتصال دون تحديث الحضور.', {
+                items: staleOn.map(([u, p]) => p.username || u),
+                fix: { label: 'وضعهم غير متصلين', safe: true, fn: async () => { const m = {}; staleOn.forEach(([u]) => m[`players/${u}/presence/online`] = false); await multiUpdate(m); } }
+            });
+            const badInv = playerEntries.filter(([, p]) => p.inventory && typeof p.inventory === 'object' && ((p.inventory.nameThemes != null && !Array.isArray(p.inventory.nameThemes)) || (p.inventory.nameTags != null && !Array.isArray(p.inventory.nameTags))));
+            if (badInv.length) add('warn', 'players', `${badInv.length} لاعب بمخزون بصيغة خاطئة`, 'nameThemes/nameTags يجب أن تكون قوائم — المتجر يتجاهل غير ذلك.', {
+                items: badInv.map(([u, p]) => p.username || u),
+                fix: { label: 'تحويلها لقوائم', safe: false, confirm: 'تحويل المخزون التالف إلى قوائم؟', fn: async () => { const m = {}; const fixArr = v => Array.isArray(v) ? v : (v && typeof v === 'object' ? Object.values(v) : []); badInv.forEach(([u, p]) => { ['nameThemes', 'nameTags'].forEach(k => { if (p.inventory[k] != null && !Array.isArray(p.inventory[k])) m[`players/${u}/inventory/${k}`] = fixArr(p.inventory[k]); }); }); await multiUpdate(m); } }
+            });
+            const unowned = playerEntries.filter(([, p]) => p.nameTag && p.nameTag !== 'gameowner' && !(Array.isArray(p.inventory?.nameTags) && p.inventory.nameTags.includes(p.nameTag)));
+            if (unowned.length) add('warn', 'players', `${unowned.length} لاعب يستخدم وسماً لا يملكه`, 'nameTag مفعّل لكنه ليس في المخزون.', {
+                items: unowned.map(([u, p]) => `${p.username || u}: ${p.nameTag}`),
+                fix: { label: 'إزالة الوسم', safe: false, confirm: 'إزالة الوسم غير المملوك من هؤلاء اللاعبين؟', fn: async () => { const m = {}; unowned.forEach(([u]) => m[`players/${u}/nameTag`] = null); await multiUpdate(m); } }
+            });
+            if (!F.some(f => f.cat === 'players' && f.sev !== 'info') && playerEntries.length) add('ok', 'players', 'سجلات اللاعبين', `${playerEntries.length} سجل سليم`);
+        }
+
+        // ── SECURITY ────────────────────────────────────────
+        if (!unreadable.players) {
+            const admins = playerEntries.filter(([, p]) => p.isAdmin === true);
+            add('info', 'security', `${admins.length} حساب مدير`, admins.map(([, p]) => p.username).join('، ') || '—');
+            const oddAdmin = playerEntries.filter(([, p]) => p.isAdmin !== undefined && p.isAdmin !== null && typeof p.isAdmin !== 'boolean');
+            if (oddAdmin.length) add('warn', 'security', `${oddAdmin.length} حساب isAdmin بقيمة غير منطقية`, 'القيمة ليست true/false (مثل نص "true") — لن تُعتبر صلاحية.', { items: oddAdmin.map(([u, p]) => `${p.username || u}: ${JSON.stringify(p.isAdmin)}`) });
+            const owners = playerEntries.filter(([, p]) => p.nameTag === 'gameowner' || (Array.isArray(p.inventory?.nameTags) && p.inventory.nameTags.includes('gameowner')));
+            const strangers = owners.filter(([, p]) => p.isAdmin !== true);
+            if (strangers.length) add('warn', 'security', `${strangers.length} حامل لوسم GAME OWNER ليس مديراً`, 'الوسم لا يُشترى ولا يُمنح إلا من قاعدة البيانات — تأكد أنك منحته عمداً.', {
+                items: strangers.map(([u, p]) => p.username || u),
+                fix: { label: 'سحب الوسم', safe: false, confirm: 'سحب وسم GAME OWNER من غير المديرين؟', fn: async () => { const m = {}; strangers.forEach(([u, p]) => { if (p.nameTag === 'gameowner') m[`players/${u}/nameTag`] = null; if (Array.isArray(p.inventory?.nameTags)) m[`players/${u}/inventory/nameTags`] = p.inventory.nameTags.filter(t => t !== 'gameowner'); }); await multiUpdate(m); } }
+            });
+            else if (owners.length) add('ok', 'security', 'وسم GAME OWNER', `${owners.length} حامل، كلهم مديرون`);
+            const bannedOn = Object.keys(bans).filter(u => players[u]?.presence?.online === true);
+            if (bannedOn.length) add('warn', 'security', `${bannedOn.length} محظور ما زال متصلاً`, 'يُطبَّق الحظر عند فتح الصفحة التالية — راجع الحساب.', { items: bannedOn.map(pname) });
+            const rich = playerEntries.filter(([, p]) => Number.isFinite(p.coins) && p.coins > 5000000);
+            if (rich.length) add('warn', 'security', `${rich.length} رصيد مرتفع جداً (+5 ملايين)`, 'قد يدل على استغلال أو خطأ.', { items: rich.map(([u, p]) => `${p.username || u}: ${p.coins}`) });
+        }
+
+        // ── MODERATION ──────────────────────────────────────
+        const repEntries = Object.entries(reports).filter(([, r]) => r && typeof r === 'object');
+        const repTs = r => r.timestamp || r.createdAt || r.reportedAt || 0;
+        const oldRep = repEntries.filter(([, r]) => r.status === 'pending' && repTs(r) && now - repTs(r) > 3 * D);
+        if (oldRep.length) add('warn', 'moderation', `${oldRep.length} بلاغ معلّق منذ +3 أيام`, 'بلاغات تنتظر المراجعة.', { items: oldRep.map(([, r]) => `${r.reportedUsername || '?'} — ${r.reason || ''}`), fix: { label: 'فتح البلاغات', safe: false, fn: async () => showSection('reports') } });
+        const repBanned = repEntries.filter(([, r]) => r.status === 'pending' && r.reportedUid && bans[r.reportedUid]);
+        if (repBanned.length) add('info', 'moderation', `${repBanned.length} بلاغ معلّق عن لاعب محظور أصلاً`, 'يمكن إغلاقها تلقائياً.', {
+            fix: { label: 'إغلاقها', safe: true, fn: async () => { const m = {}; repBanned.forEach(([id]) => { m[`reports/${id}/status`] = 'banned'; m[`reports/${id}/resolvedAt`] = Date.now(); m[`reports/${id}/resolvedBy`] = 'scanner'; }); await multiUpdate(m); } }
+        });
+        const expBans = Object.entries(bans).filter(([, b]) => b && !b.permanent && b.expiresAt && b.expiresAt < now);
+        if (expBans.length) add('info', 'moderation', `${expBans.length} حظر منتهٍ لم يُزَل`, 'حظر مؤقت انتهت مدته.', {
+            items: expBans.map(([u, b]) => b.username || u),
+            fix: { label: 'إزالتها', safe: true, fn: async () => { const m = {}; expBans.forEach(([u]) => m[`bans/${u}`] = null); await multiUpdate(m); } }
+        });
+        if (!unreadable.players) {
+            const orphan = Object.keys(bans).filter(u => !players[u]);
+            if (orphan.length) add('info', 'moderation', `${orphan.length} حظر لحسابات محذوفة`, 'بيانات قديمة غير ضارة.', { items: orphan });
+        }
+        if (!F.some(f => f.cat === 'moderation' && f.sev !== 'info')) add('ok', 'moderation', 'الإشراف', `${repEntries.filter(([, r]) => r.status === 'pending').length} بلاغ معلّق، ${Object.keys(bans).length} حظر`);
+
+        // ── CONTENT ─────────────────────────────────────────
+        if (!unreadable.wordLists) {
+            const cats = Object.entries(words);
+            const wl = list => Object.keys(obj(list)).filter(k => k !== '_init');
+            const emptyC = cats.filter(([, l]) => !wl(l).length);
+            if (emptyC.length) add('critical', 'content', `${emptyC.length} فئة كلمات فارغة`, 'اختيارها في غرفة يمنع بدء اللعب.', { items: emptyC.map(([c]) => c), fix: { label: 'فتح الكلمات', safe: false, fn: async () => showSection('words') } });
+            const small = cats.filter(([, l]) => { const n = wl(l).length; return n > 0 && n < 8; });
+            if (small.length) add('warn', 'content', `${small.length} فئة بكلمات قليلة (<8)`, 'ستتكرر الكلمات بسرعة.', { items: small.map(([c, l]) => `${c} (${wl(l).length})`) });
+            const spaced = []; cats.forEach(([c, l]) => wl(l).forEach(w => { if (w !== w.trim()) spaced.push([c, w]); }));
+            if (spaced.length) add('warn', 'content', `${spaced.length} كلمة بمسافات زائدة`, 'مسافة في البداية أو النهاية قد تظهر بشكل خاطئ.', {
+                items: spaced.map(([c, w]) => `${c}: "${w}"`),
+                fix: { label: 'تنظيف المسافات', safe: false, confirm: 'إعادة تسمية الكلمات بإزالة المسافات الزائدة؟', fn: async () => { const m = {}; spaced.forEach(([c, w]) => { m[`wordLists/${c}/${w}`] = null; }); spaced.forEach(([c, w]) => { if (w.trim()) m[`wordLists/${c}/${w.trim()}`] = true; }); await multiUpdate(m); } }
+            });
+            const dupW = []; cats.forEach(([c, l]) => { const seen = {}; wl(l).forEach(w => { const k = w.trim().toLowerCase(); if (seen[k]) dupW.push(`${c}: ${w}`); seen[k] = 1; }); });
+            if (dupW.length) add('info', 'content', `${dupW.length} كلمة مكررة داخل فئاتها`, 'نفس الكلمة بحالة أحرف أو مسافات مختلفة.', { items: dupW });
+            if (!F.some(f => f.cat === 'content' && f.sev !== 'info') && cats.length) add('ok', 'content', 'فئات الكلمات', `${cats.length} فئة، ${cats.reduce((s, [, l]) => s + wl(l).length, 0)} كلمة`);
+        }
+
+        // ── NEWS ────────────────────────────────────────────
+        if (!unreadable.news) {
+            const nEnt = Object.entries(news).filter(([, n]) => n && typeof n === 'object');
+            const noTitle = nEnt.filter(([, n]) => !n.title);
+            if (noTitle.length) add('warn', 'news', `${noTitle.length} خبر بلا عنوان`, 'لن يظهر بشكل صحيح في القائمة.', { items: noTitle.map(([id]) => id) });
+            const dead = nEnt.filter(([, n]) => n.expiresAt && n.expiresAt < now - 30 * D);
+            if (dead.length) add('info', 'news', `${dead.length} خبر منتهٍ منذ +30 يوماً`, 'مخفي عن اللاعبين أصلاً.', { items: dead.map(([, n]) => n.title || '—'), fix: { label: 'حذفها', safe: true, fn: async () => { const m = {}; dead.forEach(([id]) => m[`news/${id}`] = null); await multiUpdate(m); } } });
+            const badUrl = nEnt.filter(([, n]) => n.actionUrl && !validActionUrl(n.actionUrl));
+            if (badUrl.length) add('warn', 'news', `${badUrl.length} خبر برابط زر غير آمن`, 'سيتجاهل الصندوق الرابط.', { items: badUrl.map(([, n]) => n.title || '—') });
+            const aEnd = ann && (Number(ann.expiresAt) || (ann.sentAt && ann.duration ? ann.sentAt + ann.duration * 1000 : 0));
+            if (ann && ann.active === true && aEnd && aEnd < now) add('info', 'news', 'شريط علوي منتهٍ ما زال مفعّلاً', 'active:true لكن المدة انتهت.', { fix: { label: 'إيقافه', safe: true, fn: async () => multiUpdate({ 'announcements/current/active': false }) } });
+            if (!nEnt.length) add('info', 'news', 'لا توجد أخبار منشورة', 'صندوق الوارد عند اللاعبين سيعرض «لا توجد أخبار».');
+            if (!F.some(f => f.cat === 'news' && f.sev !== 'info') && nEnt.length) add('ok', 'news', 'الأخبار', `${nEnt.length} خبر منشور`);
+        }
+
+        // ── CLEANUP ─────────────────────────────────────────
+        const dead = {};
+        const sweep = (root, base) => Object.entries(obj(root)).forEach(([u, byKey]) => Object.entries(obj(byKey)).forEach(([k, v]) => {
+            if (v && typeof v === 'object' && v.expiresAt && (v.expiresAt < now - D || (v.status === 'pending' && v.expiresAt < now))) dead[`${base}/${u}/${k}`] = null;
+        }));
+        sweep(invites, 'invites'); sweep(joinReqs, 'joinRequests');
+        const deadN = Object.keys(dead).length;
+        if (deadN) add('info', 'cleanup', `${deadN} دعوة/طلب انضمام منتهٍ`, 'غير ضار — تنظيفه يقلل حجم القاعدة.', { fix: { label: 'تنظيفها', safe: true, fn: async () => multiUpdate(dead) } });
+        else add('ok', 'cleanup', 'الدعوات والطلبات', 'لا يوجد منتهٍ متراكم');
+
+        // ── SYSTEM ──────────────────────────────────────────
+        const slow = Object.entries(timings).filter(([k, v]) => k !== '_total' && v > 4000);
+        if (slow.length) add('warn', 'system', `${slow.length} مسار بطيء القراءة (+4 ثوانٍ)`, 'قد يدل على حجم كبير أو ضعف اتصال.', { items: slow.map(([k, v]) => `${k}: ${v}ms`) });
+        let kb = 0; try { kb = Math.round((JSON.stringify(players).length + JSON.stringify(rooms).length + JSON.stringify(words).length + JSON.stringify(reports).length) / 1024); } catch (e) {}
+        add('info', 'system', 'حجم البيانات المقروءة', `≈ ${kb} KB · ${playerEntries.length} لاعب · ${roomEntries.length} غرفة`);
+    } catch (e) {
+        add('critical', 'system', 'خطأ أثناء الفحص', e.message);
+    }
+
+    const sevOrder = { critical: 0, warn: 1, info: 2, ok: 3 };
+    F.sort((a, b) => sevOrder[a.sev] - sevOrder[b.sev]);
+    const c = F.filter(f => f.sev === 'critical').length, w = F.filter(f => f.sev === 'warn').length, i = F.filter(f => f.sev === 'info').length;
+    const score = scanScore(c, w, i);
+    const hist = lsj(SCAN_HIST_KEY, []); hist.push({ at: Date.now(), score, c, w, i }); lsw(SCAN_HIST_KEY, hist.slice(-20));
+    scanState = { ...scanState, running: false, findings: F, score, at: Date.now(), timings, counts: { c, w, i, ok: F.filter(f => f.sev === 'ok').length }, prev: hist.length > 1 ? hist[hist.length - 2].score : null };
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-play"></i> تشغيل الفحص'; }
+    renderScan();
 };
 
-function renderDiagResults(results) {
-    const counts = { critical:0, warn:0, ok:0, info:0 };
-    results.forEach(r => counts[r.severity]++);
-    document.getElementById('diag-critical').textContent = counts.critical;
-    document.getElementById('diag-warn').textContent = counts.warn;
-    document.getElementById('diag-ok').textContent = counts.ok;
-    document.getElementById('diag-info').textContent = counts.info;
-    const ncDiag = document.getElementById('nc-diag');
-    if (counts.critical + counts.warn > 0) { ncDiag.style.display='inline-block'; ncDiag.textContent = counts.critical + counts.warn; }
-    else ncDiag.style.display = 'none';
-
-    const order = { critical:0, warn:1, ok:2, info:3 };
-    const icons = { critical:'fa-circle-exclamation', warn:'fa-triangle-exclamation', ok:'fa-circle-check', info:'fa-circle-info' };
-    const labels = { critical:'حرج', warn:'تحذير', ok:'سليم', info:'معلومة' };
-    document.getElementById('diag-results').innerHTML = results
-        .sort((a,b) => order[a.severity]-order[b.severity])
-        .map((r, i) => `
-        <div class="diag-item sev-${r.severity}">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-                <div style="flex:1;">
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-                        <span class="badge badge-${r.severity==='ok'?'ok':(r.severity==='warn'?'warn':(r.severity==='critical'?'critical':'info'))}"><i class="fas ${icons[r.severity]}"></i> ${labels[r.severity]}</span>
-                        <b style="font-size:12.5px;">${esc(r.title)}</b>
-                    </div>
-                    <p style="font-size:11.5px;color:var(--text-dim);">${esc(r.detail)}</p>
-                </div>
-                ${r.fixLabel ? `<button class="btn btn-ghost btn-sm" onclick="runDiagFix(${i})">${esc(r.fixLabel)}</button>` : ''}
-            </div>
-        </div>`).join('') || '<p style="color:var(--text-faint);text-align:center;padding:30px;">اضغط "تشغيل الفحص" للبدء</p>';
-    window._diagResults = results;
+function renderScan() {
+    const s = scanState, F = s.findings;
+    const nc = nv('nc-diag'), bad = (s.counts?.c || 0) + (s.counts?.w || 0);
+    if (nc) { nc.style.display = bad ? 'inline-block' : 'none'; nc.textContent = bad; }
+    const col = s.score == null ? 'var(--text-faint)' : s.score >= 85 ? 'var(--ok)' : s.score >= 60 ? 'var(--warn)' : 'var(--danger)';
+    const C = 2 * Math.PI * 46, dash = s.score == null ? 0 : C * s.score / 100;
+    nv('sc-ring').innerHTML = `<svg width="112" height="112" viewBox="0 0 112 112"><circle cx="56" cy="56" r="46" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="9"/><circle cx="56" cy="56" r="46" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${dash} ${C}"/></svg><div class="n" style="color:${col}">${s.score == null ? '—' : s.score}<small>من 100</small></div>`;
+    if (s.score != null) {
+        nv('sc-verdict').textContent = s.score >= 90 ? 'النظام بحالة ممتازة' : s.score >= 75 ? 'النظام جيد مع ملاحظات' : s.score >= 50 ? 'النظام يحتاج انتباهاً' : 'النظام في حالة حرجة';
+        nv('sc-sub').textContent = `${s.counts.c} حرج · ${s.counts.w} تحذير · ${s.counts.i} معلومة · ${s.counts.ok} سليم — آخر فحص ${new Date(s.at).toLocaleTimeString('ar-EG')}`;
+        const hist = lsj(SCAN_HIST_KEY, []).slice(-12);
+        const pts = hist.map((h, k) => `${(k / Math.max(1, hist.length - 1)) * 90 + 2},${28 - h.score / 100 * 24}`).join(' ');
+        const d = s.prev == null ? '' : s.score - s.prev;
+        nv('sc-spark').innerHTML = (hist.length > 1 ? `<svg width="94" height="30" viewBox="0 0 94 30" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/></svg>` : '') +
+            (d === '' ? '' : `<span style="color:${d >= 0 ? 'var(--ok)' : 'var(--danger)'};font-weight:800;">${d > 0 ? '▲ +' : d < 0 ? '▼ ' : '= '}${d}</span> عن الفحص السابق`);
+    }
+    const cnt = k => k === 'all' ? F.length : F.filter(f => f.sev === k).length;
+    nv('sc-sev').innerHTML = ['all', 'critical', 'warn', 'info', 'ok'].map(k =>
+        `<button type="button" class="chip-btn ${s.sev === k ? 'on' : ''}" onclick="setScanFilter('sev','${k}')">${k === 'all' ? 'الكل' : SC_SEV[k]} (${cnt(k)})</button>`).join('');
+    const cc = k => F.filter(f => f.cat === k && (s.sev === 'all' || f.sev === s.sev)).length;
+    nv('sc-cats').innerHTML = `<button type="button" class="chip-btn ${s.cat === 'all' ? 'on' : ''}" onclick="setScanFilter('cat','all')">كل الأقسام</button>` +
+        Object.entries(SC_CATS).map(([k, [lab, ic]]) => `<button type="button" class="chip-btn ${s.cat === k ? 'on' : ''}" onclick="setScanFilter('cat','${k}')"><i class="fas ${ic}"></i> ${lab} (${cc(k)})</button>`).join('');
+    const safeN = F.filter(f => f.fix?.safe).length;
+    const fb = nv('fix-safe-btn'); fb.disabled = !safeN; fb.innerHTML = `<i class="fas fa-wand-magic-sparkles"></i> إصلاح كل الآمن${safeN ? ' (' + safeN + ')' : ''}`;
+    const shown = F.map((f, idx) => [f, idx]).filter(([f]) => (s.sev === 'all' || f.sev === s.sev) && (s.cat === 'all' || f.cat === s.cat));
+    nv('diag-results').innerHTML = shown.map(([f, idx]) => `
+        <div class="sc-f sev-${f.sev}">
+            <div class="sc-f-head"><span class="badge badge-${f.sev === 'critical' ? 'critical' : f.sev}"><i class="fas ${SC_ICON[f.sev]}"></i> ${SC_SEV[f.sev]}</span>
+                <span class="sc-cat">${SC_CATS[f.cat]?.[0] || f.cat}</span><b>${esc(f.title)}</b></div>
+            <p>${esc(f.detail)}</p>
+            ${f.items?.length ? `<details class="sc-items"><summary>عرض العناصر (${f.items.length})</summary><div>${f.items.slice(0, 60).map(x => `<span>${esc(x)}</span>`).join('')}${f.items.length > 60 ? `<span>… +${f.items.length - 60}</span>` : ''}</div></details>` : ''}
+            ${f.fix ? `<div class="sc-fixrow"><button class="btn btn-ghost btn-sm" onclick="runDiagFix(${idx})">${esc(f.fix.label)}</button>${f.fix.safe ? '<span class="sc-safe">إصلاح آمن</span>' : ''}</div>` : ''}
+        </div>`).join('') || (s.score == null ? '<p style="color:var(--text-faint);text-align:center;padding:30px;font-size:12.5px;">اضغط «تشغيل الفحص» للبدء.</p>' : '<p style="color:var(--text-faint);text-align:center;padding:30px;font-size:12.5px;">لا نتائج بهذا الفلتر.</p>');
+    nv('sc-timings').textContent = s.score == null ? '' : 'قراءة: ' + Object.entries(s.timings).filter(([k]) => k !== '_total').map(([k, v]) => `${k} ${v}ms`).join(' · ') + ` · الإجمالي ${s.timings._total}ms`;
+    window._diagResults = F;
 }
-window.runDiagFix = async function(i) {
-    const r = window._diagResults[i];
-    if (!r?.fixFn) return;
-    try { await r.fixFn(); UIAlert('تم'); runDiagnostics(); }
-    catch (e) { UIAlert('فشل: ' + e.message); }
+window.setScanFilter = function (kind, val) { scanState[kind] = val; renderScan(); };
+window.runDiagFix = async function (i) {
+    const f = scanState.findings[i]; if (!f?.fix) return;
+    if (f.fix.confirm && !await UIConfirm(f.fix.confirm)) return;
+    try {
+        await f.fix.fn();
+        if (f.fix.label !== 'الذهاب للاعبين' && f.fix.label !== 'فتح البلاغات' && f.fix.label !== 'فتح الكلمات') { logAdmin('scan.fix', f.cat, f.title); UIAlert('تم'); runDiagnostics(); }
+    } catch (e) { UIAlert('فشل: ' + e.message); }
+};
+window.fixAllSafe = async function () {
+    const list = scanState.findings.filter(f => f.fix?.safe);
+    if (!list.length) return;
+    if (!await UIConfirm(`تنفيذ ${list.length} إصلاح آمن؟\n\n` + list.map(f => '• ' + f.title).join('\n'))) return;
+    let ok = 0, fail = [];
+    for (const f of list) { try { await f.fix.fn(); ok++; } catch (e) { fail.push(f.title + ': ' + e.message); } }
+    logAdmin('scan.fixall', 'scanner', `${ok}/${list.length} إصلاح`);
+    UIAlert(`تم ${ok} من ${list.length}` + (fail.length ? '\n\nفشل:\n' + fail.join('\n') : ''));
+    runDiagnostics();
+};
+window.exportScanJSON = function () {
+    const s = scanState;
+    if (s.score == null) return UIAlert('شغّل الفحص أولاً');
+    downloadFile('scan-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-') + '.json',
+        JSON.stringify({ at: new Date(s.at).toISOString(), score: s.score, counts: s.counts, timings: s.timings, findings: s.findings.map(({ fix, ...f }) => ({ ...f, fixable: !!fix, safeFix: !!fix?.safe })) }, null, 2), 'application/json');
+};
+window.setScanAuto = function (sec) {
+    lsw(SCAN_AUTO_KEY, parseInt(sec) || 0); initScanAuto();
+};
+function initScanAuto() {
+    clearInterval(scanTimer); scanTimer = null;
+    const sec = lsj(SCAN_AUTO_KEY, 0), sel = nv('scan-auto'); if (sel) sel.value = String(sec);
+    if (sec > 0) scanTimer = setInterval(() => { if (!document.hidden && !scanState.running) runDiagnostics({ silent: true }); }, sec * 1000);
+}
+
+// ── ADMIN AUDIT LOG ──────────────────────────────────────────
+// adminLogs/{id}: { action, target, detail, by, byUid, at } — written fire-and-forget
+function logAdmin(action, target, detail) {
+    try {
+        push(ref(db, 'adminLogs'), {
+            action: String(action).slice(0, 40), target: String(target ?? '').slice(0, 120), detail: String(detail ?? '').slice(0, 300),
+            by: currentAdmin?.username || '?', byUid: currentAdmin?.uid || '', at: Date.now()
+        }).catch(() => {});
+    } catch (e) {}
+}
+window.logAdmin = logAdmin;
+const AUDIT_LABEL = {
+    ban: ['حظر', 'fa-ban'], unban: ['إلغاء حظر', 'fa-user-check'], 'room.close': ['إغلاق غرفة', 'fa-door-closed'],
+    'admin.grant': ['منح صلاحية', 'fa-crown'], 'admin.revoke': ['سحب صلاحية', 'fa-user-slash'], 'report.resolve': ['معالجة بلاغ', 'fa-flag'],
+    coins: ['تعديل عملات', 'fa-coins'], 'msg.send': ['رسالة للاعب', 'fa-envelope'], 'news.publish': ['نشر خبر', 'fa-newspaper'],
+    'news.edit': ['تعديل خبر', 'fa-pen'], 'news.delete': ['حذف خبر', 'fa-trash'], 'news.pinned': ['تثبيت خبر', 'fa-thumbtack'],
+    'news.visible': ['إظهار/إخفاء خبر', 'fa-eye'], 'news.banner': ['شريط علوي', 'fa-bullhorn'], 'news.banner.clear': ['إلغاء الشريط', 'fa-bullhorn'],
+    'word.add': ['إضافة كلمة', 'fa-font'], 'word.delete': ['حذف كلمة', 'fa-font'], 'db.write': ['كتابة قاعدة البيانات', 'fa-database'],
+    'db.delete': ['حذف من قاعدة البيانات', 'fa-database'], 'scan.fix': ['إصلاح من الفاحص', 'fa-stethoscope'], 'scan.fixall': ['إصلاح آمن شامل', 'fa-wand-magic-sparkles'],
+    'player.patch': ['إصلاح سجل لاعب', 'fa-wrench']
+};
+let auditCache = [];
+async function loadAudit() {
+    const el = nv('audit-list'); if (!el) return;
+    el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-faint);font-size:12px;">جارٍ التحميل…</div>';
+    try {
+        const snap = await get(query(ref(db, 'adminLogs'), limitToLast(300)));
+        auditCache = Object.entries(snap.val() || {}).map(([id, v]) => ({ id, ...v })).sort((a, b) => (b.at || 0) - (a.at || 0));
+        renderAudit();
+    } catch (e) { el.innerHTML = `<div style="padding:20px;color:var(--danger);font-size:12px;">تعذرت قراءة adminLogs: ${esc(e.message)} — أضف القواعد من تبويب الإعدادات.</div>`; }
+}
+window.loadAudit = loadAudit;
+function auditFiltered() {
+    const f = nv('audit-filter').value, q = nv('audit-q').value.trim().toLowerCase();
+    return auditCache.filter(r => (!f || String(r.action).startsWith(f)) &&
+        (!q || [r.by, r.target, r.detail, r.action].some(x => String(x || '').toLowerCase().includes(q))));
+}
+window.renderAudit = function () {
+    const rows = auditFiltered();
+    nv('audit-list').innerHTML = rows.map(r => {
+        const [lab, ic] = AUDIT_LABEL[r.action] || [r.action, 'fa-circle-dot'];
+        return `<div class="audit-row"><div class="a-time">${r.at ? new Date(r.at).toLocaleString('ar-EG') : '—'}</div>
+            <div class="a-who">${esc(r.by)}</div>
+            <div><span class="a-act"><i class="fas ${ic}" style="color:var(--accent)"></i> ${esc(lab)}${r.target ? ` <span style="color:var(--text-faint);font-weight:600;direction:ltr;unicode-bidi:isolate;">${esc(r.target)}</span>` : ''}</span>
+            ${r.detail ? `<div class="a-det">${esc(r.detail)}</div>` : ''}</div></div>`;
+    }).join('') || '<div style="padding:30px;text-align:center;color:var(--text-faint);font-size:12.5px;">لا توجد إجراءات مسجلة بعد.</div>';
+};
+function csvCell(v) {
+    let s = String(v ?? '');
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // neutralise spreadsheet formulas
+    return '"' + s.replace(/"/g, '""') + '"';
+}
+function downloadFile(name, text, mime) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: mime || 'text/plain' })); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+window.exportAuditCSV = function () {
+    const rows = auditFiltered();
+    downloadFile('admin-log.csv', '﻿' + ['الوقت,المنفذ,الإجراء,الهدف,التفاصيل'].concat(rows.map(r =>
+        [r.at ? new Date(r.at).toISOString() : '', r.by, r.action, r.target, r.detail].map(csvCell).join(','))).join('\n'), 'text/csv;charset=utf-8');
+};
+
+// ── PLAYER TOOLS ─────────────────────────────────────────────
+async function notifyPlayer(uid, title, body, category) {
+    await push(ref(db, `userNews/${uid}`), {
+        title, body, category: category || 'notice', visible: true, pinned: false,
+        createdAt: Date.now(), expiresAt: Date.now() + 30 * 86400000, sentBy: currentAdmin?.username || 'الإدارة'
+    });
+}
+window.adjustCoins = async function (uid) {
+    const p = playersCache[uid]; if (!p) return;
+    const raw = await UIPrompt(`تعديل عملات ${p.username || uid} (الحالي ${p.coins ?? 0}).\nاكتب رقماً: موجب للإضافة، سالب للخصم:`);
+    if (raw === null || raw === undefined || String(raw).trim() === '') return;
+    const amt = parseInt(String(raw).replace(/[^\d\-+]/g, ''), 10);
+    if (!Number.isFinite(amt) || amt === 0 || Math.abs(amt) > 10000000) return UIAlert('أدخل رقماً صحيحاً بين -10,000,000 و 10,000,000');
+    if (!await UIConfirm(`${amt > 0 ? 'إضافة' : 'خصم'} ${Math.abs(amt)} عملة ${amt > 0 ? 'إلى' : 'من'} ${p.username || uid}؟`)) return;
+    try {
+        await runTransaction(ref(db, `players/${uid}/coins`), c => Math.max(0, (Number(c) || 0) + amt));
+        logAdmin('coins', p.username || uid, `${amt > 0 ? '+' : ''}${amt}`);
+        notifyPlayer(uid, amt > 0 ? '🎁 حصلت على عملات' : 'تم خصم عملات', `${amt > 0 ? 'أضافت' : 'خصمت'} الإدارة ${Math.abs(amt)} عملة ${amt > 0 ? 'إلى' : 'من'} رصيدك.`, 'notice').catch(() => {});
+        UIAlert('تم التعديل'); loadPlayers();
+    } catch (e) { UIAlert('خطأ: ' + e.message); }
+};
+window.messagePlayer = async function (uid) {
+    const p = playersCache[uid]; if (!p) return;
+    const text = await UIPrompt(`رسالة شخصية إلى ${p.username || uid} (تظهر في صندوق الوارد):`);
+    if (!text || !String(text).trim()) return;
+    try {
+        await notifyPlayer(uid, 'رسالة من الإدارة', String(text).trim().slice(0, 1000), 'notice');
+        logAdmin('msg.send', p.username || uid, String(text).slice(0, 120)); UIAlert('تم الإرسال');
+    } catch (e) { UIAlert('خطأ: ' + e.message + ' — تأكد من قواعد userNews'); }
+};
+window.exportPlayersCSV = function () {
+    const rows = Object.entries(playersCache).map(([uid, p]) =>
+        [uid, p.username, p.email, p.rank, p.rankPoints ?? 0, p.coins ?? 0, p.stats?.totalGames ?? 0, p.isAdmin ? 'yes' : '', p.presence?.online ? 'online' : ''].map(csvCell).join(','));
+    downloadFile('players.csv', '﻿' + ['uid,username,email,rank,rankPoints,coins,games,admin,presence'].concat(rows).join('\n'), 'text/csv;charset=utf-8');
+};
+window.dbExportJSON = async function () {
+    const out = { exportedAt: new Date().toISOString(), by: currentAdmin?.username }, failed = [];
+    for (const p of ['players', 'rooms', 'wordLists', 'bans', 'reports', 'news', 'announcements']) {
+        try { out[p] = (await get(ref(db, p))).val(); } catch (e) { failed.push(p); }
+    }
+    if (failed.length) out._unreadable = failed;
+    logAdmin('db.write', 'export', 'JSON backup' + (failed.length ? ' (partial)' : ''));
+    downloadFile('eljasus-backup-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(out, null, 2), 'application/json');
+};
+window.copyRules = async function () {
+    try { await navigator.clipboard.writeText(nv('rules-pre').textContent); UIAlert('تم نسخ القواعد'); }
+    catch (e) { UIAlert('انسخ القواعد يدوياً من المربع'); }
 };
 
 // ── AI ASSISTANT (NEW) ───────────────────────────────────────
@@ -1351,7 +2090,7 @@ const AI_WORKER_URL = 'https://super-paper-1cd0.ahmedelgoharymessi.workers.dev/'
 const AI_SYSTEM_PROMPT = `أنت مساعد لوحة إدارة لعبة "الجاسوس" (El Jasus). لديك معرفة بهيكل قاعدة البيانات:
 - players/{uid}: username, email, coins, hints, rankPoints, rank, isAdmin, presence{online,inGame,phase,room}, stats{...}
 - rooms/{code}: hostId, status(waiting/playing/discussion/voting/reveal), category, visibility, players{uid:{isHost,username,...}}
-- reports/{id}, bans/{uid}, wordLists/{category}/{word}, invites/{uid}/{key}, joinRequests/{uid}/{key}, announcements/current
+- reports/{id}, bans/{uid}, wordLists/{category}/{word}, invites/{uid}/{key}, joinRequests/{uid}/{key}, announcements/current (مع newsId اختياري), news/{id}: {title,body,category,tag,pinned,visible,createdAt,expiresAt,actionLabel,actionUrl}, userNews/{uid}/{id} (رسائل شخصية), adminLogs/{id}
 
 أجب بإيجاز وبالعربية. إذا طُلب منك تعديل بيانات، لا تفترض أنك نفّذت أي شيء — بدلاً من ذلك اقترح الإجراء كـ block من نوع action بصيغة JSON بالضبط هكذا، وسيقوم المسؤول بمراجعته والموافقة عليه يدوياً:
 \`\`\`action

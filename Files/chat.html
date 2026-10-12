@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="../Assets/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="الجاسوس">
+    <meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+    <title>المحادثات | El Jasus</title>
+    <link rel="icon" type="image/png" href="../Assets/ElJasus.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="../Assets/dialogs.js"></script>
+    <script src="../Assets/moderation.js"></script>
+    <script src="../Assets/name-themes.js"></script>
+    <script src="../Assets/inbox.js"></script>
+    <script src="../Assets/friend-invite-enhanced.js" defer></script>
+    <script src="../Assets/profile-viewer.js" defer></script>
+    <style>
+        :root { --bg:#000; --lime:#a3e635; --cyan:#00f2ff; --line:rgba(0,242,255,.18); --card:rgba(255,255,255,.04); --red:#ff6b7d; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; margin: 0; }
+        body {
+            font-family: 'Cairo', sans-serif; color: #fff; background: #000;
+            background-image: radial-gradient(ellipse 120% 70% at 50% -10%, rgba(0,242,255,.10), transparent 60%),
+                              radial-gradient(ellipse 90% 55% at 100% 105%, rgba(163,230,53,.06), transparent 60%);
+            background-attachment: fixed; overflow: hidden;
+        }
+        .app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; max-width: 1100px; margin: 0 auto; padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom); }
+        header.top { display: flex; align-items: center; gap: 10px; padding: 12px 2px; flex-shrink: 0; }
+        header.top h1 { font-family: 'Orbitron','Cairo',sans-serif; font-size: 18px; font-weight: 900; margin: 0; color: var(--cyan); letter-spacing: .04em; flex: 1; }
+        .icon-btn { width: 40px; height: 40px; border-radius: 12px; border: 2px solid var(--line); background: var(--card); color: var(--cyan); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; font-size: 15px; flex-shrink: 0; }
+        .icon-btn:hover { border-color: var(--cyan); }
+        .layout { flex: 1; min-height: 0; display: grid; grid-template-columns: 320px 1fr; gap: 12px; padding-bottom: 12px; }
+        .panel { background: rgba(0,0,0,.6); border: 2px solid var(--line); border-radius: 18px; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+        /* thread list */
+        .search { padding: 10px; border-bottom: 1px solid var(--line); }
+        .search input { width: 100%; background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 9px 12px; color: #fff; font: inherit; font-size: 14px; outline: none; }
+        .search input:focus { border-color: var(--cyan); }
+        .threads { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .thread { display: flex; align-items: center; gap: 10px; padding: 11px 12px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.05); }
+        .thread:hover, .thread.active { background: rgba(0,242,255,.08); }
+        .thread.active { box-shadow: inset -3px 0 0 var(--lime); }
+        .avatar { position: relative; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--lime)); color: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 900; }
+        .avatar .dot { position: absolute; bottom: 0; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #444; border: 2px solid #000; }
+        .avatar .dot.on { background: var(--lime); box-shadow: 0 0 8px var(--lime); }
+        .t-main { flex: 1; min-width: 0; }
+        .t-name { font-weight: 900; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .t-last { font-size: 12px; color: #9aa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .t-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-size: 10px; color: #789; }
+        .badge { background: var(--lime); color: #000; font-weight: 900; border-radius: 999px; min-width: 20px; height: 20px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; }
+        .empty { padding: 36px 18px; text-align: center; color: #789; font-size: 14px; }
+        /* conversation */
+        .conv-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+        .conv-head .who { flex: 1; min-width: 0; cursor: pointer; }
+        .conv-head .who b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conv-head .who small { color: #789; font-size: 11px; }
+        .back { display: none; }
+        .invite-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 12px; border: 2px solid rgba(163,230,53,.5); background: rgba(163,230,53,.12); color: var(--lime); font: inherit; font-weight: 900; font-size: 12px; cursor: pointer; white-space: nowrap; }
+        .invite-btn:hover { background: rgba(163,230,53,.22); }
+        .invite-btn:disabled { opacity: .5; cursor: default; }
+        .msgs { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 12px; display: flex; flex-direction: column; gap: 6px; overscroll-behavior: contain; }
+        .msg { max-width: 82%; padding: 8px 12px; border-radius: 16px; font-size: 14px; line-height: 1.55; word-break: break-word; white-space: pre-wrap; }
+        .msg.me { align-self: flex-start; background: linear-gradient(135deg, rgba(163,230,53,.9), rgba(163,230,53,.75)); color: #000; border-bottom-right-radius: 4px; font-weight: 700; }
+        .msg.them { align-self: flex-end; background: rgba(0,242,255,.10); border: 1px solid rgba(0,242,255,.25); border-bottom-left-radius: 4px; }
+        .msg time { display: block; font-size: 10px; opacity: .6; margin-top: 2px; }
+        .day { align-self: center; font-size: 11px; color: #789; background: rgba(255,255,255,.05); padding: 2px 10px; border-radius: 999px; margin: 6px 0; }
+        .sys { align-self: center; max-width: 92%; text-align: center; font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 14px; border: 2px dashed rgba(163,230,53,.45); color: var(--lime); background: rgba(163,230,53,.07); }
+        .sys.err { border-color: rgba(255,107,125,.5); color: var(--red); background: rgba(255,107,125,.07); }
+        .sys button { margin-inline-start: 8px; background: none; border: 1px solid currentColor; color: inherit; border-radius: 8px; padding: 1px 8px; font: inherit; cursor: pointer; }
+        .composer { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); flex-shrink: 0; align-items: flex-end; }
+        .composer textarea { flex: 1; resize: none; max-height: 110px; min-height: 42px; background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 9px 12px; color: #fff; font: inherit; font-size: 15px; outline: none; line-height: 1.4; }
+        .composer textarea:focus { border-color: var(--cyan); }
+        .send { width: 46px; height: 42px; border-radius: 14px; border: none; background: var(--lime); color: #000; font-size: 16px; cursor: pointer; flex-shrink: 0; }
+        .send:disabled { opacity: .4; }
+        .placeholder { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #789; gap: 10px; text-align: center; padding: 20px; }
+        .placeholder i { font-size: 42px; color: rgba(0,242,255,.4); }
+        /* invite sheet */
+        .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.8); backdrop-filter: blur(6px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .sheet-bg.open { display: flex; }
+        .sheet { width: 100%; max-width: 380px; background: #050505; border: 2px solid rgba(163,230,53,.5); border-radius: 20px; padding: 20px; box-shadow: 0 0 40px rgba(163,230,53,.15); }
+        .sheet h3 { margin: 0 0 6px; font-size: 18px; color: var(--lime); }
+        .sheet p { margin: 0 0 14px; font-size: 13px; color: #9ab; line-height: 1.6; }
+        .sheet select { width: 100%; background: #0b0b0b; color: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 11px; font: inherit; font-size: 15px; margin-bottom: 14px; outline: none; }
+        .sheet .row { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 11px; border-radius: 12px; border: 2px solid var(--line); background: var(--card); color: #fff; font: inherit; font-weight: 900; cursor: pointer; }
+        .btn.go { background: var(--lime); color: #000; border-color: var(--lime); }
+        .btn:disabled { opacity: .5; }
+
+        @media (max-width: 760px) {
+            /* keep the floating inbox button off the send button */
+            #ejx-fab { bottom: calc(92px + env(safe-area-inset-bottom)) !important; }
+            .layout { grid-template-columns: 1fr; padding-bottom: 8px; }
+            .app { padding-left: 8px; padding-right: 8px; }
+            .layout.in-conv #listPanel { display: none; }
+            .layout:not(.in-conv) #convPanel { display: none; }
+            .back { display: inline-flex; }
+            .msg { max-width: 90%; }
+            .invite-btn span { display: none; }
+            .invite-btn { padding: 9px 11px; }
+            .composer textarea { font-size: 16px; } /* no iOS zoom on focus */
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="top">
+        <a class="icon-btn" href="friends.html" title="الأصدقاء"><i class="fas fa-arrow-right"></i></a>
+        <h1><i class="fas fa-comments" style="margin-inline-end:8px"></i>المحادثات</h1>
+        <a class="icon-btn" href="home.html" title="الرئيسية"><i class="fas fa-house"></i></a>
+    </header>
+
+    <div class="layout" id="layout">
+        <section class="panel" id="listPanel">
+            <div class="search"><input id="searchIn" type="search" placeholder="ابحث عن صديق..." autocomplete="off"></div>
+            <div class="threads" id="threads"><div class="empty"><i class="fas fa-spinner fa-spin"></i></div></div>
+        </section>
+
+        <section class="panel" id="convPanel">
+            <div class="placeholder" id="noConv"><i class="fas fa-comments"></i><div>اختر صديقاً لبدء المحادثة</div></div>
+            <div id="convBox" style="display:none;flex:1;min-height:0;flex-direction:column;">
+                <div class="conv-head">
+                    <button class="icon-btn back" id="backBtn" type="button" title="رجوع"><i class="fas fa-arrow-right"></i></button>
+                    <div class="avatar" id="cAvatar">؟<span class="dot" id="cDot"></span></div>
+                    <div class="who" id="cWho"><b id="cName">—</b><small id="cStatus">—</small></div>
+                    <button class="invite-btn" id="inviteBtn" type="button"><i class="fas fa-gamepad"></i><span>ادعُ للعب</span></button>
+                </div>
+                <div class="msgs" id="msgs"></div>
+                <div class="composer">
+                    <textarea id="msgIn" rows="1" maxlength="500" placeholder="اكتب رسالة..." enterkeyhint="send"></textarea>
+                    <button class="send" id="sendBtn" type="button" title="إرسال"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="sheet-bg" id="sheetBg">
+    <div class="sheet">
+        <h3>🎮 دعوة لغرفة</h3>
+        <p id="sheetTxt">ستصل دعوة لصديقك — <b>تُنشأ الغرفة فقط عندما يقبل</b>، وعندها تنتقلان إليها معاً.</p>
+        <select id="sheetCat">
+            <option value="places">🌍 أماكن سياحية</option>
+            <option value="food">🍕 أكلات مصرية</option>
+            <option value="jobs">🛠️ مهن ووظائف</option>
+            <option value="companies">🏢 شركات عالمية</option>
+            <option value="football_teams">⚽ أندية ومنتخبات كورة</option>
+        </select>
+        <div class="row">
+            <button class="btn go" id="sheetGo" type="button">إرسال الدعوة</button>
+            <button class="btn" id="sheetCancel" type="button">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { getDatabase, ref, get, update, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDnd-pmKEatI3DaFz6xHWB5ucurtHXt9tk",
+        authDomain: "el-jasus.firebaseapp.com",
+        databaseURL: "https://el-jasus-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "el-jasus",
+        storageBucket: "el-jasus.firebasestorage.app",
+        messagingSenderId: "415659587906",
+        appId: "1:415659587906:web:782f7940176ea4097eb0db",
+        measurementId: "G-N4K79FP56N"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    let me = null, F = null;
+    let friends = {}, chats = {}, presence = {};
+    const presOffs = {};
+    let current = null;          // friend uid of the open conversation
+    let stopListen = null;       // detaches the message listener
+    let lastDay = '', pendingProposal = null;
+
+    async function social() {
+        for (let i = 0; i < 100 && !window.FI; i++) await new Promise((r) => setTimeout(r, 100));
+        if (!window.FI) throw new Error('نظام الأصدقاء لم يُحمّل، أعد تحميل الصفحة');
+        await window.FI.ready; await window.FI.whenUser();
+        return window.FI;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) { location.href = 'login.html'; return; }
+        me = user;
+        onDisconnect(ref(db, `players/${user.uid}/presence`)).update({ online: false, lastSeen: Date.now() }).catch(() => {});
+        update(ref(db, `players/${user.uid}/presence`), { online: true, lastSeen: Date.now() }).catch(() => {});
+        onValue(ref(db, `players/${user.uid}/friends`), (s) => { friends = s.val() || {}; watchPresence(); renderThreads(); maybeOpenFromUrl(); });
+        onValue(ref(db, `userChats/${user.uid}`), (s) => { chats = s.val() || {}; renderThreads(); updateHeader(); });
+        try { F = await social(); } catch (e) { sys(e.message, true); }
+    });
+
+    function watchPresence() {
+        Object.keys(presOffs).forEach((id) => { if (!friends[id]) { presOffs[id](); delete presOffs[id]; } });
+        Object.keys(friends).forEach((id) => {
+            if (presOffs[id]) return;
+            presOffs[id] = onValue(ref(db, `players/${id}/presence`), (s) => { presence[id] = s.val() || {}; renderThreads(); updateHeader(); });
+        });
+    }
+
+    const nameOf = (id) => (friends[id] && friends[id].username) || (chats[id] && chats[id].name) || 'صديق';
+    const isOn = (id) => !!(presence[id] && presence[id].online);
+    function statusText(id) {
+        const p = presence[id] || {};
+        if (p.online && p.inGame) return '🎮 يلعب الآن';
+        if (p.online) return 'متصل الآن';
+        return 'غير متصل';
+    }
+    function timeFmt(ts) { try { return new Date(ts).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+    function dayFmt(ts) { try { return new Date(ts).toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }); } catch (e) { return ''; } }
+    function shortAgo(ts) {
+        if (!ts) return '';
+        const d = Date.now() - ts;
+        if (d < 60000) return 'الآن';
+        if (d < 3600000) return Math.floor(d / 60000) + ' د';
+        if (d < 86400000) return timeFmt(ts);
+        return new Date(ts).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
+    }
+
+    // ── Thread list ──────────────────────────────
+    function renderThreads() {
+        const q = $('searchIn').value.trim().toLowerCase();
+        const ids = Object.keys(friends).filter((id) => !q || nameOf(id).toLowerCase().includes(q));
+        ids.sort((a, b) => ((chats[b] && chats[b].lastTs) || 0) - ((chats[a] && chats[a].lastTs) || 0) || (isOn(b) - isOn(a)) || nameOf(a).localeCompare(nameOf(b), 'ar'));
+        if (!Object.keys(friends).length) { $('threads').innerHTML = '<div class="empty">ليس لديك أصدقاء بعد.<br><a href="friends.html" style="color:#a3e635;font-weight:900">أضف صديقاً بالكود 👋</a></div>'; return; }
+        if (!ids.length) { $('threads').innerHTML = '<div class="empty">لا نتائج</div>'; return; }
+        $('threads').innerHTML = ids.map((id) => {
+            const c = chats[id] || {};
+            const last = c.lastText ? (c.lastFrom === (me && me.uid) ? 'أنت: ' : '') + esc(c.lastText) : '<span style="opacity:.6">ابدأ المحادثة</span>';
+            return `<div class="thread${id === current ? ' active' : ''}" data-id="${esc(id)}">
+                <div class="avatar">${esc(nameOf(id).trim().charAt(0).toUpperCase() || '؟')}<span class="dot${isOn(id) ? ' on' : ''}"></span></div>
+                <div class="t-main"><div class="t-name">${esc(nameOf(id))}</div><div class="t-last">${last}</div></div>
+                <div class="t-meta"><span>${shortAgo(c.lastTs)}</span>${c.unread > 0 && id !== current ? `<span class="badge">${c.unread > 9 ? '9+' : c.unread}</span>` : ''}</div>
+            </div>`;
+        }).join('');
+    }
+    $('searchIn').addEventListener('input', renderThreads);
+    $('threads').addEventListener('click', (e) => { const t = e.target.closest('.thread'); if (t) openChat(t.dataset.id); });
+
+    let urlHandled = false;
+    function maybeOpenFromUrl() {
+        if (urlHandled) return;
+        const w = new URLSearchParams(location.search).get('with');
+        if (!w) { urlHandled = true; return; }
+        if (friends[w]) { urlHandled = true; openChat(w); }
+        else if (Object.keys(friends).length) { urlHandled = true; sys('هذا اللاعب ليس في قائمة أصدقائك', true); }
+    }
+
+    // ── Conversation ─────────────────────────────
+    function updateHeader() {
+        if (!current) return;
+        $('cName').textContent = nameOf(current);
+        $('cStatus').textContent = statusText(current);
+        $('cDot').className = 'dot' + (isOn(current) ? ' on' : '');
+        $('cAvatar').firstChild.textContent = nameOf(current).trim().charAt(0).toUpperCase() || '؟';
+        const p = presence[current] || {};
+        $('inviteBtn').disabled = !(p.online && !p.inGame) || !!pendingProposal;
+        $('inviteBtn').title = p.inGame ? 'صديقك داخل لعبة الآن' : (!p.online ? 'صديقك غير متصل' : '');
+    }
+
+    async function openChat(id) {
+        if (!friends[id]) return;
+        if (stopListen) { try { stopListen(); } catch (e) {} stopListen = null; }
+        current = id; lastDay = ''; pendingProposal = null;
+        window.EJ_ACTIVE_CHAT = id;
+        $('layout').classList.add('in-conv');
+        $('noConv').style.display = 'none';
+        $('convBox').style.display = 'flex';
+        $('msgs').innerHTML = '';
+        updateHeader(); renderThreads();
+        try { history.replaceState(null, '', 'chat.html?with=' + encodeURIComponent(id)); } catch (e) {}
+        try {
+            F = F || await social();
+            if (current !== id) return;
+            const seen = new Set();
+            stopListen = F.chat.listen(id, (m) => {
+                if (seen.has(m.id) || current !== id) return; seen.add(m.id);
+                addMsg(m);
+                if (m.from !== me.uid) F.chat.markRead(id);
+            }, 80);
+            F.chat.markRead(id);
+        } catch (e) { sys(e.message || 'تعذر تحميل المحادثة', true); }
+        if (!matchMedia('(max-width:760px)').matches) $('msgIn').focus();
+    }
+
+    function addMsg(m) {
+        const box = $('msgs');
+        const stick = box.scrollHeight - box.scrollTop - box.clientHeight < 120 || m.from === me.uid;
+        const d = dayFmt(m.ts);
+        if (d && d !== lastDay) { lastDay = d; const el = document.createElement('div'); el.className = 'day'; el.textContent = d; box.appendChild(el); }
+        const el = document.createElement('div');
+        el.className = 'msg ' + (m.from === me.uid ? 'me' : 'them');
+        const t = document.createElement('span'); t.textContent = m.text; // textContent: messages are never parsed as HTML
+        const tm = document.createElement('time'); tm.textContent = timeFmt(m.ts);
+        el.append(t, tm); box.appendChild(el);
+        if (stick) box.scrollTop = box.scrollHeight;
+    }
+    function sys(text, isErr, withCancel) {
+        const el = document.createElement('div');
+        el.className = 'sys' + (isErr ? ' err' : '');
+        el.textContent = text;
+        if (withCancel) { const b = document.createElement('button'); b.textContent = 'إلغاء الدعوة'; b.onclick = withCancel; el.appendChild(b); }
+        $('msgs').appendChild(el); $('msgs').scrollTop = $('msgs').scrollHeight;
+        if (!current) { // no conversation open: show it in the placeholder
+            $('noConv').querySelector('div').textContent = text;
+        }
+        return el;
+    }
+
+    let sending = false;
+    async function sendNow() {
+        const text = $('msgIn').value.trim();
+        if (!text || !current || sending) return;
+        sending = true; $('sendBtn').disabled = true;
+        try {
+            F = F || await social();
+            const r = await F.chat.send(current, text, nameOf(current));
+            if (r !== null) { $('msgIn').value = ''; autoGrow(); }  // null = blocked by the moderation filter
+        } catch (e) { sys(e.message || 'تعذر الإرسال', true); }
+        sending = false; $('sendBtn').disabled = false; $('msgIn').focus();
+    }
+    $('sendBtn').addEventListener('click', sendNow);
+    $('msgIn').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNow(); } });
+    function autoGrow() { const t = $('msgIn'); t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 110) + 'px'; }
+    $('msgIn').addEventListener('input', autoGrow);
+    $('backBtn').addEventListener('click', () => {
+        $('layout').classList.remove('in-conv'); current = null; window.EJ_ACTIVE_CHAT = null;
+        if (stopListen) { try { stopListen(); } catch (e) {} stopListen = null; }
+        $('convBox').style.display = 'none'; $('noConv').style.display = 'flex';
+        try { history.replaceState(null, '', 'chat.html'); } catch (e) {}
+        renderThreads();
+    });
+    $('cWho').addEventListener('click', () => { if (current && window.ProfileViewer) window.ProfileViewer.open(current, nameOf(current)); });
+
+    // ── Invite this friend to a new room ─────────
+    $('inviteBtn').addEventListener('click', () => { if (current) { $('sheetBg').classList.add('open'); $('sheetGo').disabled = false; } });
+    $('sheetCancel').addEventListener('click', () => $('sheetBg').classList.remove('open'));
+    $('sheetBg').addEventListener('click', (e) => { if (e.target === $('sheetBg')) $('sheetBg').classList.remove('open'); });
+    $('sheetGo').addEventListener('click', async () => {
+        const id = current; if (!id) return;
+        $('sheetGo').disabled = true;
+        try {
+            F = F || await social();
+            const key = await F.proposeRoom(id, nameOf(id), $('sheetCat').value);
+            $('sheetBg').classList.remove('open');
+            pendingProposal = { key, id }; updateHeader();
+            const el = sys(`🎮 تم إرسال الدعوة إلى ${nameOf(id)} — ستُنشأ الغرفة وتنتقلان إليها فور قبوله`, false, async () => {
+                try { await remove(ref(db, `invites/${id}/${key}`)); } catch (e) {}
+                pendingProposal = null; updateHeader(); el.remove(); sys('تم إلغاء الدعوة', false);
+            });
+            // the invite expires by itself after a few minutes
+            setTimeout(() => { if (pendingProposal && pendingProposal.key === key) { pendingProposal = null; updateHeader(); } }, 5 * 60 * 1000);
+        } catch (e) { $('sheetBg').classList.remove('open'); sys(e.message || 'تعذر إرسال الدعوة', true); }
+    });
+
+    window.addEventListener('beforeunload', () => { window.EJ_ACTIVE_CHAT = null; });
+</script>
+<link rel="stylesheet" href="../Assets/mobile.css">
+<script src="../Assets/sound-system.js" defer></script>
+<script>
+    window.alert = (msg) => UIAlert(msg);
+    window.confirm = (msg) => UIConfirm(msg);
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('../Assets/sw.js').catch(() => {})); }
+</script>
+</body>
+</html>
