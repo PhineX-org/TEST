@@ -3344,7 +3344,7 @@ async function joinRoom(uid, username) {
             if (code === 'config_origins') return '⚠️ ALLOWED_ORIGINS غير مضبوط في الـ Worker';
             if (code === 'config_firebase') return '⚠️ FIREBASE_WEB_API_KEY غير مضبوط في الـ Worker';
             if (code === 'config_gemini') return '⚠️ GEMINI_API_KEY غير مضبوط في الـ Worker';
-            if (code === 'bad_token' || status === 401) return '⚠️ الـ Worker لم يقبل جلسة الدخول — تأكد أن FIREBASE_WEB_API_KEY في الـ Worker هو نفس مفتاح الويب للّعبة';
+            if (code === 'bad_token' || status === 401) return '⚠️ الـ Worker لم يقبل جلسة الدخول: ' + String(body?.error || '').replace(/^Invalid or expired session\s*/, '').slice(0, 140);
             if (code === 'gemini' || status === 502) return '⚠️ Gemini رفض الطلب: ' + String(body?.error || '').replace(/^Gemini API error:\s*/, '').slice(0, 120);
             if (status === 500 || status === 0) {
                 // Unknown: ask /health (worker v2) to name the missing setting
