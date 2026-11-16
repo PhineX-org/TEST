@@ -1,0 +1,456 @@
+{
+  "lib": "html",
+  "title": "HTML",
+  "cats": [
+    {
+      "id": "start",
+      "name": "ابدأ من هنا",
+      "icon": "🚀",
+      "desc": "مفاهيم أساسية لازم تفهمها قبل ما تدخل على العناصر: يعني إيه عنصر، وسم، خاصية، Block، Inline…",
+      "items": [
+        "intro-html",
+        "anatomy",
+        "global-attributes",
+        "block-inline",
+        "void-elements",
+        "entities",
+        "semantic-html",
+        "nesting-rules"
+      ]
+    },
+    {
+      "id": "structure",
+      "name": "هيكل المستند",
+      "icon": "🏗️",
+      "desc": "الهيكل الأساسي اللي أي صفحة HTML لازم تبدأ بيه: DOCTYPE و html و head و body والتعليقات.",
+      "items": [
+        "doctype",
+        "html",
+        "head",
+        "body",
+        "comment"
+      ]
+    },
+    {
+      "id": "head",
+      "name": "عناصر الـ head",
+      "icon": "🧠",
+      "desc": "العناصر اللي بتتحط جوه head: عنوان الصفحة، الروابط الخارجية، الستايل، والرابط الأساسي.",
+      "items": [
+        "title",
+        "base",
+        "link",
+        "style"
+      ]
+    },
+    {
+      "id": "meta",
+      "name": "عناصر الـ meta",
+      "icon": "🏷️",
+      "desc": "بيانات عن الصفحة للمتصفح ومحركات البحث ومواقع التواصل: الترميز، الموبايل، الوصف، المشاركة.",
+      "items": [
+        "meta",
+        "meta-charset",
+        "meta-viewport",
+        "meta-description",
+        "meta-social"
+      ]
+    },
+    {
+      "id": "sections",
+      "name": "أقسام الصفحة",
+      "icon": "🧱",
+      "desc": "العناصر اللي بتقسّم الصفحة لأجزاء ليها معنى: الهيدر، القائمة، المحتوى الرئيسي، الفوتر…",
+      "items": [
+        "header",
+        "nav",
+        "main",
+        "section",
+        "article",
+        "aside",
+        "footer",
+        "address",
+        "search"
+      ]
+    },
+    {
+      "id": "headings",
+      "name": "العناوين",
+      "icon": "🔠",
+      "desc": "عناوين الصفحة من h1 لحد h6 وتجميع العنوان مع العنوان الفرعي.",
+      "items": [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "hgroup"
+      ]
+    },
+    {
+      "id": "text",
+      "name": "الفقرات والحاويات",
+      "icon": "📝",
+      "desc": "اللبنات الأساسية للنص: الفقرة، الحاوية العامة، السطر الجديد، والخط الفاصل.",
+      "items": [
+        "p",
+        "div",
+        "span",
+        "br",
+        "wbr",
+        "hr"
+      ]
+    },
+    {
+      "id": "decoration",
+      "name": "تنسيق وتزيين النص",
+      "icon": "✨",
+      "desc": "عناصر للتأكيد والتمييز والتنسيق: غامق، مائل، تحته خط، مشطوب، مظلل، مرتفع ومنخفض…",
+      "items": [
+        "b",
+        "strong",
+        "i",
+        "em",
+        "u",
+        "s",
+        "mark",
+        "small",
+        "sub",
+        "sup",
+        "del",
+        "ins"
+      ]
+    },
+    {
+      "id": "links",
+      "name": "الروابط",
+      "icon": "🔗",
+      "desc": "الروابط والتنقل بين الصفحات، وخرائط الصور القابلة للضغط.",
+      "items": [
+        "a",
+        "map",
+        "area"
+      ]
+    },
+    {
+      "id": "semantics",
+      "name": "دلالات نصية",
+      "icon": "💬",
+      "desc": "عناصر بتدّي النص معنى إضافي: اقتباس، اختصار، تاريخ، تعريف، اتجاه النص، والنطق الآسيوي.",
+      "items": [
+        "abbr",
+        "blockquote",
+        "q",
+        "cite",
+        "dfn",
+        "data",
+        "time",
+        "bdi",
+        "bdo",
+        "ruby",
+        "rt",
+        "rp"
+      ]
+    },
+    {
+      "id": "code",
+      "name": "الكود والحاسوب",
+      "icon": "💻",
+      "desc": "عناصر لعرض الكود والمخرجات وضغطات الكيبورد والمتغيرات.",
+      "items": [
+        "code",
+        "pre",
+        "kbd",
+        "samp",
+        "var"
+      ]
+    },
+    {
+      "id": "lists",
+      "name": "القوائم",
+      "icon": "📋",
+      "desc": "القوائم المرقمة والنقطية وقوائم التعريفات.",
+      "items": [
+        "ul",
+        "ol",
+        "li",
+        "menu",
+        "dl",
+        "dt",
+        "dd"
+      ]
+    },
+    {
+      "id": "media",
+      "name": "الصور والوسائط",
+      "icon": "🖼️",
+      "desc": "الصور والصوت والفيديو والترجمة، والـ figure اللي بيغلّفهم.",
+      "items": [
+        "img",
+        "picture",
+        "source",
+        "figure",
+        "figcaption",
+        "audio",
+        "video",
+        "track"
+      ]
+    },
+    {
+      "id": "embedded",
+      "name": "المحتوى المدمج والرسم",
+      "icon": "🧩",
+      "desc": "تضمين صفحات وملفات خارجية ورسومات: iframe و embed و object و SVG و MathML و canvas.",
+      "items": [
+        "iframe",
+        "embed",
+        "object",
+        "fencedframe",
+        "svg",
+        "math",
+        "canvas"
+      ]
+    },
+    {
+      "id": "scripting",
+      "name": "السكربت والمكونات",
+      "icon": "⚙️",
+      "desc": "ربط JavaScript بالصفحة، ومحتوى بديل لو السكربت متعطل، وقوالب المكونات.",
+      "items": [
+        "script",
+        "noscript",
+        "template",
+        "slot"
+      ]
+    },
+    {
+      "id": "tables",
+      "name": "الجداول",
+      "icon": "📊",
+      "desc": "كل عناصر بناء الجداول: الصفوف والأعمدة والعناوين والتجميع.",
+      "items": [
+        "table",
+        "caption",
+        "colgroup",
+        "col",
+        "thead",
+        "tbody",
+        "tfoot",
+        "tr",
+        "th",
+        "td"
+      ]
+    },
+    {
+      "id": "forms",
+      "name": "النماذج (Forms)",
+      "icon": "📥",
+      "desc": "استقبال البيانات من المستخدم: الفورم، الحقول، الأزرار، العناوين التوضيحية.",
+      "items": [
+        "form",
+        "label",
+        "input",
+        "button",
+        "textarea",
+        "fieldset",
+        "legend",
+        "output"
+      ]
+    },
+    {
+      "id": "choices",
+      "name": "الاختيارات والقوائم المنسدلة",
+      "icon": "🎚️",
+      "desc": "عناصر الاختيار من قائمة: select و option و optgroup و datalist.",
+      "items": [
+        "select",
+        "option",
+        "optgroup",
+        "datalist",
+        "selectedcontent"
+      ]
+    },
+    {
+      "id": "interactive",
+      "name": "العناصر التفاعلية",
+      "icon": "🎛️",
+      "desc": "تفاعل بدون JavaScript تقريباً: تفاصيل قابلة للطي، نوافذ حوار، شريط تقدم، ومقاييس.",
+      "items": [
+        "details",
+        "summary",
+        "dialog",
+        "progress",
+        "meter",
+        "geolocation"
+      ]
+    },
+    {
+      "id": "global-attrs",
+      "name": "الخصائص العامة",
+      "icon": "🌐",
+      "desc": "خصائص بتشتغل على أي عنصر في HTML: class وid وstyle وtitle وlang وhidden وtabindex وdata-* وغيرها، كل واحدة بشرح وأمثلة.",
+      "items": [
+        "attr-accesskey",
+        "attr-anchor",
+        "attr-autocapitalize",
+        "attr-autocorrect",
+        "attr-autofocus",
+        "attr-class",
+        "attr-containertiming",
+        "attr-containertimingignore",
+        "attr-contenteditable",
+        "attr-data",
+        "attr-dir",
+        "attr-draggable",
+        "attr-enterkeyhint",
+        "attr-exportparts",
+        "attr-headingoffset",
+        "attr-headingreset",
+        "attr-hidden",
+        "attr-id",
+        "attr-inert",
+        "attr-inputmode",
+        "attr-is",
+        "attr-itemid",
+        "attr-itemprop",
+        "attr-itemref",
+        "attr-itemscope",
+        "attr-itemtype",
+        "attr-lang",
+        "attr-nonce",
+        "attr-part",
+        "attr-popover",
+        "attr-slot",
+        "attr-spellcheck",
+        "attr-style",
+        "attr-tabindex",
+        "attr-title",
+        "attr-translate",
+        "attr-virtualkeyboardpolicy",
+        "attr-writingsuggestions",
+        "attr-role",
+        "attr-aria",
+        "attr-events"
+      ]
+    },
+    {
+      "id": "input-types",
+      "name": "أنواع حقل input",
+      "icon": "⌨️",
+      "desc": "كل قيم type لعنصر input: نص وإيميل ورقم وتاريخ ولون وملف وغيرها، وإيه اللي بيحصل في كل نوع على الموبايل والكمبيوتر.",
+      "items": [
+        "input-text",
+        "input-password",
+        "input-email",
+        "input-url",
+        "input-tel",
+        "input-search",
+        "input-number",
+        "input-range",
+        "input-date",
+        "input-time",
+        "input-datetime-local",
+        "input-month",
+        "input-week",
+        "input-color",
+        "input-checkbox",
+        "input-radio",
+        "input-file",
+        "input-hidden",
+        "input-image",
+        "input-button",
+        "input-submit",
+        "input-reset"
+      ]
+    },
+    {
+      "id": "attrs",
+      "name": "خصائص العناصر الشائعة",
+      "icon": "🏷️",
+      "desc": "الخصائص اللي بتتكرر في عناصر كتير: href وsrc وalt وrequired وplaceholder وpattern وmin وmax وغيرها.",
+      "items": [
+        "attr-href",
+        "attr-src",
+        "attr-alt",
+        "attr-target",
+        "attr-type",
+        "attr-name",
+        "attr-value",
+        "attr-action",
+        "attr-method",
+        "attr-download",
+        "attr-checked",
+        "attr-selected",
+        "attr-required",
+        "attr-disabled",
+        "attr-readonly",
+        "attr-placeholder",
+        "attr-pattern",
+        "attr-min",
+        "attr-max",
+        "attr-step",
+        "attr-minlength",
+        "attr-maxlength",
+        "attr-multiple",
+        "attr-size",
+        "attr-autocomplete",
+        "attr-accept",
+        "attr-capture",
+        "attr-dirname",
+        "attr-for",
+        "attr-form",
+        "attr-content",
+        "attr-rel",
+        "attr-crossorigin",
+        "attr-integrity",
+        "attr-fetchpriority",
+        "attr-elementtiming"
+      ]
+    },
+    {
+      "id": "old-text",
+      "name": "عناصر نصية قديمة",
+      "icon": "🕰️",
+      "desc": "عناصر تنسيق قديمة اتلغت من HTML. تعرفها عشان تفهم الكود القديم، لكن متستخدمهاش.",
+      "items": [
+        "acronym",
+        "big",
+        "blink",
+        "center",
+        "font",
+        "marquee",
+        "nobr",
+        "strike",
+        "tt",
+        "basefont",
+        "dir",
+        "plaintext",
+        "xmp"
+      ]
+    },
+    {
+      "id": "old-other",
+      "name": "عناصر قديمة أخرى",
+      "icon": "🗄️",
+      "desc": "عناصر قديمة أو ملغية (frames و applet و param…) وبدايل حديثة ليها.",
+      "items": [
+        "applet",
+        "bgsound",
+        "content",
+        "frame",
+        "frameset",
+        "image",
+        "keygen",
+        "menuitem",
+        "noembed",
+        "noframes",
+        "param",
+        "rb",
+        "rtc",
+        "shadow",
+        "portal"
+      ]
+    }
+  ]
+}
