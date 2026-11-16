@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX Lab | PHP Login · Step 8 — Final</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.1);--void:#05070a;--surface:#0b0e14;--editor:#080b10;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.2);--text:#c9d1d9;--muted:#4e5566;--accent:#c3e88d;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);}
+.ws-sep{color:var(--muted);font-size:18px;}.ws-title{font-size:13px;font-weight:600;}.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:5px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;}
+.ws-body{display:grid;grid-template-columns:300px 1fr 1fr;flex:1;overflow:hidden;}
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--accent);line-height:1.3;}
+.ins-intro,.task-item{font-size:13px;color:var(--text);line-height:1.75;}
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.hint{background:rgba(130,170,255,.05);border:1px solid rgba(130,170,255,.15);border-radius:8px;padding:11px 13px;font-size:12px;color:#82aaff;line-height:1.65;}
+.hint strong{color:#c3e88d;}
+.step-info{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.12);border-radius:8px;padding:11px 14px;font-size:12px;line-height:1.75;}
+.step-info .label{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--neon);display:block;margin-bottom:4px;}
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;overflow-x:auto;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.file-tab:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.file-tab.active{color:var(--text);border-bottom-color:var(--neon);background:var(--editor);}
+.tab-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#c9d1d9;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;display:none;}
+.code-ed.active{display:block;}.code-ed::selection{background:rgba(57,255,20,.12);}
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}.pdot{width:10px;height:10px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:white;}
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover{border-color:var(--muted);color:var(--text);}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:rgba(57,255,20,.1);color:var(--neon);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.45);transform:translateY(-1px);}
+#finishBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#finishBtn.visible{display:inline-flex;}
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:460px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.5;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:#ff5874;color:#ff5874;}
+</style>
+</head>
+<body>
+<header class="ws-header">
+  <span class="ws-logo">PhineX</span><span class="ws-sep">/</span>
+  <span class="ws-title">PHP Login Project · الربط النهائي وعرض الأخطاء ✅</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track">
+    <div class="prog-dot" data-s="1"></div><div class="prog-dot" data-s="2"></div>
+    <div class="prog-dot" data-s="3"></div><div class="prog-dot" data-s="4"></div>
+    <div class="prog-dot" data-s="5"></div><div class="prog-dot" data-s="6"></div>
+    <div class="prog-dot" data-s="7"></div><div class="prog-dot" data-s="8"></div>
+  </div>
+  <span class="ws-step-label">8/8</span>
+</header>
+
+<div class="ws-body">
+  <aside class="ws-instructions">
+    <div class="ins-badge">🏁 الخطوة الأخيرة</div>
+    <div class="ins-title">الربط النهائي — index.php المكتملة</div>
+    <div class="ins-intro">
+      هنكمّل ملف <code>index.php</code> بإضافة PHP في الأعلى لعرض رسائل الأخطاء من الـ Session، وربط كل شيء مع بعض.
+    </div>
+
+    <div class="task-list">
+      <div class="task-list-title">✅ المهام الأخيرة</div>
+      <div class="task-item"><div class="task-num">١</div><div>أضف <code>&lt;?php session_start(); ?&gt;</code> في أول ملف <code>index.php</code></div></div>
+      <div class="task-item"><div class="task-num">٢</div><div>اعرض الأخطاء من <code>$_SESSION['errors']</code> فوق الفورم</div></div>
+      <div class="task-item"><div class="task-num">٣</div><div>اعرض رسالة نجاح من <code>$_SESSION['success']</code> إن وُجدت</div></div>
+      <div class="task-item"><div class="task-num">٤</div><div>أضف كود عشان لما URL يحتوي <code>?tab=register</code> يفتح تاب Register</div></div>
+      <div class="task-item"><div class="task-num">٥</div><div>أعد قراءة القيم القديمة من <code>$_SESSION['old_data']</code> لإعادة ملء الفورم</div></div>
+      <div class="task-item"><div class="task-num">٦</div><div>اضغط <strong>تشغيل</strong> وتأكد من عمل الصفحة كاملةً في الـ preview</div></div>
+    </div>
+
+    <div class="hint">
+      <strong>هيكل ملفات المشروع النهائي:</strong><br>
+      📁 <code>php-login/</code><br>
+      ├── 📄 <code>index.php</code><br>
+      ├── 📄 <code>style.css</code><br>
+      ├── 📄 <code>db.php</code><br>
+      ├── 📄 <code>helpers.php</code><br>
+      ├── 📄 <code>register.php</code><br>
+      ├── 📄 <code>login.php</code><br>
+      ├── 📄 <code>dashboard.php</code><br>
+      └── 📄 <code>logout.php</code>
+    </div>
+
+    <div class="step-info">
+      <span class="label">🔐 ملخص الأمان</span>
+      ✅ password_hash() + password_verify()<br>
+      ✅ PDO Prepared Statements<br>
+      ✅ session_regenerate_id()<br>
+      ✅ htmlspecialchars() on output<br>
+      ✅ filter_input() on POST data
+    </div>
+  </aside>
+
+  <div class="ws-editor">
+    <div class="editor-tabs">
+      <button class="file-tab active" id="tab-index" onclick="switchTab('index')">
+        <span class="tab-dot" style="background:#f78c6c"></span>index.php
+      </button>
+      <button class="file-tab" id="tab-full" onclick="switchTab('full')">
+        <span class="tab-dot" style="background:#39ff14"></span>full_index.php
+      </button>
+      <div class="editor-action"><button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button></div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed active" id="ed-index" spellcheck="false"></textarea>
+      <textarea class="code-ed" id="ed-full" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div class="ws-preview">
+    <div class="preview-bar">
+      <div class="preview-dots"><span class="pdot r"></span><span class="pdot y"></span><span class="pdot g"></span></div>
+      <div class="preview-url">localhost/php-login/index.php — Final Preview</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </div>
+</div>
+
+<footer class="ws-footer">
+  <a class="btn-nav" href="step7.html">← السابق</a>
+  <button class="btn-run" onclick="runPreview()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" onclick="checkStep()">✓ إنهاء المشروع</button>
+  <button class="btn-nav" id="finishBtn" onclick="showCompletion()" style="color:var(--neon);border-color:var(--border2);">🎉 شهادة الإتمام</button>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const STEP_NUM = 8;
+const KEY = `phinex_php_login_${STEP_NUM}`;
+const eds = { index: document.getElementById('ed-index'), full: document.getElementById('ed-full') };
+const lnDiv = document.getElementById('lineNums');
+let curTab = 'index';
+
+const STARTER = {
+  index: `<?php
+// ============================================================
+// index.php — الصفحة الرئيسية (Login + Register tabs)
+// ============================================================
+session_start();
+require_once 'helpers.php';
+
+// لو المستخدم مسجّل دخول بالفعل، وجّهه للـ Dashboard
+if (!empty($_SESSION['logged_in'])) {
+  header('Location: dashboard.php');
+  exit;
+}
+
+// تحديد التاب الافتراضي
+$activeTab = isset($_GET['tab']) && $_GET['tab'] === 'register'
+             ? 'register' : 'login';
+
+// استرجاع البيانات القديمة (لو كان في خطأ)
+$old = $_SESSION['old_data'] ?? [];
+unset($_SESSION['old_data']);
+
+// رسالة عند تسجيل الخروج
+$loggedOut = isset($_GET['msg']) && $_GET['msg'] === 'logged_out';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHP Login System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+
+    <div class="auth-header">
+      <span class="auth-logo">🔐</span>
+      <h1>PHP Login System</h1>
+      <p>Secure authentication with PHP & MySQL</p>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="tab-btns">
+      <button class="tab-btn btn-login  <?= $activeTab==='login'    ? 'active':'' ?>"
+              onclick="switchTab('login')">Login</button>
+      <button class="tab-btn btn-register <?= $activeTab==='register' ? 'active':'' ?>"
+              onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- Alerts -->
+    <?php if ($loggedOut): ?>
+      <div class="alert alert-success">✓ You have been logged out successfully.</div>
+    <?php endif; ?>
+
+    <?= showErrors() ?>
+    <?= showSuccess() ?>
+
+    <!-- ─── LOGIN FORM ─── -->
+    <form id="login-form"
+          class="auth-form <?= $activeTab==='login' ? 'active':'' ?>"
+          action="login.php" method="POST">
+
+      <div class="form-group">
+        <label for="login-email">Email Address</label>
+        <input type="email" id="login-email" name="email"
+               placeholder="you@example.com" required
+               value="<?= htmlspecialchars($old['email'] ?? '') ?>">
+      </div>
+
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" name="password"
+               placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Login →</button>
+
+      <p class="form-footer">
+        No account?
+        <a href="#" onclick="switchTab('register')">Register here</a>
+      </p>
+    </form>
+
+    <!-- ─── REGISTER FORM ─── -->
+    <form id="register-form"
+          class="auth-form <?= $activeTab==='register' ? 'active':'' ?>"
+          action="register.php" method="POST">
+
+      <div class="form-group">
+        <label for="reg-username">Username</label>
+        <input type="text" id="reg-username" name="username"
+               placeholder="johndoe" required minlength="3"
+               value="<?= htmlspecialchars($old['username'] ?? '') ?>">
+      </div>
+
+      <div class="form-group">
+        <label for="reg-email">Email Address</label>
+        <input type="email" id="reg-email" name="email"
+               placeholder="you@example.com" required
+               value="<?= htmlspecialchars($old['email'] ?? '') ?>">
+      </div>
+
+      <div class="form-group">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" name="password"
+               placeholder="Min. 8 characters" required minlength="8">
+      </div>
+
+      <div class="form-group">
+        <label for="reg-confirm">Confirm Password</label>
+        <input type="password" id="reg-confirm" name="confirm_password"
+               placeholder="Repeat password" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Create Account →</button>
+
+      <p class="form-footer">
+        Have account?
+        <a href="#" onclick="switchTab('login')">Login here</a>
+      </p>
+    </form>
+
+  </div>
+  <script src="tabs.js"><\/script>
+</body>
+</html>`,
+
+  full: `<?php
+// ============================================================
+// full_index.php — النسخة الكاملة مع كل شيء في ملف واحد
+// (للمراجعة والاطلاع — في المشروع الحقيقي افصل الملفات)
+// ============================================================
+session_start();
+
+// ── الاتصال بـ DB (مضمّن هنا للتوضيح) ───────────────────
+$pdo = null;
+try {
+  $pdo = new PDO(
+    'mysql:host=localhost;dbname=php_login_db;charset=utf8mb4',
+    'root', '',
+    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
+  );
+} catch (PDOException $e) {
+  die('DB Error: ' . $e->getMessage());
+}
+
+$activeTab = $_GET['tab'] ?? 'login';
+$errors    = $_SESSION['errors'] ?? [];
+$success   = $_SESSION['success'] ?? '';
+$old       = $_SESSION['old_data'] ?? [];
+unset($_SESSION['errors'], $_SESSION['success'], $_SESSION['old_data']);
+
+// ── معالجة الـ forms ──────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $action = $_POST['action'] ?? '';
+
+  // ─── Register ───
+  if ($action === 'register') {
+    $u = trim($_POST['username'] ?? '');
+    $e = trim($_POST['email'] ?? '');
+    $p = $_POST['password'] ?? '';
+    $c = $_POST['confirm_password'] ?? '';
+
+    if (strlen($u) < 3)              $errors[] = 'Username too short.';
+    if (!filter_var($e,FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email.';
+    if (strlen($p) < 8)              $errors[] = 'Password min 8 chars.';
+    if ($p !== $c)                   $errors[] = 'Passwords do not match.';
+
+    if (empty($errors)) {
+      $stmt = $pdo->prepare("SELECT id FROM users WHERE email=? OR username=? LIMIT 1");
+      $stmt->execute([$e, $u]);
+      if ($stmt->fetch()) $errors[] = 'Email or username already exists.';
+    }
+
+    if (empty($errors)) {
+      $hash = password_hash($p, PASSWORD_BCRYPT);
+      $ins  = $pdo->prepare("INSERT INTO users (username,email,password) VALUES(?,?,?)");
+      $ins->execute([$u, $e, $hash]);
+      session_regenerate_id(true);
+      $_SESSION = ['user_id'=>$pdo->lastInsertId(),'username'=>$u,'email'=>$e,'logged_in'=>true];
+      header('Location: dashboard.php'); exit;
+    }
+    $_SESSION['errors']   = $errors;
+    $_SESSION['old_data'] = ['username'=>$u,'email'=>$e];
+    header('Location: index.php?tab=register'); exit;
+  }
+
+  // ─── Login ───
+  if ($action === 'login') {
+    $e = trim($_POST['email'] ?? '');
+    $p = $_POST['password'] ?? '';
+    if (empty($e)||empty($p)) { $errors[]='Fill all fields.'; }
+    else {
+      $stmt = $pdo->prepare("SELECT id,username,email,password FROM users WHERE email=? LIMIT 1");
+      $stmt->execute([$e]);
+      $user = $stmt->fetch();
+      if (!$user || !password_verify($p, $user['password'])) {
+        $errors[] = 'Invalid email or password.';
+      } else {
+        session_regenerate_id(true);
+        $_SESSION = ['user_id'=>$user['id'],'username'=>$user['username'],
+                     'email'=>$user['email'],'logged_in'=>true];
+        header('Location: dashboard.php'); exit;
+      }
+    }
+    $_SESSION['errors'] = $errors;
+    header('Location: index.php'); exit;
+  }
+}
+// HTML continues below — omitted for brevity (same as index.php above)
+?>`
+};
+
+function init() {
+  for (const t in eds) {
+    eds[t].value = localStorage.getItem(`${KEY}_${t}`) || STARTER[t];
+    eds[t].addEventListener('input', () => { updateLN(); saveCode(); scheduleRun(); });
+    eds[t].addEventListener('scroll', () => { lnDiv.scrollTop = eds[curTab].scrollTop; });
+    eds[t].addEventListener('keydown', handleTab);
+  }
+  updateProgress(); updateLN(); buildPreview();
+}
+
+function switchTab(t) {
+  curTab = t;
+  for (const k in eds) {
+    eds[k].classList.toggle('active', k === t);
+    document.getElementById(`tab-${k}`).classList.toggle('active', k === t);
+  }
+  updateLN(); eds[t].focus();
+}
+
+function updateLN() {
+  const n = eds[curTab].value.split('\n').length;
+  lnDiv.innerHTML = Array.from({length:n},(_,i)=>i+1).join('<br>');
+}
+function handleTab(e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  const ta=e.target,s=ta.selectionStart,en=ta.selectionEnd;
+  ta.value=ta.value.slice(0,s)+'  '+ta.value.slice(en);
+  ta.selectionStart=ta.selectionEnd=s+2; updateLN(); saveCode();
+}
+let saveT;
+function saveCode(){clearTimeout(saveT);saveT=setTimeout(()=>{for(const t in eds)localStorage.setItem(`${KEY}_${t}`,eds[t].value);},400);}
+function resetCode(){if(!confirm('إعادة ضبط؟'))return;for(const t in eds){eds[t].value=STARTER[t];localStorage.removeItem(`${KEY}_${t}`);}updateLN();buildPreview();}
+
+function buildPreview() {
+  const fr = document.getElementById('previewFrame');
+  const d = fr.contentDocument || fr.contentWindow.document;
+  d.open();
+  d.write(`<!DOCTYPE html><html><head><style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:#0f172a;font-family:sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .auth-wrapper{background:#1e293b;border-radius:20px;padding:32px;width:100%;max-width:400px;box-shadow:0 25px 60px rgba(0,0,0,.5);}
+    .auth-header{text-align:center;margin-bottom:24px;}
+    .auth-logo{font-size:2.5rem;display:block;margin-bottom:10px;}
+    .auth-header h1{color:#f1f5f9;font-size:1.3rem;margin:0 0 4px;}
+    .auth-header p{color:#64748b;font-size:.82rem;margin:0;}
+    .tab-btns{display:flex;background:#0f172a;border-radius:10px;padding:4px;margin-bottom:22px;gap:4px;}
+    .tab-btn{flex:1;padding:9px;border:none;border-radius:7px;font-size:.86rem;font-weight:600;cursor:pointer;background:transparent;color:#64748b;transition:all .2s;}
+    .tab-btn.active{background:#3b82f6;color:#fff;box-shadow:0 2px 8px rgba(59,130,246,.4);}
+    .auth-form{display:none;flex-direction:column;gap:15px;}
+    .auth-form.active{display:flex;}
+    .form-group{display:flex;flex-direction:column;gap:6px;}
+    .form-group label{font-size:.8rem;font-weight:600;color:#94a3b8;}
+    .form-group input{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px 13px;color:#f1f5f9;font-size:.88rem;outline:none;}
+    .form-group input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+    .btn-submit{background:#3b82f6;color:#fff;border:none;border-radius:10px;padding:12px;font-size:.92rem;font-weight:700;cursor:pointer;}
+    .btn-submit:hover{background:#2563eb;}
+    .form-footer{text-align:center;font-size:.78rem;color:#64748b;margin-top:2px;}
+    .form-footer a{color:#3b82f6;text-decoration:none;}
+    .alert-error{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 14px;font-size:.82rem;margin-bottom:12px;}
+    .alert-success{background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px 14px;font-size:.82rem;margin-bottom:12px;}
+    .badge{display:inline-block;background:rgba(57,255,20,.1);color:#39ff14;border:1px solid rgba(57,255,20,.2);border-radius:6px;padding:2px 8px;font-size:.72rem;margin-bottom:14px;}
+  </style></head><body>
+    <div class="auth-wrapper">
+      <div class="auth-header">
+        <span class="auth-logo">🔐</span>
+        <h1>PHP Login System</h1>
+        <p>Secure authentication with PHP & MySQL</p>
+      </div>
+      <div class="badge">✅ Connected to php_login_db</div>
+      <div class="tab-btns">
+        <button class="tab-btn active btn-login" onclick="sw('login')">Login</button>
+        <button class="tab-btn btn-register" onclick="sw('register')">Register</button>
+      </div>
+      <form id="login-form" class="auth-form active" onsubmit="return false">
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"></div>
+        <button type="submit" class="btn-submit">Login →</button>
+        <p class="form-footer">No account? <a href="#" onclick="sw('register')">Register here</a></p>
+      </form>
+      <form id="register-form" class="auth-form" onsubmit="return false">
+        <div class="form-group"><label>Username</label><input type="text" placeholder="johndoe"></div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" placeholder="Min. 8 characters"></div>
+        <div class="form-group"><label>Confirm Password</label><input type="password" placeholder="Repeat password"></div>
+        <button type="submit" class="btn-submit">Create Account →</button>
+        <p class="form-footer">Have account? <a href="#" onclick="sw('login')">Login here</a></p>
+      </form>
+    </div>
+    <script>
+      function sw(t){
+        document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.getElementById(t+'-form').classList.add('active');
+        document.querySelector('.btn-'+t).classList.add('active');
+      }
+    <\/script>
+  </body></html>`);
+  d.close();
+}
+
+let runT;
+function scheduleRun(){clearTimeout(runT);runT=setTimeout(buildPreview,600);}
+function runPreview(){buildPreview();}
+
+function updateProgress(){
+  document.querySelectorAll('.prog-dot').forEach((dot,i)=>{
+    const n=i+1; dot.classList.remove('done','current');
+    if(localStorage.getItem(`phinex_php_login_${n}`)==='complete') dot.classList.add('done');
+    else if(n===STEP_NUM) dot.classList.add('current');
+  });
+}
+function markComplete(){
+  localStorage.setItem(KEY,'complete'); updateProgress();
+  document.getElementById('finishBtn').classList.add('visible');
+}
+function toast(msg,type='ok'){
+  const el=document.getElementById('toast');el.textContent=msg;
+  el.className=`toast ${type} show`;clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('show'),5000);
+}
+
+function checkStep() {
+  const code = eds.index.value;
+  const checks = {
+    'session_start':    code.includes('session_start()'),
+    'require helpers':  code.includes('helpers.php'),
+    'session errors':   code.includes("$_SESSION['errors']") || code.includes('showErrors()'),
+    'activeTab logic':  code.includes('$activeTab') || code.includes('activeTab'),
+    'old data restore': code.includes("$old") || code.includes('old_data'),
+    'login form action': code.includes('login.php') && code.includes("method='POST'") || code.includes('method="POST"'),
+    'register form':    code.includes('register.php'),
+    'htmlspecialchars': code.includes('htmlspecialchars'),
+    'PHP in HTML':      code.includes('<?=') || code.includes('<?php echo'),
+  };
+  const passed = Object.values(checks).filter(Boolean).length;
+  const total  = Object.keys(checks).length;
+
+  if (passed >= 7) {
+    markComplete();
+    toast(`🎉 مبروك! المشروع مكتمل (${passed}/${total})\n\nملف index.php النهائي جاهز!\nالمشروع بالكامل يعمل الآن على XAMPP`, 'ok');
+  } else {
+    const missing = Object.entries(checks).filter(([,v])=>!v).map(([k])=>`• ${k}`);
+    toast(`تحقق من: (${passed}/${total})\n`+missing.slice(0,4).join('\n'),'err');
+  }
+}
+
+function showCompletion() {
+  const steps = Array.from({length:8},(_,i)=>i+1);
+  const done  = steps.filter(n=>localStorage.getItem(`phinex_php_login_${n}`)==='complete').length;
+  const fr = document.getElementById('previewFrame');
+  const d  = fr.contentDocument || fr.contentWindow.document;
+  d.open();
+  d.write(`<!DOCTYPE html><html><head><style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:#050508;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+    .cert{background:linear-gradient(135deg,#0d1117,#0b0e14);border:2px solid #39ff14;border-radius:20px;padding:40px 36px;max-width:500px;width:100%;text-align:center;box-shadow:0 0 40px rgba(57,255,20,.2),0 0 80px rgba(57,255,20,.1);}
+    .cert-icon{font-size:4rem;margin-bottom:16px;display:block;}
+    .cert h1{font-size:1.6rem;color:#39ff14;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px;}
+    .cert h2{font-size:1rem;color:#c9d1d9;font-weight:400;margin-bottom:24px;opacity:.8;}
+    .cert-badge{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.2);border-radius:10px;padding:16px 20px;margin-bottom:24px;}
+    .cert-badge h3{color:#c3e88d;font-size:.85rem;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase;}
+    .skills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+    .skill{background:rgba(57,255,20,.06);border:1px solid rgba(57,255,20,.15);color:#39ff14;padding:4px 12px;border-radius:100px;font-size:.75rem;}
+    .progress-row{display:flex;justify-content:center;gap:6px;margin-bottom:20px;}
+    .pdot{width:12px;height:12px;border-radius:50%;background:#1a1a2e;border:1px solid #334155;}
+    .pdot.done{background:#39ff14;border-color:#39ff14;box-shadow:0 0 6px rgba(57,255,20,.5);}
+    .score{font-size:1.1rem;color:#c9d1d9;margin-bottom:16px;}
+    .score span{color:#39ff14;font-weight:800;font-size:1.4rem;}
+    .date{font-size:.75rem;color:#4e5566;margin-top:16px;}
+    .files{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:14px;text-align:right;}
+    .f{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:5px 10px;font-size:.75rem;color:#64748b;font-family:monospace;}
+  </style></head><body>
+    <div class="cert">
+      <span class="cert-icon">🏆</span>
+      <h1>Project Complete!</h1>
+      <h2>PHP Login System — 8 Steps</h2>
+      <div class="progress-row">
+        ${Array.from({length:8},(_,i)=>`<div class="pdot${i<done?' done':''}"></div>`).join('')}
+      </div>
+      <div class="score">Completed <span>${done}/8</span> steps</div>
+      <div class="cert-badge">
+        <h3>✅ Skills Achieved</h3>
+        <div class="skills">
+          <span class="skill">XAMPP Setup</span>
+          <span class="skill">PHP Syntax</span>
+          <span class="skill">MySQL Schema</span>
+          <span class="skill">PDO Connection</span>
+          <span class="skill">password_hash()</span>
+          <span class="skill">Sessions</span>
+          <span class="skill">Prepared Statements</span>
+          <span class="skill">SQL Injection Protection</span>
+          <span class="skill">Form Validation</span>
+          <span class="skill">Auth Flow</span>
+        </div>
+      </div>
+      <div class="cert-badge">
+        <h3>📁 Files Created</h3>
+        <div class="files">
+          <span class="f">index.php</span><span class="f">style.css</span>
+          <span class="f">db.php</span><span class="f">helpers.php</span>
+          <span class="f">register.php</span><span class="f">login.php</span>
+          <span class="f">dashboard.php</span><span class="f">logout.php</span>
+        </div>
+      </div>
+      <div class="date">PhineX Academy · ${new Date().toLocaleDateString('ar-EG')}</div>
+    </div>
+  </body></html>`);
+  d.close();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tailwind CSS | PhineX Academy</title>
+  <meta name="description" content="تعلم Tailwind CSS من الصفر حتى الاحتراف مع PhineX Academy. اكتشف كيفية بناء مواقع ويب مذهلة باستخدام إطار العمل الأكثر شعبية لتصميم الواجهات بسرعة وسهولة.">
+  <link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg:#050508; --bg2:#0a0a14;
+      --tw:#38bdf8; --tw2:#0ea5e9;
+      --green:#39ff14; --yellow:#eeff00;
+      --purple:#b14fff; --pink:#f472b6;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:#fff;font-family:'Cairo',sans-serif;overflow-x:hidden;}
+
+    /* hero */
+    .hero{
+      min-height:60vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      padding:80px 24px 60px;position:relative;overflow:hidden;
+    }
+    .hero::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(56,189,248,.12),transparent);
+      pointer-events:none;
+    }
+    .back-link{
+      position:absolute;top:24px;right:24px;
+      display:flex;align-items:center;gap:8px;
+      color:rgba(255,255,255,.4);text-decoration:none;font-size:.85rem;
+      transition:color .3s;
+    }
+    .back-link:hover{color:var(--tw);}
+
+    .course-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid rgba(56,189,248,.3);border-radius:100px;
+      padding:8px 20px;margin-bottom:24px;
+      font-size:.75rem;letter-spacing:3px;color:var(--tw);
+      font-family:'Orbitron',sans-serif;
+      animation:glow 2s ease infinite alternate;
+    }
+    @keyframes glow{from{box-shadow:0 0 10px rgba(56,189,248,.2);}to{box-shadow:0 0 30px rgba(56,189,248,.5);}}
+
+    .hero h1{
+      font-family:'Orbitron',sans-serif;
+      font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;
+      background:linear-gradient(135deg,#38bdf8,#818cf8,#f472b6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-bottom:16px;
+      animation:fadeUp .8s ease both;
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+    .hero p{
+      color:rgba(255,255,255,.55);font-size:1.1rem;line-height:1.8;
+      max-width:600px;animation:fadeUp .8s .1s ease both;
+    }
+
+    .hero-stats{
+      display:flex;gap:40px;margin-top:40px;flex-wrap:wrap;justify-content:center;
+      animation:fadeUp .8s .2s ease both;
+    }
+    .h-stat{text-align:center;}
+    .h-stat-num{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:700;color:var(--tw);}
+    .h-stat-label{font-size:.8rem;color:rgba(255,255,255,.35);margin-top:2px;}
+
+    /* nav cards */
+    .nav-section{
+      max-width:1100px;margin:0 auto;padding:0 24px 80px;
+    }
+    .section-title{
+      font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:4px;
+      color:rgba(255,255,255,.25);text-align:center;margin-bottom:36px;
+    }
+    .nav-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;
+    }
+    .nav-card{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:18px;padding:32px 28px;
+      text-decoration:none;color:#fff;
+      display:flex;flex-direction:column;gap:16px;
+      position:relative;overflow:hidden;
+      transition:transform .3s cubic-bezier(.175,.885,.32,1.275),border-color .3s,box-shadow .3s;
+      animation:cardIn .5s ease both;
+    }
+    .nav-card:nth-child(1){animation-delay:.1s;}
+    .nav-card:nth-child(2){animation-delay:.2s;}
+    .nav-card:nth-child(3){animation-delay:.3s;}
+    .nav-card:nth-child(4){animation-delay:.4s;}
+    .nav-card:nth-child(5){animation-delay:.5s;}
+    @keyframes cardIn{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:none;}}
+
+    .nav-card:hover{
+      transform:translateY(-6px);
+      border-color:var(--card-accent,var(--tw));
+      box-shadow:0 16px 48px rgba(0,0,0,.4),0 0 24px var(--card-glow,rgba(56,189,248,.2));
+    }
+    .nav-card::after{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at 50% 0%,var(--card-accent-bg,rgba(56,189,248,.06)),transparent 70%);
+      opacity:0;transition:opacity .3s;
+    }
+    .nav-card:hover::after{opacity:1;}
+
+    /* accent variants */
+    .nc-lessons{--card-accent:#38bdf8;--card-glow:rgba(56,189,248,.2);--card-accent-bg:rgba(56,189,248,.06);}
+    .nc-workshops{--card-accent:#a78bfa;--card-glow:rgba(167,139,250,.2);--card-accent-bg:rgba(167,139,250,.06);}
+    .nc-revision{--card-accent:#34d399;--card-glow:rgba(52,211,153,.2);--card-accent-bg:rgba(52,211,153,.06);}
+    .nc-quiz{--card-accent:#fb923c;--card-glow:rgba(251,146,60,.2);--card-accent-bg:rgba(251,146,60,.06);}
+
+    .nc-icon{
+      width:52px;height:52px;border-radius:14px;
+      background:rgba(255,255,255,.05);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;color:var(--card-accent,var(--tw));
+    }
+    .nc-title{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;}
+    .nc-desc{font-size:.85rem;color:rgba(255,255,255,.4);line-height:1.6;}
+    .nc-count{
+      font-size:.75rem;color:var(--card-accent,var(--tw));
+      font-family:'Orbitron',sans-serif;margin-top:auto;
+    }
+
+    /* roadmap timeline */
+    .roadmap{
+      max-width:800px;margin:0 auto 80px;padding:0 24px;
+    }
+    .roadmap h2{
+      font-family:'Orbitron',sans-serif;font-size:1.2rem;
+      color:var(--tw);text-align:center;margin-bottom:40px;
+    }
+    .timeline{position:relative;padding-right:32px;}
+    .timeline::before{
+      content:'';position:absolute;right:8px;top:0;bottom:0;
+      width:2px;background:linear-gradient(to bottom,var(--tw),transparent);
+    }
+    .tl-item{
+      position:relative;margin-bottom:32px;
+      padding:20px 24px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:12px;
+      transition:border-color .3s;
+    }
+    .tl-item:hover{border-color:rgba(56,189,248,.3);}
+    .tl-dot{
+      position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+      width:18px;height:18px;border-radius:50%;
+      background:var(--bg);border:2px solid var(--tw);
+      transition:background .3s;
+    }
+    .tl-item:hover .tl-dot{background:var(--tw);}
+    .tl-num{
+      font-family:'Orbitron',sans-serif;font-size:.65rem;
+      color:var(--tw);margin-bottom:6px;letter-spacing:2px;
+    }
+    .tl-title{font-weight:700;font-size:1rem;margin-bottom:4px;}
+    .tl-sub{font-size:.82rem;color:rgba(255,255,255,.4);}
+
+    /* footer */
+    footer{
+      text-align:center;padding:40px 20px;
+      border-top:1px solid rgba(255,255,255,.06);
+      color:rgba(255,255,255,.2);font-size:.8rem;
+    }
+    footer .logo{font-family:'Orbitron',sans-serif;color:var(--tw);font-size:.9rem;margin-bottom:6px;}
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <a href="../menu.html" class="back-link"><i class="fas fa-arrow-right"></i> رجوع للدورات</a>
+  <div class="course-badge">
+    <svg width="16" height="10" viewBox="0 0 54 33" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M27 0C19.8 0 15.3 3.6 13.5 10.8C16.2 7.2 19.35 5.85 22.95 6.75C25.004 7.263 26.472 8.754 28.097 10.403C30.744 13.09 33.808 16.2 40.5 16.2C47.7 16.2 52.2 12.6 54 5.4C51.3 9 48.15 10.35 44.55 9.45C42.496 8.937 41.028 7.446 39.403 5.797C36.756 3.11 33.692 0 27 0ZM13.5 16.2C6.3 16.2 1.8 19.8 0 27C2.7 23.4 5.85 22.05 9.45 22.95C11.504 23.463 12.972 24.954 14.597 26.603C17.244 29.29 20.308 32.4 27 32.4C34.2 32.4 38.7 28.8 40.5 21.6C37.8 25.2 34.65 26.55 31.05 25.65C28.996 25.137 27.528 23.646 25.903 21.997C23.256 19.31 20.192 16.2 13.5 16.2Z" fill="#38BDF8"/></svg>
+    TAILWIND CSS COURSE
+  </div>
+  <h1>Tailwind CSS</h1>
+  <p>أقوى framework للـ CSS — اتعلم كيف تبني مواقع احترافية بسرعة مجنونة من غير ما تكتب CSS من الأول. شرح مصري عميق من الصفر للاحتراف.</p>
+  <div class="hero-stats">
+    <div class="h-stat"><div class="h-stat-num">15</div><div class="h-stat-label">درس</div></div>
+    <div class="h-stat"><div class="h-stat-num">5</div><div class="h-stat-label">ورشة عمل</div></div>
+    <div class="h-stat"><div class="h-stat-num">25+</div><div class="h-stat-label">سؤال كويز</div></div>
+    <div class="h-stat"><div class="h-stat-num">Expert</div><div class="h-stat-label">المستوى</div></div>
+  </div>
+</div>
+
+<div class="nav-section">
+  <p class="section-title">محتوى الدورة</p>
+  <div class="nav-grid">
+
+    <a href="lessons.html" class="nav-card nc-lessons">
+      <div class="nc-icon"><i class="fas fa-book-open"></i></div>
+      <div class="nc-title">الدروس</div>
+      <div class="nc-desc">15 درس من مقدمة Tailwind لحد الـ 3D Transforms والـ Custom Plugins</div>
+      <div class="nc-count">15 درس →</div>
+    </a>
+
+    <a href="projects.html" class="nav-card nc-workshops">
+      <div class="nc-icon"><i class="fas fa-hammer"></i></div>
+      <div class="nc-title">الورش العملية</div>
+      <div class="nc-desc">5 مشاريع حقيقية — بناء بطاقات، Dashboard، Landing Page وأكتر</div>
+      <div class="nc-count">5 ورش →</div>
+    </a>
+
+    <a href="revision.html" class="nav-card nc-revision">
+      <div class="nc-icon"><i class="fas fa-layer-group"></i></div>
+      <div class="nc-title">المراجعة الشاملة</div>
+      <div class="nc-desc">Cheatsheet كامل لكل الـ utilities مع أمثلة — حاجة تفضل مفتوحة وأنت بتشتغل</div>
+      <div class="nc-count">مراجعة سريعة →</div>
+    </a>
+
+    <a href="quiz.html" class="nav-card nc-quiz">
+      <div class="nc-icon"><i class="fas fa-brain"></i></div>
+      <div class="nc-title">اختبر نفسك</div>
+      <div class="nc-desc">25 سؤال بـ Timer وشرح الإجابة الصح — تقدر تعرف فين مستواك</div>
+      <div class="nc-count">ابدأ الكويز →</div>
+    </a>
+
+  </div>
+</div>
+
+<div class="roadmap">
+  <h2>خريطة تعلّم الدورة</h2>
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot"></div>
+      <div class="tl-num">STEP 01</div>
+      <div class="tl-title">أساسيات Tailwind</div>
+      <div class="tl-sub">التثبيت، الـ Utility-First Philosophy، أول صفحة بـ Tailwind</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot"></div>
+      <div class="tl-num">STEP 02</div>
+      <div class="tl-title">Layout & Spacing</div>
+      <div class="tl-sub">Flexbox، Grid، Margin، Padding، Width، Height</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot"></div>
+      <div class="tl-num">STEP 03</div>
+      <div class="tl-title">Typography & Colors</div>
+      <div class="tl-sub">Fonts، Text sizes، Color Palette، Gradients</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot"></div>
+      <div class="tl-num">STEP 04</div>
+      <div class="tl-title">Responsive Design</div>
+      <div class="tl-sub">Breakpoints، Mobile-first approach، Responsive utilities</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot"></div>
+      <div class="tl-num">STEP 05</div>
+      <div class="tl-title">Effects & Animations</div>
+      <div class="tl-sub">Shadows، Blur، Transitions، CSS Animations، 3D Transforms</div>
+    </div>
+    <div class="tl-item"><div class="tl-dot"></div>
+      <div class="tl-num">STEP 06</div>
+      <div class="tl-title">Dark Mode & Customization</div>
+      <div class="tl-sub">Dark Mode، tailwind.config.js، Custom utilities، Plugins</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo">PhineX Academy</div>
+  <p>&copy; 2026 PhineX Academy. جميع الحقوق محفوظة.</p>
+</footer>
+
+</body>
+</html>

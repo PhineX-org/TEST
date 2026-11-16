@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جميع عناصر HTML | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--neon:#39ff14;--neon-dim:rgba(57,255,20,0.08);--bg:#080a0d;--card:#0f1219;--card2:#141b24;--border:rgba(255,255,255,0.07);--border-neon:rgba(57,255,20,0.25);--text:#c9d1d9;--muted:#5a6478;--gold:#f7df1e;--blue:#58a6ff;--red:#ff4d4d;--purple:#bb86fc;}
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;line-height:1.85;}
+        .header{background:rgba(8,10,13,.95);border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+        .logo{color:var(--neon);font-weight:800;font-size:1.1rem;}
+        .back-link{color:var(--muted);text-decoration:none;font-size:.85rem;border:1px solid var(--border);padding:5px 14px;border-radius:6px;transition:.3s;}
+        .back-link:hover{border-color:var(--neon);color:var(--neon);}
+        .hero{background:radial-gradient(ellipse at 50% 0%,rgba(57,255,20,.06) 0%,transparent 65%);text-align:center;padding:60px 24px 44px;border-bottom:1px solid var(--border);}
+        .lesson-pill{display:inline-block;background:var(--neon-dim);border:1px solid var(--border-neon);color:var(--neon);padding:4px 16px;border-radius:20px;font-size:.78rem;font-weight:700;letter-spacing:1px;margin-bottom:18px;}
+        .hero h1{font-size:2.1rem;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2;}
+        .hero h1 span{color:var(--neon);}
+        .hero p{color:var(--muted);font-size:1rem;max-width:560px;margin:0 auto 20px;}
+        /* SEARCH */
+        .search-wrap{max-width:860px;margin:0 auto;padding:24px 28px 0;}
+        .search-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:10px;color:var(--text);padding:12px 18px;font-family:'Cairo',sans-serif;font-size:.95rem;outline:none;direction:rtl;transition:.3s;}
+        .search-input:focus{border-color:var(--neon);}
+        /* CONTAINER */
+        .container{max-width:860px;margin:0 auto;padding:28px 28px 80px;}
+        /* CATEGORY HEADER */
+        .cat-header{display:flex;align-items:center;gap:12px;margin:36px 0 16px;}
+        .cat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+        .cat-header h2{font-size:1.2rem;font-weight:700;color:#fff;}
+        .cat-header p{font-size:.85rem;color:var(--muted);margin-top:2px;}
+        /* ELEMENT CARD */
+        .elements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:8px;}
+        .el-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:.25s;cursor:pointer;}
+        .el-card:hover{border-color:var(--border-neon);transform:translateY(-2px);}
+        .el-card.expanded{border-color:var(--border-neon);}
+        .el-tag{font-family:'Fira Code',monospace;font-size:.88rem;color:var(--neon);font-weight:700;margin-bottom:6px;}
+        .el-type{display:inline-block;font-size:.68rem;font-weight:700;padding:1px 8px;border-radius:10px;margin-bottom:8px;}
+        .el-type.block{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.25);}
+        .el-type.inline{background:rgba(187,134,252,.12);color:var(--purple);border:1px solid rgba(187,134,252,.25);}
+        .el-type.void{background:rgba(255,159,67,.12);color:#ff9f43;border:1px solid rgba(255,159,67,.25);}
+        .el-type.meta{background:rgba(57,255,20,.08);color:var(--neon);border:1px solid rgba(57,255,20,.2);}
+        .el-desc{font-size:.85rem;color:var(--text);margin-bottom:8px;line-height:1.5;}
+        .el-detail{display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
+        .el-card.expanded .el-detail{display:block;}
+        .el-example{background:#0a0d12;border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-family:'Fira Code',monospace;font-size:.8rem;direction:ltr;text-align:left;color:#abb2bf;margin:6px 0;overflow-x:auto;}
+        .el-note{font-size:.8rem;color:var(--muted);line-height:1.5;}
+        .el-note strong{color:var(--gold);}
+        .t{color:#e06c75;}.a{color:#e5c07b;}.v{color:#98c379;}.tx{color:#abb2bf;}.c{color:#5c6370;font-style:italic;}
+        /* DIVIDER */
+        .section-divider{border:none;border-top:1px solid var(--border);margin:12px 0 28px;}
+        /* COUNT BADGE */
+        .count-badge{background:var(--card2);border:1px solid var(--border);color:var(--muted);padding:2px 10px;border-radius:10px;font-size:.75rem;margin-right:auto;}
+        .no-results{text-align:center;padding:40px;color:var(--muted);display:none;}
+        /* QUIZ */
+        .quiz-section{background:var(--card);border:2px solid var(--border-neon);border-radius:16px;padding:28px 32px;margin-top:40px;}
+        .quiz-section h2{color:var(--neon);font-size:1.3rem;margin-bottom:20px;}
+        .q-card{background:var(--card2);border-radius:10px;padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
+        .q-card p{font-weight:600;color:#fff;margin-bottom:12px;font-size:.95rem;}
+        .q-card code{background:rgba(57,255,20,.1);color:var(--neon);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem;}
+        .q-options label{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;font-size:.91rem;transition:.2s;}
+        .q-options label:hover{border-color:var(--neon);background:var(--neon-dim);}
+        .q-options input[type=radio]{accent-color:var(--neon);}
+        .btn-quiz{background:var(--neon);color:#000;border:none;padding:13px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+        #quiz-result{margin-top:14px;padding:14px;border-radius:8px;text-align:center;font-weight:700;display:none;}
+        .btn-finish{display:block;background:var(--neon);color:#000;padding:15px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;width:100%;margin-top:20px;text-align:center;text-decoration:none;}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-link">← القائمة</a>
+</header>
+
+<section class="hero">
+    <div class="lesson-pill">LESSON 03 · ALL HTML ELEMENTS</div>
+    <h1>موسوعة عناصر HTML<br><span>كل عنصر — شرح + مثال</span></h1>
+    <p>مرجع شامل لكل عناصر HTML مع شرح وظيفة كل tag ومثال تطبيقي. اضغط على أي بطاقة لعرض التفاصيل.</p>
+</section>
+
+<div class="search-wrap">
+    <input type="text" class="search-input" id="searchEl" placeholder="ابحث عن عنصر... مثال: table أو div أو form" oninput="filterElements()">
+</div>
+
+<div class="container">
+
+<!-- ════════ DOCUMENT STRUCTURE ════════ -->
+<div class="cat-header" data-cat>
+    <div class="cat-icon" style="background:rgba(57,255,20,.1);">🏗️</div>
+    <div>
+        <h2>هيكل الوثيقة (Document Structure)</h2>
+        <p>العناصر التي تُكوّن الإطار الأساسي لكل صفحة HTML</p>
+    </div>
+    <span class="count-badge">6 عناصر</span>
+</div>
+<div class="elements-grid">
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;!DOCTYPE html&gt;</div>
+        <span class="el-type meta">إعلان</span>
+        <div class="el-desc">إعلان يُخبر المتصفح أن الملف HTML5. يجب أن يكون أول سطر في كل ملف HTML.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;!DOCTYPE html&gt;</span>
+<span class="t">&lt;html&gt;</span>...<span class="t">&lt;/html&gt;</span></div>
+            <div class="el-note"><strong>ملاحظة:</strong> ليس tag بالمعنى الحقيقي — لا يحتاج إغلاق. بدونه المتصفح يدخل "Quirks Mode" ويعرض الصفحة بشكل غير متوقع.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;html&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">الجذر — يحتوي كل عناصر الصفحة. يقبل lang (اللغة) وdir (اتجاه الكتابة).</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;html</span> <span class="a">lang</span>=<span class="v">"ar"</span> <span class="a">dir</span>=<span class="v">"rtl"</span><span class="t">&gt;</span>
+  ..كل الصفحة هنا..
+<span class="t">&lt;/html&gt;</span></div>
+            <div class="el-note"><strong>lang:</strong> يخبر محركات البحث ومساعدي الصوت بلغة المحتوى. <strong>dir="rtl"</strong> للعربية والعبرية.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;head&gt;</div>
+        <span class="el-type meta">Meta</span>
+        <div class="el-desc">يحتوي المعلومات الخفية (metadata) — لا يُعرض للزائر. يضم title وmeta وlink وscript.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;head&gt;</span>
+  <span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span>
+  <span class="t">&lt;title&gt;</span><span class="tx">عنوان الصفحة</span><span class="t">&lt;/title&gt;</span>
+<span class="t">&lt;/head&gt;</span></div>
+            <div class="el-note">كل ما يُوضع هنا لا يظهر على الشاشة لكنه يؤثر على كيفية عمل الصفحة وترتيبها في البحث.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;body&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">يحتوي كل المحتوى المرئي. كل ما تراه على الشاشة يعيش هنا.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;body&gt;</span>
+  <span class="t">&lt;h1&gt;</span><span class="tx">مرحباً!</span><span class="t">&lt;/h1&gt;</span>
+  <span class="t">&lt;p&gt;</span><span class="tx">محتوى الصفحة</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;/body&gt;</span></div>
+            <div class="el-note"><strong>يقبل:</strong> onload, onscroll لتشغيل JS. يمكن تنسيقه بـ CSS لتغيير خلفية الصفحة كلها.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;title&gt;</div>
+        <span class="el-type meta">Meta</span>
+        <div class="el-desc">عنوان الصفحة — يظهر في تبويب المتصفح، نتائج البحث، والـ Bookmarks.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;title&gt;</span><span class="tx">تعلّم HTML | PhineX Academy</span><span class="t">&lt;/title&gt;</span></div>
+            <div class="el-note"><strong>SEO:</strong> أهم عنصر للـ SEO. 50-60 حرف مثالي. يجب أن يكون فريداً لكل صفحة في موقعك.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;meta&gt;</div>
+        <span class="el-type void">Void</span>
+        <div class="el-desc">عنصر بيانات وصفية. لا يحتاج إغلاق. يُستخدم لـ charset وviewport وdescription وOG tags.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"description"</span> <span class="a">content</span>=<span class="v">"وصف الصفحة"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"viewport"</span> <span class="a">content</span>=<span class="v">"width=device-width"</span><span class="t">&gt;</span></div>
+            <div class="el-note">Void element = لا يقبل محتوى ولا يحتاج tag إغلاق.</div>
+        </div>
+    </div>
+</div>
+<hr class="section-divider">
+
+<!-- ════════ SEMANTIC LAYOUT ════════ -->
+<div class="cat-header" data-cat>
+    <div class="cat-icon" style="background:rgba(88,166,255,.1);">🏛️</div>
+    <div><h2>التخطيط الدلالي (Semantic Layout)</h2><p>عناصر تحدد هيكل الصفحة بمعنى واضح</p></div>
+    <span class="count-badge">8 عناصر</span>
+</div>
+<div class="elements-grid">
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;header&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">رأس الصفحة أو القسم. يحتوي عادةً الشعار وقائمة التنقل.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;header&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"logo.png"</span> <span class="a">alt</span>=<span class="v">"الشعار"</span><span class="t">&gt;</span>
+  <span class="t">&lt;nav&gt;</span>...<span class="t">&lt;/nav&gt;</span>
+<span class="t">&lt;/header&gt;</span></div>
+            <div class="el-note">يمكن استخدامه أكثر من مرة — داخل article وsection أيضاً كرأس لهذا القسم.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;nav&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">حاوية قائمة التنقل الرئيسية. يجب أن يحتوي فقط روابط التنقل المهمة.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;nav</span> <span class="a">aria-label</span>=<span class="v">"القائمة الرئيسية"</span><span class="t">&gt;</span>
+  <span class="t">&lt;ul&gt;</span>
+    <span class="t">&lt;li&gt;&lt;a</span> <span class="a">href</span>=<span class="v">"/"</span><span class="t">&gt;</span>الرئيسية<span class="t">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="t">&lt;/ul&gt;</span>
+<span class="t">&lt;/nav&gt;</span></div>
+            <div class="el-note"><strong>Accessibility:</strong> أضف aria-label لتمييز قوائم متعددة في صفحة واحدة.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;main&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">المحتوى الرئيسي الفريد للصفحة. يجب أن يكون واحداً فقط في كل صفحة.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;main&gt;</span>
+  <span class="c">&lt;!-- المحتوى الرئيسي --&gt;</span>
+  <span class="t">&lt;article&gt;</span>...<span class="t">&lt;/article&gt;</span>
+<span class="t">&lt;/main&gt;</span></div>
+            <div class="el-note"><strong>SEO:</strong> Google يُعطي أولوية للمحتوى داخل main. لا يُكرَّر في الصفحة.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;section&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">قسم موضوعي في الصفحة. يجب أن يكون له عنوان (h2-h6) ويمثل محتوى متماسكاً.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;section</span> <span class="a">id</span>=<span class="v">"about"</span><span class="t">&gt;</span>
+  <span class="t">&lt;h2&gt;</span>عنّي<span class="t">&lt;/h2&gt;</span>
+  <span class="t">&lt;p&gt;</span>معلومات عني...<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;/section&gt;</span></div>
+            <div class="el-note"><strong>مقابل div:</strong> section له معنى دلالي. div مجرد حاوية عامة بدون معنى.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;article&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">محتوى مستقل يمكن نشره بمفرده — مقال، تغريدة، منتج، تعليق.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;article&gt;</span>
+  <span class="t">&lt;h2&gt;</span>عنوان المقال<span class="t">&lt;/h2&gt;</span>
+  <span class="t">&lt;time</span> <span class="a">datetime</span>=<span class="v">"2025-01-01"</span><span class="t">&gt;</span>يناير 2025<span class="t">&lt;/time&gt;</span>
+  <span class="t">&lt;p&gt;</span>محتوى المقال...<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;/article&gt;</span></div>
+            <div class="el-note">سؤال لتحديد ما إذا كنت تحتاج article: "هل يبدو هذا المحتوى منطقياً لو نُشر بمفرده في موقع آخر؟"</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;aside&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">محتوى جانبي مرتبط بالمحتوى الرئيسي. مثالي للشريط الجانبي والإعلانات والروابط ذات الصلة.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;aside&gt;</span>
+  <span class="t">&lt;h3&gt;</span>مقالات ذات صلة<span class="t">&lt;/h3&gt;</span>
+  <span class="t">&lt;ul&gt;</span>...<span class="t">&lt;/ul&gt;</span>
+<span class="t">&lt;/aside&gt;</span></div>
+            <div class="el-note">لا تستخدم aside لمحتوى ليس له علاقة بالمحتوى الرئيسي. استخدم div عوضاً.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;footer&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">ذيل الصفحة أو القسم. يحتوي حقوق النشر وروابط السياسات وبيانات الاتصال.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;footer&gt;</span>
+  <span class="t">&lt;p&gt;</span>© 2025 PhineX Academy<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;nav&gt;</span>
+    <span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"/privacy"</span><span class="t">&gt;</span>الخصوصية<span class="t">&lt;/a&gt;</span>
+  <span class="t">&lt;/nav&gt;</span>
+<span class="t">&lt;/footer&gt;</span></div>
+            <div class="el-note">مثل header، يمكن استخدامه داخل article وsection كذيل لذلك القسم.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;div&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">حاوية عامة بدون معنى دلالي. استخدمه للتنسيق فقط عندما لا يناسب أي عنصر دلالي آخر.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"card-grid"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"card"</span><span class="t">&gt;</span>بطاقة<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"card"</span><span class="t">&gt;</span>بطاقة<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></div>
+            <div class="el-note"><strong>قاعدة:</strong> إذا وجدت عنصراً دلالياً مناسباً (section, article, nav...) استخدمه. div هو الملاذ الأخير.</div>
+        </div>
+    </div>
+</div>
+<hr class="section-divider">
+
+<!-- ════════ TEXT CONTENT ════════ -->
+<div class="cat-header" data-cat>
+    <div class="cat-icon" style="background:rgba(247,223,30,.1);">📝</div>
+    <div><h2>عناصر النص (Text Content)</h2><p>كل ما يتعلق بعرض النصوص وتنسيقها</p></div>
+    <span class="count-badge">12 عنصر</span>
+</div>
+<div class="elements-grid">
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;h1&gt; — &lt;h6&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">ستة مستويات من العناوين. h1 الأكبر والأهم (مرة واحدة فقط في الصفحة).</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;h1&gt;</span>عنوان الصفحة (مرة واحدة)<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;h2&gt;</span>عنوان قسم رئيسي<span class="t">&lt;/h2&gt;</span>
+<span class="t">&lt;h3&gt;</span>عنوان قسم فرعي<span class="t">&lt;/h3&gt;</span></div>
+            <div class="el-note"><strong>SEO:</strong> h1 هو الكلمة المفتاحية الرئيسية. لا تستخدم العناوين لتكبير النص — استخدم CSS.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;p&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">فقرة نصية. المتصفح يضيف مسافة فوقها وتحتها تلقائياً.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>هذه فقرة نصية كاملة تحتوي على جملة أو أكثر.<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>وهذه فقرة أخرى منفصلة.<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note">لا تضع عناصر block (مثل div أو h2) داخل p — هذا خطأ HTML.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;span&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">حاوية inline عامة بدون معنى دلالي. مثالية لتنسيق جزء من النص.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>السعر <span class="t">&lt;span</span> <span class="a">class</span>=<span class="v">"price"</span><span class="t">&gt;</span>99 ريال<span class="t">&lt;/span&gt;</span> فقط.<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note">span للـ inline مثل div للـ block — حاوية تنسيق بدون معنى دلالي.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;strong&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">نص مهم — يظهر غامقاً ويحمل أهمية دلالية لمحركات البحث.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>هذا <span class="t">&lt;strong&gt;</span>مهم جداً<span class="t">&lt;/strong&gt;</span> ولا تتجاهله.<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note"><strong>مقابل &lt;b&gt;:</strong> strong له معنى دلالي (أهمية). b مجرد تغميق بصري بدون معنى.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;em&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">تأكيد — يظهر مائلاً ويحمل معنى التأكيد الدلالي.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>قل <span class="t">&lt;em&gt;</span>الحقيقة<span class="t">&lt;/em&gt;</span> دائماً.<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note"><strong>مقابل &lt;i&gt;:</strong> em تأكيد دلالي. i مائل بصري فقط (يُستخدم للمصطلحات الأجنبية أو الأيقونات).</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;br&gt;</div>
+        <span class="el-type void">Void</span>
+        <div class="el-desc">كسر سطر (Line Break) — ينزل سطراً جديداً داخل نفس الفقرة.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>السطر الأول<span class="t">&lt;br&gt;</span>
+السطر الثاني في نفس الفقرة<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note">استخدم p لفقرات منفصلة. br للكسر داخل فقرة واحدة فقط (مثل الشعر أو العناوين).</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;hr&gt;</div>
+        <span class="el-type void">Void</span>
+        <div class="el-desc">خط أفقي فاصل — يمثل تحولاً موضوعياً في المحتوى.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>موضوع أول<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;hr&gt;</span>
+<span class="t">&lt;p&gt;</span>موضوع مختلف<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note">له معنى دلالي (فاصل موضوعي) وليس مجرد خط تزييني.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;blockquote&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">اقتباس من مصدر خارجي. يجب استخدام cite لتحديد المصدر.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;blockquote</span> <span class="a">cite</span>=<span class="v">"https://source.com"</span><span class="t">&gt;</span>
+  <span class="t">&lt;p&gt;</span>نص الاقتباس هنا...<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;footer&gt;</span>— المصدر<span class="t">&lt;/footer&gt;</span>
+<span class="t">&lt;/blockquote&gt;</span></div>
+            <div class="el-note">المتصفح يُضيف هامشاً داخلياً تلقائياً. cite يحتوي رابط المصدر.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;code&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">جزء صغير من كود برمجي داخل النص. يظهر بخط monospace.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>استخدم <span class="t">&lt;code&gt;</span>console.log()<span class="t">&lt;/code&gt;</span> للتصحيح.<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note">لكتل الكود الكاملة استخدم pre + code معاً.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;pre&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">نص منسق مسبقاً — يحافظ على المسافات والأسطر كما كُتبت.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;pre&gt;&lt;code&gt;</span>
+function hello() {
+  console.log("مرحباً!");
+}
+<span class="t">&lt;/code&gt;&lt;/pre&gt;</span></div>
+            <div class="el-note">استخدمه مع code لعرض كتل الكود الكاملة مع الحفاظ على التنسيق.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;mark&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">نص مظلل بالأصفر — يعني "ذو أهمية في هذا السياق".</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;p&gt;</span>نتيجة البحث: تعلّم <span class="t">&lt;mark&gt;</span>HTML<span class="t">&lt;/mark&gt;</span> من الصفر.<span class="t">&lt;/p&gt;</span></div>
+            <div class="el-note">مثالي لتمييز نتائج البحث داخل الصفحة.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;time&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">يُمثّل وقتاً أو تاريخاً. datetime يحتوي التنسيق الآلي القابل للقراءة بالأجهزة.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;time</span> <span class="a">datetime</span>=<span class="v">"2025-03-15"</span><span class="t">&gt;</span>15 مارس 2025<span class="t">&lt;/time&gt;</span>
+<span class="t">&lt;time</span> <span class="a">datetime</span>=<span class="v">"14:30"</span><span class="t">&gt;</span>2:30 مساءً<span class="t">&lt;/time&gt;</span></div>
+            <div class="el-note">محركات البحث تفهم datetime لعرض التواريخ في نتائج البحث الغنية.</div>
+        </div>
+    </div>
+</div>
+<hr class="section-divider">
+
+<!-- ════════ LINKS & MEDIA ════════ -->
+<div class="cat-header" data-cat>
+    <div class="cat-icon" style="background:rgba(187,134,252,.1);">🔗</div>
+    <div><h2>الروابط والوسائط (Links & Media)</h2><p>الروابط والصور والصوت والفيديو</p></div>
+    <span class="count-badge">7 عناصر</span>
+</div>
+<div class="elements-grid">
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;a&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">Anchor — الرابط التشعبي. href يحدد الوجهة. يمكنه أن يحتوي أي عنصر HTML.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://phinex.com"</span> <span class="a">target</span>=<span class="v">"_blank"</span> <span class="a">rel</span>=<span class="v">"noopener"</span><span class="t">&gt;</span>
+  PhineX Academy
+<span class="t">&lt;/a&gt;</span>
+<span class="c">&lt;!-- رابط إيميل --&gt;</span>
+<span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"mailto:hi@phinex.com"</span><span class="t">&gt;</span>راسلنا<span class="t">&lt;/a&gt;</span>
+<span class="c">&lt;!-- رابط هاتف --&gt;</span>
+<span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"tel:+966501234567"</span><span class="t">&gt;</span>اتصل بنا<span class="t">&lt;/a&gt;</span></div>
+            <div class="el-note">دائماً أضف rel="noopener noreferrer" مع target="_blank" لأسباب أمنية.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;img&gt;</div>
+        <span class="el-type void">Void</span>
+        <div class="el-desc">يعرض صورة. src مسار الصورة، alt النص البديل (إلزامي).</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;img</span>
+  <span class="a">src</span>=<span class="v">"photo.jpg"</span>
+  <span class="a">alt</span>=<span class="v">"وصف واضح للصورة"</span>
+  <span class="a">width</span>=<span class="v">"800"</span>
+  <span class="a">height</span>=<span class="v">"600"</span>
+  <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span></div>
+            <div class="el-note">حدّد دائماً width وheight لمنع قفز المحتوى عند التحميل (CLS).</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;figure&gt; + &lt;figcaption&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">يغلّف صورة (أو مخططاً أو كوداً) مع تعليق توضيحي.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;figure&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"chart.png"</span> <span class="a">alt</span>=<span class="v">"مخطط المبيعات"</span><span class="t">&gt;</span>
+  <span class="t">&lt;figcaption&gt;</span>مبيعات الربع الأول 2025<span class="t">&lt;/figcaption&gt;</span>
+<span class="t">&lt;/figure&gt;</span></div>
+            <div class="el-note">figcaption يوفر سياقاً للصورة — أفضل من p منفصل تحت الصورة.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;video&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">يُشغّل فيديو مباشرة في الصفحة. يدعم controls وautoplay وloop ومزيداً.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;video</span>
+  <span class="a">src</span>=<span class="v">"intro.mp4"</span>
+  <span class="a">controls</span>
+  <span class="a">poster</span>=<span class="v">"thumbnail.jpg"</span>
+  <span class="a">width</span>=<span class="v">"640"</span><span class="t">&gt;</span>
+  متصفحك لا يدعم الفيديو
+<span class="t">&lt;/video&gt;</span></div>
+            <div class="el-note">poster = صورة تظهر قبل التشغيل. controls = يُظهر أزرار التشغيل والصوت.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;audio&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">يُشغّل ملف صوتي في الصفحة. مثالي للبودكاست والتعليقات الصوتية.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;audio</span> <span class="a">controls</span><span class="t">&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">src</span>=<span class="v">"audio.mp3"</span> <span class="a">type</span>=<span class="v">"audio/mpeg"</span><span class="t">&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">src</span>=<span class="v">"audio.ogg"</span> <span class="a">type</span>=<span class="v">"audio/ogg"</span><span class="t">&gt;</span>
+<span class="t">&lt;/audio&gt;</span></div>
+            <div class="el-note">قدم صيغتين لضمان التوافق مع كل المتصفحات (mp3 وogg).</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;iframe&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">يُضمّن صفحة ويب أخرى داخل صفحتك. يُستخدم لخرائط Google ومقاطع YouTube.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;iframe</span>
+  <span class="a">src</span>=<span class="v">"https://www.youtube.com/embed/VIDEO_ID"</span>
+  <span class="a">title</span>=<span class="v">"عنوان الفيديو"</span>
+  <span class="a">width</span>=<span class="v">"560"</span>
+  <span class="a">height</span>=<span class="v">"315"</span>
+  <span class="a">allowfullscreen</span><span class="t">&gt;</span>
+<span class="t">&lt;/iframe&gt;</span></div>
+            <div class="el-note">دائماً أضف title للـ iframe لإمكانية الوصول. sandbox يحد من صلاحياته لزيادة الأمان.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;picture&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">يتيح تحديد صور مختلفة لشاشات مختلفة الحجم (Responsive Images).</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;picture&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">media</span>=<span class="v">"(min-width:768px)"</span> <span class="a">srcset</span>=<span class="v">"desktop.jpg"</span><span class="t">&gt;</span>
+  <span class="t">&lt;source</span> <span class="a">media</span>=<span class="v">"(min-width:480px)"</span> <span class="a">srcset</span>=<span class="v">"tablet.jpg"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"mobile.jpg"</span> <span class="a">alt</span>=<span class="v">"صورة متجاوبة"</span><span class="t">&gt;</span>
+<span class="t">&lt;/picture&gt;</span></div>
+            <div class="el-note">المتصفح يختار المصدر المناسب. img الأخير هو الاحتياطي للمتصفحات القديمة.</div>
+        </div>
+    </div>
+</div>
+<hr class="section-divider">
+
+<!-- ════════ TABLES ════════ -->
+<div class="cat-header" data-cat>
+    <div class="cat-icon" style="background:rgba(255,77,77,.1);">📊</div>
+    <div><h2>الجداول (Tables)</h2><p>عناصر بناء الجداول والبيانات المنظمة</p></div>
+    <span class="count-badge">8 عناصر</span>
+</div>
+<div class="elements-grid">
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;table&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">الجدول الكامل — يحتوي thead وtbody وtfoot والصفوف والخلايا.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;table&gt;</span>
+  <span class="t">&lt;thead&gt;</span>...<span class="t">&lt;/thead&gt;</span>
+  <span class="t">&lt;tbody&gt;</span>...<span class="t">&lt;/tbody&gt;</span>
+  <span class="t">&lt;tfoot&gt;</span>...<span class="t">&lt;/tfoot&gt;</span>
+<span class="t">&lt;/table&gt;</span></div>
+            <div class="el-note"><strong>مهم:</strong> استخدم الجداول للبيانات الجدولية فقط — ليس للتخطيط! الـ Flexbox وGrid للتخطيط.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;thead&gt; / &lt;tbody&gt; / &lt;tfoot&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">تقسيم الجدول: thead للرأس، tbody للبيانات، tfoot للمجاميع. تساعد على القراءة والـ SEO.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;thead&gt;</span>
+  <span class="t">&lt;tr&gt;&lt;th&gt;</span>الاسم<span class="t">&lt;/th&gt;&lt;th&gt;</span>السعر<span class="t">&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="t">&lt;/thead&gt;</span>
+<span class="t">&lt;tbody&gt;</span>
+  <span class="t">&lt;tr&gt;&lt;td&gt;</span>منتج أ<span class="t">&lt;/td&gt;&lt;td&gt;</span>50 ر<span class="t">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="t">&lt;/tbody&gt;</span></div>
+            <div class="el-note">بدون هذه العناصر المتصفح يُضيفها تلقائياً — لكن من الأفضل كتابتها صريحة.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;tr&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">Table Row — صف في الجدول. يحتوي خلايا td أو th.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;tr&gt;</span>
+  <span class="t">&lt;td&gt;</span>خلية 1<span class="t">&lt;/td&gt;</span>
+  <span class="t">&lt;td&gt;</span>خلية 2<span class="t">&lt;/td&gt;</span>
+  <span class="t">&lt;td&gt;</span>خلية 3<span class="t">&lt;/td&gt;</span>
+<span class="t">&lt;/tr&gt;</span></div>
+            <div class="el-note">يجب أن يكون داخل thead أو tbody أو tfoot — ليس مباشرة في table.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;th&gt; / &lt;td&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">th = خلية رأس (غامقة ومتوسطة). td = خلية بيانات عادية.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="c">&lt;!-- th في الرأس --&gt;</span>
+<span class="t">&lt;th</span> <span class="a">scope</span>=<span class="v">"col"</span><span class="t">&gt;</span>المنتج<span class="t">&lt;/th&gt;</span>
+
+<span class="c">&lt;!-- td للبيانات --&gt;</span>
+<span class="t">&lt;td</span> <span class="a">colspan</span>=<span class="v">"2"</span><span class="t">&gt;</span>يمتد عمودين<span class="t">&lt;/td&gt;</span>
+<span class="t">&lt;td</span> <span class="a">rowspan</span>=<span class="v">"3"</span><span class="t">&gt;</span>يمتد 3 صفوف<span class="t">&lt;/td&gt;</span></div>
+            <div class="el-note">scope في th يوضح إذا كان رأساً للعمود (col) أو الصف (row).</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;caption&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">عنوان/تعليق للجدول. يجب أن يكون أول عنصر داخل table.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;table&gt;</span>
+  <span class="t">&lt;caption&gt;</span>إحصائيات المبيعات 2025<span class="t">&lt;/caption&gt;</span>
+  <span class="t">&lt;thead&gt;</span>...<span class="t">&lt;/thead&gt;</span>
+<span class="t">&lt;/table&gt;</span></div>
+            <div class="el-note">مهم لإمكانية الوصول — قارئات الشاشة تقرأه قبل الجدول.</div>
+        </div>
+    </div>
+</div>
+<hr class="section-divider">
+
+<!-- ════════ FORMS ════════ -->
+<div class="cat-header" data-cat>
+    <div class="cat-icon" style="background:rgba(255,159,67,.1);">📝</div>
+    <div><h2>عناصر النماذج (Forms)</h2><p>لجمع بيانات المستخدمين والتفاعل معهم</p></div>
+    <span class="count-badge">10 عناصر</span>
+</div>
+<div class="elements-grid">
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;form&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">حاوية النموذج. action يحدد وجهة البيانات، method يحدد طريقة الإرسال.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;form</span> <span class="a">action</span>=<span class="v">"/submit"</span> <span class="a">method</span>=<span class="v">"POST"</span> <span class="a">novalidate</span><span class="t">&gt;</span>
+  ...الحقول هنا...
+<span class="t">&lt;/form&gt;</span></div>
+            <div class="el-note">novalidate يعطّل التحقق المدمج لتتولى أنت التحقق بـ JS.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;input&gt;</div>
+        <span class="el-type void">Void</span>
+        <div class="el-desc">أكثر عنصر تنوعاً في HTML. نوعه (type) يحدد سلوكه الكامل.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="c">&lt;!-- أنواع شائعة --&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"text"</span>     <span class="a">name</span>=<span class="v">"n"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"email"</span>    <span class="a">required</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"password"</span> <span class="a">minlength</span>=<span class="v">"8"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"number"</span>   <span class="a">min</span>=<span class="v">"1"</span> <span class="a">max</span>=<span class="v">"100"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"checkbox"</span> <span class="a">value</span>=<span class="v">"agree"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"radio"</span>    <span class="a">name</span>=<span class="v">"gender"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"file"</span>     <span class="a">accept</span>=<span class="v">".pdf,.jpg"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"range"</span>    <span class="a">min</span>=<span class="v">"0"</span> <span class="a">max</span>=<span class="v">"100"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"date"</span>     <span class="a">value</span>=<span class="v">"2025-01-01"</span><span class="t">&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"color"</span><span class="t">&gt;</span></div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;label&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">تسمية الحقل. for يربطها بـ id الحقل. النقر عليها يُفعّل الحقل.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"email"</span><span class="t">&gt;</span>البريد الإلكتروني:<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"email"</span> <span class="a">id</span>=<span class="v">"email"</span><span class="t">&gt;</span></div>
+            <div class="el-note">for يطابق id الحقل — إلزامي لإمكانية الوصول.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;textarea&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">حقل نص متعدد الأسطر. rows وcols يحددان حجمه الأولي.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;textarea</span>
+  <span class="a">id</span>=<span class="v">"msg"</span>
+  <span class="a">name</span>=<span class="v">"message"</span>
+  <span class="a">rows</span>=<span class="v">"5"</span>
+  <span class="a">maxlength</span>=<span class="v">"500"</span>
+  <span class="a">placeholder</span>=<span class="v">"اكتب رسالتك..."</span><span class="t">&gt;&lt;/textarea&gt;</span></div>
+            <div class="el-note">textarea يحتاج tag إغلاق! أي نص بين الـ tags يظهر كقيمة افتراضية.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;select&gt; + &lt;option&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">قائمة منسدلة. select الحاوية، option لكل اختيار.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;select</span> <span class="a">name</span>=<span class="v">"country"</span> <span class="a">required</span><span class="t">&gt;</span>
+  <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">""</span> <span class="a">disabled</span> <span class="a">selected</span><span class="t">&gt;</span>اختر...<span class="t">&lt;/option&gt;</span>
+  <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"sa"</span><span class="t">&gt;</span>السعودية<span class="t">&lt;/option&gt;</span>
+  <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"eg"</span> <span class="a">selected</span><span class="t">&gt;</span>مصر (افتراضي)<span class="t">&lt;/option&gt;</span>
+<span class="t">&lt;/select&gt;</span></div>
+            <div class="el-note">value = ما يُرسل للسيرفر. النص بين tags = ما يراه المستخدم.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;button&gt;</div>
+        <span class="el-type inline">Inline</span>
+        <div class="el-desc">زر تفاعلي. type يحدد سلوكه: submit لإرسال النموذج، button للـ JS، reset لمسح الحقول.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"submit"</span><span class="t">&gt;</span>إرسال<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"button"</span> <span class="a">onclick</span>=<span class="v">"doSomething()"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"icon.svg"</span> <span class="a">alt</span>=<span class="v">""</span><span class="t">&gt;</span> اضغط هنا
+<span class="t">&lt;/button&gt;</span></div>
+            <div class="el-note">button يقبل أي محتوى HTML بداخله (صور، أيقونات...). input[type=button] نص فقط.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;fieldset&gt; + &lt;legend&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">يجمع حقولاً ذات صلة في مجموعة مع عنوان. يضيف إطاراً بصرياً ودلالياً.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;fieldset&gt;</span>
+  <span class="t">&lt;legend&gt;</span>بيانات التواصل<span class="t">&lt;/legend&gt;</span>
+  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"phone"</span><span class="t">&gt;</span>الهاتف:<span class="t">&lt;/label&gt;</span>
+  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"tel"</span> <span class="a">id</span>=<span class="v">"phone"</span><span class="t">&gt;</span>
+<span class="t">&lt;/fieldset&gt;</span></div>
+            <div class="el-note">مثالي لتجميع checkboxes وradio buttons في مجموعة منطقية.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;datalist&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">يوفر اقتراحات لحقل input — الكتابة تُصفّي الاقتراحات تلقائياً.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;input</span> <span class="a">list</span>=<span class="v">"langs"</span> <span class="a">placeholder</span>=<span class="v">"اختر لغة..."</span><span class="t">&gt;</span>
+<span class="t">&lt;datalist</span> <span class="a">id</span>=<span class="v">"langs"</span><span class="t">&gt;</span>
+  <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"HTML"</span><span class="t">&gt;</span>
+  <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"CSS"</span><span class="t">&gt;</span>
+  <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"JavaScript"</span><span class="t">&gt;</span>
+<span class="t">&lt;/datalist&gt;</span></div>
+            <div class="el-note">list في input يطابق id في datalist. يجمع بين حرية الكتابة واقتراحات جاهزة.</div>
+        </div>
+    </div>
+</div>
+<hr class="section-divider">
+
+<!-- ════════ LISTS ════════ -->
+<div class="cat-header" data-cat>
+    <div class="cat-icon" style="background:rgba(57,255,20,.1);">📋</div>
+    <div><h2>القوائم (Lists)</h2><p>ثلاثة أنواع من القوائم لكل حالة استخدام</p></div>
+    <span class="count-badge">5 عناصر</span>
+</div>
+<div class="elements-grid">
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;ul&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">Unordered List — قائمة بنقاط. الترتيب لا يهم (مكونات، مميزات، روابط تنقل).</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;ul&gt;</span>
+  <span class="t">&lt;li&gt;</span>HTML<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>CSS<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>JavaScript<span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ul&gt;</span></div>
+            <div class="el-note">ul يقبل فقط li كأبناء مباشرين. استخدمه لقوائم التنقل أيضاً.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;ol&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">Ordered List — قائمة مرقمة. الترتيب مهم (خطوات، تعليمات، ترتيب نتائج).</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;ol</span> <span class="a">type</span>=<span class="v">"1"</span> <span class="a">start</span>=<span class="v">"1"</span><span class="t">&gt;</span>
+  <span class="t">&lt;li&gt;</span>تعلّم HTML<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>تعلّم CSS<span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ol&gt;</span>
+<span class="c">&lt;!-- type: 1, A, a, I, i --&gt;</span></div>
+            <div class="el-note">type يغير شكل الترقيم. start يحدد رقم البداية (مفيد عند تقسيم قائمة مستمرة).</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;li&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">List Item — عنصر القائمة. يجب أن يكون داخل ul أو ol.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;ul&gt;</span>
+  <span class="t">&lt;li&gt;</span>
+    عنصر يحتوي
+    <span class="t">&lt;ul&gt;</span>
+      <span class="t">&lt;li&gt;</span>قائمة متداخلة<span class="t">&lt;/li&gt;</span>
+    <span class="t">&lt;/ul&gt;</span>
+  <span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ul&gt;</span></div>
+            <div class="el-note">li يمكنه أن يحتوي أي عنصر HTML — نص، روابط، صور، حتى قوائم أخرى.</div>
+        </div>
+    </div>
+    <div class="el-card" onclick="toggle(this)">
+        <div class="el-tag">&lt;dl&gt; + &lt;dt&gt; + &lt;dd&gt;</div>
+        <span class="el-type block">Block</span>
+        <div class="el-desc">Description List — قائمة المصطلحات والتعريفات. مثالي للمسارد والـ FAQ.</div>
+        <div class="el-detail">
+            <div class="el-example"><span class="t">&lt;dl&gt;</span>
+  <span class="t">&lt;dt&gt;</span>HTML<span class="t">&lt;/dt&gt;</span>
+  <span class="t">&lt;dd&gt;</span>لغة بناء هيكل صفحات الويب<span class="t">&lt;/dd&gt;</span>
+
+  <span class="t">&lt;dt&gt;</span>CSS<span class="t">&lt;/dt&gt;</span>
+  <span class="t">&lt;dd&gt;</span>لغة تنسيق وتجميل صفحات الويب<span class="t">&lt;/dd&gt;</span>
+<span class="t">&lt;/dl&gt;</span></div>
+            <div class="el-note">dt = المصطلح، dd = التعريف. يمكن أن يكون لمصطلح واحد تعريفات متعددة.</div>
+        </div>
+    </div>
+</div>
+
+<div class="no-results" id="noResults">لا توجد نتائج لبحثك. جرب كلمة أخرى.</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="quiz-section">
+    <h2>🧠 اختبار العناصر</h2>
+
+    <div class="q-card">
+        <p>س1: أي عنصر يُستخدم للمحتوى المستقل الذي يمكن نشره بمفرده (مقال، تعليق)؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q1" value="w"> <code>&lt;section&gt;</code></label>
+            <label><input type="radio" name="q1" value="c"> <code>&lt;article&gt;</code></label>
+            <label><input type="radio" name="q1" value="w"> <code>&lt;div&gt;</code></label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س2: ما الفرق بين <code>&lt;strong&gt;</code> و <code>&lt;b&gt;</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q2" value="w"> لا فرق — كلاهما يُغمّق النص فقط</label>
+            <label><input type="radio" name="q2" value="c"> strong يحمل أهمية دلالية، b مجرد تغميق بصري بدون معنى</label>
+            <label><input type="radio" name="q2" value="w"> b أقوى تغميقاً من strong</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س3: متى تستخدم <code>&lt;ol&gt;</code> بدلاً من <code>&lt;ul&gt;</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q3" value="w"> عندما تريد نقاطاً أكبر حجماً</label>
+            <label><input type="radio" name="q3" value="c"> عندما يكون الترتيب مهماً — خطوات، تعليمات، ترتيب نتائج</label>
+            <label><input type="radio" name="q3" value="w"> دائماً — ol أفضل من ul</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س4: ما العناصر التي تُعتبر "Void Elements" ولا تحتاج tag إغلاق؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q4" value="c"> <code>&lt;img&gt;, &lt;br&gt;, &lt;hr&gt;, &lt;input&gt;, &lt;meta&gt;</code></label>
+            <label><input type="radio" name="q4" value="w"> <code>&lt;div&gt;, &lt;p&gt;, &lt;span&gt;</code></label>
+            <label><input type="radio" name="q4" value="w"> <code>&lt;header&gt;, &lt;footer&gt;, &lt;main&gt;</code></label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س5: ما الهدف الأساسي من استخدام العناصر الدلالية (semantic) بدلاً من div لكل شيء؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q5" value="w"> لتغيير شكل العناصر تلقائياً</label>
+            <label><input type="radio" name="q5" value="c"> لمساعدة محركات البحث ومساعدي الشاشة على فهم هيكل الصفحة → SEO أفضل وإمكانية وصول أعلى</label>
+            <label><input type="radio" name="q5" value="w"> لأن div أبطأ من العناصر الدلالية</label>
+        </div>
+    </div>
+
+    <button class="btn-quiz" onclick="checkQuiz()">تحقق من إجاباتي ✅</button>
+    <div id="quiz-result"></div>
+    <a href="menu.html" class="btn-finish" id="finish-btn" style="display:none" onclick="saveProgress()">✅ إنهاء الدرس والعودة للقائمة</a>
+</div>
+
+</div>
+
+<script>
+function toggle(card) {
+    card.classList.toggle('expanded');
+}
+
+function filterElements() {
+    const term = document.getElementById('searchEl').value.toLowerCase();
+    const cards = document.querySelectorAll('.el-card');
+    let visible = 0;
+    cards.forEach(c => {
+        const match = c.textContent.toLowerCase().includes(term);
+        c.style.display = match ? '' : 'none';
+        if(match) visible++;
+    });
+    document.querySelectorAll('.cat-header,.section-divider').forEach(h => {
+        h.style.display = term ? 'none' : '';
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function checkQuiz(){
+    const ans={q1:'c',q2:'c',q3:'c',q4:'c',q5:'c'};
+    let sc=0;
+    for(const[q,a] of Object.entries(ans)){if(document.querySelector(`input[name="${q}"]:checked`)?.value===a)sc++;}
+    const total=Object.keys(ans).length,el=document.getElementById('quiz-result');
+    el.style.display='block';
+    if(sc===total){el.style.cssText='display:block;background:rgba(57,255,20,.1);color:#39ff14;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent='🏆 ممتاز! أنت تعرف HTML عناصره!';document.getElementById('finish-btn').style.display='block';}
+    else{el.style.cssText='display:block;background:rgba(255,77,77,.1);color:#ff4d4d;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent=`${sc} من ${total} — راجع العناصر الخاطئة.`;}
+}
+function saveProgress(){localStorage.setItem('lesson-all-elements','completed');}
+</script>
+</body>
+</html>

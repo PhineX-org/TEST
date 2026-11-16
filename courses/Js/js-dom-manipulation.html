@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هندسة الـ DOM | PhineX Academy</title>
+    <style>
+        :root {
+            --primary: #ff9f43;
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --text: #c9d1d9;
+            --code-bg: #000;
+            --accent: #54a0ff;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.7;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .lesson-header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #1f2937, #0d1117);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #30363d;
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 { color: var(--primary); font-size: 1.8rem; margin-top: 0; }
+        h3 { color: var(--accent); font-size: 1.3rem; }
+
+        .explanation-box {
+            background: rgba(255, 159, 67, 0.05);
+            border-right: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            border: 1px solid #444;
+            margin: 15px 0;
+        }
+
+        .mission-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .quiz-container {
+            background: #1c2128;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+        }
+
+        button.check-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lesson-header">
+        <h1>التحكم في هيكل الصفحة (DOM Manipulation) 🏗️</h1>
+        <p>دليل المبرمج للسيطرة على عناصر HTML وتغييرها برمجياً في الوقت الفعلي.</p>
+    </div>
+
+    <div class="lesson-card">
+        <h2>1. مفهوم الـ DOM (Document Object Model)</h2>
+        <div class="mission-badge">المهمة: فهم كيف يرى المتصفح صفحتك.</div>
+        
+        <h3>الشرح التفصيلي:</h3>
+        <p>الـ DOM هو خريطة (شجرة) لكل عناصر الصفحة. المتصفح يحول الـ HTML إلى "كائنات" (Objects) يستطيع جافا سكريبت الوصول إليها وتعديلها.</p>
+        
+        
+
+        <div class="explanation-box">
+            عندما نكتب <code>document</code> في الكود، فنحن نفتح البوابة لهذه الشجرة لنبدأ التحكم فيها.
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>2. اصطياد العناصر (Selecting Elements)</h2>
+        <div class="mission-badge">المهمة: اختيار العنصر الذي تريد تعديله بدقة.</div>
+
+        <p>هناك طرق عديدة لاختيار العناصر، وأشهرها:</p>
+        <ul>
+            <li><code>getElementById</code>: لاختيار عنصر واحد بـ ID فريد.</li>
+            <li><code>querySelector</code>: الطريقة الأحدث والأقوى (تستخدم نفس شكل الـ CSS).</li>
+        </ul>
+
+        <h3>الكود البرمجي:</h3>
+        <div class="code-block">
+// اختيار زر عن طريق الـ ID<br>
+const btn = document.getElementById('main-btn');<br><br>
+// اختيار أول عنوان H1 في الصفحة<br>
+const title = document.querySelector('h1');
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>3. التعديل السحري (Changing Content & Style)</h2>
+        <div class="mission-badge">المهمة: تغيير النصوص والألوان والأشكال.</div>
+
+        <p>بمجرد أن "تمسك" العنصر، يمكنك تغيير أي شيء فيه:</p>
+        <div class="explanation-box">
+            - <code>innerText</code>: لتغيير النص المكتوب.<br>
+            - <code>style</code>: لتغيير خصائص الـ CSS.<br>
+            - <code>classList</code>: لإضافة أو حذف "كلاس" كامل.
+        </div>
+
+        <h3>الكود البرمجي:</h3>
+        <div class="code-block">
+const box = document.querySelector('.box');<br><br>
+box.innerText = "تم التحديث!";<br>
+box.style.backgroundColor = "blue";<br>
+box.classList.add('active');
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <h2>اختبار مهندس الـ DOM 🧠</h2>
+        
+        <div class="question">
+            <p><b>س1: أي أمر نستخدمه لتغيير "النص" الموجود داخل عنصر HTML؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="wrong"> box.changeText = "..."</label><br>
+                <label><input type="radio" name="q1" value="correct"> box.innerText = "..."</label><br>
+                <label><input type="radio" name="q1" value="wrong"> box.content = "..."</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><b>س2: ما هو الأمر الذي يسمح لك باختيار عنصر باستخدام كلاس CSS مثل <code>.header</code>؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="correct"> document.querySelector('.header')</label><br>
+                <label><input type="radio" name="q2" value="wrong"> document.getElementById('.header')</label><br>
+                <label><input type="radio" name="q2" value="wrong"> document.getClass('.header')</label>
+            </div>
+        </div>
+
+        <button class="check-btn" onclick="checkAnswers()">تحقق من معرفتك</button>
+    </div>
+</div>
+
+<script>
+    function checkAnswers() {
+        const q1 = document.querySelector('input[name="q1"]:checked');
+        const q2 = document.querySelector('input[name="q2"]:checked');
+
+        if (q1?.value === "correct" && q2?.value === "correct") {
+            alert("مذهل! أنت الآن تفهم كيف يسيطر جافا سكريبت على الـ HTML. لننتقل للورشة العملية لنطبق هذا على مشروعك!");
+            localStorage.setItem('lesson-js-dom-manipulation', 'completed');
+            window.location.href = 'js-async.html';
+        } else {
+            alert("راجع طرق اختيار العناصر وتغيير النصوص مرة أخرى.");
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاختبار النهائي — 30 سؤال | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --js-gold: #f7df1e;
+            --neon-cyan: #00d4ff;
+            --neon-green: #c3e88d;
+            --neon-pink: #ff5874;
+            --neon-purple: #bb86fc;
+            --bg: #080b10;
+            --bg2: #0d1117;
+            --card: #111827;
+            --card2: #1a2233;
+            --border: #1e2d42;
+            --text: #cdd6f4;
+            --muted: #6b7a99;
+            --code-bg: #0a0f1a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .site-header {
+            background: #0d1117;
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-family: 'Orbitron', monospace; color: var(--js-gold); font-size: 1.1rem; }
+        .back-btn {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--neon-cyan);
+            padding: 6px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { background: var(--neon-cyan); color: #000; }
+
+        /* ── PROGRESS BAR ── */
+        .quiz-progress-bar {
+            height: 4px;
+            background: var(--border);
+            position: sticky;
+            top: 60px;
+            z-index: 99;
+        }
+        .quiz-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--js-gold));
+            transition: width 0.4s ease;
+            box-shadow: 0 0 8px var(--neon-green);
+        }
+
+        /* ── SCREENS ── */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* ── INTRO SCREEN ── */
+        .intro-wrap {
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 0 30px;
+            text-align: center;
+        }
+        .intro-badge {
+            display: inline-block;
+            background: rgba(247,223,30,0.1);
+            border: 1px solid var(--js-gold);
+            color: var(--js-gold);
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            font-family: 'Orbitron', monospace;
+        }
+        .intro-wrap h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.4rem;
+            color: #fff;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        .intro-wrap h1 span { color: var(--js-gold); }
+        .intro-wrap p { color: var(--muted); font-size: 1.05rem; line-height: 1.9; margin-bottom: 30px; }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 30px 0 40px;
+        }
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-card .num {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            color: var(--js-gold);
+        }
+        .stat-card .lbl { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+        .btn-start {
+            background: var(--js-gold);
+            color: #000;
+            border: none;
+            padding: 18px 60px;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(247,223,30,0.25);
+        }
+        .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 40px rgba(247,223,30,0.4); }
+
+        /* ── QUIZ SCREEN ── */
+        .quiz-wrap {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 30px 80px;
+        }
+
+        .q-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .q-counter .q-num {
+            font-family: 'Orbitron', monospace;
+            color: var(--neon-cyan);
+            font-size: 0.95rem;
+        }
+        .q-counter .q-cat {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .timer-badge {
+            font-family: 'Orbitron', monospace;
+            color: var(--neon-pink);
+            font-size: 0.95rem;
+        }
+
+        .question-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .question-card h2 {
+            font-size: 1.3rem;
+            color: #fff;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .q-code {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            direction: ltr;
+            text-align: left;
+            color: #abb2bf;
+            margin: 16px 0;
+            line-height: 1.7;
+        }
+
+        /* Options */
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: var(--card2);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            padding: 16px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            text-align: right;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--neon-cyan);
+            background: rgba(0,212,255,0.08);
+        }
+        .option-btn .opt-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.25s;
+        }
+        .option-btn.correct {
+            border-color: var(--neon-green);
+            background: rgba(195,232,141,0.1);
+            color: var(--neon-green);
+        }
+        .option-btn.correct .opt-letter { background: var(--neon-green); color: #000; }
+        .option-btn.wrong {
+            border-color: var(--neon-pink);
+            background: rgba(255,88,116,0.1);
+            color: var(--neon-pink);
+        }
+        .option-btn.wrong .opt-letter { background: var(--neon-pink); color: #fff; }
+        .option-btn:disabled { cursor: not-allowed; }
+
+        .feedback-box {
+            background: var(--card2);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            display: none;
+        }
+        .feedback-box.show { display: block; }
+        .feedback-box.correct { border-right: 4px solid var(--neon-green); color: var(--neon-green); }
+        .feedback-box.wrong { border-right: 4px solid var(--neon-pink); color: var(--text); }
+
+        .btn-next {
+            background: var(--neon-cyan);
+            color: #000;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+            transition: 0.3s;
+            display: none;
+        }
+        .btn-next.show { display: block; }
+        .btn-next:hover { opacity: 0.85; }
+
+        /* ── RESULT SCREEN ── */
+        .result-wrap {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 0 30px 80px;
+            text-align: center;
+        }
+        .result-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 6px solid;
+            position: relative;
+        }
+        .result-circle .score-num {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .result-circle .score-total {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+        .result-grade {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        .result-msg { color: var(--muted); font-size: 1.05rem; margin-bottom: 40px; }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 30px 0;
+            text-align: right;
+        }
+        .breakdown-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+        .breakdown-item .bi-label { color: var(--muted); font-size: 0.85rem; }
+        .breakdown-item .bi-val {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .result-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn-retry {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 14px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-retry:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+        .btn-review-link {
+            background: var(--js-gold);
+            color: #000;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn-review-link:hover { opacity: 0.85; }
+
+        /* Wrong answers review */
+        .wrong-review { margin-top: 40px; text-align: right; }
+        .wrong-review h3 { color: var(--neon-pink); margin-bottom: 16px; font-size: 1.2rem; }
+        .wrong-item {
+            background: var(--card);
+            border: 1px solid rgba(255,88,116,0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+        .wrong-item p { font-size: 0.95rem; color: var(--text); margin-bottom: 6px; }
+        .wrong-item .wi-correct { color: var(--neon-green); font-size: 0.9rem; }
+        .wrong-item .wi-yours { color: var(--neon-pink); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-btn">← القائمة</a>
+</header>
+
+<div class="quiz-progress-bar">
+    <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
+</div>
+
+<!-- ══════════════ INTRO SCREEN ══════════════ -->
+<div class="screen active" id="introScreen">
+    <div class="intro-wrap">
+        <div class="intro-badge">PhineX Final Exam</div>
+        <h1>الاختبار الشامل<br><span>JavaScript</span></h1>
+        <p>30 سؤالاً تغطي كل مراحل الكورس: المتغيرات، الشروط، الحلقات، الدوال، DOM، الأحداث، Async/Await، ES6+ الحديثة، OOP، وقواعد البيانات.</p>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="num">30</div>
+                <div class="lbl">سؤال شامل</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">10</div>
+                <div class="lbl">محاور رئيسية</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">∞</div>
+                <div class="lbl">محاولات</div>
+            </div>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">ابدأ الاختبار الآن ⚡</button>
+    </div>
+</div>
+
+<!-- ══════════════ QUIZ SCREEN ══════════════ -->
+<div class="screen" id="quizScreen">
+    <div class="quiz-wrap">
+        <div class="q-counter">
+            <div class="q-num" id="qNum">السؤال 1 من 30</div>
+            <div class="q-cat" id="qCat">المتغيرات</div>
+            <div class="timer-badge" id="timerBadge">⏱ 0:00</div>
+        </div>
+
+        <div class="question-card">
+            <h2 id="qText">نص السؤال</h2>
+            <div class="q-code" id="qCode" style="display:none"></div>
+        </div>
+
+        <div class="options" id="optionsContainer"></div>
+        <div class="feedback-box" id="feedbackBox"></div>
+        <button class="btn-next" id="btnNext" onclick="nextQuestion()">التالي ←</button>
+    </div>
+</div>
+
+<!-- ══════════════ RESULT SCREEN ══════════════ -->
+<div class="screen" id="resultScreen">
+    <div class="result-wrap">
+        <div class="result-circle" id="resultCircle">
+            <div class="score-num" id="scoreNum">0</div>
+            <div class="score-total">من 30</div>
+        </div>
+        <div class="result-grade" id="resultGrade">—</div>
+        <div class="result-msg" id="resultMsg">—</div>
+
+        <div class="breakdown-grid" id="breakdownGrid"></div>
+
+        <div class="result-actions">
+            <button class="btn-retry" onclick="retryQuiz()">إعادة الاختبار 🔄</button>
+            <a href="js-revision.html" class="btn-review-link">راجع الدروس 📖</a>
+        </div>
+
+        <div class="wrong-review" id="wrongReview"></div>
+    </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  QUESTIONS BANK — 30 Questions
+// ══════════════════════════════════════════════════
+const questions = [
+  // ── SECTION 1: Variables (3 qs) ──
+  {
+    cat: "المتغيرات",
+    text: "ما الفرق الجوهري بين <code>let</code> و <code>const</code> في JavaScript؟",
+    code: null,
+    options: [
+      "const أسرع في التنفيذ من let",
+      "let للقيم القابلة للتغيير، وconst للقيم الثابتة التي لا تتغير بعد الإعلان",
+      "const تُستخدم فقط داخل الدوال",
+      "لا يوجد فرق، كلاهما نفس الشيء"
+    ],
+    answer: 1,
+    explain: "✅ let تُستخدم للمتغيرات التي ستتغير قيمتها، بينما const تُستخدم للقيم الثابتة. محاولة إعادة تعيين const ترمي TypeError."
+  },
+  {
+    cat: "المتغيرات",
+    text: "ما نتيجة تنفيذ الكود التالي؟",
+    code: `let x = 5;
+let y = "5";
+console.log(x == y);   // A
+console.log(x === y);  // B`,
+    options: [
+      "A: false, B: false",
+      "A: true,  B: true",
+      "A: true,  B: false",
+      "A: false, B: true"
+    ],
+    answer: 2,
+    explain: "✅ == يقارن القيمة فقط (يحوّل النوع تلقائياً) فيطبع true. أما === فيقارن القيمة والنوع معاً، فـ 5 (Number) لا تساوي '5' (String) → false."
+  },
+  {
+    cat: "المتغيرات",
+    text: "أي من القيم التالية تُعتبر 'Falsy' في JavaScript؟",
+    code: null,
+    options: [
+      "[] (مصفوفة فارغة)",
+      "{} (كائن فارغ)",
+      "0 (الصفر)",
+      "'false' (نص يحتوي على false)"
+    ],
+    answer: 2,
+    explain: "✅ القيم الـ Falsy الستة هي: false, 0, '', null, undefined, NaN. المصفوفة الفارغة [] والكائن الفارغ {} وأي نص غير فارغ كلها Truthy."
+  },
+
+  // ── SECTION 2: Data Types & Operators (3 qs) ──
+  {
+    cat: "أنواع البيانات",
+    text: "ما نتيجة <code>typeof null</code> في JavaScript؟",
+    code: null,
+    options: [
+      `"null"`,
+      `"undefined"`,
+      `"object"`,
+      `"boolean"`
+    ],
+    answer: 2,
+    explain: "✅ typeof null === 'object' هو bug تاريخي مشهور في JavaScript موجود منذ الإصدار الأول عام 1995 ولم يُصلَح لأنه سيكسر مواقع كثيرة."
+  },
+  {
+    cat: "أنواع البيانات",
+    text: "ما نتيجة الكود التالي؟",
+    code: `console.log(0.1 + 0.2 === 0.3);`,
+    options: [
+      "true — لأن 0.1 + 0.2 = 0.3",
+      "false — بسبب خطأ في الأرقام العشرية (Floating Point Precision)",
+      "Error — لا يمكن مقارنة الأرقام العشرية",
+      "undefined"
+    ],
+    answer: 1,
+    explain: "✅ false! بسبب دقة الأرقام العشرية في IEEE 754. 0.1+0.2 = 0.30000000000000004. الحل: Math.abs(0.1+0.2 - 0.3) < 0.00001"
+  },
+  {
+    cat: "أنواع البيانات",
+    text: "ما نتيجة تنفيذ هذا الكود؟",
+    code: `const a = "5";
+const b = 3;
+console.log(a - b);
+console.log(a + b);`,
+    options: [
+      "8 و 8",
+      "2 و '53'",
+      "2 و 53",
+      "NaN و '53'"
+    ],
+    answer: 1,
+    explain: "✅ a - b يُجبر JS على تحويل '5' لرقم → 5-3=2. أما a + b فإن + مع string يعمل كـ concatenation → '5'+'3' = '53'. هذا يُسمى Type Coercion."
+  },
+
+  // ── SECTION 3: Conditionals (3 qs) ──
+  {
+    cat: "الشروط",
+    text: "ما القيمة التي ستُطبع؟",
+    code: `let score = 75;
+let grade = score >= 90 ? "A" :
+            score >= 75 ? "B" :
+            score >= 60 ? "C" : "F";
+console.log(grade);`,
+    options: ["A", "B", "C", "F"],
+    answer: 1,
+    explain: "✅ 75 >= 90 → false، ثم 75 >= 75 → true → يُطبع 'B'. هذا يُسمى Nested Ternary Operator."
+  },
+  {
+    cat: "الشروط",
+    text: "ما نتيجة هذا الكود؟",
+    code: `let x = 10;
+switch(true) {
+  case x > 20: console.log("A"); break;
+  case x > 5:  console.log("B"); break;
+  case x > 0:  console.log("C"); break;
+  default:      console.log("D");
+}`,
+    options: ["A", "B", "C", "D"],
+    answer: 1,
+    explain: "✅ switch(true) يقارن كل case بـ true. الأولى: 10>20 = false، الثانية: 10>5 = true → يطبع 'B' ويتوقف بسبب break."
+  },
+  {
+    cat: "الشروط",
+    text: "ما نتيجة: <code>console.log(null ?? 'default')</code>؟",
+    code: null,
+    options: [
+      `"default" — لأن ?? يرجع القيمة اليمنى عندما تكون اليسرى null أو undefined`,
+      "null — لأن null قيمة موجودة",
+      "undefined",
+      "Error"
+    ],
+    answer: 0,
+    explain: "✅ ?? (Nullish Coalescing) يرجع القيمة اليمنى فقط إذا كانت اليسرى null أو undefined. يختلف عن || الذي يعمل مع أي قيمة Falsy."
+  },
+
+  // ── SECTION 4: Loops (3 qs) ──
+  {
+    cat: "الحلقات",
+    text: "كم مرة ستُطبع الكلمة 'PhineX'؟",
+    code: `for (let i = 0; i < 10; i += 3) {
+  console.log("PhineX");
+}`,
+    options: ["3 مرات", "4 مرات", "10 مرات", "لا تُطبع أبداً"],
+    answer: 1,
+    explain: "✅ i يأخذ القيم: 0, 3, 6, 9 (ثم 12 يتجاوز 10 فتتوقف). إذن تُطبع 4 مرات."
+  },
+  {
+    cat: "الحلقات",
+    text: "ما الناتج؟",
+    code: `const arr = [1, 2, 3, 4, 5];
+let sum = 0;
+for (const n of arr) {
+  if (n % 2 === 0) continue;
+  sum += n;
+}
+console.log(sum);`,
+    options: ["15", "9", "6", "10"],
+    answer: 1,
+    explain: "✅ continue يتخطى الأرقام الزوجية (2, 4). تُجمع فقط الفردية: 1+3+5 = 9."
+  },
+  {
+    cat: "الحلقات",
+    text: "أي طريقة تكرار تُستخدم للمرور على خصائص (keys) Object؟",
+    code: null,
+    options: [
+      "for...of",
+      "for...in",
+      "forEach",
+      "while"
+    ],
+    answer: 1,
+    explain: "✅ for...in يُستخدم للمرور على مفاتيح Object. أما for...of فيُستخدم للمرور على قيم Iterable (Arrays, Strings, Sets, Maps)."
+  },
+
+  // ── SECTION 5: Functions (3 qs) ──
+  {
+    cat: "الدوال",
+    text: "ما نتيجة الكود؟",
+    code: `function makeAdder(x) {
+  return function(y) {
+    return x + y;
+  };
+}
+const add5 = makeAdder(5);
+console.log(add5(3));`,
+    options: ["8", "5", "3", "Error"],
+    answer: 0,
+    explain: "✅ هذا مثال على الـ Closure. makeAdder(5) تُرجع دالة تتذكر x=5. عند استدعاء add5(3): 5+3=8."
+  },
+  {
+    cat: "الدوال",
+    text: "ما الفرق بين هذين التعريفين؟",
+    code: `// A
+function greet() { return "مرحباً"; }
+
+// B
+const greet = () => { return "مرحباً"; };`,
+    options: [
+      "لا فرق بينهما تماماً",
+      "A تدعم Hoisting (يمكن استدعاؤها قبل تعريفها)، B لا تدعمه",
+      "B أسرع دائماً في التنفيذ",
+      "A لا تدعم الـ return"
+    ],
+    answer: 1,
+    explain: "✅ Function Declaration (A) تدعم Hoisting فيمكن استدعاؤها قبل كتابتها. Function Expression (B) لا تدعمه. كذلك Arrow Functions لا تملك this خاص بها."
+  },
+  {
+    cat: "الدوال",
+    text: "ما ناتج تطبيق هذه الدوال على المصفوفة؟",
+    code: `const prices = [100, 250, 80, 400, 150];
+const result = prices
+  .filter(p => p >= 100)
+  .map(p => p * 0.9)
+  .reduce((acc, p) => acc + p, 0);
+console.log(result);`,
+    options: ["720", "800", "980", "810"],
+    answer: 3,
+    explain: "✅ filter: [100,250,400,150] → map(×0.9): [90,225,360,135] → reduce(جمع): 90+225+360+135 = 810."
+  },
+
+  // ── SECTION 6: Arrays & Objects (3 qs) ──
+  {
+    cat: "المصفوفات والكائنات",
+    text: "ما نتيجة الكود التالي؟",
+    code: `const a = [1, 2, 3];
+const b = a;
+b.push(4);
+console.log(a.length);`,
+    options: ["3", "4", "Error", "undefined"],
+    answer: 1,
+    explain: "✅ المصفوفات في JS تُنسخ بالمرجع (Reference). b و a يشيران لنفس المكان في الذاكرة. للنسخ الحقيقي: const b = [...a]"
+  },
+  {
+    cat: "المصفوفات والكائنات",
+    text: "أي سطر يُنشئ نسخة مستقلة من الـ Object؟",
+    code: `const user = { name: "Ahmed", level: 5 };`,
+    options: [
+      "const copy = user;",
+      "const copy = Object.create(user);",
+      "const copy = { ...user };",
+      "const copy = Object.freeze(user);"
+    ],
+    answer: 2,
+    explain: "✅ Spread Operator {...user} يُنشئ shallow copy مستقلة. Object.create يُنشئ كائناً يرث منه. أما = فهي مجرد مرجع للنفس."
+  },
+  {
+    cat: "المصفوفات والكائنات",
+    text: "ما نتيجة هذا الـ Destructuring؟",
+    code: `const { a, b, ...rest } = { a: 1, b: 2, c: 3, d: 4 };
+console.log(rest);`,
+    options: [
+      "{ a:1, b:2 }",
+      "{ c:3, d:4 }",
+      "[3, 4]",
+      "Error"
+    ],
+    answer: 1,
+    explain: "✅ Rest Operator (...rest) في Destructuring يجمع الخصائص المتبقية. بعد استخراج a و b، تبقى { c:3, d:4 }."
+  },
+
+  // ── SECTION 7: DOM (3 qs) ──
+  {
+    cat: "DOM",
+    text: "ما الفرق بين <code>innerText</code> و <code>innerHTML</code>؟",
+    code: null,
+    options: [
+      "لا فرق بينهما",
+      "innerText للنص العادي فقط، innerHTML يتعامل مع HTML كاملاً",
+      "innerHTML أسرع من innerText دائماً",
+      "innerText يدعم HTML وinnerHTML لا يدعمه"
+    ],
+    answer: 1,
+    explain: "✅ innerText يضبط/يقرأ النص المرئي فقط. innerHTML يُشغّل HTML المُدخل (خطر XSS). textContent أسرع وأأمن لقراءة النصوص الخام."
+  },
+  {
+    cat: "DOM",
+    text: "أي من هذه الجمل صحيحة حول <code>querySelectorAll</code>؟",
+    code: null,
+    options: [
+      "تُرجع عنصراً واحداً فقط",
+      "تُرجع HTMLCollection يتحدث تلقائياً",
+      "تُرجع NodeList ثابتة (static) وتحتاج forEach للتكرار عليها",
+      "لا تدعم CSS selectors"
+    ],
+    answer: 2,
+    explain: "✅ querySelectorAll تُرجع NodeList ثابتة. يمكن استخدام forEach عليها مباشرة. على عكس getElementsByClassName التي تُرجع HTMLCollection حية."
+  },
+  {
+    cat: "DOM",
+    text: "كيف تُضيف كلاس 'active' وتحذف 'hidden' من عنصر في نفس الوقت؟",
+    code: `const el = document.querySelector("#menu");`,
+    options: [
+      "el.class = 'active';",
+      "el.className += ' active'; el.className -= ' hidden';",
+      "el.classList.add('active'); el.classList.remove('hidden');",
+      "el.setAttribute('class', 'active');"
+    ],
+    answer: 2,
+    explain: "✅ classList يوفر: add(), remove(), toggle(), contains(), replace(). هي الطريقة الصحيحة للتعامل مع الكلاسات بدون إلغاء الكلاسات الموجودة."
+  },
+
+  // ── SECTION 8: Events (2 qs) ──
+  {
+    cat: "الأحداث",
+    text: "ما وظيفة <code>event.preventDefault()</code>؟",
+    code: null,
+    options: [
+      "إيقاف انتشار الحدث للعناصر الأب",
+      "منع السلوك الافتراضي للمتصفح (مثل إرسال النموذج أو فتح رابط)",
+      "حذف الـ Event Listener نهائياً",
+      "تأخير تنفيذ الحدث"
+    ],
+    answer: 1,
+    explain: "✅ preventDefault() يمنع السلوك الافتراضي. أما stopPropagation() فيمنع انتشار الحدث للأب. كلاهما مختلفان تماماً."
+  },
+  {
+    cat: "الأحداث",
+    text: "ما مبدأ 'Event Delegation' ولماذا نستخدمه؟",
+    code: null,
+    options: [
+      "إضافة مستمع حدث لكل عنصر أبن على حدة",
+      "الاستماع للأحداث على العنصر الأب وتحديد مصدرها بـ event.target — أكفأ مع العناصر الديناميكية",
+      "حذف جميع Event Listeners من الصفحة",
+      "استخدام setTimeout مع الأحداث"
+    ],
+    answer: 1,
+    explain: "✅ Event Delegation يوفر الأداء (مستمع واحد بدل مئة) ويعمل مع العناصر المُضافة ديناميكياً لاحقاً. يعمل بسبب Event Bubbling."
+  },
+
+  // ── SECTION 9: Async/Await & APIs (3 qs) ──
+  {
+    cat: "Async / API",
+    text: "ما نتيجة الكود؟",
+    code: `async function getData() {
+  return 42;
+}
+const result = getData();
+console.log(typeof result);`,
+    options: [
+      `"number"`,
+      `"undefined"`,
+      `"object"`,
+      `"promise"`
+    ],
+    answer: 2,
+    explain: "✅ async function تُرجع دائماً Promise. typeof Promise === 'object'. للحصول على القيمة: await getData() أو getData().then(v => console.log(v))."
+  },
+  {
+    cat: "Async / API",
+    text: "ما الغرض من <code>try...catch</code> مع Async/Await؟",
+    code: null,
+    options: [
+      "تسريع الاستجابة من السيرفر",
+      "التقاط الأخطاء (مثل انقطاع الإنترنت أو HTTP errors) لمنع انهيار التطبيق",
+      "تحويل Promise للـ Callback",
+      "جعل الكود يعمل بشكل متزامن"
+    ],
+    answer: 1,
+    explain: "✅ try...catch مع async/await يؤدي نفس دور .catch() مع Promises. إذا رُفض الـ await، ينتقل للـ catch block تلقائياً."
+  },
+  {
+    cat: "Async / API",
+    text: "لديك 3 طلبات API مستقلة. ما الأكفأ؟",
+    code: `// الطريقة A
+const u = await fetch('/users').then(r=>r.json());
+const p = await fetch('/posts').then(r=>r.json());
+const c = await fetch('/comments').then(r=>r.json());
+
+// الطريقة B
+const [u,p,c] = await Promise.all([
+  fetch('/users').then(r=>r.json()),
+  fetch('/posts').then(r=>r.json()),
+  fetch('/comments').then(r=>r.json())
+]);`,
+    options: [
+      "الطريقة A أكفأ لأنها منظمة",
+      "الطريقة B أكفأ — الطلبات الثلاثة تُنفَّذ بالتوازي وليس بالتسلسل",
+      "الطريقتان متساويتان في الأداء",
+      "الطريقة A أسرع لأن await يسرّع كل طلب"
+    ],
+    answer: 1,
+    explain: "✅ A تنتظر كل طلب قبل التالي (مثلاً 3×300ms = 900ms). B تُشغّل الثلاثة معاً وتنتظر أطولها فقط (300ms). Promise.all أسرع بكثير."
+  },
+
+  // ── SECTION 10: ES6+ (2 qs) ──
+  {
+    cat: "ES6+ الحديثة",
+    text: "ما نتيجة الكود؟",
+    code: `const user = { name: "Ali", age: null };
+const theme = user?.settings?.theme ?? "dark";
+console.log(theme);`,
+    options: [
+      "Error — لأن settings غير موجودة",
+      "null",
+      `"dark" — Optional Chaining يُرجع undefined، ثم ?? يُرجع القيمة الافتراضية`,
+      "undefined"
+    ],
+    answer: 2,
+    explain: "✅ user?.settings?.theme: settings غير موجودة → undefined. ثم undefined ?? 'dark' → 'dark'. لو كانت || بدل ??: null || 'dark' = 'dark' أيضاً."
+  },
+  {
+    cat: "ES6+ الحديثة",
+    text: "ما الفرق بين <code>Map</code> و <code>Object</code> العادي؟",
+    code: null,
+    options: [
+      "لا فرق بينهما",
+      "Map يدعم فقط مفاتيح String",
+      "Map يدعم أي نوع كمفتاح، يحتفظ بترتيب الإدراج، وله .size مباشرة",
+      "Object أسرع دائماً من Map"
+    ],
+    answer: 2,
+    explain: "✅ Map: مفاتيح من أي نوع (object, function, number)، ترتيب محفوظ، .size بدون Object.keys(). أفضل عند الإضافة/الحذف المتكرر."
+  },
+
+  // ── SECTION 11: OOP (2 qs) ──
+  {
+    cat: "OOP",
+    text: "ما الفرق بين <code>class Method</code> و <code>static Method</code>؟",
+    code: null,
+    options: [
+      "لا فرق بينهما",
+      "static Method تُستدعى على instance، والعادية على الـ Class مباشرة",
+      "static Method تُستدعى على الـ Class مباشرة دون إنشاء instance",
+      "static Method لا تدعم return"
+    ],
+    answer: 2,
+    explain: "✅ static methods تنتمي للـ Class نفسها لا للـ instances. مثال: Math.random() — لا تحتاج new Math(). مثالية لـ utility functions والـ Factory patterns."
+  },
+  {
+    cat: "OOP",
+    text: "ما وظيفة كلمة <code>super()</code> داخل constructor الابن؟",
+    code: `class Animal { constructor(name) { this.name = name; } }
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name); // ← ما وظيفتها؟
+    this.breed = breed;
+  }
+}`,
+    options: [
+      "تُنشئ نسخة جديدة من الأب",
+      "تستدعي constructor الـ Class الأب لتهيئة خصائصه — مطلوبة قبل استخدام this",
+      "تُوقف تنفيذ constructor الابن",
+      "تُجري نسخ لجميع دوال الأب"
+    ],
+    answer: 1,
+    explain: "✅ super() في constructor الابن تستدعي constructor الأب. في JS، يجب استدعاء super() قبل أي استخدام لـ this في الابن، وإلا يحدث ReferenceError."
+  },
+
+  // ── SECTION 12: Error Handling & Best Practices (2 qs) ──
+  {
+    cat: "معالجة الأخطاء",
+    text: "ما نتيجة الكود؟",
+    code: `function riskyOp() {
+  throw new Error("فشلت العملية");
+}
+try {
+  riskyOp();
+  console.log("نجحت");   // A
+} catch (e) {
+  console.log(e.message); // B
+} finally {
+  console.log("دائماً");  // C
+}`,
+    options: [
+      "A فقط",
+      "B فقط: 'فشلت العملية'",
+      "B ثم C: 'فشلت العملية' و 'دائماً'",
+      "A ثم C"
+    ],
+    answer: 2,
+    explain: "✅ throw يُطلق الخطأ ويتخطى A. catch يُمسك الخطأ ويطبع B. finally يعمل دائماً بغض النظر — حتى لو كان هناك return في try أو catch."
+  },
+  {
+    cat: "قواعد البيانات",
+    text: "ما الفرق بين Firebase و Supabase كـ Backend Service؟",
+    code: null,
+    options: [
+      "Firebase مجانية تماماً وSupabase مدفوعة دائماً",
+      "Firebase NoSQL مرن من Google، Supabase SQL منظم مفتوح المصدر — لكليهما مميزات مختلفة",
+      "Supabase يدعم فقط Android وFirebase للويب",
+      "Firebase و Supabase نفس الخدمة باسمين مختلفين"
+    ],
+    answer: 1,
+    explain: "✅ Firebase (Google): NoSQL مرن، سهل البداية، Real-time ممتاز. Supabase: PostgreSQL قوي، SQL كامل، مفتوح المصدر، تحكم أكبر. اختر Firebase للسرعة، Supabase للمشاريع المعقدة."
+  }
+];
+
+// ══════════════════════════════════════════════════
+//  QUIZ ENGINE
+// ══════════════════════════════════════════════════
+let currentQ = 0;
+let score = 0;
+let userAnswers = [];
+let startTime;
+let timerInterval;
+const letters = ['أ', 'ب', 'ج', 'د'];
+
+function startQuiz() {
+    currentQ = 0;
+    score = 0;
+    userAnswers = [];
+    document.getElementById('introScreen').classList.remove('active');
+    document.getElementById('quizScreen').classList.add('active');
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+    renderQuestion();
+}
+
+function updateTimer() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    document.getElementById('timerBadge').textContent = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function renderQuestion() {
+    const q = questions[currentQ];
+    const progress = ((currentQ) / questions.length) * 100;
+    document.getElementById('quizProgressFill').style.width = progress + '%';
+    document.getElementById('qNum').textContent = `السؤال ${currentQ + 1} من ${questions.length}`;
+    document.getElementById('qCat').textContent = q.cat;
+
+    // Question text (handle code tags)
+    document.getElementById('qText').innerHTML = q.text;
+
+    // Code block
+    const codeEl = document.getElementById('qCode');
+    if (q.code) {
+        codeEl.style.display = 'block';
+        codeEl.textContent = q.code;
+    } else {
+        codeEl.style.display = 'none';
+    }
+
+    // Options
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="opt-letter">${letters[i]}</span> <span>${opt}</span>`;
+        btn.onclick = () => selectAnswer(i, btn);
+        container.appendChild(btn);
+    });
+
+    // Reset feedback
+    const fb = document.getElementById('feedbackBox');
+    fb.classList.remove('show', 'correct', 'wrong');
+    document.getElementById('btnNext').classList.remove('show');
+}
+
+function selectAnswer(idx, btn) {
+    const q = questions[currentQ];
+    const allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(b => b.disabled = true);
+
+    userAnswers.push({ q: currentQ, chosen: idx, correct: q.answer });
+
+    const fb = document.getElementById('feedbackBox');
+    if (idx === q.answer) {
+        score++;
+        btn.classList.add('correct');
+        fb.className = 'feedback-box show correct';
+        fb.textContent = q.explain;
+    } else {
+        btn.classList.add('wrong');
+        allBtns[q.answer].classList.add('correct');
+        fb.className = 'feedback-box show wrong';
+        fb.innerHTML = `❌ إجابتك خاطئة.<br>${q.explain}`;
+    }
+
+    document.getElementById('btnNext').classList.add('show');
+}
+
+function nextQuestion() {
+    currentQ++;
+    if (currentQ >= questions.length) {
+        showResults();
+    } else {
+        renderQuestion();
+    }
+}
+
+function showResults() {
+    clearInterval(timerInterval);
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+
+    document.getElementById('quizScreen').classList.remove('active');
+    document.getElementById('resultScreen').classList.add('active');
+    document.getElementById('quizProgressFill').style.width = '100%';
+
+    // Score circle
+    const pct = Math.round((score / questions.length) * 100);
+    const circle = document.getElementById('resultCircle');
+    document.getElementById('scoreNum').textContent = score;
+
+    let color, grade, msg;
+    if (pct >= 90) {
+        color = '#c3e88d'; grade = 'A+ ممتاز 🏆';
+        msg = 'أداء استثنائي! أنت مستعد لبناء مشاريع JS احترافية.';
+        localStorage.setItem('lesson-js-quiz', 'completed');
+        window.location.href = 'menu.html';
+    } else if (pct >= 80) {
+        color = '#00d4ff'; grade = 'A جيد جداً ⭐';
+        msg = 'أداء رائع! راجع الأسئلة الخاطئة للوصول للكمال.';
+    } else if (pct >= 70) {
+        color = '#f7df1e'; grade = 'B مقبول جداً 👍';
+        msg = 'أساسك قوي! بعض المفاهيم تحتاج مراجعة إضافية.';
+    } else if (pct >= 60) {
+        color = '#bb86fc'; grade = 'C يحتاج مراجعة 📖';
+        msg = 'لا بأس، راجع الدروس وأعد المحاولة.';
+    } else {
+        color = '#ff5874'; grade = 'D راجع من الأساس 🔄';
+        msg = 'الممارسة تصنع المحترف. راجع كل الدروس وعد.';
+    }
+
+    circle.style.borderColor = color;
+    circle.style.color = color;
+    document.getElementById('resultGrade').style.color = color;
+    document.getElementById('resultGrade').textContent = grade;
+    document.getElementById('resultMsg').textContent = msg;
+
+    // Breakdown by category
+    const cats = {};
+    userAnswers.forEach(a => {
+        const c = questions[a.q].cat;
+        if (!cats[c]) cats[c] = { correct: 0, total: 0 };
+        cats[c].total++;
+        if (a.chosen === a.correct) cats[c].correct++;
+    });
+
+    const bg = document.getElementById('breakdownGrid');
+    bg.innerHTML = `<div class="breakdown-item"><div class="bi-label">الدرجة الكلية</div><div class="bi-val" style="color:${color}">${pct}%</div></div>
+    <div class="breakdown-item"><div class="bi-label">الوقت المستغرق</div><div class="bi-val" style="color:var(--neon-cyan)">${m}:${s.toString().padStart(2,'0')}</div></div>`;
+    Object.entries(cats).forEach(([cat, d]) => {
+        const catPct = Math.round((d.correct/d.total)*100);
+        const c2 = catPct >= 70 ? 'var(--neon-green)' : catPct >= 50 ? 'var(--js-gold)' : 'var(--neon-pink)';
+        bg.innerHTML += `<div class="breakdown-item"><div class="bi-label">${cat}</div><div class="bi-val" style="color:${c2}">${d.correct}/${d.total}</div></div>`;
+    });
+
+    // Wrong answers review
+    const wrongList = userAnswers.filter(a => a.chosen !== a.correct);
+    if (wrongList.length > 0) {
+        let html = `<h3>الأسئلة الخاطئة (${wrongList.length})</h3>`;
+        wrongList.forEach(a => {
+            const q = questions[a.q];
+            html += `<div class="wrong-item">
+                <p>${q.text.replace(/<[^>]+>/g,'')}</p>
+                <div class="wi-correct">✅ الإجابة الصحيحة: ${q.options[q.answer]}</div>
+                <div class="wi-yours">❌ إجابتك: ${q.options[a.chosen]}</div>
+            </div>`;
+        });
+        document.getElementById('wrongReview').innerHTML = html;
+    }
+}
+
+function retryQuiz() {
+    document.getElementById('resultScreen').classList.remove('active');
+    document.getElementById('introScreen').classList.add('active');
+    document.getElementById('quizProgressFill').style.width = '0%';
+}
+</script>
+</body>
+</html>

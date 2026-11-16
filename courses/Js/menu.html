@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Course | PhineX Academy</title>
+    <meta name="description" content="تعلّم JavaScript من الصفر حتى الاحتراف مع PhineX Academy. اكتشف أساسيات البرمجة، المنطق، الوظائف، الكائنات، الويب APIs، قواعد البيانات، والمزيد في دورة شاملة ومفصلة.">
+    <link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --js-neon: #f7df1e;
+            --bg:      #080b10;
+            --card-bg: #111827;
+            --card2:   #1a2233;
+            --border:  #1e2d42;
+            --text:    #cdd6f4;
+            --muted:   #6b7a99;
+            --cyan:    #00d4ff;
+            --green:   #c3e88d;
+            --pink:    #ff5874;
+            --purple:  #bb86fc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .site-header {
+            background: #0d1117;
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Orbitron', monospace;
+            color: var(--js-neon);
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: var(--js-neon);
+            color: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+        .header-right { display: flex; align-items: center; gap: 14px; }
+        .streak-badge {
+            background: rgba(247,223,30,.1);
+            border: 1px solid rgba(247,223,30,.3);
+            color: var(--js-neon);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .global-progress {
+            height: 3px;
+            background: var(--border);
+        }
+        .global-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), var(--js-neon));
+            transition: width .5s ease;
+            box-shadow: 0 0 8px var(--green);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: radial-gradient(ellipse at 50% -10%, #1a1a08 0%, #080b10 65%);
+            text-align: center;
+            padding: 60px 30px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: 'JS';
+            position: absolute;
+            font-family: 'Orbitron', monospace;
+            font-size: 18rem;
+            font-weight: 900;
+            opacity: 0.035;
+            color: var(--js-neon);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -55%);
+            pointer-events: none;
+            user-select: none;
+        }
+        .hero-label {
+            display: inline-block;
+            background: rgba(247,223,30,.1);
+            border: 1px solid rgba(247,223,30,.3);
+            color: var(--js-neon);
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 16px;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .hero h1 span { color: var(--js-neon); }
+        .hero p { color: var(--muted); font-size: 1rem; max-width: 500px; margin: 0 auto 24px; }
+
+        /* Stats row */
+        .hero-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .hero-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+        .hero-stat strong { color: var(--js-neon); }
+
+        /* Progress ring */
+        .progress-ring-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .progress-text { text-align: right; }
+        .progress-text .pct { font-family: 'Orbitron', monospace; font-size: 1.8rem; color: var(--js-neon); }
+        .progress-text .lbl { font-size: 0.8rem; color: var(--muted); }
+
+        /* ── SEARCH ── */
+        .search-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 24px 30px 0;
+        }
+        .search-input {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            padding: 12px 18px 12px 44px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color .3s;
+            direction: rtl;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7a99' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+        }
+        .search-input:focus { border-color: var(--cyan); }
+
+        /* ── MAIN LAYOUT ── */
+        .main-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 24px 30px 80px;
+        }
+
+        /* ── CHAPTER LABEL ── */
+        .chapter-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 6px 0 10px;
+            margin-top: 28px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* ── LESSON ITEM ── */
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            transition: all .25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .lesson-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.015));
+            opacity: 0;
+            transition: opacity .3s;
+        }
+        .lesson-item:hover { border-color: var(--cyan); transform: translateX(-4px); }
+        .lesson-item:hover::before { opacity: 1; }
+        .lesson-item.completed { border-color: rgba(195,232,141,.3); background: rgba(195,232,141,.04); }
+        .lesson-item.special  { border-color: rgba(247,223,30,.4);  background: rgba(247,223,30,.05); }
+        .lesson-item.special:hover { border-color: var(--js-neon); }
+
+        /* Icon */
+        .lesson-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            background: var(--card2);
+            border: 1px solid var(--border);
+        }
+
+        /* Content */
+        .lesson-content { flex: 1; min-width: 0; }
+        .lesson-title {
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .lesson-item.completed .lesson-title { color: var(--muted); }
+        .lesson-subtitle {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Right side */
+        .lesson-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .lesson-badge {
+            padding: 2px 9px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border: 1px solid;
+        }
+        .badge-theory  { color: var(--cyan);   border-color: rgba(0,212,255,.3);   background: rgba(0,212,255,.08); }
+        .badge-lab     { color: var(--purple);  border-color: rgba(187,134,252,.3); background: rgba(187,134,252,.08); }
+        .badge-new     { color: var(--green);   border-color: rgba(195,232,141,.3); background: rgba(195,232,141,.08); }
+        .badge-exam    { color: var(--js-neon); border-color: rgba(247,223,30,.3);  background: rgba(247,223,30,.08); }
+        .badge-project { color: var(--pink);    border-color: rgba(255,88,116,.3);  background: rgba(255,88,116,.08); }
+
+        /* Check icon */
+        .check-icon {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .25s;
+            background: none;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+        }
+        .check-icon:hover { border-color: var(--green); color: var(--green); }
+        .lesson-item.completed .check-icon {
+            background: var(--green);
+            border-color: var(--green);
+            color: #000;
+        }
+
+        /* Link wrapper */
+        .lesson-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* ── SPECIAL CARDS (Revision / Quiz) ── */
+        .special-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+            margin: 28px 0;
+        }
+        @media(max-width: 760px) { .special-cards { grid-template-columns: 1fr 1fr; } }
+        @media(max-width: 500px) { .special-cards { grid-template-columns: 1fr; } }
+
+        .special-card {
+            text-decoration: none;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 22px 20px;
+            display: block;
+            transition: all .3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .special-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+        .special-card:hover { transform: translateY(-4px); }
+        .special-card.revision { border-color: rgba(0,212,255,.4); }
+        .special-card.revision:hover { border-color: var(--cyan); box-shadow: 0 8px 30px rgba(0,212,255,.15); }
+        .special-card.quiz     { border-color: rgba(247,223,30,.4); background: rgba(247,223,30,.04); }
+        .special-card.quiz:hover { border-color: var(--js-neon); box-shadow: 0 8px 30px rgba(247,223,30,.15); }
+        .special-card.projects { border-color: rgba(57,255,20,.4); background: rgba(57,255,20,.04); }
+        .special-card.projects:hover { border-color: #39ff14; box-shadow: 0 8px 30px rgba(57,255,20,.15); }
+        .sc-icon  { font-size: 2rem; margin-bottom: 10px; }
+        .sc-title { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .sc-sub   { font-size: 0.82rem; color: var(--muted); margin-bottom: 12px; }
+        .sc-tag   {
+            display: inline-block;
+            padding: 3px 10px; border-radius: 12px;
+            font-size: 0.75rem; font-weight: 700;
+        }
+        .revision .sc-tag { background: rgba(0,212,255,.12); color: var(--cyan); border: 1px solid rgba(0,212,255,.3); }
+        .quiz     .sc-tag { background: rgba(247,223,30,.12); color: var(--js-neon); border: 1px solid rgba(247,223,30,.3); }
+
+        /* ── FOOTER ── */
+        .page-footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+        .page-footer span { color: var(--js-neon); }
+
+        /* ── NO RESULTS ── */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="logo">
+        <div class="logo-icon">JS</div>
+        PhineX Academy
+    </div>
+    <div class="header-right">
+        <div class="streak-badge" id="streakBadge">0 / 11 مكتمل</div>
+    </div>
+</header>
+
+<div class="global-progress">
+    <div class="global-progress-fill" id="globalProgressFill" style="width:0%"></div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-label">JavaScript Masterclass</div>
+    <h1>تعلّم <span>JavaScript</span><br>من الصفر للاحتراف</h1>
+    <p>11 درساً نظرياً وعملياً + مراجعة شاملة + اختبار 30 سؤال</p>
+    <div class="hero-stats">
+        <div class="hero-stat">📚 <strong>11</strong> درساً</div>
+        <div class="hero-stat">🧪 <strong>3</strong> تطبيقات عملية</div>
+        <div class="hero-stat">🏆 <strong>30</strong> سؤال اختبار</div>
+        <div class="hero-stat">☁️ <strong>5</strong> قواعد بيانات</div>
+    </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+    <input type="text" id="searchInput" class="search-input"
+           placeholder="ابحث عن درس... (مثل: loops, functions, async)">
+</div>
+
+<div class="main-wrap">
+
+    <!-- ── SPECIAL CARDS ── -->
+    <div class="special-cards">
+        <a class="special-card revision" href="js-revision.html">
+            <div class="sc-icon">📖</div>
+            <div class="sc-title">المراجعة الشاملة</div>
+            <div class="sc-sub">كل مفاهيم الكورس في صفحة واحدة مع أكواد تفصيلية</div>
+        </a>
+        <a class="special-card quiz" href="js-quiz.html">
+            <div class="sc-icon">🏆</div>
+            <div class="sc-title">الاختبار النهائي</div>
+            <div class="sc-sub">30 سؤالاً من جميع محاور الكورس — اختبر نفسك</div>
+        </a>
+        <a class="special-card projects" href="projects.html">
+            <div class="sc-icon">🧪</div>
+            <div class="sc-title">المشاريع العملية</div>
+            <div class="sc-sub">ابني مشاريع حقيقية بإيدك، خطوة بخطوة، بأسلوب PhineX Lab</div>
+        </a>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 1: Fundamentals
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل الأول — الأساسيات</div>
+
+    <div class="lesson-item" id="item-js-getting-started" onclick="location.href='js-getting-started.html'" data-search="getting started variables data types المتغيرات أنواع البيانات introduction مقدمة">
+        <a class="lesson-link" href="js-getting-started.html">
+            <div class="lesson-icon">🚀</div>
+            <div class="lesson-content">
+                <div class="lesson-title">البداية مع JavaScript</div>
+                <div class="lesson-subtitle">المتغيرات، أنواع البيانات، console.log — نظرية + تطبيق</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-theory">نظري</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-getting-started')">✓</div>
+        </div>
+    </div>
+
+    <div class="lesson-item" id="item-js-variables" onclick="location.href='projects/character-card/step1.html'" data-search="variables متغيرات project مشروع character card بطاقة شخصية let const string number">
+        <a class="lesson-link" href="projects/character-card/step1.html">
+            <div class="lesson-icon">🎮</div>
+            <div class="lesson-content">
+                <div class="lesson-title">مشروع: بطاقة شخصية اللعبة</div>
+                <div class="lesson-subtitle">ابنِ المشروع بنفسك في ٦ خطوات: let, const, أنواع البيانات، دمج النصوص</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-project">مشروع</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-variables')">✓</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 2: Logic & Loops
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل الثاني — المنطق والتكرار</div>
+
+    <div class="lesson-item" id="item-js-loops" onclick="location.href='js-loops.html'" data-search="loops حلقات conditionals شروط if else for while">
+        <a class="lesson-link" href="js-loops.html">
+            <div class="lesson-icon">🔄</div>
+            <div class="lesson-content">
+                <div class="lesson-title">الشروط والحلقات التكرارية</div>
+                <div class="lesson-subtitle">if/else, switch, for, while, for...of, for...in</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-theory">نظري</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-loops')">✓</div>
+        </div>
+    </div>
+
+    <div class="lesson-item" id="item-js-loops-workshop" onclick="location.href='js-loops-workshop.html'" data-search="loops workshop معمل حلقات تطبيق array مصفوفة">
+        <a class="lesson-link" href="js-loops-workshop.html">
+            <div class="lesson-icon">🛒</div>
+            <div class="lesson-content">
+                <div class="lesson-title">ورشة المنطق والحلقات</div>
+                <div class="lesson-subtitle">بناء نظام جرد ذكي — تطبيق حقيقي بالحلقات والشروط</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-lab">معمل</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-loops-workshop')">✓</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 3: Functions
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل الثالث — الدوال</div>
+
+    <div class="lesson-item" id="item-js-functions" onclick="location.href='js-functions.html'" data-search="functions دوال return arrow closure callback map filter reduce">
+        <a class="lesson-link" href="js-functions.html">
+            <div class="lesson-icon">🏭</div>
+            <div class="lesson-content">
+                <div class="lesson-title">إتقان الدوال (Functions Mastery)</div>
+                <div class="lesson-subtitle">Declaration, Arrow, Closures, Higher-Order, Proxy API</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-theory">نظري</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-functions')">✓</div>
+        </div>
+    </div>
+
+    <div class="lesson-item" id="item-js-functions-workshop" onclick="location.href='js-functions-workshop.html'" data-search="functions workshop معمل دوال تطبيق discount مشروع">
+        <a class="lesson-link" href="js-functions-workshop.html">
+            <div class="lesson-icon">🛠️</div>
+            <div class="lesson-content">
+                <div class="lesson-title">ورشة الدوال الشاملة</div>
+                <div class="lesson-subtitle">محرك حسابي: دوال + حلقات + شروط مدمجة في مشروع</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-lab">معمل</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-functions-workshop')">✓</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 4: DOM & Events
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل الرابع — DOM والأحداث</div>
+
+    <div class="lesson-item" id="item-js-dom-manipulation" onclick="location.href='js-dom-manipulation.html'" data-search="dom manipulation events أحداث querySelector classList innerHTML">
+        <a class="lesson-link" href="js-dom-manipulation.html">
+            <div class="lesson-icon">🏗️</div>
+            <div class="lesson-content">
+                <div class="lesson-title">التحكم في هيكل الصفحة (DOM)</div>
+                <div class="lesson-subtitle">اختيار العناصر، تعديل المحتوى، CSS، Events، Delegation</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-theory">نظري</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-dom-manipulation')">✓</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 5: Async & APIs
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل الخامس — Async والـ API</div>
+
+    <div class="lesson-item" id="item-js-async" onclick="location.href='js-async.html'" data-search="async await promise fetch api json غير متزامن">
+        <a class="lesson-link" href="js-async.html">
+            <div class="lesson-icon">🌐</div>
+            <div class="lesson-content">
+                <div class="lesson-title">Async / Await والـ APIs</div>
+                <div class="lesson-subtitle">Promises, Fetch, JSON, try/catch, Promise.all</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-theory">نظري</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-async')">✓</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 6: Advanced
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل السادس — المواضيع المتقدمة</div>
+
+    <div class="lesson-item" id="item-js-advanced" onclick="location.href='js-advanced.html'" data-search="advanced متقدم es6 classes oop destructuring modules spread">
+        <a class="lesson-link" href="js-advanced.html">
+            <div class="lesson-icon">⚙️</div>
+            <div class="lesson-content">
+                <div class="lesson-title">المواضيع المتقدمة</div>
+                <div class="lesson-subtitle">ES6+, Classes, OOP, Destructuring, Modules, Proxy</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-theory">نظري</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-advanced')">✓</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 7: Databases
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل السابع — قواعد البيانات</div>
+
+    <div class="lesson-item special" id="item-js-database" onclick="location.href='js-database.html'" data-search="database firebase supabase mongodb localstorage rest api backend قواعد بيانات">
+        <a class="lesson-link" href="js-database.html">
+            <div class="lesson-icon" style="background:rgba(62,207,142,.1);border-color:rgba(62,207,142,.3)">☁️</div>
+            <div class="lesson-content">
+                <div class="lesson-title">الربط السحابي الشامل</div>
+                <div class="lesson-subtitle">Firebase · Supabase · MongoDB · LocalStorage · REST API</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <div class="check-icon" onclick="toggleLesson(this, 'js-database')">✓</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════
+         CHAPTER 8: Final
+    ════════════════════════════ -->
+    <div class="chapter-label">الفصل الثامن — الاختبار والإنجاز</div>
+
+    <div class="lesson-item special" id="item-js-revision" onclick="location.href='js-revision.html'" data-search="revision مراجعة شاملة جميع المواضيع summary cheatsheet">
+        <a class="lesson-link" href="js-revision.html">
+            <div class="lesson-icon" style="background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3)">📖</div>
+            <div class="lesson-content">
+                <div class="lesson-title">المراجعة الشاملة</div>
+                <div class="lesson-subtitle">كل مفاهيم الكورس — مرجعك الدائم مع أكواد كاملة</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <div class="check-icon" onclick="toggleLesson(this, 'js-revision')">✓</div>
+        </div>
+    </div>
+
+    <div class="lesson-item special" id="item-js-quiz" onclick="location.href='js-quiz.html'" data-search="quiz اختبار 30 سؤال نهائي امتحان">
+        <a class="lesson-link" href="js-quiz.html">
+            <div class="lesson-icon" style="background:rgba(247,223,30,.1);border-color:rgba(247,223,30,.3)">🏆</div>
+            <div class="lesson-content">
+                <div class="lesson-title">الاختبار النهائي — 30 سؤال</div>
+                <div class="lesson-subtitle">اختبر معرفتك بكل مراحل الكورس — مع تقرير مفصل وتصحيح</div>
+            </div>
+        </a>
+        <div class="lesson-right">
+            <span class="lesson-badge badge-exam">اختبار 🏆</span>
+            <div class="check-icon" onclick="toggleLesson(this, 'js-quiz')">✓</div>
+        </div>
+    </div>
+
+    <div class="no-results" id="noResults">
+        لا توجد نتائج لبحثك. جرب كلمة أخرى.
+    </div>
+
+</div><!-- /main-wrap -->
+
+<footer class="page-footer">
+ صُنع بـ ❤️ <span>PhineX Academy</span> — JavaScript Masterclass 2026
+</footer>
+
+<script>
+// ── IDs قابلة للتتبع ──
+const LESSON_IDS = [
+    'js-getting-started','js-variables','js-loops','js-loops-workshop',
+    'js-functions','js-functions-workshop','js-dom-manipulation',
+    'js-async','js-advanced','js-database','js-revision','js-quiz'
+];
+
+// ── تحديث شريط التقدم ──
+function updateProgress() {
+    const completed = LESSON_IDS.filter(id => localStorage.getItem('px-' + id) === 'done').length;
+    const pct = Math.round((completed / LESSON_IDS.length) * 100);
+    document.getElementById('globalProgressFill').style.width = pct + '%';
+    document.getElementById('streakBadge').textContent = `${completed} / ${LESSON_IDS.length} مكتمل`;
+}
+
+// ── تبديل حالة الدرس ──
+function toggleLesson(iconEl, id) {
+    const item = document.getElementById('item-' + id);
+    const done = localStorage.getItem('px-' + id) === 'done';
+    if (done) {
+        localStorage.removeItem('px-' + id);
+        item.classList.remove('completed');
+    } else {
+        localStorage.setItem('px-' + id, 'done');
+        item.classList.add('completed');
+    }
+    updateProgress();
+}
+
+// ── تحميل الحالة المحفوظة ──
+window.addEventListener('load', () => {
+    LESSON_IDS.forEach(id => {
+        if (localStorage.getItem('px-' + id) === 'done') {
+            document.getElementById('item-' + id)?.classList.add('completed');
+        }
+    });
+    updateProgress();
+});
+
+// ── البحث ──
+document.getElementById('searchInput').addEventListener('input', function() {
+    const term = this.value.trim().toLowerCase();
+    const items = document.querySelectorAll('.lesson-item');
+    let visible = 0;
+
+    items.forEach(item => {
+        const text = (item.dataset.search || '') + item.innerText.toLowerCase();
+        const show = !term || text.includes(term);
+        item.style.display = show ? '' : 'none';
+        if (show) visible++;
+    });
+
+    // Show/hide chapter labels
+    document.querySelectorAll('.chapter-label').forEach(label => {
+        label.style.display = term ? 'none' : '';
+    });
+
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python | PhineX Academy</title>
+<meta name="description" content="تعلم بايثون من الصفر للاحتراف بالعربي المصري — بايثون حقيقية تشتغل جوا المتصفح، شرح عميق، وتطبيق فوري على كل مفهوم.">
+<link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --py-blue:#4B8BBE; --py-yellow:#FFD43B;
+  --void:#050508; --card:#0d1117; --border:rgba(255,255,255,.08);
+  --border2:rgba(75,139,190,.3); --text:#cdd6f4; --muted:#6b7a99;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);min-height:100vh;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px, transparent 0);background-size:26px 26px;}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px;}
+.top-nav{padding:22px 0;font-size:13px;color:var(--muted);}
+.top-nav a{color:var(--py-yellow);text-decoration:none;font-weight:700;}
+
+.hero{text-align:center;padding:30px 0 40px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(75,139,190,.1);border:1px solid var(--border2);border-radius:100px;padding:6px 20px;font-size:12.5px;font-weight:700;color:var(--py-yellow);margin-bottom:18px;font-family:'Orbitron',sans-serif;letter-spacing:1px;}
+.hero h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(1.9rem,5vw,2.7rem);margin-bottom:12px;background:linear-gradient(135deg,var(--py-blue),var(--py-yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{color:var(--muted);font-size:14.5px;max-width:600px;margin:0 auto;line-height:1.8;}
+.hero-stats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;margin-top:26px;}
+.hstat{text-align:center;}
+.hstat b{display:block;font-family:'Orbitron',sans-serif;font-size:1.4rem;color:var(--py-yellow);}
+.hstat span{font-size:11.5px;color:var(--muted);}
+
+.py-real-banner{background:linear-gradient(135deg,rgba(75,139,190,.12),rgba(255,212,59,.06));border:1px solid var(--border2);border-radius:14px;padding:16px 22px;display:flex;align-items:center;gap:14px;margin:0 0 34px;font-size:13px;color:#cfe3f5;line-height:1.8;}
+.py-real-banner .ico{font-size:26px;flex-shrink:0;}
+
+.chapter{margin-bottom:30px;}
+.chapter-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-right:4px;}
+.chapter-num{width:26px;height:26px;border-radius:8px;background:rgba(75,139,190,.12);border:1px solid var(--border2);color:var(--py-yellow);font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chapter-title{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:.5px;}
+
+.lesson-item{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:9px;transition:all .2s;text-decoration:none;color:inherit;}
+.lesson-item.live{cursor:pointer;}
+.lesson-item.live:hover{border-color:var(--py-blue);transform:translateX(-3px);box-shadow:0 8px 24px rgba(75,139,190,.12);}
+.lesson-item.locked{opacity:.45;}
+.lesson-icon{width:38px;height:38px;border-radius:10px;background:rgba(75,139,190,.1);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.lesson-item.locked .lesson-icon{background:rgba(255,255,255,.04);}
+.lesson-content{flex:1;min-width:0;}
+.lesson-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;}
+.lesson-sub{font-size:11.5px;color:var(--muted);}
+.lesson-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;flex-shrink:0;font-family:'Cairo',sans-serif;}
+.badge-live{background:rgba(75,139,190,.15);color:#8ec5ea;border:1px solid rgba(75,139,190,.35);}
+.badge-project{background:rgba(255,212,59,.12);color:var(--py-yellow);border:1px solid rgba(255,212,59,.3);}
+.badge-soon{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border);}
+
+footer{text-align:center;padding:40px 20px 20px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-nav"><a href="../menu.html">← رجوع لكل الدورات</a></div>
+
+  <div class="hero">
+    <div class="hero-badge">🐍 PYTHON</div>
+    <h1>دورة Python الشاملة</h1>
+    <p>من الصفر للاحتراف — بايثون <strong style="color:#fff;">حقيقية 100%</strong> بتشتغل جوا المتصفح، مش محاكاة. اكتب كود، شغّله، شوف النتيجة الفعلية فوراً.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>1</b><span>درس تفاعلي متاح</span></div>
+      <div class="hstat"><b>14</b><span>درس مخطط بالكامل</span></div>
+      <div class="hstat"><b>100%</b><span>مجاني</span></div>
+    </div>
+  </div>
+
+  <div class="py-real-banner">
+    <div class="ico">⚡</div>
+    <div>بنستخدم <strong>Pyodide</strong> — بايثون حقيقية شغّالة بتقنية WebAssembly جوا صفحتك، مش لعبة تخمين نصوص. أول مرة تفتح درس هتاخد كام ثانية تحميل (مرة واحدة بس)، وبعدها كودك بيتنفذ فعلياً زي أي بيئة بايثون حقيقية.</div>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-head"><div class="chapter-num">١</div><div class="chapter-title">الأساسيات</div></div>
+    <a class="lesson-item live" href="getting-started.html">
+      <div class="lesson-icon">🚀</div>
+      <div class="lesson-content"><div class="lesson-title">البداية مع بايثون</div><div class="lesson-sub">المتغيرات، أنواع البيانات، العمليات الحسابية، f-strings — ٩ خطوات تفاعلية</div></div>
+      <span class="lesson-badge badge-live">ابدأ الآن</span>
+    </a>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">🔀</div>
+      <div class="lesson-content"><div class="lesson-title">الشروط والمقارنات</div><div class="lesson-sub">if, elif, else — اتخاذ القرارات في كودك</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">🔁</div>
+      <div class="lesson-content"><div class="lesson-title">الحلقات</div><div class="lesson-sub">for, while — تكرار العمليات بذكاء</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-head"><div class="chapter-num">٢</div><div class="chapter-title">هياكل البيانات</div></div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">📋</div>
+      <div class="lesson-content"><div class="lesson-title">القوائم (Lists)</div><div class="lesson-sub">تخزين وترتيب مجموعات من البيانات</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">🗂️</div>
+      <div class="lesson-content"><div class="lesson-title">القواميس والـ Tuples</div><div class="lesson-sub">Dictionaries — بيانات بمفتاح وقيمة</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">📦</div>
+      <div class="lesson-content"><div class="lesson-title">مشروع: نظام جرد ذكي</div><div class="lesson-sub">مشروع عملي خطوة بخطوة</div></div>
+      <span class="lesson-badge badge-project">مشروع · قريباً</span>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-head"><div class="chapter-num">٣</div><div class="chapter-title">الدوال والوحدات</div></div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">⚙️</div>
+      <div class="lesson-content"><div class="lesson-title">الدوال (Functions)</div><div class="lesson-sub">كتابة كود قابل لإعادة الاستخدام</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">📚</div>
+      <div class="lesson-content"><div class="lesson-title">الوحدات والمكتبات</div><div class="lesson-sub">import — استخدام كود جاهز من المجتمع</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">🧮</div>
+      <div class="lesson-content"><div class="lesson-title">مشروع: حاسبة علمية</div><div class="lesson-sub">مشروع عملي خطوة بخطوة</div></div>
+      <span class="lesson-badge badge-project">مشروع · قريباً</span>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-head"><div class="chapter-num">٤</div><div class="chapter-title">مهارات احترافية</div></div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">🚨</div>
+      <div class="lesson-content"><div class="lesson-title">معالجة الأخطاء</div><div class="lesson-sub">try / except — كود لا ينهار أبداً</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">🏗️</div>
+      <div class="lesson-content"><div class="lesson-title">البرمجة الكائنية (OOP)</div><div class="lesson-sub">Classes وObjects — التفكير الاحترافي</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">💾</div>
+      <div class="lesson-content"><div class="lesson-title">الملفات وJSON</div><div class="lesson-sub">قراءة وكتابة البيانات الحقيقية</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+  </div>
+
+  <div class="chapter">
+    <div class="chapter-head"><div class="chapter-num">٥</div><div class="chapter-title">الختام</div></div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">📖</div>
+      <div class="lesson-content"><div class="lesson-title">مراجعة شاملة</div><div class="lesson-sub">كل المفاهيم في مكان واحد</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+    <div class="lesson-item locked">
+      <div class="lesson-icon">🏆</div>
+      <div class="lesson-content"><div class="lesson-title">الاختبار النهائي</div><div class="lesson-sub">اختبر نفسك في كل حاجة اتعلمتها</div></div>
+      <span class="lesson-badge badge-soon">قريباً</span>
+    </div>
+  </div>
+
+</div>
+<footer>PhineX Academy — بايثون حقيقية، بالعربي، مجاناً</footer>
+</body>
+</html>

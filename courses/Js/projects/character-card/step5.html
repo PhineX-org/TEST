@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع بطاقة الشخصية · بناء البطاقة | PhineX Lab</title>
+<link href="../../../../PhineX_Courses.png" rel="icon" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#39ff14; --neon-dim:rgba(57,255,20,.1);
+  --void:#080b10; --surface:#0b0e14; --editor:#0a0d12; --card:#111827;
+  --border:rgba(255,255,255,.08); --border2:rgba(57,255,20,.22);
+  --text:#cdd6f4; --muted:#6b7a99; --accent:#c3e88d;
+  --blue:#82aaff; --pink:#ff5874; --cyan:#00d4ff;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:3px;}
+
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}
+.ws-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:4px;}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;flex-shrink:0;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;flex-shrink:0;}
+
+.ws-body{display:grid;grid-template-columns:380px 1fr 320px;flex:1;overflow:hidden;}
+
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:22px 22px 40px;display:flex;flex-direction:column;gap:14px;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(57,255,20,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#fff;line-height:1.35;}
+.ins-body{font-size:14px;line-height:1.9;color:var(--text);display:flex;flex-direction:column;gap:12px;}
+.ins-body p{margin:0;}
+.ins-body strong{color:#fff;}
+.ins-body code{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.18);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#9dffb0;direction:ltr;display:inline-block;unicode-bidi:isolate;}
+.ins-body pre{background:#05070a;border:1px solid var(--border);border-radius:9px;padding:12px 14px;overflow-x:auto;direction:ltr;text-align:left;}
+.ins-body pre code{background:none;border:none;padding:0;color:#c3e88d;font-size:12.5px;line-height:1.7;white-space:pre;display:block;}
+
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+.hint{background:rgba(195,232,141,.05);border:1px solid rgba(195,232,141,.18);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--accent);line-height:1.65;}
+.hint strong{color:#fff;}
+
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);border-bottom:2px solid var(--neon);}
+.tab-dot{width:6px;height:6px;border-radius:50%;background:var(--neon);}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#d6deeb;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;}
+.code-ed::selection{background:rgba(57,255,20,.15);}
+
+.ws-console{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
+.console-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;font-size:12.5px;color:var(--text);font-weight:600;}
+.console-output{flex:1;overflow-y:auto;padding:12px 14px;direction:ltr;text-align:left;font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+.console-placeholder{color:var(--muted);font-family:'Cairo',sans-serif;font-size:12.5px;direction:rtl;text-align:right;line-height:1.7;}
+.console-line{color:#c3e88d;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.05);word-break:break-word;white-space:pre-wrap;}
+.console-line::before{content:'>';color:var(--muted);margin-left:8px;}
+.console-error{color:var(--pink);padding:8px 0;word-break:break-word;white-space:pre-wrap;}
+
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover{border-color:var(--muted);color:var(--text);}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(57,255,20,.1);color:var(--neon);border:1px solid var(--border2);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.25);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.5);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:440px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.6;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:var(--pink);color:var(--pink);}
+
+.win-overlay{position:fixed;inset:0;background:rgba(3,5,8,.88);display:none;align-items:center;justify-content:center;z-index:1200;backdrop-filter:blur(4px);}
+.win-overlay.show{display:flex;}
+.win-card{background:var(--card);border:1px solid var(--border2);border-radius:18px;padding:38px 34px;max-width:420px;text-align:center;box-shadow:0 0 50px rgba(57,255,20,.15);}
+.win-card .emoji{font-size:46px;margin-bottom:10px;}
+.win-card h2{font-family:'Syne',sans-serif;font-size:1.35rem;color:#fff;margin-bottom:10px;}
+.win-card p{font-size:13.5px;color:var(--muted);line-height:1.8;margin-bottom:22px;}
+.win-card a{display:inline-flex;align-items:center;gap:8px;background:var(--neon);color:#050508;font-weight:800;padding:10px 26px;border-radius:9px;text-decoration:none;font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<header class="ws-header">
+  <a href="../../menu.html" class="ws-logo">PhineX</a>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">مشروع: بطاقة شخصية اللعبة · بناء البطاقة</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track" id="progressTrack"></div>
+  <span class="ws-step-label">5/6</span>
+</header>
+
+<div class="ws-body">
+  <aside class="ws-instructions">
+    <div class="ins-badge">الخطوة ٥ / ٦</div>
+    <div class="ins-title">اللحظة الكبرى: ابني البطاقة كاملة</div>
+    <div class="ins-body">
+      <p>دلوقتي عندك كل حاجة محتاجها. الخطوة دي هي أهم خطوة في المشروع كله: هتجمع كل المتغيرات في نص واحد منسق حلو، بيتطبع زي بطاقة حقيقية — باستخدام Template Literals.</p>
+    </div>
+    <div class="task-list">
+      <div class="task-list-title">المطلوب في الخطوة دي</div>
+      <div class="task-item"><div class="task-num">١</div><div>اعمل متغير <code>characterCard</code> باستخدام Template Literal (بين backticks) يجمع: الاسم، النوع، المستوى، والصحة</div></div>
+      <div class="task-item"><div class="task-num">٢</div><div>خليه ينسق على أكتر من سطر (Template Literals بتسمحلك بكده مباشرة من غير \n)</div></div>
+      <div class="task-item"><div class="task-num">٣</div><div>اطبعه بـ <code>console.log(characterCard)</code></div></div>
+    </div>
+    <div class="hint"><strong>تلميح:</strong> شكل عام: `الاسم: ${heroName} | النوع: ${heroClass}` — اعمل نفس الفكرة لكل باقي البيانات، وحط كل حاجة في سطر.</div>
+  </aside>
+
+  <div class="ws-editor">
+    <div class="editor-tabs">
+      <div class="file-tab"><span class="tab-dot"></span>character-card.js</div>
+      <div class="editor-action"><button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button></div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed" id="codeEditor" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <aside class="ws-console">
+    <div class="console-bar">
+      <span>🖥️ Console</span>
+      <button class="btn-reset" onclick="clearConsoleManual()">مسح</button>
+    </div>
+    <div class="console-output" id="consoleBody">
+      <div class="console-placeholder">اكتب كودك، واضغط ▶ تشغيل عشان تشوف النتيجة هنا...</div>
+    </div>
+  </aside>
+</div>
+
+<footer class="ws-footer">
+  <a class="btn-nav" href="step4.html">← الخطوة السابقة</a>
+  <button class="btn-run" onclick="runCode()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" onclick="checkStep()">✓ تحقق من الخطوة</button>
+  <button class="btn-nav" id="nextBtn" onclick="goNext()">الخطوة التالية ←</button>
+</footer>
+<div class="toast" id="toast"></div>
+
+<div class="win-overlay" id="winOverlay">
+  <div class="win-card">
+    <div class="emoji">🏆</div>
+    <h2>خلّصت المشروع بالكامل!</h2>
+    <p>بنيت بطاقة شخصية كاملة بإيدك — متغيرات، أنواع بيانات، عمليات حسابية، مقارنات، وTemplate Literals. كل ده بقى تحت إيدك دلوقتي.</p>
+    <a href="../../menu.html">رجوع لقائمة الدرس 🎉</a>
+  </div>
+</div>
+
+<script>
+function runSandbox(code, probeVars) {
+  const logs = [];
+  let error = null;
+  let values = {};
+  const sandboxConsole = { log: function () {
+    const parts = Array.prototype.slice.call(arguments).map(function (v) {
+      if (typeof v === 'object') { try { return JSON.stringify(v); } catch (e) { return String(v); } }
+      return String(v);
+    });
+    logs.push(parts.join(' '));
+  } };
+  try {
+    var probeExpr = 'return {' + (probeVars || []).map(function (v) {
+      return '"' + v + '": (typeof ' + v + '!=="undefined" ? ' + v + ' : undefined)';
+    }).join(',') + '};';
+    var fn = new Function('console', code + '\n' + probeExpr);
+    values = fn(sandboxConsole) || {};
+  } catch (e) {
+    error = e.message;
+  }
+  return { logs: logs, values: values, error: error };
+}
+
+var STEP_NUM = 5;
+var TOTAL = 6;
+var IS_LAST = false;
+var NEXT_HREF = "step6.html";
+var PROBE_VARS = ["heroName", "heroClass", "level", "health", "isAlive", "nextLevelXP", "damageTaken", "isReadyForBattle", "characterCard"];
+var STARTER_ADDITION = "\n// ─── الخطوة ٥: ابني البطاقة كاملة ───\n// اعمل characterCard باستخدام Template Literal يجمع كل البيانات\n\n\nconsole.log(characterCard);\n";
+var SUCCESS_MSG = "🎉 شوف بطاقتك! كده جمعت كل حاجة اتعلمتها في نص واحد منسق. خطوة أخيرة وخلاص.";
+
+function checkFn(r, code) {
+
+  if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+  var v = r.values;
+  var card = v.characterCard;
+  if (typeof card !== 'string' || card.length < 10) {
+    return { ok: false, msg: 'محتاج تعرّف characterCard وتحط فيه Template Literal (بين backticks لا علامات اقتباس عادية).' };
+  }
+  var missing = [];
+  if (card.indexOf(String(v.heroName)) === -1) missing.push('اسم البطل');
+  if (card.indexOf(String(v.heroClass)) === -1) missing.push('نوعه');
+  if (card.indexOf(String(v.level)) === -1) missing.push('المستوى');
+  if (card.indexOf(String(v.health)) === -1) missing.push('الصحة');
+  if (missing.length > 0) {
+    return { ok: false, msg: 'البطاقة ناقصة: ' + missing.join('، ') + '. ضيفهم جوا الـ ${ } في الـ Template Literal.' };
+  }
+  if (r.logs.length === 0) return { ok: false, msg: 'اطبع البطاقة بـ console.log(characterCard).' };
+  return { ok: true };
+
+}
+
+function keyProgress() { return 'px_js_proj_cc_progress_' + STEP_NUM; }
+function keyFinal(n) { return 'px_js_proj_cc_final_' + n; }
+
+var editor = document.getElementById('codeEditor');
+var lnDiv = document.getElementById('lineNums');
+var consoleBody = document.getElementById('consoleBody');
+
+function updateDots() {
+  var track = document.getElementById('progressTrack');
+  track.innerHTML = '';
+  for (var i = 1; i <= TOTAL; i++) {
+    var done = localStorage.getItem(keyFinal(i)) !== null;
+    var d = document.createElement('div');
+    d.className = 'prog-dot' + (done ? ' done' : '') + (i === STEP_NUM ? ' current' : '');
+    track.appendChild(d);
+  }
+}
+
+function updateLN() {
+  var n = editor.value.split('\n').length;
+  var out = '';
+  for (var i = 1; i <= n; i++) out += i + '<br>';
+  lnDiv.innerHTML = out;
+}
+
+function loadStarter() {
+  var perStep = localStorage.getItem(keyProgress());
+  if (perStep !== null) return perStep;
+  var prevFinal = STEP_NUM > 1 ? localStorage.getItem(keyFinal(STEP_NUM - 1)) : null;
+  var base = (STEP_NUM > 1 && prevFinal !== null) ? (prevFinal + '\n') : '';
+  return base + STARTER_ADDITION;
+}
+
+function saveProgress() { localStorage.setItem(keyProgress(), editor.value); }
+
+function resetCode() {
+  if (!confirm('إعادة ضبط كود الخطوة دي بس للنسخة الأصلية؟')) return;
+  localStorage.removeItem(keyProgress());
+  editor.value = loadStarter();
+  updateLN();
+  resetConsole();
+}
+
+function resetConsole() {
+  consoleBody.innerHTML = '<div class="console-placeholder">اكتب كودك، واضغط ▶ تشغيل عشان تشوف النتيجة هنا...</div>';
+}
+function clearConsoleManual() { resetConsole(); }
+
+function renderConsole(result) {
+  consoleBody.innerHTML = '';
+  if (result.logs.length === 0 && !result.error) { resetConsole(); return; }
+  result.logs.forEach(function (l) {
+    var d = document.createElement('div');
+    d.className = 'console-line';
+    d.textContent = l;
+    consoleBody.appendChild(d);
+  });
+  if (result.error) {
+    var e = document.createElement('div');
+    e.className = 'console-error';
+    e.textContent = '⛔ ' + result.error;
+    consoleBody.appendChild(e);
+  }
+}
+
+function runCode() {
+  var result = runSandbox(editor.value, PROBE_VARS);
+  renderConsole(result);
+  return result;
+}
+
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || 'ok') + ' show';
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.classList.remove('show'); }, 4200);
+}
+
+function checkStep() {
+  var result = runCode();
+  var verdict = checkFn(result, editor.value);
+  if (verdict.ok) {
+    localStorage.setItem(keyFinal(STEP_NUM), editor.value);
+    updateDots();
+    if (IS_LAST) {
+      toast(SUCCESS_MSG, 'ok');
+      setTimeout(function () { document.getElementById('winOverlay').classList.add('show'); }, 550);
+    } else {
+      document.getElementById('nextBtn').classList.add('visible');
+      toast(SUCCESS_MSG, 'ok');
+    }
+  } else {
+    toast(verdict.msg || 'حاول تاني، راجع التعليمات.', 'err');
+  }
+}
+
+function goNext() {
+  if (IS_LAST) { document.getElementById('winOverlay').classList.add('show'); return; }
+  window.location.href = NEXT_HREF;
+}
+
+editor.addEventListener('input', function () { updateLN(); saveProgress(); });
+editor.addEventListener('scroll', function () { lnDiv.scrollTop = editor.scrollTop; });
+editor.addEventListener('keydown', function (e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  var s = editor.selectionStart, en = editor.selectionEnd;
+  editor.value = editor.value.slice(0, s) + '  ' + editor.value.slice(en);
+  editor.selectionStart = editor.selectionEnd = s + 2;
+  updateLN(); saveProgress();
+});
+
+(function init() {
+  editor.value = loadStarter();
+  updateLN();
+  updateDots();
+  if (localStorage.getItem(keyFinal(STEP_NUM)) !== null) {
+    document.getElementById('nextBtn').classList.add('visible');
+  }
+})();
+</script>
+</body>
+</html>

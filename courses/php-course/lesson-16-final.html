@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX PHP | درس 16: مراجعة شاملة واختبار نهائي</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.08);--void:#05070a;--surface:#09090f;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.18);--text:#e2e8f0;--muted:#64748b;--radius:14px;--accent:#fbbf24;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--neon);border-radius:3px;}
+.topbar{position:sticky;top:0;z-index:200;background:rgba(5,5,10,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 20px;gap:14px;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.topbar-sep{color:var(--muted);}.topbar-title{font-size:13px;font-weight:600;}
+.topbar-right{margin-right:auto;display:flex;align-items:center;gap:10px;}
+.menu-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Cairo',sans-serif;transition:all .2s;}.menu-btn:hover{border-color:var(--neon);color:var(--neon);}
+.progress-pill{background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--neon);font-family:'JetBrains Mono',monospace;}
+.page-wrap{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:280px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;height:calc(100vh - 56px);position:sticky;top:56px;}.sidebar.open{transform:none!important;}
+.sidebar-header{padding:16px 18px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.lesson-link{display:flex;align-items:center;gap:10px;padding:10px 18px;text-decoration:none;color:var(--muted);transition:all .2s;border-right:3px solid transparent;font-size:13px;}.lesson-link:hover{background:rgba(255,255,255,.03);color:var(--text);}.lesson-link.active{color:var(--neon);background:var(--neon-dim);border-right-color:var(--neon);}.lesson-link.done{color:var(--text);}
+.ll-icon{font-size:16px;flex-shrink:0;}.ll-info{flex:1;min-width:0;}.ll-title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.ll-num{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}.ll-badge{flex-shrink:0;font-size:10px;padding:2px 7px;border-radius:100px;}.ll-badge.done{background:rgba(57,255,20,.12);color:var(--neon);border:1px solid rgba(57,255,20,.25);}.ll-badge.locked{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border);}
+.main{flex:1;overflow-y:auto;padding:0 0 80px;}
+.lesson-hero{padding:48px 60px 36px;border-bottom:1px solid var(--border);background:linear-gradient(to bottom,rgba(251,191,36,.06),transparent);}
+.lesson-num-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:#fbbf24;letter-spacing:.6px;margin-bottom:16px;}
+.lesson-title{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;line-height:1.1;}
+.lesson-sub{font-size:1rem;color:var(--muted);margin-bottom:20px;}
+.lesson-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.meta-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:5px 12px;}
+.content-area{padding:40px 60px;max-width:900px;}
+.section-block{margin-bottom:44px;}
+.section-block h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-block h2::before{content:'';display:block;width:4px;height:20px;background:var(--accent);border-radius:2px;flex-shrink:0;}
+.section-body{font-size:15px;line-height:1.85;}
+.section-body ul{padding-right:20px;margin:10px 0;}.section-body li{margin-bottom:8px;}
+.section-body strong{font-weight:700;}.section-body code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+/* review grid */
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;}
+.rev-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.rev-card h4{font-size:.88rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.rev-card ul{padding-right:18px;font-size:13px;line-height:1.8;color:rgba(255,255,255,.7);}
+.rev-card ul li{margin-bottom:4px;}
+.rev-card ul li code{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#c3e88d;background:rgba(57,255,20,.07);padding:1px 5px;border-radius:3px;}
+/* exam */
+.exam-section{margin:0 60px 60px;max-width:900px;}
+.exam-header{background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(251,191,36,.04));border:1px solid rgba(251,191,36,.3);border-radius:var(--radius) var(--radius) 0 0;padding:24px 28px;}
+.exam-header h3{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#fbbf24;margin-bottom:6px;}
+.exam-header p{font-size:13px;color:var(--muted);}
+.exam-meta{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;}
+.exam-meta-item{font-size:12px;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.6);}
+.exam-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:0 28px 28px;}
+.question-block{padding:24px 0;border-bottom:1px solid var(--border);}.question-block:last-of-type{border-bottom:none;}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--neon);background:var(--neon-dim);padding:2px 8px;border-radius:5px;display:inline-block;margin-bottom:8px;}
+.q-cat{display:inline-block;font-size:10px;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);border-radius:100px;padding:1px 8px;margin-right:6px;font-family:'JetBrains Mono',monospace;}
+.q-text{font-size:15px;font-weight:600;margin-bottom:14px;line-height:1.6;}
+.q-code{background:#080b10;border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:14px 16px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:12.5px;direction:ltr;text-align:left;line-height:1.6;overflow-x:auto;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all .2s;font-size:14px;background:rgba(255,255,255,.02);line-height:1.6;}
+.option:hover{border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);}
+.option input[type=radio]{accent-color:var(--neon);width:16px;height:16px;flex-shrink:0;margin-top:2px;}
+.option.correct{border-color:var(--neon);background:rgba(57,255,20,.08);color:var(--neon);}
+.option.wrong{border-color:#ff5874;background:rgba(255,88,116,.08);color:#ff5874;}
+.exam-footer{margin-top:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.btn-start-exam{background:linear-gradient(135deg,#fbbf24,#f97316);color:#050508;padding:12px 32px;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;box-shadow:0 0 20px rgba(251,191,36,.25);}
+.btn-start-exam:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(251,191,36,.45);}
+.btn-retry{background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px 24px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.score-display{display:none;padding:16px 24px;border-radius:12px;font-size:16px;font-weight:700;border:1px solid;width:100%;}
+.score-display.pass{background:rgba(57,255,20,.08);border-color:var(--neon);color:var(--neon);}
+.score-display.fail{background:rgba(255,88,116,.08);border-color:#ff5874;color:#ff5874;}
+/* timer */
+.exam-timer{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:10px 20px;font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:#fbbf24;display:none;}
+.exam-timer.danger{background:rgba(239,68,68,.1);border-color:#ef4444;color:#ef4444;animation:blink .6s ease infinite alternate;}
+@keyframes blink{from{opacity:1}to{opacity:.4}}
+/* cert */
+.cert-wrap{display:none;text-align:center;padding:40px;background:linear-gradient(135deg,rgba(57,255,20,.06),rgba(251,191,36,.04));border:1px solid rgba(57,255,20,.2);border-radius:20px;margin:20px 0;}
+.cert-wrap h2{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--neon);margin-bottom:8px;}
+.cert-sub{color:var(--muted);margin-bottom:24px;}
+.cert-skills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px;}
+.skill-tag{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.2);color:var(--neon);border-radius:100px;padding:5px 14px;font-size:13px;}
+.cert-score{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:#fbbf24;margin:12px 0;}
+.cert-grade{font-size:1.1rem;margin-bottom:20px;}
+/* nav */
+.lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 60px;border-top:1px solid var(--border);background:rgba(0,0,0,.15);gap:14px;flex-wrap:wrap;}
+.btn-nav{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover{border-color:var(--muted);color:var(--text);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card);border-radius:14px;padding:14px 24px;font-size:14px;opacity:0;transition:all .35s;z-index:999;min-width:240px;text-align:center;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}.toast.ok{border:1px solid var(--neon);color:var(--neon);}.toast.err{border:1px solid #ff5874;color:#ff5874;}
+@media(max-width:900px){.sidebar{position:fixed;top:56px;left:0;right:0;height:auto;max-height:60vh;z-index:150;transform:translateY(-110%);border:none;border-bottom:1px solid var(--border);}.sidebar.open{transform:translateY(0);}.lesson-hero,.content-area,.exam-section,.lesson-nav{padding-left:20px;padding-right:20px;}.lesson-title{font-size:1.7rem;}.review-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html" class="logo">PhineX</a><span class="topbar-sep">/</span>
+  <span class="topbar-title">دورة PHP الشاملة</span>
+  <div class="topbar-right">
+    <span class="progress-pill" id="progressPill">0/17 مكتملة</span>
+    <button class="menu-btn" id="menuBtn">☰ الدروس</button>
+  </div>
+</header>
+<div class="page-wrap">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">دورة PHP الشاملة — 17 درساً</div>
+<a href="lesson-00-setup.html" class="lesson-link" data-lid="setup"><span class="ll-icon">🔧</span><span class="ll-info"><span class="ll-title">إعداد بيئة العمل</span><span class="ll-num">الدرس 00</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-01-intro.html" class="lesson-link" data-lid="intro"><span class="ll-icon">🐘</span><span class="ll-info"><span class="ll-title">مقدمة إلى PHP</span><span class="ll-num">الدرس 01</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-02-variables.html" class="lesson-link" data-lid="variables"><span class="ll-icon">📦</span><span class="ll-info"><span class="ll-title">المتغيرات وأنواع البيانات</span><span class="ll-num">الدرس 02</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-03-operators.html" class="lesson-link" data-lid="operators"><span class="ll-icon">➗</span><span class="ll-info"><span class="ll-title">العمليات والمشغلات</span><span class="ll-num">الدرس 03</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-04-conditionals.html" class="lesson-link" data-lid="conditionals"><span class="ll-icon">🔀</span><span class="ll-info"><span class="ll-title">الجمل الشرطية</span><span class="ll-num">الدرس 04</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-05-loops.html" class="lesson-link" data-lid="loops"><span class="ll-icon">🔁</span><span class="ll-info"><span class="ll-title">الحلقات التكرارية</span><span class="ll-num">الدرس 05</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-06-functions.html" class="lesson-link" data-lid="functions"><span class="ll-icon">⚙️</span><span class="ll-info"><span class="ll-title">الدوال (Functions)</span><span class="ll-num">الدرس 06</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-07-arrays.html" class="lesson-link" data-lid="arrays"><span class="ll-icon">📚</span><span class="ll-info"><span class="ll-title">المصفوفات (Arrays)</span><span class="ll-num">الدرس 07</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-08-strings.html" class="lesson-link" data-lid="strings"><span class="ll-icon">✍️</span><span class="ll-info"><span class="ll-title">السلاسل النصية (Strings)</span><span class="ll-num">الدرس 08</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-09-oop.html" class="lesson-link" data-lid="oop"><span class="ll-icon">🏗️</span><span class="ll-info"><span class="ll-title">البرمجة كائنية التوجه</span><span class="ll-num">الدرس 09</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-10-forms.html" class="lesson-link" data-lid="forms"><span class="ll-icon">📝</span><span class="ll-info"><span class="ll-title">النماذج ومدخلات المستخدم</span><span class="ll-num">الدرس 10</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-11-superglobals.html" class="lesson-link" data-lid="superglobals"><span class="ll-icon">🌐</span><span class="ll-info"><span class="ll-title">المتغيرات العامة Superglobals</span><span class="ll-num">الدرس 11</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-12-weather.html" class="lesson-link" data-lid="weather"><span class="ll-icon">🌤️</span><span class="ll-info"><span class="ll-title">مشروع: تطبيق الطقس</span><span class="ll-num">الدرس 12</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-13-database-intro.html" class="lesson-link" data-lid="db-intro"><span class="ll-icon">🗄️</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — المقدمة</span><span class="ll-num">الدرس 13</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-14-database-crud.html" class="lesson-link" data-lid="db-crud"><span class="ll-icon">💾</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — CRUD</span><span class="ll-num">الدرس 14</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-15-database-advanced.html" class="lesson-link" data-lid="db-advanced"><span class="ll-icon">⚡</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — تحسين وأمان</span><span class="ll-num">الدرس 15</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-16-final.html" class="lesson-link active" data-lid="final"><span class="ll-icon">🏆</span><span class="ll-info"><span class="ll-title">مراجعة شاملة واختبار نهائي</span><span class="ll-num">الدرس 16</span></span><span class="ll-badge locked">○</span></a>
+</aside>
+<main class="main">
+<div class="lesson-hero">
+  <div class="lesson-num-badge">🏆 الدرس الأخير — 16 من 17</div>
+  <h1 class="lesson-title">مراجعة شاملة واختبار نهائي</h1>
+  <p class="lesson-sub">راجع كل ما تعلمته ثم اجتز الاختبار النهائي للحصول على شهادة إتمام الدورة</p>
+  <div class="lesson-meta">
+    <span class="meta-tag">⏱️ 30 دقيقة للاختبار</span>
+    <span class="meta-tag">📝 20 سؤالاً</span>
+    <span class="meta-tag">🏅 70% للنجاح</span>
+    <span class="meta-tag">🎓 شهادة إتمام</span>
+  </div>
+</div>
+
+<div class="content-area">
+
+<div class="section-block">
+  <h2>مراجعة شاملة للدورة</h2>
+  <div class="section-body">
+قبل الاختبار، راجع أهم النقاط من كل درس:
+  </div>
+  <div class="review-grid">
+    <div class="rev-card"><h4 style="color:#82aaff">🔧 إعداد البيئة (درس 00)</h4>
+    <ul><li>XAMPP = Apache + MySQL + PHP</li><li>ملفات المشاريع في <code>htdocs/</code></li><li>الوصول عبر <code>localhost/project/</code></li><li>PHP Intelephense أفضل إضافة VS Code</li></ul></div>
+
+    <div class="rev-card"><h4 style="color:#c3e88d">📦 المتغيرات والأنواع (درس 02)</h4>
+    <ul><li><code>$var = value;</code> — لا تصريح بالنوع</li><li>أنواع: int, float, string, bool, null, array</li><li><code>gettype()</code> و<code>var_dump()</code> للفحص</li><li>Type juggling — PHP تُحوّل تلقائياً</li></ul></div>
+
+    <div class="rev-card"><h4 style="color:#f78c6c">🔀 الشروط والحلقات (درس 04-05)</h4>
+    <ul><li><code>if / elseif / else</code></li><li><code>switch / match</code> (match أدق)</li><li><code>for / foreach / while / do-while</code></li><li><code>break / continue</code> للتحكم</li></ul></div>
+
+    <div class="rev-card"><h4 style="color:#fbbf24">⚙️ الدوال (درس 06)</h4>
+    <ul><li>تصريح الأنواع: <code>function f(int $x): string</code></li><li>Default values: <code>function f($x = 5)</code></li><li>Arrow functions: <code>fn($x) => $x * 2</code></li><li>Closures وـ <code>use()</code> للمتغيرات الخارجية</li></ul></div>
+
+    <div class="rev-card"><h4 style="color:#a78bfa">📚 المصفوفات (درس 07)</h4>
+    <ul><li>Indexed: <code>[1,2,3]</code></li><li>Associative: <code>['key' => 'val']</code></li><li>Multidimensional: مصفوفات داخل مصفوفات</li><li><code>array_map, array_filter, usort</code></li></ul></div>
+
+    <div class="rev-card"><h4 style="color:#f472b6">🏗️ OOP (درس 09)</h4>
+    <ul><li>Class + Properties + Methods</li><li><code>public / private / protected</code></li><li>Inheritance: <code>extends</code></li><li>Interface + Abstract Class</li></ul></div>
+
+    <div class="rev-card"><h4 style="color:#22d3ee">🌐 Superglobals (درس 11)</h4>
+    <ul><li><code>$_GET</code> — من URL</li><li><code>$_POST</code> — من form</li><li><code>$_SESSION</code> — جلسات</li><li><code>$_COOKIE / $_SERVER / $_FILES</code></li></ul></div>
+
+    <div class="rev-card"><h4 style="color:#f59e0b">🗄️ قاعدة البيانات (درس 13-15)</h4>
+    <ul><li>PDO أفضل من mysqli</li><li>Prepared Statements ضد SQL Injection</li><li>CRUD: INSERT / SELECT / UPDATE / DELETE</li><li>Indexes لتسريع الاستعلامات</li></ul></div>
+  </div>
+
+  <div style="background:rgba(57,255,20,.06);border:1px solid rgba(57,255,20,.2);border-radius:12px;padding:20px 24px;margin-top:20px;">
+    <div style="font-weight:700;color:var(--neon);margin-bottom:10px;font-size:13px;">🔒 قواعد الأمان الذهبية</div>
+    <ul style="padding-right:20px;font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);">
+      <li><strong>SQL Injection:</strong> استخدم Prepared Statements دائماً</li>
+      <li><strong>XSS:</strong> استخدم <code>htmlspecialchars()</code> عند عرض أي مدخل في HTML</li>
+      <li><strong>Passwords:</strong> <code>password_hash()</code> للتخزين، <code>password_verify()</code> للتحقق</li>
+      <li><strong>Sessions:</strong> <code>session_regenerate_id(true)</code> بعد تسجيل الدخول</li>
+      <li><strong>CSRF:</strong> Token سري في كل form يُعدّل بيانات</li>
+      <li><strong>Uploads:</strong> تحقق من نوع الملف والحجم قبل الحفظ</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- /content-area -->
+
+<!-- ════════════════════════════════════════
+     FINAL EXAM
+════════════════════════════════════════ -->
+<div class="exam-section">
+  <div class="exam-header">
+    <h3>🏆 الاختبار النهائي</h3>
+    <p>20 سؤالاً يغطي كل محاور الدورة. تحتاج 70% أو أكثر للنجاح والحصول على الشهادة.</p>
+    <div class="exam-meta">
+      <span class="exam-meta-item">📝 20 سؤال</span>
+      <span class="exam-meta-item">⏱️ 30 دقيقة</span>
+      <span class="exam-meta-item">✅ 14/20 للنجاح (70%)</span>
+      <span class="exam-meta-item">🔄 عدد غير محدود للمحاولات</span>
+    </div>
+  </div>
+
+  <div class="exam-body">
+    <div id="examTimerWrap" style="padding:20px 0 0;display:none">
+      <div class="exam-timer" id="examTimer">30:00</div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="question-block"><div class="q-num">01</div><span class="q-cat">Setup</span>
+    <div class="q-text">ما المجلد الصحيح لوضع مشاريع PHP في XAMPP على Windows؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq1" data-correct="false"> أ) C:\xampp\php\projects</label>
+      <label class="option"><input type="radio" name="eq1" data-correct="true"> ب) C:\xampp\htdocs</label>
+      <label class="option"><input type="radio" name="eq1" data-correct="false"> ج) C:\www\html</label>
+      <label class="option"><input type="radio" name="eq1" data-correct="false"> د) C:\inetpub\wwwroot</label>
+    </div></div>
+
+    <!-- Q2 -->
+    <div class="question-block"><div class="q-num">02</div><span class="q-cat">Variables</span>
+    <div class="q-text">ما ناتج تنفيذ هذا الكود؟</div>
+    <div class="q-code">$x = "5";
+$y = 3;
+echo $x + $y;</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq2" data-correct="false"> أ) "53"</label>
+      <label class="option"><input type="radio" name="eq2" data-correct="true"> ب) 8</label>
+      <label class="option"><input type="radio" name="eq2" data-correct="false"> ج) خطأ في التنفيذ</label>
+      <label class="option"><input type="radio" name="eq2" data-correct="false"> د) "5"</label>
+    </div></div>
+
+    <!-- Q3 -->
+    <div class="question-block"><div class="q-num">03</div><span class="q-cat">Operators</span>
+    <div class="q-text">ما الفرق بين == و === في PHP؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq3" data-correct="false"> أ) لا فرق بينهما</label>
+      <label class="option"><input type="radio" name="eq3" data-correct="true"> ب) == يقارن القيمة فقط، === يقارن القيمة والنوع معاً</label>
+      <label class="option"><input type="radio" name="eq3" data-correct="false"> ج) === أسرع من ==</label>
+      <label class="option"><input type="radio" name="eq3" data-correct="false"> د) == للأرقام، === للنصوص</label>
+    </div></div>
+
+    <!-- Q4 -->
+    <div class="question-block"><div class="q-num">04</div><span class="q-cat">Loops</span>
+    <div class="q-text">ما ناتج هذا الكود؟</div>
+    <div class="q-code">$sum = 0;
+for ($i = 1; $i <= 5; $i++) {
+    if ($i === 3) continue;
+    $sum += $i;
+}
+echo $sum;</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq4" data-correct="false"> أ) 15</label>
+      <label class="option"><input type="radio" name="eq4" data-correct="true"> ب) 12</label>
+      <label class="option"><input type="radio" name="eq4" data-correct="false"> ج) 10</label>
+      <label class="option"><input type="radio" name="eq4" data-correct="false"> د) 6</label>
+    </div></div>
+
+    <!-- Q5 -->
+    <div class="question-block"><div class="q-num">05</div><span class="q-cat">Functions</span>
+    <div class="q-text">ما ناتج هذا الكود؟</div>
+    <div class="q-code">function double(int $n): int {
+    return $n * 2;
+}
+$result = array_map('double', [1, 2, 3, 4]);
+echo array_sum($result);</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq5" data-correct="false"> أ) 10</label>
+      <label class="option"><input type="radio" name="eq5" data-correct="true"> ب) 20</label>
+      <label class="option"><input type="radio" name="eq5" data-correct="false"> ج) [2,4,6,8]</label>
+      <label class="option"><input type="radio" name="eq5" data-correct="false"> د) خطأ في التنفيذ</label>
+    </div></div>
+
+    <!-- Q6 -->
+    <div class="question-block"><div class="q-num">06</div><span class="q-cat">Arrays</span>
+    <div class="q-text">ما الدالة التي تُزيل العناصر المكررة من مصفوفة؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq6" data-correct="false"> أ) array_remove_duplicates()</label>
+      <label class="option"><input type="radio" name="eq6" data-correct="true"> ب) array_unique()</label>
+      <label class="option"><input type="radio" name="eq6" data-correct="false"> ج) array_distinct()</label>
+      <label class="option"><input type="radio" name="eq6" data-correct="false"> د) array_clean()</label>
+    </div></div>
+
+    <!-- Q7 -->
+    <div class="question-block"><div class="q-num">07</div><span class="q-cat">Strings</span>
+    <div class="q-text">ما ناتج: <code>echo str_replace(['a','e','i'], '*', "PHP is great");</code></div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq7" data-correct="false"> أ) "PHP is gr**t"</label>
+      <label class="option"><input type="radio" name="eq7" data-correct="true"> ب) "PHP *s gr**t"</label>
+      <label class="option"><input type="radio" name="eq7" data-correct="false"> ج) "PHP ** gr**t"</label>
+      <label class="option"><input type="radio" name="eq7" data-correct="false"> د) "***"</label>
+    </div></div>
+
+    <!-- Q8 -->
+    <div class="question-block"><div class="q-num">08</div><span class="q-cat">OOP</span>
+    <div class="q-text">ما الكلمة المفتاحية لاستدعاء constructor الـ parent class من الـ child class؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq8" data-correct="false"> أ) base::__construct()</label>
+      <label class="option"><input type="radio" name="eq8" data-correct="true"> ب) parent::__construct()</label>
+      <label class="option"><input type="radio" name="eq8" data-correct="false"> ج) super::__construct()</label>
+      <label class="option"><input type="radio" name="eq8" data-correct="false"> د) this->parent()</label>
+    </div></div>
+
+    <!-- Q9 -->
+    <div class="question-block"><div class="q-num">09</div><span class="q-cat">Forms</span>
+    <div class="q-text">ما الـ attribute المطلوب في فورم HTML لرفع الملفات؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq9" data-correct="false"> أ) type="multipart"</label>
+      <label class="option"><input type="radio" name="eq9" data-correct="true"> ب) enctype="multipart/form-data"</label>
+      <label class="option"><input type="radio" name="eq9" data-correct="false"> ج) method="file"</label>
+      <label class="option"><input type="radio" name="eq9" data-correct="false"> د) upload="true"</label>
+    </div></div>
+
+    <!-- Q10 -->
+    <div class="question-block"><div class="q-num">10</div><span class="q-cat">Superglobals</span>
+    <div class="q-text">لماذا يجب استدعاء session_start() في أول سطر من الصفحة؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq10" data-correct="false"> أ) لأن PHP تطلب ذلك للأمان</label>
+      <label class="option"><input type="radio" name="eq10" data-correct="true"> ب) لأنها يجب أن تُستدعى قبل أي output لـ HTML (قبل إرسال HTTP headers)</label>
+      <label class="option"><input type="radio" name="eq10" data-correct="false"> ج) لتسريع الكود</label>
+      <label class="option"><input type="radio" name="eq10" data-correct="false"> د) لأن PHP 8 تتطلب ذلك فقط</label>
+    </div></div>
+
+    <!-- Q11 -->
+    <div class="question-block"><div class="q-num">11</div><span class="q-cat">Security</span>
+    <div class="q-text">ما الهجوم الذي تحميه Prepared Statements؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq11" data-correct="false"> أ) XSS (Cross-Site Scripting)</label>
+      <label class="option"><input type="radio" name="eq11" data-correct="true"> ب) SQL Injection</label>
+      <label class="option"><input type="radio" name="eq11" data-correct="false"> ج) CSRF</label>
+      <label class="option"><input type="radio" name="eq11" data-correct="false"> د) DDoS</label>
+    </div></div>
+
+    <!-- Q12 -->
+    <div class="question-block"><div class="q-num">12</div><span class="q-cat">Security</span>
+    <div class="q-text">ما الدالة الصحيحة لتشفير كلمة المرور قبل تخزينها في قاعدة البيانات؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq12" data-correct="false"> أ) md5($password)</label>
+      <label class="option"><input type="radio" name="eq12" data-correct="false"> ب) sha1($password)</label>
+      <label class="option"><input type="radio" name="eq12" data-correct="true"> ج) password_hash($password, PASSWORD_BCRYPT)</label>
+      <label class="option"><input type="radio" name="eq12" data-correct="false"> د) encrypt($password)</label>
+    </div></div>
+
+    <!-- Q13 -->
+    <div class="question-block"><div class="q-num">13</div><span class="q-cat">Database</span>
+    <div class="q-text">ما الفرق بين fetch() و fetchAll() في PDO؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq13" data-correct="false"> أ) لا فرق</label>
+      <label class="option"><input type="radio" name="eq13" data-correct="true"> ب) fetch() يُعيد صفاً واحداً، fetchAll() يُعيد كل الصفوف كمصفوفة</label>
+      <label class="option"><input type="radio" name="eq13" data-correct="false"> ج) fetchAll() يعمل مع INSERT فقط</label>
+      <label class="option"><input type="radio" name="eq13" data-correct="false"> د) fetch() أسرع دائماً</label>
+    </div></div>
+
+    <!-- Q14 -->
+    <div class="question-block"><div class="q-num">14</div><span class="q-cat">Database</span>
+    <div class="q-text">ما نوع البيانات المناسب لتخزين أسعار المنتجات في MySQL؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq14" data-correct="false"> أ) FLOAT</label>
+      <label class="option"><input type="radio" name="eq14" data-correct="true"> ب) DECIMAL(10,2)</label>
+      <label class="option"><input type="radio" name="eq14" data-correct="false"> ج) INT</label>
+      <label class="option"><input type="radio" name="eq14" data-correct="false"> د) VARCHAR(20)</label>
+    </div></div>
+
+    <!-- Q15 -->
+    <div class="question-block"><div class="q-num">15</div><span class="q-cat">Database</span>
+    <div class="q-text">ما فائدة FOREIGN KEY في MySQL؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq15" data-correct="false"> أ) تسريع الاستعلامات</span></label>
+      <label class="option"><input type="radio" name="eq15" data-correct="true"> ب) ضمان سلامة البيانات — لا يمكن إضافة قيمة غير موجودة في الجدول المرتبط</label>
+      <label class="option"><input type="radio" name="eq15" data-correct="false"> ج) تشفير البيانات</label>
+      <label class="option"><input type="radio" name="eq15" data-correct="false"> د) نسخ احتياطي تلقائي</label>
+    </div></div>
+
+    <!-- Q16 -->
+    <div class="question-block"><div class="q-num">16</div><span class="q-cat">CRUD</span>
+    <div class="q-text">ما الكود الصحيح لحساب عدد الصفحات في Pagination؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq16" data-correct="false"> أ) $pages = $total / $per_page;</label>
+      <label class="option"><input type="radio" name="eq16" data-correct="true"> ب) $pages = ceil($total / $per_page);</label>
+      <label class="option"><input type="radio" name="eq16" data-correct="false"> ج) $pages = floor($total / $per_page);</label>
+      <label class="option"><input type="radio" name="eq16" data-correct="false"> د) $pages = round($total / $per_page);</label>
+    </div></div>
+
+    <!-- Q17 -->
+    <div class="question-block"><div class="q-num">17</div><span class="q-cat">Optimization</span>
+    <div class="q-text">ما الأمر SQL الذي يُظهر كيف MySQL تنفّذ استعلاماً وهل تستخدم Index؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq17" data-correct="false"> أ) SHOW QUERY</label>
+      <label class="option"><input type="radio" name="eq17" data-correct="true"> ب) EXPLAIN SELECT ...</label>
+      <label class="option"><input type="radio" name="eq17" data-correct="false"> ج) DEBUG QUERY</label>
+      <label class="option"><input type="radio" name="eq17" data-correct="false"> د) ANALYZE SELECT ...</label>
+    </div></div>
+
+    <!-- Q18 -->
+    <div class="question-block"><div class="q-num">18</div><span class="q-cat">OOP</span>
+    <div class="q-text">ما الفرق بين Abstract Class و Interface في PHP؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq18" data-correct="false"> أ) لا فرق — يؤدّيان نفس الوظيفة</label>
+      <label class="option"><input type="radio" name="eq18" data-correct="true"> ب) Abstract Class يمكن أن يحتوي كوداً، Interface يحتوي تصريحات فقط. Class يُطبّق Interfaces متعددة لكن يرث Abstract واحداً</label>
+      <label class="option"><input type="radio" name="eq18" data-correct="false"> ج) Interface أسرع من Abstract Class</label>
+      <label class="option"><input type="radio" name="eq18" data-correct="false"> د) Abstract Class يُستخدم مع DB فقط</label>
+    </div></div>
+
+    <!-- Q19 -->
+    <div class="question-block"><div class="q-num">19</div><span class="q-cat">Transactions</span>
+    <div class="q-text">إذا فشل أحد الاستعلامات داخل Transaction، ما الدالة التي تُلغي كل التغييرات السابقة؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq19" data-correct="false"> أ) $pdo->undo()</label>
+      <label class="option"><input type="radio" name="eq19" data-correct="false"> ب) $pdo->cancel()</label>
+      <label class="option"><input type="radio" name="eq19" data-correct="true"> ج) $pdo->rollBack()</label>
+      <label class="option"><input type="radio" name="eq19" data-correct="false"> د) $pdo->revert()</label>
+    </div></div>
+
+    <!-- Q20 -->
+    <div class="question-block"><div class="q-num">20</div><span class="q-cat">General</span>
+    <div class="q-text">ما الدالة PHP التي تُوجّه المستخدم لصفحة أخرى؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="eq20" data-correct="false"> أ) redirect('page.php')</label>
+      <label class="option"><input type="radio" name="eq20" data-correct="true"> ب) header('Location: page.php'); exit;</label>
+      <label class="option"><input type="radio" name="eq20" data-correct="false"> ج) go('page.php')</label>
+      <label class="option"><input type="radio" name="eq20" data-correct="false"> د) window.location = 'page.php'</label>
+    </div></div>
+
+    <div class="exam-footer">
+      <button class="btn-start-exam" id="submitExamBtn" onclick="submitExam()">🏁 إنهاء الاختبار وعرض النتيجة</button>
+      <button class="btn-retry" onclick="retryExam()">🔄 إعادة الاختبار</button>
+      <div class="score-display" id="examScore"></div>
+    </div>
+
+    <!-- شهادة الإتمام -->
+    <div class="cert-wrap" id="certWrap">
+      <div style="font-size:3rem;margin-bottom:16px">🏆</div>
+      <h2>مبروك! أتممت دورة PHP الشاملة</h2>
+      <p class="cert-sub" id="certSub"></p>
+      <div class="cert-score" id="certScore"></div>
+      <div class="cert-grade" id="certGrade"></div>
+      <div class="cert-skills">
+        <span class="skill-tag">إعداد XAMPP</span>
+        <span class="skill-tag">المتغيرات والأنواع</span>
+        <span class="skill-tag">الشروط والحلقات</span>
+        <span class="skill-tag">الدوال والـ Closures</span>
+        <span class="skill-tag">المصفوفات والـ Strings</span>
+        <span class="skill-tag">OOP كاملة</span>
+        <span class="skill-tag">النماذج والـ Superglobals</span>
+        <span class="skill-tag">MySQL + PDO</span>
+        <span class="skill-tag">CRUD Operations</span>
+        <span class="skill-tag">SQL Injection Protection</span>
+        <span class="skill-tag">Indexes والتحسين</span>
+        <span class="skill-tag">Normalization</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-top:8px" id="certDate"></div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <a href="lesson-15-database-advanced.html" class="btn-nav">◀ تحسين وأمان DB</a>
+  <a href="index.html" class="btn-nav" style="background:rgba(57,255,20,.1);border-color:var(--neon);color:var(--neon)">🏠 الفهرس الرئيسي</a>
+</div>
+</main></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const LESSON_ID = 'final';
+const TOTAL_Q   = 20;
+const PASS_PCT  = 70;
+let timerInterval = null;
+let timeLeft = 30 * 60;
+
+function isCompleted(id){return localStorage.getItem('lesson-'+id)==='completed';}
+function markCompleted(id){localStorage.setItem('lesson-'+id,'completed');}
+function updateSidebar(){document.querySelectorAll('.lesson-link[data-lid]').forEach(a=>{const lid=a.getAttribute('data-lid'),badge=a.querySelector('.ll-badge');if(isCompleted(lid)){a.classList.add('done');if(badge){badge.textContent='✓';badge.className='ll-badge done';}}});}
+function updateProgressPill(){const all=document.querySelectorAll('.lesson-link[data-lid]');const done=[...all].filter(a=>isCompleted(a.getAttribute('data-lid'))).length;const pill=document.getElementById('progressPill');if(pill)pill.textContent=done+'/'+all.length+' مكتملة';}
+
+function startExamTimer(){
+  document.getElementById('examTimerWrap').style.display='block';
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    const m = String(Math.floor(timeLeft/60)).padStart(2,'0');
+    const s = String(timeLeft%60).padStart(2,'0');
+    const el = document.getElementById('examTimer');
+    el.textContent = m+':'+s;
+    el.style.display='inline-block';
+    if(timeLeft<=300) el.classList.add('danger');
+    if(timeLeft<=0){clearInterval(timerInterval);showToast('انتهى الوقت!','err');submitExam();}
+  },1000);
+}
+
+function submitExam(){
+  clearInterval(timerInterval);
+  const questions = document.querySelectorAll('.question-block');
+  let correct=0, answered=0;
+  questions.forEach(q=>{
+    const sel=q.querySelector('input[type=radio]:checked');
+    if(!sel)return;
+    answered++;
+    const isCorrect=sel.dataset.correct==='true';
+    q.querySelectorAll('.option').forEach(opt=>{
+      opt.querySelector('input').disabled=true;
+      if(opt.querySelector('input').dataset.correct==='true') opt.classList.add('correct');
+    });
+    if(isCorrect){correct++;sel.closest('.option').classList.add('correct');}
+    else sel.closest('.option').classList.add('wrong');
+  });
+  if(answered<TOTAL_Q){showToast('أجب على جميع الأسئلة أولاً ('+answered+'/'+TOTAL_Q+')','err');return;}
+
+  const pct = Math.round(correct/TOTAL_Q*100);
+  const scoreEl = document.getElementById('examScore');
+  scoreEl.style.display='flex';
+
+  let grade='', gradeColor='';
+  if(pct>=95){grade='ممتاز — A+';gradeColor='#4ade80';}
+  else if(pct>=85){grade='جيد جداً — A';gradeColor='#22d3ee';}
+  else if(pct>=75){grade='جيد — B';gradeColor='#a78bfa';}
+  else if(pct>=70){grade='مقبول — C';gradeColor='#fbbf24';}
+  else{grade='راسب — يحتاج مراجعة';gradeColor='#f87171';}
+
+  if(pct>=PASS_PCT){
+    scoreEl.className='score-display pass';
+    scoreEl.textContent='🎉 نجحت! '+correct+'/'+TOTAL_Q+' إجابات صحيحة ('+pct+'%) — '+grade;
+    markCompleted(LESSON_ID);
+    updateSidebar();updateProgressPill();
+    showCertificate(correct, pct, grade, gradeColor);
+    showToast('مبروك! أتممت الدورة 🎓','ok');
+  } else {
+    scoreEl.className='score-display fail';
+    scoreEl.textContent='❌ '+correct+'/'+TOTAL_Q+' إجابات صحيحة ('+pct+'%) — راجع الدروس وحاول مجدداً';
+    showToast('تحتاج '+PASS_PCT+'% للنجاح. راجع الدروس وحاول مجدداً','err');
+  }
+}
+
+function showCertificate(correct, pct, grade, gradeColor){
+  const cert = document.getElementById('certWrap');
+  cert.style.display='block';
+  document.getElementById('certSub').textContent = 'أكملت جميع دروس دورة PHP من الصفر للاحتراف بنجاح';
+  document.getElementById('certScore').textContent = pct + '%';
+  document.getElementById('certScore').style.color = gradeColor;
+  document.getElementById('certGrade').textContent = grade;
+  document.getElementById('certGrade').style.color = gradeColor;
+  document.getElementById('certDate').textContent = 'تاريخ الإتمام: ' + new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+  cert.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function retryExam(){
+  clearInterval(timerInterval);
+  timeLeft = 30*60;
+  document.querySelectorAll('.option').forEach(o=>{o.classList.remove('correct','wrong');o.querySelector('input').disabled=false;o.querySelector('input').checked=false;});
+  document.getElementById('examScore').style.display='none';
+  document.getElementById('certWrap').style.display='none';
+  document.getElementById('examTimerWrap').style.display='none';
+  document.getElementById('examTimer').classList.remove('danger');
+  window.scrollTo({top:0,behavior:'smooth'});
+  startExamTimer();
+}
+
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),5000);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const code=btn.closest('.code-block')?.querySelector('pre.code-pre code');
+      if(!code)return;
+      navigator.clipboard.writeText(code.textContent).then(()=>{btn.textContent='تم! ✓';setTimeout(()=>btn.textContent='نسخ',1800);});
+    });
+  });
+  const menuBtn=document.getElementById('menuBtn');
+  const sidebar=document.getElementById('sidebar');
+  if(menuBtn)menuBtn.addEventListener('click',()=>sidebar.classList.toggle('open'));
+  updateSidebar();updateProgressPill();
+  startExamTimer();
+});
+</script>
+</body></html>

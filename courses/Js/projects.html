@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المشاريع العملية | JavaScript · PhineX Academy</title>
+<meta name="description" content="مشاريع JavaScript عملية تبنيها بإيدك خطوة بخطوة، مع شرح وتلميحات وتحقق فوري على كل خطوة — بأسلوب PhineX Lab.">
+<link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#39ff14; --neon-dim:rgba(57,255,20,.1);
+  --void:#050508; --card:#0d1017; --border:rgba(255,255,255,.08); --border2:rgba(57,255,20,.22);
+  --text:#cdd6f4; --muted:#7c8aa8; --accent:#c3e88d;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);min-height:100vh;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px, transparent 0);background-size:26px 26px;}
+.wrap{max-width:980px;margin:0 auto;padding:34px 20px 70px;}
+.top-nav{display:flex;align-items:center;gap:10px;margin-bottom:34px;font-size:13px;color:var(--muted);}
+.top-nav a{color:var(--neon);text-decoration:none;font-weight:700;}
+.hero{text-align:center;margin-bottom:38px;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:var(--neon);margin-bottom:16px;}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.7rem,5vw,2.4rem);color:#fff;margin-bottom:10px;}
+.hero p{color:var(--muted);font-size:14.5px;max-width:560px;margin:0 auto;line-height:1.8;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s;}
+.pcard.live{border-color:var(--border2);}
+.pcard.live:hover{transform:translateY(-3px);border-color:var(--neon);}
+.pcard.soon{opacity:.55;}
+.pcard-icon{font-size:30px;}
+.pcard-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:#fff;}
+.pcard-desc{font-size:12.5px;color:var(--muted);line-height:1.75;flex:1;}
+.pcard-meta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.pcard-dots{display:flex;gap:4px;}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);}
+.pdot.done{background:var(--neon);}
+.pcard-cta{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 0;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:all .2s;}
+.pcard.live .pcard-cta{background:var(--neon);color:#050508;}
+.pcard.live .pcard-cta:hover{box-shadow:0 0 20px rgba(57,255,20,.4);}
+.pcard.soon .pcard-cta{background:rgba(255,255,255,.05);color:var(--muted);cursor:default;pointer-events:none;}
+.soon-tag{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);font-size:10px;padding:2px 10px;border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-nav">
+    <a href="menu.html">← رجوع لقائمة درس JavaScript</a>
+  </div>
+
+  <div class="hero">
+    <div class="hero-badge">🧪 PhineX Lab</div>
+    <h1>المشاريع العملية</h1>
+    <p>مش بس هتقرا وتتفرج — هتبني كل مشروع بإيدك، خطوة بخطوة، وكل خطوة ليها تعليمات وتلميح وتحقق فوري بيشغّل كودك فعليًا ويتأكد إنه شغال صح قبل ما يفتحلك اللي بعده.</p>
+  </div>
+
+  <div class="grid" id="projectsGrid"></div>
+</div>
+
+<script>
+var PROJECTS = [
+  {
+    id: 'cc', icon: '🎮', title: 'بطاقة شخصية اللعبة',
+    desc: 'ابني بطاقة شخصية كاملة لبطل خيالي: متغيرات، أنواع بيانات، عمليات حسابية ومقارنة، وTemplate Literals — كل ده في ٦ خطوات متدرجة.',
+    steps: 6, href: 'projects/character-card/step1.html', status: 'live'
+  },
+  {
+    id: 'inv', icon: '📦', title: 'نظام جرد ذكي',
+    desc: 'مشروع قادم: تتبع مخزون كامل باستخدام الحلقات والمصفوفات — إضافة وحذف وبحث عن عناصر تلقائيًا.',
+    steps: 0, href: '#', status: 'soon'
+  },
+  {
+    id: 'calc', icon: '🧮', title: 'محرك حسابي',
+    desc: 'مشروع قادم: آلة حاسبة ذكية متعددة العمليات، مبنية بالكامل على الدوال.',
+    steps: 0, href: '#', status: 'soon'
+  }
+];
+
+function countDone(p) {
+  if (p.status !== 'live') return 0;
+  var n = 0;
+  for (var i = 1; i <= p.steps; i++) {
+    if (localStorage.getItem('px_js_proj_' + p.id + '_final_' + i) !== null) n++;
+  }
+  return n;
+}
+
+function render() {
+  var grid = document.getElementById('projectsGrid');
+  grid.innerHTML = '';
+  PROJECTS.forEach(function (p) {
+    var done = countDone(p);
+    var isLive = p.status === 'live';
+    var card = document.createElement('div');
+    card.className = 'pcard ' + (isLive ? 'live' : 'soon');
+    var dots = '';
+    for (var i = 1; i <= (p.steps || 6); i++) {
+      dots += '<div class="pdot' + (i <= done ? ' done' : '') + '"></div>';
+    }
+    card.innerHTML =
+      (isLive ? '' : '<div class="soon-tag">قريباً</div>') +
+      '<div class="pcard-icon">' + p.icon + '</div>' +
+      '<div class="pcard-title">' + p.title + '</div>' +
+      '<div class="pcard-desc">' + p.desc + '</div>' +
+      (isLive ? ('<div class="pcard-meta"><div class="pcard-dots">' + dots + '</div><span>' + done + '/' + p.steps + ' خطوات</span></div>') : '') +
+      '<a class="pcard-cta" href="' + p.href + '">' + (isLive ? (done > 0 ? (done === p.steps ? '🎉 راجعه تاني' : 'كمّل من فين ما وقفت') : 'ابدأ المشروع →') : 'قريباً') + '</a>';
+    grid.appendChild(card);
+  });
+}
+render();
+</script>
+</body>
+</html>

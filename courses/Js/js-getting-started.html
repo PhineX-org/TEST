@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدرس الأول: البداية مع JavaScript | PhineX Academy</title>
+<meta name="description" content="ابدأ رحلتك في JavaScript من الصفر: المتغيرات، أنواع البيانات، العمليات الحسابية، Template Literals — بشرح عميق للمبتدئين خطوة بخطوة، مع تطبيق فوري على كل مفهوم.">
+<link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#f7df1e; --neon-dim:rgba(247,223,30,.1);
+  --void:#080b10; --surface:#0b0e14; --editor:#0a0d12; --card:#111827;
+  --border:rgba(255,255,255,.08); --border2:rgba(247,223,30,.25);
+  --text:#cdd6f4; --muted:#6b7a99; --accent:#c3e88d;
+  --blue:#82aaff; --pink:#ff5874; --cyan:#00d4ff;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:3px;}
+
+/* HEADER */
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}
+.ws-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;flex-shrink:0;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(247,223,30,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;flex-shrink:0;}
+
+/* BODY LAYOUT */
+.ws-body{display:grid;grid-template-columns:400px 1fr 320px;flex:1;overflow:hidden;}
+.ws-body.quiz-mode{grid-template-columns:1fr;}
+.ws-body.quiz-mode .ws-editor,.ws-body.quiz-mode .ws-console{display:none;}
+
+/* INSTRUCTIONS */
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:22px 22px 40px;display:flex;flex-direction:column;gap:14px;}
+.ws-body.quiz-mode .ws-instructions{max-width:760px;margin:0 auto;width:100%;border-left:none;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(247,223,30,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;line-height:1.35;}
+
+.ins-body{font-size:14px;line-height:1.9;color:var(--text);display:flex;flex-direction:column;gap:12px;}
+.ins-body h4{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--accent);margin-top:4px;}
+.ins-body p{margin:0;}
+.ins-body ul{padding-right:20px;display:flex;flex-direction:column;gap:5px;}
+.ins-body strong{color:#fff;}
+.ins-body code{background:rgba(247,223,30,.08);border:1px solid rgba(247,223,30,.18);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#ffe580;direction:ltr;display:inline-block;unicode-bidi:isolate;}
+.ins-body pre{background:#05070a;border:1px solid var(--border);border-radius:9px;padding:13px 15px;overflow-x:auto;direction:ltr;text-align:left;position:relative;}
+.ins-body pre::before{content:'مثال';position:absolute;top:-8px;right:12px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-family:'Cairo',sans-serif;font-size:9px;padding:1px 8px;border-radius:8px;letter-spacing:.5px;}
+.ins-body pre code{background:none;border:none;padding:0;color:#c3e88d;font-size:12.5px;line-height:1.7;white-space:pre;display:block;}
+.ins-body table.type-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:2px;}
+.ins-body table.type-table th{text-align:right;color:var(--muted);font-weight:700;padding:6px 8px;border-bottom:1px solid var(--border2);font-size:11px;letter-spacing:.3px;}
+.ins-body table.type-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
+.note{background:rgba(130,170,255,.06);border:1px solid rgba(130,170,255,.18);border-radius:9px;padding:12px 14px;font-size:12.5px;color:#a9c4ff;line-height:1.75;}
+.note strong{color:var(--blue);}
+.gotcha{background:rgba(255,88,116,.06);border:1px solid rgba(255,88,116,.22);border-radius:9px;padding:12px 14px;font-size:12.5px;color:#ffb3c0;line-height:1.75;}
+.gotcha strong{color:var(--pink);}
+
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list:empty{display:none;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+.hint{background:rgba(195,232,141,.05);border:1px solid rgba(195,232,141,.18);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--accent);line-height:1.65;display:none;}
+.hint strong{color:#fff;}
+
+/* QUIZ */
+.quiz-container{display:none;flex-direction:column;gap:16px;}
+.ws-body.quiz-mode .quiz-container{display:flex;}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color .25s;}
+.quiz-q.correct{border-color:rgba(195,232,141,.5);background:rgba(195,232,141,.04);}
+.quiz-q.wrong{border-color:rgba(255,88,116,.5);background:rgba(255,88,116,.04);}
+.quiz-q-title{font-weight:700;font-size:13.5px;margin-bottom:12px;line-height:1.6;}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid transparent;transition:background .2s;}
+.quiz-opt:hover{background:rgba(255,255,255,.03);}
+.quiz-opt input{accent-color:var(--neon);width:15px;height:15px;flex-shrink:0;}
+
+/* EDITOR */
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--neon);}
+.tab-dot{width:6px;height:6px;border-radius:50%;background:var(--neon);}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#d6deeb;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;}
+.code-ed::selection{background:rgba(247,223,30,.15);}
+
+/* CONSOLE */
+.ws-console{display:flex;flex-direction:column;overflow:hidden;background:var(--surface);}
+.console-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;font-size:12.5px;color:var(--text);font-weight:600;}
+.console-output{flex:1;overflow-y:auto;padding:12px 14px;direction:ltr;text-align:left;font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+.console-placeholder{color:var(--muted);font-family:'Cairo',sans-serif;font-size:12.5px;direction:rtl;text-align:right;line-height:1.7;}
+.console-line{color:#c3e88d;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.05);word-break:break-word;white-space:pre-wrap;}
+.console-line::before{content:'>';color:var(--muted);margin-left:8px;}
+.console-error{color:var(--pink);padding:8px 0;word-break:break-word;white-space:pre-wrap;}
+
+/* FOOTER */
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(:disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav:disabled{opacity:.3;cursor:not-allowed;}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(247,223,30,.1);color:var(--neon);border:1px solid var(--border2);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(247,223,30,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(247,223,30,.25);}
+.btn-check:hover{box-shadow:0 0 24px rgba(247,223,30,.5);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(247,223,30,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:440px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.6;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:var(--pink);color:var(--pink);}
+</style>
+</head>
+<body>
+
+<header class="ws-header">
+  <a href="menu.html" class="ws-logo">PhineX</a>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">JavaScript · البداية مع JS</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track" id="progressTrack"></div>
+  <span class="ws-step-label" id="stepLabel">1/10</span>
+</header>
+
+<div class="ws-body" id="wsBody">
+  <aside class="ws-instructions">
+    <div class="ins-badge" id="insBadge"></div>
+    <div class="ins-title" id="insTitle"></div>
+    <div class="ins-body" id="insBody"></div>
+    <div class="task-list" id="taskList"></div>
+    <div class="hint" id="hintBox"></div>
+    <div class="quiz-container" id="quizContainer"></div>
+  </aside>
+
+  <div class="ws-editor" id="wsEditor">
+    <div class="editor-tabs">
+      <div class="file-tab"><span class="tab-dot"></span>script.js</div>
+      <div class="editor-action"><button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button></div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed" id="codeEditor" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <aside class="ws-console" id="wsConsole">
+    <div class="console-bar">
+      <span>🖥️ Console</span>
+      <button class="btn-reset" onclick="clearConsoleManual()">مسح</button>
+    </div>
+    <div class="console-output" id="consoleBody">
+      <div class="console-placeholder">اكتب كودك، واضغط ▶ تشغيل عشان تشوف النتيجة هنا...</div>
+    </div>
+  </aside>
+</div>
+
+<footer class="ws-footer">
+  <button class="btn-nav" id="prevBtn" onclick="goPrev()">← السابق</button>
+  <button class="btn-run" id="runBtn" onclick="runCode()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" id="checkBtn" onclick="checkStep()">✓ تحقق من الخطوة</button>
+  <button class="btn-nav" id="nextBtn" onclick="goNext()">التالي ←</button>
+</footer>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ THEORY TEMPLATES ══════════════ -->
+
+<template id="tpl-s1">
+<p>لو <strong>HTML</strong> هو هيكل صفحة الويب (العضم)، و<strong>CSS</strong> هو الشكل والألوان (الملابس)... يبقى <strong>JavaScript</strong> هو العقل والحركة. هي اللي بتخلي الصفحة "تفكر" وترد على اللي بتعمله.</p>
+<p>كل حاجة بتتفاعل معاها في أي موقع أو تطبيق — زرار بيتلوّن لما تدوس عليه، فورم بيقولك "الإيميل غلط" قبل ما ترسله، فيسبوك بيجيب بوستات جديدة من غير ريفريش، لعبة كاملة بتتلعب جوا المتصفح — كل ده JavaScript.</p>
+<div class="note"><strong>معلومة سريعة:</strong> JavaScript اتكتبت في 10 أيام بس سنة 1995، ودلوقتي هي أكتر لغة برمجة مستخدمة في العالم. بيها تقدر تبني مواقع، تطبيقات موبايل، سيرفرات كاملة (Node.js)، وحتى ألعاب — زي اللي بنعملها إحنا في PhineX Group.</div>
+<p>هنتعلمها هنا بطريقة عملية 100%: كل مفهوم جديد، هتطبقه بإيدك فورًا في نفس الصفحة دي — بالظبط زي أشهر منصات تعلّم البرمجة في العالم، بس بالعامية المصرية وبطعم PhineX 🟡</p>
+<h4>أول سطر كود في حياتك</h4>
+<p>كل مبرمج في أي لغة بيبدأ بنفس الحاجة: طباعة رسالة على الشاشة. في JS بنستخدم <code>console.log()</code> وهو بيطبع أي حاجة تحطها جواه في لوحة اسمها <strong>Console</strong> (هي اللوحة على اليمين 👉).</p>
+<pre><code>console.log("أي كلام تحب تطبعه");</code></pre>
+<p>لاحظ: الكلام بيتحط بين قوسين <code>()</code>، وبين علامتي اقتباس <code>" "</code> لأنه نص. وفي الآخر بنحط فاصلة منقوطة <code>;</code> — زي النقطة في آخر الجملة، بتقول لـ JS "خلصت الأمر ده".</p>
+</template>
+
+<template id="tpl-s2">
+<p>التعليقات (Comments) سطور بتكتبها جوا الكود، بس JavaScript بتتجاهلها تمامًا ومالهاش أي تأثير على التشغيل. وظيفتها الوحيدة إنها تفكّرك إنت — أو أي حد هيفتح الكود بعدك — "الجزء ده بيعمل إيه وليه".</p>
+<h4>نوعين من التعليقات</h4>
+<ul>
+  <li><strong>تعليق سطر واحد:</strong> بنستخدم <code>//</code> وأي حاجة بعدها في نفس السطر بتتجاهل.</li>
+  <li><strong>تعليق متعدد الأسطر:</strong> بنستخدم <code>/* ... */</code> لما نحتاج نشرح حاجة على أكتر من سطر.</li>
+</ul>
+<pre><code>// ده تعليق سطر واحد
+let score = 0; // كمان ينفع تحطه بعد الكود في نفس السطر
+
+/* ده تعليق
+   على أكتر من سطر
+   مفيد لو عايز تشرح حاجة كبيرة */</code></pre>
+<div class="note">ليه أصلاً نكتب تعليقات؟ لأنك هترجع لكودك بعد شهر أو سنة ومش هتفتكر ليه كتبت السطر ده أصلاً! التعليق الكويس بيوفرلك وقت جبار، وأي شركة هتشتغل فيها هتقيّم وضوح كودك مش بس إنه "شغال".</div>
+</template>
+
+<template id="tpl-s3">
+<p>تخيل المتغير (Variable) <strong>صندوق</strong> ليه اسم، وجواه قيمة. تقدر تفتحه تاني بعدين وتغيّر اللي جواه براحتك. في JS بنستخدم كلمة <code>let</code> عشان نعرّف صندوق زي ده — قيمته ممكن تتغير طول عمر البرنامج.</p>
+<pre><code>let playerScore = 0;
+playerScore = 10;              // غيّرنا القيمة، عادي جداً
+playerScore = playerScore + 5; // بقت 15</code></pre>
+<h4>قواعد تسمية المتغيرات</h4>
+<ul>
+  <li>لازم يبدأ بحرف (أو <code>_</code> أو <code>$</code>)، مش برقم</li>
+  <li>ممنوع فيه مسافات — استخدم camelCase زي <code>heroName</code> مش <code>hero name</code></li>
+  <li>حساسة لحالة الحروف — <code>score</code> و <code>Score</code> متغيرين مختلفين تمامًا!</li>
+  <li>متستخدمش كلمة محجوزة زي <code>let</code> نفسها كاسم متغير</li>
+</ul>
+<div class="note">الاسم الكويس بيوصف اللي جوا الصندوق بوضوح. <code>let x = "أحمد"</code> شغالة، بس <code>let playerName = "أحمد"</code> أوضح بكتير — لأي حد هيقرا كودك، وأنت كمان بعد أسبوع.</div>
+</template>
+
+<template id="tpl-s4">
+<p><code>const</code> زي <code>let</code> بالظبط، بفارق واحد جوهري: <strong>مينفعش تغيّر قيمته تاني بعد ما تحطها</strong>. لو حاولت، JS هترفض وتدّيك Error.</p>
+<pre><code>const gameName = "El Jasus";
+gameName = "لعبة تانية"; // ❌ TypeError: Assignment to constant variable</code></pre>
+<p>القاعدة الذهبية: <strong>استخدم const افتراضياً لأي حاجة</strong>، وابقى استخدم let بس لو متأكد إن القيمة فعلاً هتتغير (زي score أو health في لعبة). ده بيخلي كودك أوضح، وبيمنعك تعمل غلطة عن طريق الخطأ.</p>
+<div class="gotcha"><strong>⚠️ وإيه حكاية var؟</strong><br>قبل ما let و const يظهروا سنة 2015، كان فيه بس <code>var</code>. مشكلتها إنها بتتجاهل نطاق الـ <code>{ }</code> — يعني ممكن تعرّف متغير جوا if وتستخدمه بره من غير ما JS تعترض، وده بيسبب bugs غريبة وصعبة الاكتشاف. في أي شغل احترافي دلوقتي (وفي PhineX): <strong>متستخدمش var خالص</strong> — let أو const بس.</div>
+</template>
+
+<template id="tpl-s5">
+<p>كل قيمة في JavaScript ليها "نوع". أهم 3 أنواع هتقابلهم كل يوم:</p>
+<table class="type-table">
+<tr><th>النوع</th><th>مثال</th><th>الاستخدام</th></tr>
+<tr><td>String (نص)</td><td><code>"أهلاً"</code></td><td>أي كلام أو حروف</td></tr>
+<tr><td>Number (رقم)</td><td><code>25</code></td><td>صحيح أو عشري، بدون اقتباس</td></tr>
+<tr><td>Boolean (منطقي)</td><td><code>true</code></td><td>قرار بنعم أو لأ بس</td></tr>
+</table>
+<p>عشان تعرف نوع أي قيمة، استخدم <code>typeof</code>:</p>
+<pre><code>console.log(typeof "مرحبا");  // "string"
+console.log(typeof 25);       // "number"
+console.log(typeof true);     // "boolean"</code></pre>
+<div class="gotcha"><strong>⚠️ خطأ شائع جداً:</strong> <code>"25"</code> (بين قوسين) نص مش رقم! هنشوف تفاصيل المشكلة دي كمان شوية، بس خليها في بالك من دلوقتي.</div>
+</template>
+
+<template id="tpl-s6">
+<p><code>undefined</code>: القيمة الافتراضية لأي متغير عرّفته بـ <code>let</code> بس لسه مادتش قيمة له. JS بتحطها تلقائي، إنت مش اللي كتبتها.</p>
+<pre><code>let questReward;
+console.log(questReward); // undefined — لسه معملتش تحديد للقيمة</code></pre>
+<p><code>null</code>: عكسها تمامًا — إنت اللي بتحطها يدويًا عشان تقول "القيمة دي فاضية بالتحديد، وأنا قاصد كده".</p>
+<pre><code>let selectedWeapon = null; // لسه اللاعب معملش اختيار</code></pre>
+<div class="gotcha"><strong>حاجة غريبة في JS (اتقبلها بس متقلقش منها):</strong> لو كتبت <code>typeof null</code> هيديك <code>"object"</code> مش "null"! ده bug قديم جداً في اللغة نفسها اتقرر يفضل زي ما هو عشان تصليحه هيكسر مواقع كتير قوي. افتكرها كمعلومة غريبة بس، مش أكتر 😄</div>
+</template>
+
+<template id="tpl-s7">
+<p>العمليات الحسابية الأساسية:</p>
+<table class="type-table">
+<tr><th>العملية</th><th>الرمز</th><th>مثال</th></tr>
+<tr><td>جمع / طرح</td><td><code>+  -</code></td><td><code>5 + 3</code> → 8</td></tr>
+<tr><td>ضرب / قسمة</td><td><code>*  /</code></td><td><code>5 * 3</code> → 15</td></tr>
+<tr><td>باقي القسمة</td><td><code>%</code></td><td><code>7 % 2</code> → 1</td></tr>
+<tr><td>زيادة/نقصان بواحد</td><td><code>++  --</code></td><td><code>xp++</code></td></tr>
+</table>
+<pre><code>let xp = 10;
+xp = xp + 5;   // 15
+xp += 5;       // طريقة مختصرة، بقت 20
+xp++;          // بقت 21</code></pre>
+<div class="gotcha"><strong>⚠️ فاكر من الخطوة الفاتت؟</strong><br><code>"5" + 5</code> = <code>"55"</code> (دمج نصوص، لأن فيه نص في العملية)<br><code>"5" - 5</code> = <code>0</code> (هنا JS بتحوّل النص لرقم تلقائيًا لأن الطرح مالهوش معنى للنصوص!)<br>ده اسمه <strong>Type Coercion</strong>، وهو مصدر أكتر bugs المبتدئين. لو مش متأكد، استخدم <code>Number(x)</code> عشان تحوّل نص لرقم بنفسك بدل ما تسيب JS تخمّن.</div>
+<h4>عمليات المقارنة</h4>
+<p>بترجعلك <code>true</code> أو <code>false</code>:</p>
+<pre><code>console.log(5 == "5");   // true  😱 (بتقارن القيمة بس، وبتحوّل الأنواع)
+console.log(5 === "5");  // false ✅ (بتقارن القيمة والنوع مع بعض)</code></pre>
+<div class="note"><strong>القاعدة الذهبية التانية:</strong> استخدم <code>===</code> و <code>!==</code> دايماً، ومتستخدمش <code>==</code> أو <code>!=</code> خالص. كده بتتجنب مفاجآت الـ coercion تمامًا.</div>
+</template>
+
+<template id="tpl-s8">
+<p>لحد دلوقتي لو عايز تدمج نص مع متغير، هتضطر تستخدم <code>+</code>:</p>
+<pre><code>console.log("اسمي " + heroName + " وعندي " + level + " مستوى");</code></pre>
+<p>ده بيبقى تقيل ومربك لما الجملة تطول. الحل: <strong>Template Literals</strong> — بتستخدم backticks <code>`</code> (تحت زرار Esc في الكيبورد غالبًا) بدل علامات الاقتباس العادية، وتحط أي متغير جوا <code>${ }</code>:</p>
+<pre><code>console.log(`اسمي ${heroName} وعندي ${level} مستوى`);</code></pre>
+<p>مميزاتها كمان: تقدر تكتب على أكتر من سطر عادي من غير ما تحتاج <code>\n</code>، وتقدر تحط عملية حسابية كاملة جوا الـ <code>${ }</code>:</p>
+<pre><code>console.log(`السنة الجاية عمرك هيبقى ${age + 1}`);</code></pre>
+</template>
+
+<template id="tpl-s9">
+<p>في الكود اللي في المحرر <strong>3 أخطاء متعمدة</strong> بنعملها إحنا المبرمجين كل يوم — بعضها بيوقف الكود كله بـ Error، وبعضها أخطر: بيشتغل عادي من غير Error، بس بيدّيك نتيجة غلط!</p>
+<p>مهمتك تكتشفهم كلهم وتصلحهم، لحد ما الناتج في الـ Console يبقى بالظبط:</p>
+<pre><code>البطل: Zero
+المستوى: 6
+جاهز للمعركة: true</code></pre>
+<div class="note"><strong>إزاي تصطاد الأخطاء زي المحترفين:</strong> شغّل الكود، واقرا رسالة الخطأ في لوحة الـ Console كويس — هي غالبًا بتقولك اسم المتغير اللي المشكلة فيه. صلّح غلطة واحدة، شغّل تاني، وكمّل لحد ما الأخطاء تخلص.</div>
+</template>
+
+<template id="tpl-s10">
+<p>وصلت لآخر خطوة في الدرس! جاوب على الأسئلة الـ 5 دي، ولازم تجاوب صح على الكل عشان تفتح <strong>المشروع العملي</strong> اللي هتبني فيه بطاقة شخصية كاملة بإيدك.</p>
+</template>
+
+<script>
+/* ══════════════ SANDBOX: تنفيذ حقيقي للكود + فحص سلوكي ══════════════ */
+function runSandbox(code, probeVars) {
+  const logs = [];
+  let error = null;
+  let values = {};
+  const sandboxConsole = { log: function () {
+    const parts = Array.prototype.slice.call(arguments).map(function (v) {
+      if (typeof v === 'object') { try { return JSON.stringify(v); } catch (e) { return String(v); } }
+      return String(v);
+    });
+    logs.push(parts.join(' '));
+  } };
+  try {
+    var probeExpr = 'return {' + (probeVars || []).map(function (v) {
+      return '"' + v + '": (typeof ' + v + '!=="undefined" ? ' + v + ' : undefined)';
+    }).join(',') + '};';
+    var fn = new Function('console', code + '\n' + probeExpr);
+    values = fn(sandboxConsole) || {};
+  } catch (e) {
+    error = e.message;
+  }
+  return { logs: logs, values: values, error: error };
+}
+
+/* ══════════════ محتوى الخطوات ══════════════ */
+var ARABIC_NUM = ['', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', '١٠'];
+
+var STEPS = [
+  {
+    id: 's1', badge: 'الخطوة ١', title: 'إيه هي الـ JavaScript أصلاً؟ 🤔', type: 'code',
+    tasks: [
+      'افتح المحرر جنبك، واكتب سطر console.log() يطبع أي رسالة ترحيبية',
+      'اضغط ▶ تشغيل عشان تشوف الرسالة تظهر في الـ Console',
+      'لما تتأكد إنها طلعت صح، اضغط "تحقق من الخطوة"'
+    ],
+    hint: 'الشكل العام: console.log("اكتب كلامك هنا"); — متنساش القوسين والفاصلة المنقوطة في الآخر.',
+    starter: '// اكتب أول سطر كود في حياتك هنا 👇\n',
+    check: function (r) {
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      if (r.logs.length > 0 && r.logs[0].trim().length > 0) return { ok: true };
+      return { ok: false, msg: 'استخدم console.log() عشان تطبع رسالة. مثال:\nconsole.log("أهلاً!");' };
+    },
+    success: '🎉 مبروك! ده أول سطر كود JavaScript بتكتبه في حياتك. رسميًا إنت بدأت رحلتك كمبرمج.'
+  },
+  {
+    id: 's2', badge: 'الخطوة ٢', title: 'التعليقات (Comments) — دايماً اشرح كودك', type: 'code',
+    tasks: [
+      'اكتب تعليق سطر واحد فوق كود الـ console.log بيوصف إيه اللي هيحصل',
+      'اكتب console.log() يطبع أي رسالة'
+    ],
+    hint: 'استخدم // في أول السطر، هي مش بتأثر على تشغيل السطر اللي تحتها.',
+    starter: '// اكتب تعليق هنا يشرح السطر اللي تحت\nconsole.log("تجربة");\n',
+    check: function (r, code) {
+      var hasComment = code.indexOf('//') !== -1 || code.indexOf('/*') !== -1;
+      if (!hasComment) return { ok: false, msg: 'محتاج تضيف تعليق واحد على الأقل باستخدام // أو /* */' };
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      if (r.logs.length === 0) return { ok: false, msg: 'محتاج كمان console.log() يطبع رسالة.' };
+      return { ok: true };
+    },
+    success: 'تمام كده! التعليقات هتبقى صاحبتك طول رحلتك في البرمجة.'
+  },
+  {
+    id: 's3', badge: 'الخطوة ٣', title: 'المتغيرات: الصندوق اللي بيتغير (let)', type: 'code',
+    tasks: [
+      'عرّف متغير باسم heroName وحط فيه اسمك كنص',
+      'تحت كده، غيّر قيمته لاسم تاني (جرّب reassignment)',
+      'اطبعه بـ console.log(heroName)'
+    ],
+    hint: 'let heroName = "اسمك"; ... بعدين heroName = "اسم تاني"; ... console.log(heroName);',
+    starter: '// 1) عرّف heroName هنا\n\n\n// 2) غيّر قيمته لاسم تاني\n\n\n// 3) اطبعه\n',
+    probeVars: ['heroName'],
+    check: function (r) {
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      if (typeof r.values.heroName !== 'string' || r.values.heroName.length === 0) {
+        return { ok: false, msg: 'محتاج تعرّف let heroName وتحط فيه نص (اسم بين علامتي اقتباس).' };
+      }
+      if (r.logs.length === 0) return { ok: false, msg: 'متنساش تطبعه بـ console.log(heroName)' };
+      return { ok: true };
+    },
+    success: 'رائع! أول متغير رسمي بتعرّفه — وجرّبت تغيّر قيمته زي ما شرحنا بالظبط.'
+  },
+  {
+    id: 's4', badge: 'الخطوة ٤', title: 'الثوابت (const) ولماذا نتجنب var', type: 'code',
+    tasks: [
+      'عرّف ثابت heroClass وحط فيه نوع الشخصية (مثلاً "محارب" أو "ساحر")',
+      'اطبعه بـ console.log'
+    ],
+    hint: 'const heroClass = "..."; — لاحظ إنك مش هتغيّره تاني في نفس الكود.',
+    starter: '// عرّف const باسمه heroClass\n\n\nconsole.log(heroClass);\n',
+    probeVars: ['heroClass'],
+    check: function (r) {
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      if (typeof r.values.heroClass !== 'string' || r.values.heroClass.length === 0) {
+        return { ok: false, msg: 'محتاج تعرّف const heroClass وتحط فيه نص.' };
+      }
+      if (r.logs.length === 0) return { ok: false, msg: 'متنساش تطبعه بـ console.log(heroClass)' };
+      return { ok: true };
+    },
+    success: 'مظبوط! دلوقتي تعرف تفرّق بين let و const، وليه var بقت من الماضي.'
+  },
+  {
+    id: 's5', badge: 'الخطوة ٥', title: 'أنواع البيانات: نص، رقم، منطقي', type: 'code',
+    tasks: [
+      'عرّف let level وحط فيه رقم (من غير علامات اقتباس)',
+      'عرّف let isReady وحط فيه true أو false',
+      'اطبع النوعين باستخدام typeof للتأكد'
+    ],
+    hint: 'let level = 1; ... let isReady = true; ... console.log(typeof level, typeof isReady);',
+    starter: '// 1) رقم\n\n\n// 2) قيمة منطقية\n\n\n// 3) اطبع الأنواع بـ typeof\n',
+    probeVars: ['level', 'isReady'],
+    check: function (r) {
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      if (typeof r.values.level !== 'number') return { ok: false, msg: 'محتاج let level يساوي رقم بدون علامات اقتباس.' };
+      if (typeof r.values.isReady !== 'boolean') return { ok: false, msg: 'محتاج let isReady يساوي true أو false (من غير علامات اقتباس).' };
+      if (r.logs.length === 0) return { ok: false, msg: 'اطبع النتيجة بـ console.log عشان تتأكد من النوع.' };
+      return { ok: true };
+    },
+    success: 'تمام! بقيت تفرّق بوضوح بين String و Number و Boolean.'
+  },
+  {
+    id: 's6', badge: 'الخطوة ٦', title: 'undefined و null — الفرق اللي كتير بيتلخبطوا فيه', type: 'code',
+    tasks: [
+      'عرّف let questItem من غير ما تديله قيمة خالص',
+      'اطبع typeof questItem — المفروض تشوف undefined'
+    ],
+    hint: 'let questItem;\nconsole.log(typeof questItem);',
+    starter: '// عرّف questItem من غير قيمة\n\n\n// اطبع typeof questItem\n',
+    check: function (r, code) {
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      if (!/questItem/.test(code)) return { ok: false, msg: 'لازم تستخدم اسم المتغير questItem بالظبط.' };
+      var hasUndefinedLog = r.logs.some(function (l) { return l.indexOf('undefined') !== -1; });
+      if (!hasUndefinedLog) return { ok: false, msg: 'اطبع typeof questItem وشوف هل النتيجة undefined؟' };
+      return { ok: true };
+    },
+    success: 'مظبوط! ودلوقتي تعرف تفرّق بين undefined (JS حطتها) و null (إنت حطيتها).'
+  },
+  {
+    id: 's7', badge: 'الخطوة ٧', title: 'العمليات الحسابية والمقارنة', type: 'code',
+    tasks: [
+      'عندك let price = 100; جاهز في المحرر',
+      'اعمل خصم: اطرح منه 20 على نفس المتغير (price -= 20)',
+      'قارن price === 80 واطبع الناتج بـ console.log'
+    ],
+    hint: 'price -= 20;\nconsole.log(price === 80);',
+    starter: 'let price = 100;\n\n// اعمل الخصم هنا\n\n\n// قارن واطبع الناتج\n',
+    probeVars: ['price'],
+    check: function (r) {
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      if (r.values.price !== 80) return { ok: false, msg: 'قيمة price المفروض تبقى 80 بعد الخصم. راجع عملية الطرح.' };
+      var hasTrue = r.logs.some(function (l) { return l.indexOf('true') !== -1; });
+      if (!hasTrue) return { ok: false, msg: 'اطبع نتيجة المقارنة price === 80 بـ console.log.' };
+      return { ok: true };
+    },
+    success: 'عاش! بقيت تحسب وتقارن زي المحترفين — وتعرف تتجنب فخ الـ Type Coercion.'
+  },
+  {
+    id: 's8', badge: 'الخطوة ٨', title: 'Template Literals — أذكى طريقة لدمج النصوص', type: 'code',
+    tasks: [
+      'عندك name و level و health جاهزين في المحرر',
+      'اعمل متغير جديد status وحط فيه جملة كاملة باستخدام Template Literal تجمع التلاتة',
+      'اطبع status'
+    ],
+    hint: 'استخدم backtick ` مش علامة اقتباس عادية، وحط كل متغير جوا ${ }',
+    starter: 'const name = "Zero";\nconst level = 7;\nconst health = 85;\n\n// اعمل status هنا باستخدام Template Literal\n\n\nconsole.log(status);\n',
+    probeVars: ['status'],
+    check: function (r) {
+      if (r.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + r.error };
+      var s = r.values.status;
+      if (typeof s !== 'string' || s.length === 0) return { ok: false, msg: 'محتاج تعرّف status وتحط فيه Template Literal (بين backticks).' };
+      if (s.indexOf('Zero') === -1 || s.indexOf('7') === -1 || s.indexOf('85') === -1) {
+        return { ok: false, msg: 'الجملة لازم تحتوي على الثلاثة: الاسم والمستوى والصحة.' };
+      }
+      return { ok: true };
+    },
+    success: 'ممتاز! Template Literals هتستخدمها في كل مشروع تقريبًا من هنا لآخر الكورس.'
+  },
+  {
+    id: 's9', badge: 'الخطوة ٩', title: 'تحدي: دور على الأخطاء وصلّحها 🐛', type: 'code',
+    tasks: [
+      'شغّل الكود، واقرا رسالة الخطأ في الـ Console كويس',
+      'صلّح غلطة واحدة بس في كل مرة، وشغّل تاني',
+      'كمّل لحد ما الناتج يبقى بالظبط: البطل: Zero / المستوى: 6 / جاهز للمعركة: true'
+    ],
+    hint: 'التلات أخطاء كلها بتدور حول: حالة الحروف في أسماء المتغيرات، و = بدل ===.',
+    starter:
+      'let heroName = "Zero";\n' +
+      'let Level = 6;\n' +
+      'let isReady = true;\n\n' +
+      'console.log(`البطل: ${heroname}`);\n\n' +
+      'if (isReady = false) {\n' +
+      '  console.log("مش جاهز للمعركة");\n' +
+      '}\n\n' +
+      'console.log(`المستوى: ${level}`);\n' +
+      'console.log(`جاهز للمعركة: ${isReady}`);\n',
+    check: function (r) {
+      var expected = ['البطل: Zero', 'المستوى: 6', 'جاهز للمعركة: true'];
+      if (r.error) {
+        return { ok: false, msg: 'لسه فيه خطأ بيوقف الكود:\n' + r.error + '\nراجع أسماء المتغيرات — JS حساسة لحالة الحروف.' };
+      }
+      var logs = r.logs.map(function (l) { return l.trim(); });
+      if (logs.length === 3 && logs[0] === expected[0] && logs[1] === expected[1] && logs[2] === expected[2]) {
+        return { ok: true };
+      }
+      if (logs[2] && logs[2].indexOf('false') !== -1) {
+        return { ok: false, msg: 'قريب جداً! المشكلة في شرط الـ if بتاع isReady — استخدم === مش = للمقارنة.' };
+      }
+      return { ok: false, msg: 'لسه مش مظبوط 100%. الناتج المطلوب بالظبط:\nالبطل: Zero\nالمستوى: 6\nجاهز للمعركة: true' };
+    },
+    success: 'محترف! لقيت التلات أخطاء بنفسك — دي بالظبط المهارة اللي بتفرّق مبرمج مبتدئ عن مبرمج شاطر.'
+  },
+  {
+    id: 's10', badge: 'الخطوة ١٠', title: 'اختبار الدرس النهائي 🏁', type: 'quiz',
+    tasks: [], hint: '',
+    questions: [
+      {
+        q: 'أنهي طريقة صح لتعريف متغير قيمته مش هتتغير أبداً في البرنامج؟',
+        options: ['let x = 5;', 'const x = 5;', 'var x = 5;', 'x = 5;'],
+        correct: 1
+      },
+      {
+        q: 'typeof null بيرجع إيه في JavaScript؟',
+        options: ['"null"', '"undefined"', '"object"', '"boolean"'],
+        correct: 2
+      },
+      {
+        q: 'الفرق الحقيقي بين == و === إيه؟',
+        options: [
+          '== بتقارن القيمة بس، === بتقارن القيمة والنوع مع بعض',
+          '=== أبطأ في التنفيذ من ==',
+          'مفيش فرق حقيقي بينهم',
+          '== بيشتغل مع الأرقام بس'
+        ],
+        correct: 0
+      },
+      {
+        q: 'الشكل الصح لـ Template Literal؟',
+        options: ['"مرحبا " + name', '`مرحبا ${name}`', "'مرحبا $name'", '(مرحبا, name)'],
+        correct: 1
+      },
+      {
+        q: 'let score; console.log(score); — هيطبع إيه بالظبط؟',
+        options: ['0', 'null', 'undefined', 'Error'],
+        correct: 2
+      }
+    ]
+  }
+];
+
+/* ══════════════ محرّك الخطوات (State + Render) ══════════════ */
+var currentIndex = 0;
+var editor = document.getElementById('codeEditor');
+var lnDiv = document.getElementById('lineNums');
+var consoleBody = document.getElementById('consoleBody');
+var wsBody = document.getElementById('wsBody');
+var quizAnswers = {};
+
+function doneKey(id) { return 'px_js_gs_done_' + id; }
+function codeKey(id) { return 'px_js_gs_code_' + id; }
+function isDone(id) { return localStorage.getItem(doneKey(id)) === '1'; }
+function setDone(id) { localStorage.setItem(doneKey(id), '1'); }
+
+function updateDots() {
+  var track = document.getElementById('progressTrack');
+  track.innerHTML = '';
+  STEPS.forEach(function (step, i) {
+    var dot = document.createElement('div');
+    dot.className = 'prog-dot' + (isDone(step.id) ? ' done' : '') + (i === currentIndex ? ' current' : '');
+    track.appendChild(dot);
+  });
+}
+
+function updateLN() {
+  var n = editor.value.split('\n').length;
+  var out = '';
+  for (var i = 1; i <= n; i++) out += i + '<br>';
+  lnDiv.innerHTML = out;
+}
+
+function saveCode() {
+  var step = STEPS[currentIndex];
+  if (step.type === 'code') localStorage.setItem(codeKey(step.id), editor.value);
+}
+
+function resetCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return;
+  if (!confirm('إعادة ضبط الكود للنسخة الأصلية؟')) return;
+  editor.value = step.starter;
+  localStorage.removeItem(codeKey(step.id));
+  updateLN();
+  resetConsole();
+}
+
+function resetConsole() {
+  consoleBody.innerHTML = '<div class="console-placeholder">اكتب كودك، واضغط ▶ تشغيل عشان تشوف النتيجة هنا...</div>';
+}
+function clearConsoleManual() { resetConsole(); }
+
+function renderConsole(result) {
+  consoleBody.innerHTML = '';
+  if (result.logs.length === 0 && !result.error) {
+    resetConsole();
+    return;
+  }
+  result.logs.forEach(function (l) {
+    var d = document.createElement('div');
+    d.className = 'console-line';
+    d.textContent = l;
+    consoleBody.appendChild(d);
+  });
+  if (result.error) {
+    var e = document.createElement('div');
+    e.className = 'console-error';
+    e.textContent = '⛔ ' + result.error;
+    consoleBody.appendChild(e);
+  }
+}
+
+function runCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return null;
+  var result = runSandbox(editor.value, step.probeVars || []);
+  renderConsole(result);
+  return result;
+}
+
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || 'ok') + ' show';
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.classList.remove('show'); }, 4200);
+}
+
+function checkStep() {
+  var step = STEPS[currentIndex];
+  if (step.type === 'quiz') { gradeQuiz(step); return; }
+  var result = runCode();
+  var verdict = step.check(result, editor.value);
+  if (verdict.ok) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast(step.success || 'تمام! كمّل للي بعده 👍', 'ok');
+  } else {
+    toast(verdict.msg || 'حاول تاني، راجع التعليمات.', 'err');
+  }
+}
+
+function renderTaskList(tasks) {
+  var el = document.getElementById('taskList');
+  if (!tasks || !tasks.length) { el.innerHTML = ''; return; }
+  var html = '<div class="task-list-title">المطلوب في الخطوة دي</div>';
+  tasks.forEach(function (t, i) {
+    html += '<div class="task-item"><div class="task-num">' + (ARABIC_NUM[i + 1] || (i + 1)) + '</div><div>' + t + '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+function renderQuiz(step) {
+  var wrap = document.getElementById('quizContainer');
+  var html = '';
+  step.questions.forEach(function (q, qi) {
+    html += '<div class="quiz-q" id="quizQ' + qi + '">';
+    html += '<div class="quiz-q-title">' + (ARABIC_NUM[qi + 1] || (qi + 1)) + '. ' + q.q + '</div>';
+    q.options.forEach(function (opt, oi) {
+      html += '<label class="quiz-opt"><input type="radio" name="qz' + qi + '" value="' + oi + '" onchange="quizAnswers[' + qi + ']=' + oi + '"> <span>' + opt + '</span></label>';
+    });
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function gradeQuiz(step) {
+  var score = 0;
+  step.questions.forEach(function (q, qi) {
+    var qEl = document.getElementById('quizQ' + qi);
+    qEl.classList.remove('correct', 'wrong');
+    if (quizAnswers[qi] === q.correct) { qEl.classList.add('correct'); score++; }
+    else if (quizAnswers[qi] !== undefined) { qEl.classList.add('wrong'); }
+  });
+  if (score === step.questions.length) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast('🏆 ' + score + '/' + step.questions.length + ' — ممتاز! الدرس خلص، يلا للمشروع العملي.', 'ok');
+  } else {
+    toast('حصلت على ' + score + '/' + step.questions.length + ' — راجع الأسئلة المعلّمة باللون الوردي وحاول تاني.', 'err');
+  }
+}
+
+function finishLesson() {
+  localStorage.setItem('px-js-getting-started', 'done');
+  window.location.href = 'projects/character-card/step1.html';
+}
+
+function renderStep(i) {
+  currentIndex = i;
+  var step = STEPS[i];
+  document.getElementById('stepLabel').textContent = (i + 1) + '/' + STEPS.length;
+  updateDots();
+  document.getElementById('insBadge').textContent = step.badge;
+  document.getElementById('insTitle').textContent = step.title;
+  var body = document.getElementById('insBody');
+  body.innerHTML = '';
+  body.appendChild(document.getElementById('tpl-' + step.id).content.cloneNode(true));
+  renderTaskList(step.tasks);
+  var hintEl = document.getElementById('hintBox');
+  if (step.hint) { hintEl.style.display = 'block'; hintEl.innerHTML = '<strong>تلميح:</strong> ' + step.hint; }
+  else { hintEl.style.display = 'none'; }
+
+  var runBtn = document.getElementById('runBtn');
+  var checkBtn = document.getElementById('checkBtn');
+
+  if (step.type === 'quiz') {
+    wsBody.classList.add('quiz-mode');
+    quizAnswers = {};
+    renderQuiz(step);
+    runBtn.style.display = 'none';
+    checkBtn.textContent = '✓ تحقق من الإجابات';
+  } else {
+    wsBody.classList.remove('quiz-mode');
+    runBtn.style.display = 'inline-flex';
+    checkBtn.textContent = '✓ تحقق من الخطوة';
+    var saved = localStorage.getItem(codeKey(step.id));
+    editor.value = (saved !== null) ? saved : step.starter;
+    updateLN();
+    resetConsole();
+  }
+
+  document.getElementById('prevBtn').disabled = (i === 0);
+  var nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.toggle('visible', isDone(step.id));
+  nextBtn.textContent = (i === STEPS.length - 1) ? 'إنهاء الدرس 🚀' : 'التالي ←';
+
+  localStorage.setItem('px_js_gs_last', i);
+}
+
+function goPrev() { if (currentIndex > 0) renderStep(currentIndex - 1); }
+function goNext() {
+  if (currentIndex === STEPS.length - 1) { finishLesson(); return; }
+  if (currentIndex < STEPS.length - 1) renderStep(currentIndex + 1);
+}
+
+/* ══════════════ الإعداد الأولي ══════════════ */
+var runTimer;
+editor.addEventListener('input', function () {
+  updateLN(); saveCode();
+  clearTimeout(runTimer);
+  runTimer = setTimeout(runCode, 700);
+});
+editor.addEventListener('scroll', function () { lnDiv.scrollTop = editor.scrollTop; });
+editor.addEventListener('keydown', function (e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  var s = editor.selectionStart, en = editor.selectionEnd;
+  editor.value = editor.value.slice(0, s) + '  ' + editor.value.slice(en);
+  editor.selectionStart = editor.selectionEnd = s + 2;
+  updateLN(); saveCode();
+});
+
+(function init() {
+  var start = 0;
+  for (var i = 0; i < STEPS.length; i++) { if (!isDone(STEPS[i].id)) { start = i; break; } if (i === STEPS.length - 1) start = i; }
+  renderStep(start);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أساسيات HTML | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon:#39ff14; --neon-dim:rgba(57,255,20,0.08);
+            --bg:#080a0d; --card:#0f1219; --card2:#141b24;
+            --border:rgba(255,255,255,0.07); --border-neon:rgba(57,255,20,0.25);
+            --text:#c9d1d9; --muted:#5a6478; --gold:#f7df1e; --blue:#58a6ff; --red:#ff4d4d;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;line-height:1.85;}
+
+        .header{background:rgba(8,10,13,.95);border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+        .logo{color:var(--neon);font-weight:800;font-size:1.1rem;}
+        .back-link{color:var(--muted);text-decoration:none;font-size:.85rem;border:1px solid var(--border);padding:5px 14px;border-radius:6px;transition:.3s;}
+        .back-link:hover{border-color:var(--neon);color:var(--neon);}
+
+        .hero{background:radial-gradient(ellipse at 50% 0%,rgba(57,255,20,.06) 0%,transparent 65%);text-align:center;padding:64px 24px 48px;border-bottom:1px solid var(--border);}
+        .lesson-pill{display:inline-block;background:var(--neon-dim);border:1px solid var(--border-neon);color:var(--neon);padding:4px 16px;border-radius:20px;font-size:.78rem;font-weight:700;letter-spacing:1px;margin-bottom:18px;}
+        .hero h1{font-size:2.1rem;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2;}
+        .hero h1 span{color:var(--neon);}
+        .hero p{color:var(--muted);font-size:1rem;max-width:540px;margin:0 auto;}
+
+        .container{max-width:860px;margin:0 auto;padding:44px 28px 80px;}
+
+        .section-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden;}
+        .section-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--neon);border-radius:0 16px 16px 0;}
+        .step-label{font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--neon);margin-bottom:8px;text-transform:uppercase;}
+        .section-card h2{color:#fff;font-size:1.35rem;font-weight:700;margin-bottom:14px;}
+        .section-card h3{color:var(--neon);font-size:1.05rem;font-weight:700;margin:20px 0 10px;}
+        .section-card h4{color:var(--gold);font-size:.95rem;font-weight:700;margin:14px 0 8px;}
+        .section-card p{color:var(--text);margin-bottom:12px;}
+
+        .explain-box{background:var(--card2);border-right:3px solid var(--neon);border-radius:0 10px 10px 0;padding:16px 18px;margin:14px 0;font-size:.93rem;}
+        .explain-box strong{color:var(--neon);}
+
+        /* CODE ANNOTATED */
+        .code-wrap{margin:16px 0;}
+        .code-title{background:var(--card2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:7px 16px;font-family:'Fira Code',monospace;font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+        .code-title .dot{width:8px;height:8px;border-radius:50%;}
+        .code-block{background:#0a0d12;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;font-family:'Fira Code',monospace;font-size:.87rem;direction:ltr;overflow-x:auto;}
+        .code-line{display:flex;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.03);}
+        .code-line:last-child{border-bottom:none;}
+        .code-line:hover{background:rgba(57,255,20,.03);}
+        .line-num{min-width:42px;padding:9px 10px;text-align:right;color:var(--muted);font-size:.78rem;user-select:none;border-left:1px solid rgba(255,255,255,.04);flex-shrink:0;}
+        .line-code{padding:9px 16px;flex:1;color:#abb2bf;white-space:pre;}
+        .line-note{padding:9px 16px 9px 0;font-size:.78rem;color:var(--muted);font-family:'Cairo',sans-serif;direction:rtl;min-width:180px;max-width:240px;flex-shrink:0;line-height:1.4;border-right:1px solid rgba(57,255,20,.1);}
+        .line-note.hi{color:var(--neon);}
+
+        .t{color:#e06c75;} .a{color:#e5c07b;} .v{color:#98c379;} .c{color:#5c6370;font-style:italic;} .tx{color:#abb2bf;} .k{color:#c678dd;}
+
+        /* TAG CARD GRID */
+        .tags-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0;}
+        .tag-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:.25s;}
+        .tag-card:hover{border-color:var(--border-neon);}
+        .tag-card .tag-name{font-family:'Fira Code',monospace;font-size:.92rem;color:var(--neon);margin-bottom:6px;font-weight:700;}
+        .tag-card .tag-desc{font-size:.85rem;color:var(--text);margin-bottom:4px;}
+        .tag-card .tag-example{font-family:'Fira Code',monospace;font-size:.78rem;color:var(--muted);margin-top:6px;direction:ltr;text-align:left;}
+
+        .note{border-right:3px solid;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.91rem;}
+        .note.warn{border-color:var(--gold);background:rgba(247,223,30,.06);}
+        .note.info{border-color:var(--blue);background:rgba(88,166,255,.06);}
+        .note.good{border-color:var(--neon);background:var(--neon-dim);}
+        .note.danger{border-color:var(--red);background:rgba(255,77,77,.06);}
+
+        /* LIVE EDITOR */
+        .editor-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+        @media(max-width:640px){.editor-wrap{grid-template-columns:1fr;}}
+        .editor-wrap textarea{width:100%;height:280px;background:#0a0d12;color:#abb2bf;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Fira Code',monospace;font-size:.85rem;outline:none;resize:none;direction:ltr;text-align:left;}
+        .editor-wrap textarea:focus{border-color:var(--neon);}
+        .editor-label{font-size:.78rem;color:var(--muted);margin-bottom:6px;font-weight:600;}
+        .editor-wrap iframe{width:100%;height:280px;background:#fff;border:1px solid var(--border);border-radius:8px;}
+
+        /* NESTING VISUAL */
+        .nest-visual{font-family:'Fira Code',monospace;font-size:.85rem;direction:ltr;background:#0a0d12;border:1px solid var(--border);border-radius:10px;padding:20px;margin:14px 0;line-height:2;}
+        .nest-1{color:#e06c75;}
+        .nest-2{color:#e5c07b;margin-right:20px;display:block;}
+        .nest-3{color:#98c379;margin-right:40px;display:block;}
+        .nest-note{color:#5c6370;font-style:italic;}
+
+        /* COMPARE TABLE */
+        .compare-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88rem;}
+        .compare-table th{background:var(--card2);color:var(--neon);padding:10px 14px;border:1px solid var(--border);text-align:right;}
+        .compare-table td{padding:9px 14px;border:1px solid var(--border);}
+        .compare-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+
+        /* QUIZ */
+        .quiz-section{background:var(--card);border:2px solid var(--border-neon);border-radius:16px;padding:28px 32px;margin-top:40px;}
+        .quiz-section h2{color:var(--neon);font-size:1.3rem;margin-bottom:6px;}
+        .quiz-section>p{color:var(--muted);font-size:.88rem;margin-bottom:24px;}
+        .q-card{background:var(--card2);border-radius:10px;padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
+        .q-card p{font-weight:600;color:#fff;margin-bottom:12px;font-size:.95rem;}
+        .q-card code{background:rgba(57,255,20,.1);color:var(--neon);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem;}
+        .q-code{background:#0a0d12;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:'Fira Code',monospace;font-size:.82rem;direction:ltr;text-align:left;color:#abb2bf;margin:10px 0;}
+        .q-options label{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;font-size:.91rem;transition:.2s;}
+        .q-options label:hover{border-color:var(--neon);background:var(--neon-dim);}
+        .q-options input[type=radio]{accent-color:var(--neon);}
+        .btn-quiz{background:var(--neon);color:#000;border:none;padding:13px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;transition:.3s;}
+        .btn-quiz:hover{opacity:.85;}
+        #quiz-result{margin-top:14px;padding:14px;border-radius:8px;text-align:center;font-weight:700;display:none;}
+        .btn-finish{display:block;background:var(--neon);color:#000;border:none;padding:15px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;width:100%;margin-top:20px;text-align:center;text-decoration:none;transition:.3s;}
+        .btn-finish:hover{opacity:.85;}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-link">← القائمة</a>
+</header>
+
+<section class="hero">
+    <div class="lesson-pill">LESSON 02 · HTML BASICS</div>
+    <h1>أساسيات HTML<br><span>من لا شيء إلى صفحة كاملة</span></h1>
+    <p>تعلّم كل العناصر الأساسية في HTML وكيف تتداخل معاً لبناء هيكل صفحة ويب احترافي.</p>
+</section>
+
+<div class="container">
+
+<!-- ══ 1. Headings ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الأول</div>
+    <h2>📰 العناوين: h1 حتى h6</h2>
+
+    <p>HTML توفر <strong>ستة مستويات من العناوين</strong> من h1 (الأكبر والأهم) إلى h6 (الأصغر والأقل أهمية). فكر فيها كعناوين كتاب: الفصل (h1)، المبحث (h2)، العنصر الفرعي (h3)، وهكذا.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> headings.html</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;h1&gt;</span><span class="tx">عنوان من المستوى 1 — الأكبر</span><span class="t">&lt;/h1&gt;</span></div><div class="line-note hi">الأكبر والأهم — يجب أن يكون فريداً في الصفحة</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;h2&gt;</span><span class="tx">عنوان من المستوى 2</span><span class="t">&lt;/h2&gt;</span></div><div class="line-note">عنوان قسم رئيسي</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="t">&lt;h3&gt;</span><span class="tx">عنوان من المستوى 3</span><span class="t">&lt;/h3&gt;</span></div><div class="line-note">عنوان قسم فرعي</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="t">&lt;h4&gt;</span><span class="tx">عنوان من المستوى 4</span><span class="t">&lt;/h4&gt;</span></div><div class="line-note">عنوان أصغر</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="t">&lt;h5&gt;</span><span class="tx">عنوان من المستوى 5</span><span class="t">&lt;/h5&gt;</span></div><div class="line-note">نادر الاستخدام</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code"><span class="t">&lt;h6&gt;</span><span class="tx">عنوان من المستوى 6</span><span class="t">&lt;/h6&gt;</span></div><div class="line-note">الأصغر — نادر جداً</div></div>
+        </div>
+    </div>
+
+    <div class="explain-box">
+        <strong>قاعدة SEO مهمة:</strong> لا تستخدم العناوين لتكبير النص! المتصفح يعطيها حجماً افتراضياً. استخدمها لتحديد <em>أهمية</em> المحتوى وترتيبه المنطقي. محركات البحث تقرأ h1 وتفهم منها موضوع صفحتك الرئيسي.
+    </div>
+
+    <div class="note warn">
+        <strong>⚠️ خطأ شائع:</strong> بعض المبتدئين يستخدمون <code>&lt;h1&gt;</code> لكل شيء ظناً أنه "أكبر وأجمل". هذا خطأ — استخدم CSS لتغيير الحجم، واستخدم العناوين بترتيبها الصحيح.
+    </div>
+
+    <h3>🛠️ جرب بنفسك:</h3>
+    <div class="editor-wrap">
+        <div>
+            <div class="editor-label">اكتب الكود هنا:</div>
+            <textarea id="ed1" oninput="run('ed1','pv1')">&lt;h1&gt;اسم الموقع الرئيسي&lt;/h1&gt;
+&lt;h2&gt;قسم: مقالاتي&lt;/h2&gt;
+&lt;h3&gt;المقال الأول&lt;/h3&gt;
+&lt;p&gt;هذا هو محتوى المقال...&lt;/p&gt;
+&lt;h3&gt;المقال الثاني&lt;/h3&gt;
+&lt;p&gt;محتوى المقال الثاني هنا.&lt;/p&gt;</textarea>
+        </div>
+        <div>
+            <div class="editor-label">النتيجة المباشرة:</div>
+            <iframe id="pv1"></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- ══ 2. Paragraphs & Text ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثاني</div>
+    <h2>📝 الفقرات وتنسيق النص</h2>
+
+    <p>النصوص هي جوهر أي موقع. HTML توفر عدة عناصر للتعامل مع النصوص بشكل دلالي (أي كل عنصر له معنى محدد).</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> text-elements.html</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">هذه فقرة نصية عادية. المتصفح يضيف مسافة فوقها وتحتها تلقائياً.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note hi">p = Paragraph. أكثر tag استخداماً للنص</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">هذه الكلمة </span><span class="t">&lt;strong&gt;</span><span class="tx">مهمة جداً</span><span class="t">&lt;/strong&gt;</span><span class="tx"> في الجملة.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">strong = غامق + يعني أهمية دلالية</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">هذا النص </span><span class="t">&lt;em&gt;</span><span class="tx">مؤكد عليه</span><span class="t">&lt;/em&gt;</span><span class="tx"> بالمائل.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">em = Emphasis. مائل + يعني تأكيداً</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">كود برمجي: </span><span class="t">&lt;code&gt;</span><span class="tx">console.log("hello")</span><span class="t">&lt;/code&gt;</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">code = لعرض الكود بخط monospace</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">السطر الأول</span><span class="t">&lt;br&gt;</span><span class="tx">السطر الثاني في نفس الفقرة</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">br = line break. ينزل سطراً بدون فقرة جديدة</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code"><span class="t">&lt;hr&gt;</span></div><div class="line-note">خط أفقي فاصل — self-closing لا يحتاج إغلاق</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">نص </span><span class="t">&lt;mark&gt;</span><span class="tx">مظلل</span><span class="t">&lt;/mark&gt;</span><span class="tx"> بالأصفر.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">mark = تظليل مثل الفلوماستر الأصفر</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">السعر الأصلي: </span><span class="t">&lt;del&gt;</span><span class="tx">100 ريال</span><span class="t">&lt;/del&gt;</span><span class="tx"> الآن 80 ريال</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">del = نص مشطوب (محذوف)</div></div>
+        </div>
+    </div>
+
+    <table class="compare-table">
+        <tr><th>العنصر</th><th>الشكل في المتصفح</th><th>المعنى الدلالي</th></tr>
+        <tr><td><code>&lt;strong&gt;</code></td><td><strong>نص غامق</strong></td><td>محتوى مهم ودلالي</td></tr>
+        <tr><td><code>&lt;b&gt;</code></td><td><b>نص غامق</b></td><td>غامق فقط — بدون أهمية دلالية</td></tr>
+        <tr><td><code>&lt;em&gt;</code></td><td><em>نص مائل</em></td><td>تأكيد دلالي</td></tr>
+        <tr><td><code>&lt;i&gt;</code></td><td><i>نص مائل</i></td><td>مائل فقط — بدون تأكيد دلالي</td></tr>
+        <tr><td><code>&lt;mark&gt;</code></td><td><mark>نص مظلل</mark></td><td>نص مميز أو ذو أهمية</td></tr>
+        <tr><td><code>&lt;del&gt;</code></td><td><del>نص محذوف</del></td><td>محتوى تم حذفه</td></tr>
+    </table>
+
+    <div class="note info">
+        <strong>strong مقابل b:</strong> رغم أنهما يبدوان متطابقَين في المتصفح، إلا أن <code>&lt;strong&gt;</code> له معنى دلالي (يقول لمحركات البحث: هذا مهم). استخدم دائماً <code>&lt;strong&gt;</code> للمحتوى المهم.
+    </div>
+
+    <h3>🛠️ جرب بنفسك:</h3>
+    <div class="editor-wrap">
+        <div>
+            <div class="editor-label">اكتب الكود هنا:</div>
+            <textarea id="ed2" oninput="run('ed2','pv2')">&lt;p&gt;مرحباً بك في &lt;strong&gt;PhineX Academy&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;تعلّم &lt;em&gt;HTML&lt;/em&gt; و &lt;em&gt;CSS&lt;/em&gt; من الصفر.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;السعر الأصلي: &lt;del&gt;200 ريال&lt;/del&gt;&lt;br&gt;
+السعر الآن: &lt;mark&gt;100 ريال فقط!&lt;/mark&gt;&lt;/p&gt;</textarea>
+        </div>
+        <div><div class="editor-label">النتيجة:</div><iframe id="pv2"></iframe></div>
+    </div>
+</div>
+
+<!-- ══ 3. Lists ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثالث</div>
+    <h2>📋 القوائم: ul و ol و dl</h2>
+
+    <p>القوائم من أكثر عناصر HTML استخداماً. تنقسم إلى ثلاثة أنواع رئيسية. كل نوع يُستخدم في حالة محددة.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> lists.html</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!-- النوع 1: قائمة غير مرتبة (Unordered List) --&gt;</span></div><div class="line-note">ul = Unordered List = نقاط</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;ul&gt;</span></div><div class="line-note">بداية القائمة — كل عنصر بنقطة</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">  <span class="t">&lt;li&gt;</span><span class="tx">HTML</span><span class="t">&lt;/li&gt;</span></div><div class="line-note hi">li = List Item. يجب أن يكون داخل ul أو ol</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code">  <span class="t">&lt;li&gt;</span><span class="tx">CSS</span><span class="t">&lt;/li&gt;</span></div><div class="line-note">عنصر ثانٍ</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">  <span class="t">&lt;li&gt;</span><span class="tx">JavaScript</span><span class="t">&lt;/li&gt;</span></div><div class="line-note">عنصر ثالث</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code"><span class="t">&lt;/ul&gt;</span></div><div class="line-note">إغلاق ul</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="c">&lt;!-- النوع 2: قائمة مرتبة (Ordered List) --&gt;</span></div><div class="line-note">ol = Ordered List = أرقام</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code"><span class="t">&lt;ol&gt;</span></div><div class="line-note">بداية القائمة المرقمة تلقائياً</div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">  <span class="t">&lt;li&gt;</span><span class="tx">تعلّم HTML أولاً</span><span class="t">&lt;/li&gt;</span></div><div class="line-note">سيظهر كـ "1." تلقائياً</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">  <span class="t">&lt;li&gt;</span><span class="tx">ثم CSS</span><span class="t">&lt;/li&gt;</span></div><div class="line-note">سيظهر كـ "2." تلقائياً</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">  <span class="t">&lt;li&gt;</span><span class="tx">أخيراً JavaScript</span><span class="t">&lt;/li&gt;</span></div><div class="line-note">سيظهر كـ "3."</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code"><span class="t">&lt;/ol&gt;</span></div><div class="line-note">إغلاق ol</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code"><span class="c">&lt;!-- قائمة متداخلة (Nested List) --&gt;</span></div><div class="line-note">يمكن وضع قائمة داخل قائمة</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code"><span class="t">&lt;ul&gt;</span></div><div class="line-note">القائمة الخارجية</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">  <span class="t">&lt;li&gt;</span><span class="tx">الواجهة الأمامية</span></div><div class="line-note">عنصر رئيسي (سيتبعه ul آخر)</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code">    <span class="t">&lt;ul&gt;</span></div><div class="line-note hi">قائمة فرعية داخل li</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">      <span class="t">&lt;li&gt;</span><span class="tx">HTML</span><span class="t">&lt;/li&gt;</span></div><div class="line-note">عنصر فرعي</div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code">      <span class="t">&lt;li&gt;</span><span class="tx">CSS</span><span class="t">&lt;/li&gt;</span></div><div class="line-note">عنصر فرعي</div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code">    <span class="t">&lt;/ul&gt;</span></div><div class="line-note">إغلاق القائمة الفرعية</div></div>
+            <div class="code-line"><div class="line-num">22</div><div class="line-code">  <span class="t">&lt;/li&gt;</span></div><div class="line-note">إغلاق li الخارجي</div></div>
+            <div class="code-line"><div class="line-num">23</div><div class="line-code"><span class="t">&lt;/ul&gt;</span></div><div class="line-note">إغلاق القائمة الخارجية</div></div>
+        </div>
+    </div>
+
+    <div class="explain-box">
+        <strong>متى تستخدم ul مقابل ol؟</strong><br>
+        ✅ <code>&lt;ul&gt;</code> — عندما الترتيب لا يهم (قائمة مكونات، قائمة أصدقاء، قائمة مميزات)<br>
+        ✅ <code>&lt;ol&gt;</code> — عندما الترتيب مهم (خطوات وصفة طبخ، مراحل تعلّم، ترتيب نتائج)
+    </div>
+
+    <h3>🛠️ جرب القوائم:</h3>
+    <div class="editor-wrap">
+        <div><div class="editor-label">اكتب هنا:</div>
+        <textarea id="ed3" oninput="run('ed3','pv3')">&lt;h3&gt;مهاراتي:&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;HTML وCSS&lt;/li&gt;
+  &lt;li&gt;JavaScript&lt;/li&gt;
+  &lt;li&gt;التصميم&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;خطة التعلم:&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;إتقان HTML&lt;/li&gt;
+  &lt;li&gt;تعلّم CSS&lt;/li&gt;
+  &lt;li&gt;JavaScript&lt;/li&gt;
+&lt;/ol&gt;</textarea></div>
+        <div><div class="editor-label">النتيجة:</div><iframe id="pv3"></iframe></div>
+    </div>
+</div>
+
+<!-- ══ 4. Links & Images ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الرابع</div>
+    <h2>🔗 الروابط والصور — العمود الفقري للويب</h2>
+
+    <h3>الروابط: &lt;a&gt;</h3>
+    <p>تاج <code>&lt;a&gt;</code> (اختصار Anchor = مرساة) يُنشئ الروابط. بدونه لن تكون الصفحات متصلة ببعضها.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> links.html</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!-- رابط خارجي --&gt;</span></div><div class="line-note">للمواقع الخارجية</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://google.com"</span><span class="t">&gt;</span><span class="tx">زيارة جوجل</span><span class="t">&lt;/a&gt;</span></div><div class="line-note hi">href = hypertext reference. يحدد الوجهة</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="c">&lt;!-- فتح في تبويب جديد --&gt;</span></div><div class="line-note">target="_blank" يفتح في Tab جديد</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://google.com"</span> <span class="a">target</span>=<span class="v">"_blank"</span><span class="t">&gt;</span><span class="tx">افتح في تبويب جديد</span><span class="t">&lt;/a&gt;</span></div><div class="line-note">_blank = في تبويب جديد منفصل</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code"><span class="c">&lt;!-- رابط داخلي (للملفات في نفس المجلد) --&gt;</span></div><div class="line-note">للتنقل بين صفحاتك</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"about.html"</span><span class="t">&gt;</span><span class="tx">صفحة عنّي</span><span class="t">&lt;/a&gt;</span></div><div class="line-note">يبحث عن about.html في نفس المجلد</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code"><span class="c">&lt;!-- رابط للإيميل --&gt;</span></div><div class="line-note">يفتح برنامج البريد الإلكتروني</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"mailto:ahmed@email.com"</span><span class="t">&gt;</span><span class="tx">راسلني</span><span class="t">&lt;/a&gt;</span></div><div class="line-note">mailto: يفتح الإيميل تلقائياً</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code"><span class="c">&lt;!-- رابط القفز لقسم في نفس الصفحة --&gt;</span></div><div class="line-note"># + id = قفز لقسم معين</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"#contact"</span><span class="t">&gt;</span><span class="tx">اذهب للتواصل</span><span class="t">&lt;/a&gt;</span></div><div class="line-note">يقفز للعنصر الذي لديه id="contact"</div></div>
+        </div>
+    </div>
+
+    <h3>الصور: &lt;img&gt;</h3>
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> images.html</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!-- صورة من الإنترنت --&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"https://example.com/photo.jpg"</span> <span class="a">alt</span>=<span class="v">"وصف الصورة"</span><span class="t">&gt;</span></div><div class="line-note hi">src = المسار. alt = النص البديل. لا تحتاج إغلاق</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="c">&lt;!-- صورة من نفس المجلد مع تحديد الحجم --&gt;</span></div><div class="line-note">صورة محلية على جهازك</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="t">&lt;img</span></div><div class="line-note">بداية tag الصورة</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">  <span class="a">src</span>=<span class="v">"images/profile.jpg"</span></div><div class="line-note">في مجلد images داخل مجلدك</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">  <span class="a">alt</span>=<span class="v">"صورة الملف الشخصي"</span></div><div class="line-note hi">alt إلزامي للـ SEO وإمكانية الوصول</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">  <span class="a">width</span>=<span class="v">"300"</span></div><div class="line-note">العرض بالـ pixel</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">  <span class="a">height</span>=<span class="v">"200"</span><span class="t">&gt;</span></div><div class="line-note">الارتفاع بالـ pixel</div></div>
+        </div>
+    </div>
+
+    <div class="explain-box">
+        <strong>لماذا alt مهم جداً؟</strong><br>
+        1️⃣ إذا لم تتحمل الصورة، يظهر alt بدلاً منها<br>
+        2️⃣ محركات البحث تقرأ alt لمعرفة موضوع الصورة<br>
+        3️⃣ التطبيقات المساعدة لذوي الاحتياجات الخاصة تقرأ alt بصوت عالٍ
+    </div>
+</div>
+
+<!-- ══ 5. Semantic Structure ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الخامس</div>
+    <h2>🏛️ التقسيم الدلالي للصفحة (Semantic HTML)</h2>
+
+    <p>HTML5 قدّمت عناصر <strong>دلالية</strong> (semantic) بدلاً من استخدام <code>&lt;div&gt;</code> لكل شيء. كل عنصر له معنى محدد يساعد المتصفحات ومحركات البحث.</p>
+
+    <div class="nest-visual">
+<span class="nest-1">&lt;html&gt;</span>
+<span class="nest-2">&lt;head&gt; ... &lt;/head&gt; <span class="nest-note">← المعلومات الخفية</span></span>
+<span class="nest-2">&lt;body&gt;</span>
+<span class="nest-3">&lt;header&gt; ... &lt;/header&gt; <span class="nest-note">← رأس الصفحة (اللوجو والقائمة)</span></span>
+<span class="nest-3">&lt;nav&gt; ... &lt;/nav&gt; <span class="nest-note">← قائمة التنقل</span></span>
+<span class="nest-3">&lt;main&gt; <span class="nest-note">← المحتوى الرئيسي (مرة واحدة فقط)</span></span>
+<span style="margin-right:60px;display:block;color:#98c379">&lt;section&gt; ... &lt;/section&gt; <span class="nest-note">← قسم موضوعي</span></span>
+<span style="margin-right:60px;display:block;color:#98c379">&lt;article&gt; ... &lt;/article&gt; <span class="nest-note">← مقال مستقل</span></span>
+<span style="margin-right:60px;display:block;color:#98c379">&lt;aside&gt; ... &lt;/aside&gt; <span class="nest-note">← محتوى جانبي</span></span>
+<span class="nest-3">&lt;/main&gt;</span>
+<span class="nest-3">&lt;footer&gt; ... &lt;/footer&gt; <span class="nest-note">← ذيل الصفحة</span></span>
+<span class="nest-2">&lt;/body&gt;</span>
+<span class="nest-1">&lt;/html&gt;</span>
+    </div>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> semantic-page.html — هيكل صفحة كاملة</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;header&gt;</span></div><div class="line-note hi">رأس الصفحة — يحتوي عادة اللوجو والناف</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code">  <span class="t">&lt;h1&gt;</span><span class="tx">اسم الموقع</span><span class="t">&lt;/h1&gt;</span></div><div class="line-note">اسم الموقع أو العلامة التجارية</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">  <span class="t">&lt;nav&gt;</span></div><div class="line-note">navigation — قائمة التنقل</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code">    <span class="t">&lt;ul&gt;</span></div><div class="line-note">القائمة كـ ul (أفضل ممارسة)</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">      <span class="t">&lt;li&gt;&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span><span class="t">&gt;</span><span class="tx">الرئيسية</span><span class="t">&lt;/a&gt;&lt;/li&gt;</span></div><div class="line-note">رابط في قائمة التنقل</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">      <span class="t">&lt;li&gt;&lt;a</span> <span class="a">href</span>=<span class="v">"#about"</span><span class="t">&gt;</span><span class="tx">عنّي</span><span class="t">&lt;/a&gt;&lt;/li&gt;</span></div><div class="line-note">رابط يقفز لقسم #about</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">    <span class="t">&lt;/ul&gt;</span></div><div class="line-note">إغلاق ul</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">  <span class="t">&lt;/nav&gt;</span></div><div class="line-note">إغلاق nav</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code"><span class="t">&lt;/header&gt;</span></div><div class="line-note">إغلاق header</div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code"><span class="t">&lt;main&gt;</span></div><div class="line-note hi">المحتوى الرئيسي — يجب أن يكون فريداً في الصفحة</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">  <span class="t">&lt;section</span> <span class="a">id</span>=<span class="v">"about"</span><span class="t">&gt;</span></div><div class="line-note">section = قسم موضوعي له id للقفز إليه</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">    <span class="t">&lt;h2&gt;</span><span class="tx">عنّي</span><span class="t">&lt;/h2&gt;</span></div><div class="line-note">عنوان القسم</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">    <span class="t">&lt;p&gt;</span><span class="tx">أنا مطور ويب...</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">محتوى القسم</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code">  <span class="t">&lt;/section&gt;</span></div><div class="line-note">إغلاق section</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code"><span class="t">&lt;/main&gt;</span></div><div class="line-note">إغلاق main</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code"><span class="t">&lt;footer&gt;</span></div><div class="line-note">ذيل الصفحة — حقوق النشر، روابط إضافية</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">  <span class="t">&lt;p&gt;</span><span class="tx">© 2025 اسمك. جميع الحقوق محفوظة.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">محتوى الفوتر</div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code"><span class="t">&lt;/footer&gt;</span></div><div class="line-note">إغلاق footer</div></div>
+        </div>
+    </div>
+
+    <div class="note good">
+        <strong>✅ لماذا Semantic HTML مهم؟</strong><br>
+        1. محركات البحث تفهم بنية صفحتك أفضل → ترتيب أعلى في النتائج<br>
+        2. أدوات إمكانية الوصول (Screen Readers) تعمل بشكل صحيح<br>
+        3. كودك أسهل في القراءة والصيانة لاحقاً
+    </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="quiz-section">
+    <h2>🧠 اختبر أساسياتك</h2>
+    <p>5 أسئلة تغطي كل ما تعلمته في هذا الدرس</p>
+
+    <div class="q-card">
+        <p>س1: ما هو الكود الصحيح لإنشاء رابط يفتح في تبويب جديد؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q1" value="w"> <code>&lt;a href="google.com" open="new"&gt;...</code></label>
+            <label><input type="radio" name="q1" value="c"> <code>&lt;a href="https://google.com" target="_blank"&gt;...</code></label>
+            <label><input type="radio" name="q1" value="w"> <code>&lt;link href="google.com"&gt;...</code></label>
+        </div>
+    </div>
+
+    <div class="q-card">
+        <p>س2: ما الفرق بين <code>&lt;ul&gt;</code> و <code>&lt;ol&gt;</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q2" value="w"> ul أكبر حجماً من ol</label>
+            <label><input type="radio" name="q2" value="c"> ul = قائمة بنقاط (غير مرتبة)، ol = قائمة مرقّمة (مرتبة)</label>
+            <label><input type="radio" name="q2" value="w"> لا فرق بينهما</label>
+        </div>
+    </div>
+
+    <div class="q-card">
+        <p>س3: لماذا يجب كتابة خاصية <code>alt</code> مع كل صورة؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q3" value="w"> لتكبير الصورة</label>
+            <label><input type="radio" name="q3" value="w"> لتحديد لون الصورة</label>
+            <label><input type="radio" name="q3" value="c"> لإمكانية الوصول والـ SEO، ويظهر إذا لم تتحمل الصورة</label>
+        </div>
+    </div>
+
+    <div class="q-card">
+        <p>س4: أي tag يُستخدم للمحتوى الرئيسي في الصفحة ويجب أن يكون فريداً؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q4" value="w"> <code>&lt;section&gt;</code></label>
+            <label><input type="radio" name="q4" value="c"> <code>&lt;main&gt;</code></label>
+            <label><input type="radio" name="q4" value="w"> <code>&lt;body&gt;</code></label>
+        </div>
+    </div>
+
+    <div class="q-card">
+        <p>س5: ما الناتج الظاهر للكود التالي؟</p>
+        <div class="q-code">&lt;p&gt;أنا &lt;strong&gt;مطور&lt;/strong&gt; ويب.&lt;/p&gt;</div>
+        <div class="q-options">
+            <label><input type="radio" name="q5" value="w"> النص "مطور" بلون أحمر</label>
+            <label><input type="radio" name="q5" value="c"> فقرة تحتوي كلمة "مطور" بخط غامق</label>
+            <label><input type="radio" name="q5" value="w"> النص كله بخط غامق</label>
+        </div>
+    </div>
+
+    <button class="btn-quiz" onclick="checkQuiz()">تحقق من إجاباتي ✅</button>
+    <div id="quiz-result"></div>
+    <a href="menu.html" class="btn-finish" id="finish-btn" style="display:none" onclick="saveProgress()">
+        ✅ إنهاء الدرس والعودة للقائمة
+    </a>
+</div>
+
+</div>
+
+<script>
+function run(edId, pvId) {
+    const code = document.getElementById(edId).value;
+    document.getElementById(pvId).srcdoc = `<style>body{font-family:sans-serif;padding:10px;direction:rtl;}</style>${code}`;
+}
+// Initialize all editors
+['ed1','ed2','ed3'].forEach((id,i)=>run(id,`pv${i+1}`));
+
+function checkQuiz() {
+    const ans = {q1:'c',q2:'c',q3:'c',q4:'c',q5:'c'};
+    let score=0;
+    for(const[q,a] of Object.entries(ans)){
+        const s=document.querySelector(`input[name="${q}"]:checked`);
+        if(s?.value===a) score++;
+    }
+    const total=Object.keys(ans).length;
+    const el=document.getElementById('quiz-result');
+    el.style.display='block';
+    if(score===total){
+        el.style.cssText='display:block;background:rgba(57,255,20,.1);color:#39ff14;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';
+        el.textContent='🏆 ممتاز! جميع الإجابات صحيحة. أنت مستعد للدرس التالي!';
+        document.getElementById('finish-btn').style.display='block';
+    } else {
+        el.style.cssText='display:block;background:rgba(255,77,77,.1);color:#ff4d4d;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';
+        el.textContent=`${score} من ${total} — راجع الأقسام المتعلقة بالأسئلة الخاطئة.`;
+    }
+}
+function saveProgress(){localStorage.setItem('lesson-html-basics','completed');}
+</script>
+</body>
+</html>

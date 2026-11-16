@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX Lab | PHP Login · Step 5</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.1);--void:#05070a;--surface:#0b0e14;--editor:#080b10;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.2);--text:#c9d1d9;--muted:#4e5566;--accent:#c3e88d;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);}
+.ws-sep{color:var(--muted);font-size:18px;}.ws-title{font-size:13px;font-weight:600;color:var(--text);}.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:5px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;}
+.ws-body{display:grid;grid-template-columns:300px 1fr 1fr;flex:1;overflow:hidden;}
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--accent);line-height:1.3;}
+.ins-intro,.task-item{font-size:13px;color:var(--text);line-height:1.75;}
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.hint{background:rgba(130,170,255,.05);border:1px solid rgba(130,170,255,.15);border-radius:8px;padding:11px 13px;font-size:12px;color:#82aaff;line-height:1.65;}
+.hint strong{color:#c3e88d;}
+.step-info{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.12);border-radius:8px;padding:11px 14px;font-size:12px;line-height:1.75;}
+.step-info .label{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--neon);display:block;margin-bottom:4px;}
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.file-tab:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.file-tab.active{color:var(--text);border-bottom-color:var(--neon);background:var(--editor);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#c9d1d9;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;display:none;}
+.code-ed.active{display:block;}.code-ed::selection{background:rgba(57,255,20,.12);}
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}.pdot{width:10px;height:10px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:#1a1a2e;}
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover{border-color:var(--muted);color:var(--text);}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:rgba(57,255,20,.1);color:var(--neon);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.45);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:440px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.5;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:#ff5874;color:#ff5874;}
+</style>
+</head>
+<body>
+<header class="ws-header">
+  <span class="ws-logo">PhineX</span>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">PHP Login Project · ملف الاتصال بالـ Database</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track">
+    <div class="prog-dot" data-s="1"></div><div class="prog-dot" data-s="2"></div>
+    <div class="prog-dot" data-s="3"></div><div class="prog-dot" data-s="4"></div>
+    <div class="prog-dot" data-s="5"></div><div class="prog-dot" data-s="6"></div>
+    <div class="prog-dot" data-s="7"></div><div class="prog-dot" data-s="8"></div>
+  </div>
+  <span class="ws-step-label">5/8</span>
+</header>
+
+<div class="ws-body">
+  <aside class="ws-instructions">
+    <div class="ins-badge">🔌 الخطوة ٥</div>
+    <div class="ins-title">ملف db.php — الاتصال بـ MySQL</div>
+    <div class="ins-intro">
+      هنكتب ملف <code>db.php</code> اللي بيعمل اتصال بين PHP وقاعدة البيانات. هنستخدم <strong>PDO</strong> — أكتر أمان من <code>mysqli</code>.
+    </div>
+
+    <div class="task-list">
+      <div class="task-list-title">✏️ المهام</div>
+      <div class="task-item"><div class="task-num">١</div>
+        <div>حدد ثوابت الاتصال: <code>DB_HOST</code>, <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASS</code></div></div>
+      <div class="task-item"><div class="task-num">٢</div>
+        <div>أنشئ <code>PDO</code> object باستخدام <code>new PDO($dsn, $user, $pass)</code></div></div>
+      <div class="task-item"><div class="task-num">٣</div>
+        <div>فعّل <code>PDO::ATTR_ERRMODE</code> = <code>PDO::ERRMODE_EXCEPTION</code></div></div>
+      <div class="task-item"><div class="task-num">٤</div>
+        <div>فعّل <code>PDO::ATTR_DEFAULT_FETCH_MODE</code> = <code>PDO::FETCH_ASSOC</code></div></div>
+      <div class="task-item"><div class="task-num">٥</div>
+        <div>لفّ الاتصال في <code>try { } catch (PDOException $e) { }</code></div></div>
+      <div class="task-item"><div class="task-num">٦</div>
+        <div>في الـ <code>catch</code> أظهر رسالة خطأ مناسبة (وأوقف التنفيذ)</div></div>
+    </div>
+
+    <div class="hint">
+      <strong>إعدادات XAMPP الافتراضية:</strong><br>
+      Host: <code>localhost</code><br>
+      User: <code>root</code><br>
+      Password: <code>(فارغ)</code><br>
+      Database: <code>php_login_db</code>
+    </div>
+
+    <div class="step-info">
+      <span class="label">💡 ليه PDO؟</span>
+      PDO بيدعم <strong>Prepared Statements</strong> اللي بتحمي من SQL Injection أوتوماتيك — أهم ثغرة في مواقع الويب.
+    </div>
+  </aside>
+
+  <div class="ws-editor">
+    <div class="editor-tabs">
+      <button class="file-tab active" id="tab-php" onclick="switchTab('php')">
+        <span class="tab-dot" style="background:#7c3aed"></span>db.php
+      </button>
+      <button class="file-tab" id="tab-test" onclick="switchTab('test')">
+        <span class="tab-dot" style="background:#7c3aed"></span>test_connection.php
+      </button>
+      <div class="editor-action">
+        <button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed active" id="ed-php" spellcheck="false"></textarea>
+      <textarea class="code-ed" id="ed-test" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div class="ws-preview">
+    <div class="preview-bar">
+      <div class="preview-dots"><span class="pdot r"></span><span class="pdot y"></span><span class="pdot g"></span></div>
+      <div class="preview-url">localhost/php-login/test_connection.php</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </div>
+</div>
+
+<footer class="ws-footer">
+  <a class="btn-nav" href="step4.html">← السابق</a>
+  <button class="btn-run" onclick="runPreview()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" onclick="checkStep()">✓ تحقق من الخطوة</button>
+  <a class="btn-nav" id="nextBtn" href="step6.html">التالي ←</a>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const STEP_NUM = 5;
+const KEY = `phinex_php_login_${STEP_NUM}`;
+const eds = { php: document.getElementById('ed-php'), test: document.getElementById('ed-test') };
+const lnDiv = document.getElementById('lineNums');
+let curTab = 'php';
+
+const STARTER = {
+  php: `<?php
+// ============================================================
+// db.php — ملف الاتصال بقاعدة البيانات باستخدام PDO
+// يتم تضمين هذا الملف في كل ملف PHP يحتاج قاعدة البيانات
+// ============================================================
+
+// ── إعدادات الاتصال ──────────────────────────────────────
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'php_login_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');          // XAMPP: كلمة المرور فارغة
+define('DB_CHARSET', 'utf8mb4');
+
+// ── بناء DSN (Data Source Name) ───────────────────────────
+$dsn = "mysql:host=" . DB_HOST
+     . ";dbname=" . DB_NAME
+     . ";charset=" . DB_CHARSET;
+
+// ── خيارات PDO ────────────────────────────────────────────
+$options = [
+  PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,  // throw exceptions
+  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,        // arrays
+  PDO::ATTR_EMULATE_PREPARES   => false,                   // native prepares
+];
+
+// ── إنشاء الاتصال ─────────────────────────────────────────
+try {
+  $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+} catch (PDOException $e) {
+  // لا تعرض رسالة الخطأ للمستخدم في الـ production
+  error_log($e->getMessage());
+  die(json_encode([
+    'success' => false,
+    'message' => 'Database connection failed. Please try again later.'
+  ]));
+}
+// الآن $pdo جاهز للاستخدام في أي ملف بـ: require 'db.php';`,
+
+  test: `<?php
+// test_connection.php — للتحقق من الاتصال (احذفه في Production!)
+require_once 'db.php';
+
+try {
+  // اختبار: هل الاتصال يعمل؟
+  $stmt = $pdo->query("SELECT VERSION() as version, NOW() as time");
+  $row  = $stmt->fetch();
+  $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
+
+  echo '<style>
+    body{font-family:monospace;background:#0f172a;color:#c9d1d9;padding:30px;margin:0;}
+    .box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;max-width:600px;margin:0 auto;}
+    h2{color:#22c55e;margin:0 0 16px;font-size:1.2rem;}
+    .row{display:flex;gap:16px;padding:8px 0;border-bottom:1px solid #334155;font-size:.9rem;}
+    .row:last-child{border-bottom:none;}
+    .key{color:#64748b;min-width:140px;}
+    .val{color:#f1f5f9;font-weight:bold;}
+    .tables{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+    .table-tag{background:#1e3a5f;color:#60a5fa;padding:3px 10px;border-radius:5px;font-size:.8rem;}
+    .success{background:#14532d;border:1px solid #16a34a;color:#4ade80;padding:12px 16px;border-radius:8px;margin-bottom:16px;}
+  </style>';
+
+  echo "<div class='box'>";
+  echo "<div class='success'>✅ الاتصال بقاعدة البيانات ناجح!</div>";
+  echo "<h2>معلومات الاتصال:</h2>";
+  echo "<div class='row'><span class='key'>MySQL Version:</span><span class='val'>" . $row['version'] . "</span></div>";
+  echo "<div class='row'><span class='key'>Server Time:</span><span class='val'>" . $row['time'] . "</span></div>";
+  echo "<div class='row'><span class='key'>Database:</span><span class='val'>" . DB_NAME . "</span></div>";
+  echo "<div class='row'><span class='key'>Host:</span><span class='val'>" . DB_HOST . "</span></div>";
+  echo "<div class='row'><span class='key'>User:</span><span class='val'>" . DB_USER . "</span></div>";
+  echo "<div class='row'><span class='key'>Tables:</span><span class='val'>";
+  echo "<div class='tables'>";
+  foreach ($tables as $t) echo "<span class='table-tag'>" . htmlspecialchars($t) . "</span>";
+  echo "</div></span></div></div>";
+
+} catch (PDOException $e) {
+  echo "<div style='background:#450a0a;color:#fca5a5;padding:20px;border-radius:8px;font-family:monospace;'>";
+  echo "❌ خطأ في الاتصال: " . $e->getMessage();
+  echo "</div>";
+}`
+};
+
+function init() {
+  for (const t in eds) {
+    eds[t].value = localStorage.getItem(`${KEY}_${t}`) || STARTER[t];
+    eds[t].addEventListener('input', () => { updateLN(); saveCode(); scheduleRun(); });
+    eds[t].addEventListener('scroll', () => { lnDiv.scrollTop = eds[curTab].scrollTop; });
+    eds[t].addEventListener('keydown', handleTab);
+  }
+  updateProgress(); updateLN(); buildPreview();
+}
+
+function switchTab(t) {
+  curTab = t;
+  for (const k in eds) {
+    eds[k].classList.toggle('active', k === t);
+    document.getElementById(`tab-${k}`).classList.toggle('active', k === t);
+  }
+  updateLN(); eds[t].focus();
+}
+
+function updateLN() {
+  const n = eds[curTab].value.split('\n').length;
+  lnDiv.innerHTML = Array.from({length:n},(_,i)=>i+1).join('<br>');
+}
+function handleTab(e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  const ta = e.target, s = ta.selectionStart, en = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s)+'  '+ta.value.slice(en);
+  ta.selectionStart = ta.selectionEnd = s+2;
+  updateLN(); saveCode();
+}
+let saveT;
+function saveCode() { clearTimeout(saveT); saveT = setTimeout(() => { for (const t in eds) localStorage.setItem(`${KEY}_${t}`,eds[t].value); },400); }
+function resetCode() { if(!confirm('إعادة ضبط؟'))return; for(const t in eds){eds[t].value=STARTER[t];localStorage.removeItem(`${KEY}_${t}`);} updateLN(); buildPreview(); }
+
+function buildPreview() {
+  const fr = document.getElementById('previewFrame');
+  const d = fr.contentDocument || fr.contentWindow.document;
+  d.open();
+  d.write(`<!DOCTYPE html><html><head><style>
+    body{font-family:monospace;background:#0f172a;color:#c9d1d9;padding:20px;margin:0;}
+    .box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;max-width:580px;margin:0 auto;}
+    h2{color:#22c55e;margin:0 0 14px;font-size:1.1rem;}
+    .row{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid #334155;font-size:.88rem;}
+    .row:last-child{border-bottom:none;}
+    .key{color:#64748b;min-width:140px;}
+    .val{color:#f1f5f9;font-weight:bold;}
+    .tables{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+    .table-tag{background:#1e3a5f;color:#60a5fa;padding:2px 8px;border-radius:5px;font-size:.78rem;}
+    .success{background:#14532d;border:1px solid #16a34a;color:#4ade80;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:.9rem;}
+    .info{background:#1e293b;border:1px solid #0ea5e9;color:#38bdf8;padding:10px 14px;border-radius:8px;font-size:.82rem;}
+  </style></head><body>
+    <div class="box">
+      <div class="success">✅ الاتصال بقاعدة البيانات ناجح! (محاكاة)</div>
+      <h2>معلومات الاتصال:</h2>
+      <div class="row"><span class="key">MySQL Version:</span><span class="val">8.0.32</span></div>
+      <div class="row"><span class="key">Database:</span><span class="val">php_login_db</span></div>
+      <div class="row"><span class="key">Host:</span><span class="val">localhost</span></div>
+      <div class="row"><span class="key">User:</span><span class="val">root</span></div>
+      <div class="row"><span class="key">Tables:</span>
+        <span class="val"><div class="tables">
+          <span class="table-tag">users</span>
+          <span class="table-tag">remember_tokens</span>
+        </div></span>
+      </div>
+    </div>
+    <div class="info" style="max-width:580px;margin:12px auto 0;">
+      💡 هذا Simulation للمعاينة — الكود الحقيقي يعمل على XAMPP
+    </div>
+  </body></html>`);
+  d.close();
+}
+
+let runT;
+function scheduleRun() { clearTimeout(runT); runT = setTimeout(buildPreview,600); }
+function runPreview() { buildPreview(); }
+function updateProgress() {
+  document.querySelectorAll('.prog-dot').forEach((dot,i) => {
+    const n=i+1; dot.classList.remove('done','current');
+    if(localStorage.getItem(`phinex_php_login_${n}`)===  'complete') dot.classList.add('done');
+    else if(n===STEP_NUM) dot.classList.add('current');
+  });
+}
+function markComplete() { localStorage.setItem(KEY,'complete'); updateProgress(); document.getElementById('nextBtn').classList.add('visible'); }
+function toast(msg,type='ok') { const el=document.getElementById('toast'); el.textContent=msg; el.className=`toast ${type} show`; clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3800); }
+
+function checkStep() {
+  const php = eds.php.value;
+  const hasDefine   = php.includes('define(') && php.includes('DB_HOST');
+  const hasDSN      = php.includes('$dsn') && php.includes('mysql:host');
+  const hasPDO      = php.includes('new PDO(');
+  const hasOptions  = php.includes('ATTR_ERRMODE') && php.includes('ERRMODE_EXCEPTION');
+  const hasFetch    = php.includes('FETCH_ASSOC');
+  const hasTryCatch = php.includes('try {') && php.includes('catch (PDOException');
+  const hasDie      = php.includes('die(') || php.includes('exit(');
+  if (hasDefine && hasDSN && hasPDO && hasOptions && hasFetch && hasTryCatch) {
+    markComplete();
+    toast('ملف db.php مكتمل ✅\nالاتصال بـ MySQL جاهز! انتقل للخطوة 6', 'ok');
+  } else {
+    let e = [];
+    if (!hasDefine)   e.push('• أضف define() للـ DB_HOST, DB_NAME, DB_USER, DB_PASS');
+    if (!hasDSN)      e.push('• أنشئ $dsn بصيغة mysql:host=...');
+    if (!hasPDO)      e.push('• أنشئ new PDO($dsn, DB_USER, DB_PASS, $options)');
+    if (!hasOptions)  e.push('• أضف PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION');
+    if (!hasFetch)    e.push('• أضف FETCH_ASSOC في الـ options');
+    if (!hasTryCatch) e.push('• لفّ الكود في try { } catch (PDOException $e) { }');
+    toast('تحقق من:\n' + e.slice(0,4).join('\n'), 'err');
+  }
+}
+init();
+</script>
+</body>
+</html>

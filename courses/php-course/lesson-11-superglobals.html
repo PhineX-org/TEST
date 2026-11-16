@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX PHP | درس 11: المتغيرات العامة Superglobals</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.08);--void:#05070a;--surface:#09090f;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.18);--text:#e2e8f0;--muted:#64748b;--radius:14px;--accent:#f472b6;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--neon);border-radius:3px;}
+.topbar{position:sticky;top:0;z-index:200;background:rgba(5,5,10,.85);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 20px;gap:14px;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.topbar-sep{color:var(--muted);}.topbar-title{font-size:13px;font-weight:600;}
+.topbar-right{margin-right:auto;display:flex;align-items:center;gap:10px;}
+.menu-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Cairo',sans-serif;transition:all .2s;}
+.menu-btn:hover{border-color:var(--neon);color:var(--neon);}
+.progress-pill{background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--neon);font-family:'JetBrains Mono',monospace;}
+.page-wrap{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:280px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;height:calc(100vh - 56px);position:sticky;top:56px;}
+.sidebar.open{transform:none!important;}
+.sidebar-header{padding:16px 18px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.lesson-link{display:flex;align-items:center;gap:10px;padding:10px 18px;text-decoration:none;color:var(--muted);transition:all .2s;border-right:3px solid transparent;font-size:13px;}
+.lesson-link:hover{background:rgba(255,255,255,.03);color:var(--text);}
+.lesson-link.active{color:var(--neon);background:var(--neon-dim);border-right-color:var(--neon);}
+.lesson-link.done{color:var(--text);}
+.ll-icon{font-size:16px;flex-shrink:0;}.ll-info{flex:1;min-width:0;}
+.ll-title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ll-num{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.ll-badge{flex-shrink:0;font-size:10px;padding:2px 7px;border-radius:100px;}
+.ll-badge.done{background:rgba(57,255,20,.12);color:var(--neon);border:1px solid rgba(57,255,20,.25);}
+.ll-badge.locked{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border);}
+.main{flex:1;overflow-y:auto;padding:0 0 80px;}
+.lesson-hero{padding:48px 60px 36px;border-bottom:1px solid var(--border);background:linear-gradient(to bottom,rgba(57,255,20,.03),transparent);}
+.lesson-num-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.6px;margin-bottom:16px;}
+.lesson-title{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;line-height:1.1;}
+.lesson-sub{font-size:1rem;color:var(--muted);margin-bottom:20px;}
+.lesson-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.meta-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:5px 12px;}
+.content-area{padding:40px 60px;max-width:900px;}
+.section-block{margin-bottom:44px;}
+.section-block h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-block h2::before{content:'';display:block;width:4px;height:20px;background:var(--accent,var(--neon));border-radius:2px;flex-shrink:0;}
+.section-body{font-size:15px;line-height:1.85;}
+.section-body ul,.section-body ol{padding-right:20px;margin:10px 0;}
+.section-body li{margin-bottom:6px;}
+.section-body strong{font-weight:700;}
+.section-body em{color:var(--neon);font-style:normal;}
+.section-body code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.code-block{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,.06);}
+.code-header{background:#0a0d14;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);}
+.code-lang{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--accent,var(--neon));letter-spacing:1px;}
+.code-dots{display:flex;gap:5px;}.cd{width:10px;height:10px;border-radius:50%;}
+.cd.r{background:#ff5f57;}.cd.y{background:#febc2e;}.cd.g{background:var(--neon);}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.copy-btn:hover{border-color:var(--neon);color:var(--neon);}
+pre.code-pre{background:#080b10;padding:20px;margin:0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;direction:ltr;text-align:left;tab-size:4;}
+.code-output{background:rgba(0,0,0,.4);border-top:1px solid rgba(255,255,255,.05);padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c3e88d;direction:ltr;text-align:left;white-space:pre-wrap;}
+.output-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;}
+.kw{color:#c792ea;}.fn{color:#82aaff;}.str{color:#c3e88d;}.num{color:#f78c6c;}.cmt{color:#546e7a;font-style:italic;}
+.var{color:#eeffff;}.tag{color:#89ddff;}.op{color:#89ddff;}.cls{color:#ffcb6b;}.bool{color:#ff5874;}
+.info-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;}
+.info-table th{background:rgba(57,255,20,.08);color:var(--neon);padding:8px 12px;text-align:right;border:1px solid var(--border2);}
+.info-table td{padding:8px 12px;border:1px solid var(--border);}
+.info-table tr:hover td{background:rgba(255,255,255,.02);}
+.info-table td:first-child{font-family:'JetBrains Mono',monospace;color:#c3e88d;font-size:12px;direction:ltr;}
+.quiz-section{margin:0 60px 60px;max-width:900px;}
+.quiz-header{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius) var(--radius) 0 0;padding:20px 24px;display:flex;align-items:center;gap:12px;}
+.quiz-header h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;}
+.quiz-badge{background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--neon);}
+.quiz-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:0 24px 24px;}
+.question-block{padding:20px 0;border-bottom:1px solid var(--border);}
+.question-block:last-of-type{border-bottom:none;}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--neon);background:var(--neon-dim);padding:2px 8px;border-radius:5px;display:inline-block;margin-bottom:8px;}
+.q-text{font-size:15px;font-weight:600;margin-bottom:14px;line-height:1.6;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all .2s;font-size:14px;background:rgba(255,255,255,.02);}
+.option:hover{border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);}
+.option input[type=radio]{accent-color:var(--neon);width:16px;height:16px;flex-shrink:0;}
+.option.correct{border-color:var(--neon);background:rgba(57,255,20,.08);color:var(--neon);}
+.option.wrong{border-color:#ff5874;background:rgba(255,88,116,.08);color:#ff5874;}
+.quiz-footer{margin-top:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.btn-submit{background:var(--neon);color:#050508;padding:10px 28px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;box-shadow:0 0 16px rgba(57,255,20,.2);}
+.btn-submit:hover{box-shadow:0 0 28px rgba(57,255,20,.45);}
+.btn-retry{background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px 20px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.score-display{display:none;align-items:center;gap:10px;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:700;border:1px solid;}
+.score-display.pass{background:rgba(57,255,20,.08);border-color:var(--neon);color:var(--neon);}
+.score-display.fail{background:rgba(255,88,116,.08);border-color:#ff5874;color:#ff5874;}
+.lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 60px;border-top:1px solid var(--border);background:rgba(0,0,0,.15);gap:14px;flex-wrap:wrap;}
+.btn-nav{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(.disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav.disabled{opacity:.3;pointer-events:none;}
+.btn-next-lesson{background:var(--neon);color:#050508;border-color:var(--neon);box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-next-lesson:hover{box-shadow:0 0 24px rgba(57,255,20,.45);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card);border-radius:14px;padding:14px 24px;font-size:14px;opacity:0;transition:all .35s;z-index:999;min-width:240px;text-align:center;white-space:pre-line;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border:1px solid var(--neon);color:var(--neon);}
+.toast.err{border:1px solid #ff5874;color:#ff5874;}
+.note-box{background:rgba(130,170,255,.06);border:1px solid rgba(130,170,255,.25);border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.8;}
+.note-box.warn{background:rgba(247,140,108,.06);border-color:rgba(247,140,108,.3);}
+.note-box.success{background:rgba(57,255,20,.06);border-color:rgba(57,255,20,.25);}
+.note-title{font-weight:700;margin-bottom:6px;font-size:13px;letter-spacing:.3px;display:block;}
+.note-box.warn .note-title{color:#f78c6c;}
+.note-box .note-title{color:#82aaff;}
+.note-box.success .note-title{color:var(--neon);}
+@media(max-width:900px){.sidebar{position:fixed;top:56px;left:0;right:0;height:auto;max-height:60vh;z-index:150;transform:translateY(-110%);border:none;border-bottom:1px solid var(--border);}.sidebar.open{transform:translateY(0);}.lesson-hero,.content-area,.quiz-section,.lesson-nav{padding-left:20px;padding-right:20px;}.lesson-title{font-size:1.7rem;}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html" class="logo">PhineX</a><span class="topbar-sep">/</span>
+  <span class="topbar-title">دورة PHP الشاملة</span>
+  <div class="topbar-right">
+    <span class="progress-pill" id="progressPill">0/17 مكتملة</span>
+    <button class="menu-btn" id="menuBtn">☰ الدروس</button>
+  </div>
+</header>
+<div class="page-wrap">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">دورة PHP الشاملة — 17 درساً</div>
+<a href="lesson-00-setup.html" class="lesson-link" data-lid="setup"><span class="ll-icon">🔧</span><span class="ll-info"><span class="ll-title">إعداد بيئة العمل</span><span class="ll-num">الدرس 00</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-01-intro.html" class="lesson-link" data-lid="intro"><span class="ll-icon">🐘</span><span class="ll-info"><span class="ll-title">مقدمة إلى PHP</span><span class="ll-num">الدرس 01</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-02-variables.html" class="lesson-link" data-lid="variables"><span class="ll-icon">📦</span><span class="ll-info"><span class="ll-title">المتغيرات وأنواع البيانات</span><span class="ll-num">الدرس 02</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-03-operators.html" class="lesson-link" data-lid="operators"><span class="ll-icon">➗</span><span class="ll-info"><span class="ll-title">العمليات والمشغلات</span><span class="ll-num">الدرس 03</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-04-conditionals.html" class="lesson-link" data-lid="conditionals"><span class="ll-icon">🔀</span><span class="ll-info"><span class="ll-title">الجمل الشرطية</span><span class="ll-num">الدرس 04</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-05-loops.html" class="lesson-link" data-lid="loops"><span class="ll-icon">🔁</span><span class="ll-info"><span class="ll-title">الحلقات التكرارية</span><span class="ll-num">الدرس 05</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-06-functions.html" class="lesson-link" data-lid="functions"><span class="ll-icon">⚙️</span><span class="ll-info"><span class="ll-title">الدوال (Functions)</span><span class="ll-num">الدرس 06</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-07-arrays.html" class="lesson-link" data-lid="arrays"><span class="ll-icon">📚</span><span class="ll-info"><span class="ll-title">المصفوفات (Arrays)</span><span class="ll-num">الدرس 07</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-08-strings.html" class="lesson-link" data-lid="strings"><span class="ll-icon">✍️</span><span class="ll-info"><span class="ll-title">السلاسل النصية (Strings)</span><span class="ll-num">الدرس 08</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-09-oop.html" class="lesson-link" data-lid="oop"><span class="ll-icon">🏗️</span><span class="ll-info"><span class="ll-title">البرمجة كائنية التوجه</span><span class="ll-num">الدرس 09</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-10-forms.html" class="lesson-link" data-lid="forms"><span class="ll-icon">📝</span><span class="ll-info"><span class="ll-title">النماذج ومدخلات المستخدم</span><span class="ll-num">الدرس 10</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-11-superglobals.html" class="lesson-link active" data-lid="superglobals"><span class="ll-icon">🌐</span><span class="ll-info"><span class="ll-title">المتغيرات العامة Superglobals</span><span class="ll-num">الدرس 11</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-12-weather.html" class="lesson-link" data-lid="weather"><span class="ll-icon">🌤️</span><span class="ll-info"><span class="ll-title">مشروع: تطبيق الطقس</span><span class="ll-num">الدرس 12</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-13-database-intro.html" class="lesson-link" data-lid="db-intro"><span class="ll-icon">🗄️</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — المقدمة</span><span class="ll-num">الدرس 13</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-14-database-crud.html" class="lesson-link" data-lid="db-crud"><span class="ll-icon">💾</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — CRUD</span><span class="ll-num">الدرس 14</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-15-database-advanced.html" class="lesson-link" data-lid="db-advanced"><span class="ll-icon">⚡</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — تحسين وأمان</span><span class="ll-num">الدرس 15</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-16-final.html" class="lesson-link" data-lid="final"><span class="ll-icon">🏆</span><span class="ll-info"><span class="ll-title">مراجعة شاملة واختبار نهائي</span><span class="ll-num">الدرس 16</span></span><span class="ll-badge locked">○</span></a>
+</aside>
+<main class="main">
+<div class="lesson-hero">
+  <div class="lesson-num-badge">درس 11 من 17</div>
+  <h1 class="lesson-title">المتغيرات العامة Superglobals</h1>
+  <p class="lesson-sub">$_GET، $_POST، $_SESSION، $_COOKIE، $_SERVER وأكثر — كل شيء تحتاجه</p>
+  <div class="lesson-meta">
+    <span class="meta-tag">🕐 50 دقيقة</span>
+    <span class="meta-tag">📝 6 أسئلة</span>
+    <span class="meta-tag">💻 7 أمثلة عملية</span>
+  </div>
+</div>
+<div class="content-area">
+
+<div class="section-block">
+  <h2>ما هي Superglobals؟</h2>
+  <div class="section-body">
+الـ Superglobals هي <strong>متغيرات مدمجة في PHP متاحة في أي مكان</strong> في الكود — داخل الدوال والكلاسات وكل مكان — بدون الحاجة للكلمة المفتاحية <code>global</code>.
+<br><br>
+كلها تبدأ بـ <code>$_</code> وتُخزّن في مصفوفات:
+<br><br>
+<table class="info-table">
+  <tr><th>المتغير</th><th>ما يحتوي</th><th>متى يُستخدم</th></tr>
+  <tr><td>$_GET</td><td>بيانات من URL (query string)</td><td>البحث، فلترة الصفحات</td></tr>
+  <tr><td>$_POST</td><td>بيانات من form بطريقة POST</td><td>تسجيل الدخول، إرسال البيانات</td></tr>
+  <tr><td>$_REQUEST</td><td>GET + POST + COOKIE معاً</td><td>عام — تجنّبه واستخدم المحدد</td></tr>
+  <tr><td>$_SESSION</td><td>بيانات الجلسة (تبقى بين الصفحات)</td><td>تسجيل الدخول، سلة المشتريات</td></tr>
+  <tr><td>$_COOKIE</td><td>ملفات تعريف الارتباط</td><td>تذكّر المستخدم، الإعدادات</td></tr>
+  <tr><td>$_SERVER</td><td>معلومات السيرفر والطلب</td><td>IP المستخدم، URL الحالي، Method</td></tr>
+  <tr><td>$_FILES</td><td>الملفات المرفوعة</td><td>رفع الصور والملفات</td></tr>
+  <tr><td>$_ENV</td><td>متغيرات البيئة</td><td>إعدادات السيرفر</td></tr>
+  <tr><td>$_GLOBALS</td><td>كل المتغيرات العامة</td><td>الوصول للمتغيرات من داخل الدوال</td></tr>
+</table>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>$_GET — بيانات الـ URL</h2>
+  <div class="section-body">
+<code>$_GET</code> يستقبل البيانات المُرسَلة عبر الـ URL كـ query string. مثلاً:
+<br><code>localhost/page.php?name=Ahmed&age=25</code>
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">PHP — $_GET</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;?php
+// URL: localhost/search.php?query=php&page=2&lang=ar
+
+// الوصول للبيانات
+$query = $_GET['query'] ?? '';   // 'php'
+$page  = $_GET['page']  ?? 1;   // '2'
+$lang  = $_GET['lang']  ?? 'en'; // 'ar'
+
+// دائماً نظّف المدخلات!
+$safe_query = htmlspecialchars($query);
+$safe_page  = (int) $page; // تحويل لرقم
+
+echo "البحث عن: " . $safe_query . "&lt;br&gt;";
+echo "الصفحة: " . $safe_page . "&lt;br&gt;";
+echo "اللغة: " . htmlspecialchars($lang);
+
+// التحقق من وجود المتغير أولاً
+if (isset($_GET['category'])) {
+    $cat = htmlspecialchars($_GET['category']);
+    echo "&lt;br&gt;الفئة: " . $cat;
+} else {
+    echo "&lt;br&gt;لا توجد فئة محددة";
+}
+
+// بناء URL جديد
+$new_url = "search.php?" . http_build_query([
+    'query' => $safe_query,
+    'page'  => $safe_page + 1,
+    'lang'  => $lang
+]);
+echo "&lt;br&gt;&lt;a href='" . $new_url . "'&gt;الصفحة التالية&lt;/a&gt;";
+?&gt;</code></pre>
+  <div class="code-output"><div class="output-label">الناتج</div>البحث عن: php
+الصفحة: 2
+اللغة: ar
+لا توجد فئة محددة
+الصفحة التالية →</div>
+</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>$_POST — استقبال بيانات الفورم</h2>
+  <div class="section-body">
+<code>$_POST</code> يستقبل البيانات المُرسَلة من فورم HTML بطريقة <code>method="POST"</code>. البيانات <strong>لا تظهر في URL</strong>.
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">HTML + PHP — login form</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;!-- login.php --&gt;
+&lt;?php
+$error   = '';
+$success = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 1. استقبال البيانات
+    $email    = trim($_POST['email']    ?? '');
+    $password = $_POST['password']      ?? '';
+    $remember = isset($_POST['remember']); // checkbox
+
+    // 2. التحقق الأساسي (Validation)
+    if (empty($email) || empty($password)) {
+        $error = 'يرجى ملء جميع الحقول';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'البريد الإلكتروني غير صحيح';
+    } elseif (strlen($password) &lt; 8) {
+        $error = 'كلمة المرور قصيرة جداً (8 أحرف على الأقل)';
+    } else {
+        // 3. الاتصال بالـ DB والتحقق (سنتعلمه في الدروس القادمة)
+        $success = 'تم تسجيل الدخول بنجاح!';
+    }
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ar" dir="rtl"&gt;
+&lt;body&gt;
+    &lt;?php if ($error): ?&gt;
+        &lt;div style="color:red"&gt;&lt;?= htmlspecialchars($error) ?&gt;&lt;/div&gt;
+    &lt;?php endif; ?&gt;
+    &lt;?php if ($success): ?&gt;
+        &lt;div style="color:green"&gt;&lt;?= htmlspecialchars($success) ?&gt;&lt;/div&gt;
+    &lt;?php endif; ?&gt;
+
+    &lt;form method="POST" action="login.php"&gt;
+        &lt;input type="email"    name="email"    placeholder="البريد الإلكتروني" required&gt;
+        &lt;input type="password" name="password" placeholder="كلمة المرور"       required&gt;
+        &lt;label&gt;&lt;input type="checkbox" name="remember"&gt; تذكّرني&lt;/label&gt;
+        &lt;button type="submit"&gt;دخول&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>$_SESSION — الجلسات بين الصفحات</h2>
+  <div class="section-body">
+<code>$_SESSION</code> يُخزّن بيانات تبقى محفوظة بين الصفحات المختلفة طوال وجود المستخدم في الموقع. يُستخدم لحفظ حالة تسجيل الدخول وسلة المشتريات وأكثر.
+<br><br>
+<strong>مهم جداً:</strong> يجب استدعاء <code>session_start()</code> في <strong>أول سطر</strong> من كل صفحة تستخدم Sessions.
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">PHP — $_SESSION</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;?php
+// ─── index.php — تسجيل الدخول ───────────────────────────
+session_start(); // دائماً في أول السطر!
+
+// تسجيل بيانات المستخدم في الـ Session
+$_SESSION['user_id']   = 42;
+$_SESSION['username']  = 'Ahmed';
+$_SESSION['role']      = 'admin';
+$_SESSION['logged_in'] = true;
+$_SESSION['login_time'] = time(); // وقت الدخول
+
+echo "تم تسجيل الدخول!";
+echo "مرحباً " . $_SESSION['username'];
+?&gt;
+
+&lt;?php
+// ─── dashboard.php — التحقق من الجلسة ──────────────────
+session_start();
+
+// التحقق من تسجيل الدخول
+if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+    header('Location: login.php');
+    exit; // مهم! لا تنسَ exit بعد header
+}
+
+$username = htmlspecialchars($_SESSION['username']);
+$role     = htmlspecialchars($_SESSION['role']);
+$login_dur = time() - $_SESSION['login_time'];
+
+echo "مرحباً $username ($role)";
+echo "&lt;br&gt;وقت الجلسة: $login_dur ثانية";
+
+// تعديل بيانات الجلسة
+$_SESSION['last_visit'] = date('Y-m-d H:i:s');
+?&gt;
+
+&lt;?php
+// ─── logout.php — تسجيل الخروج ─────────────────────────
+session_start();
+session_unset();     // مسح كل متغيرات الجلسة
+session_destroy();   // تدمير الجلسة نهائياً
+
+// مسح الـ cookie
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
+header('Location: login.php');
+exit;
+?&gt;</code></pre>
+</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>$_COOKIE — ملفات تعريف الارتباط</h2>
+  <div class="section-body">
+<code>$_COOKIE</code> يُخزّن بيانات صغيرة في متصفح المستخدم. تبقى حتى بعد إغلاق المتصفح (على عكس Sessions).
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">PHP — $_COOKIE</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;?php
+// ─── تعيين Cookie ───────────────────────────────────────
+// setcookie(name, value, expires, path, domain, secure, httponly)
+
+// Cookie يبقى 30 يوم
+setcookie('username', 'Ahmed', time() + (30 * 24 * 60 * 60), '/');
+
+// Cookie آمن (HTTPS فقط + لا يُقرأ بـ JavaScript)
+setcookie(
+    'remember_token',
+    bin2hex(random_bytes(32)),
+    time() + (30 * 24 * 60 * 60),
+    '/',
+    '',
+    true,   // Secure (HTTPS)
+    true    // HttpOnly (لا JavaScript)
+);
+
+// إعداد اللغة
+setcookie('lang', 'ar', time() + (365 * 24 * 60 * 60), '/');
+
+// ─── قراءة Cookie ───────────────────────────────────────
+if (isset($_COOKIE['username'])) {
+    $user = htmlspecialchars($_COOKIE['username']);
+    echo "أهلاً مجدداً، $user!";
+} else {
+    echo "زيارة جديدة";
+}
+
+$lang = $_COOKIE['lang'] ?? 'en';
+echo "&lt;br&gt;اللغة: $lang";
+
+// ─── حذف Cookie ─────────────────────────────────────────
+// اجعل وقت الانتهاء في الماضي
+setcookie('username', '', time() - 3600, '/');
+?&gt;</code></pre>
+  <div class="code-output"><div class="output-label">الناتج</div>أهلاً مجدداً، Ahmed!
+اللغة: ar</div>
+</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>$_SERVER — معلومات السيرفر والطلب</h2>
+  <div class="section-body">
+<code>$_SERVER</code> يحتوي معلومات قيّمة عن السيرفر وطلب المستخدم الحالي.
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">PHP — $_SERVER</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;?php
+// معلومات الطلب
+echo "HTTP Method: "  . $_SERVER['REQUEST_METHOD']  . "&lt;br&gt;"; // GET أو POST
+echo "URL الحالي: "   . $_SERVER['REQUEST_URI']     . "&lt;br&gt;"; // /page.php?q=test
+echo "اسم الصفحة: "  . $_SERVER['PHP_SELF']        . "&lt;br&gt;"; // /page.php
+echo "اسم المضيف: "  . $_SERVER['HTTP_HOST']       . "&lt;br&gt;"; // localhost
+echo "IP المستخدم: " . $_SERVER['REMOTE_ADDR']     . "&lt;br&gt;"; // 127.0.0.1
+echo "المتصفح: "     . $_SERVER['HTTP_USER_AGENT'] . "&lt;br&gt;";
+
+// معلومات السيرفر
+echo "برنامج السيرفر: " . $_SERVER['SERVER_SOFTWARE'] . "&lt;br&gt;"; // Apache
+echo "مسار الملف: "    . $_SERVER['DOCUMENT_ROOT']    . "&lt;br&gt;";
+
+// URL الكامل
+$protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
+$full_url  = $protocol . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+echo "الـ URL الكامل: " . $full_url . "&lt;br&gt;";
+
+// التحقق من نوع الطلب
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    echo "هذا طلب POST";
+} else {
+    echo "هذا طلب GET";
+}
+
+// Referrer (من أين جاء المستخدم)
+$referrer = $_SERVER['HTTP_REFERER'] ?? 'مباشر';
+echo "&lt;br&gt;جاء من: " . htmlspecialchars($referrer);
+?&gt;</code></pre>
+  <div class="code-output"><div class="output-label">الناتج</div>HTTP Method: GET
+URL الحالي: /page.php
+اسم الصفحة: /page.php
+اسم المضيف: localhost
+IP المستخدم: 127.0.0.1
+برنامج السيرفر: Apache/2.4.54
+الـ URL الكامل: http://localhost/page.php
+هذا طلب GET
+جاء من: مباشر</div>
+</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>$_FILES — رفع الملفات</h2>
+  <div class="section-body">
+<code>$_FILES</code> يحتوي معلومات الملفات المرفوعة من فورم HTML.
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">PHP — رفع الملفات</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;!-- HTML form — لازم enctype --&gt;
+&lt;form method="POST" enctype="multipart/form-data"&gt;
+    &lt;input type="file" name="photo" accept="image/*"&gt;
+    &lt;button type="submit"&gt;رفع الصورة&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &amp;&amp; isset($_FILES['photo'])) {
+    $file = $_FILES['photo'];
+
+    // معلومات الملف
+    echo "الاسم: "   . $file['name']     . "&lt;br&gt;";
+    echo "النوع: "   . $file['type']     . "&lt;br&gt;";
+    echo "الحجم: "   . $file['size']     . " bytes&lt;br&gt;";
+    echo "الحالة: "  . $file['error']    . "&lt;br&gt;";
+
+    // التحقق من الأخطاء
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        die("خطأ في الرفع: " . $file['error']);
+    }
+
+    // التحقق من النوع والحجم
+    $allowed_types = ['image/jpeg', 'image/png', 'image/webp'];
+    $max_size      = 5 * 1024 * 1024; // 5MB
+
+    if (!in_array($file['type'], $allowed_types)) {
+        die("نوع الملف غير مسموح! (JPG, PNG, WEBP فقط)");
+    }
+    if ($file['size'] &gt; $max_size) {
+        die("الملف كبير جداً! الحد الأقصى 5MB");
+    }
+
+    // إنشاء اسم فريد للملف
+    $ext      = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $new_name = uniqid('img_') . '.' . strtolower($ext);
+    $dest     = 'uploads/' . $new_name;
+
+    // النقل من المؤقت للمجلد الدائم
+    if (move_uploaded_file($file['tmp_name'], $dest)) {
+        echo "تم الرفع بنجاح: &lt;img src='$dest' width='200'&gt;";
+    } else {
+        echo "فشل النقل! تحقق من صلاحيات مجلد uploads/";
+    }
+}
+?&gt;</code></pre>
+</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>$_GLOBALS — الوصول للمتغيرات العامة من داخل الدوال</h2>
+  <div class="section-body">
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">PHP — $GLOBALS</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;?php
+$site_name = "PhineX";
+$version   = "2.0";
+
+function showSiteInfo() {
+    // بدون $GLOBALS لا تستطيع الوصول لهذه المتغيرات
+    // echo $site_name; // خطأ!
+
+    // طريقة 1: $GLOBALS
+    echo $GLOBALS['site_name'] . " v" . $GLOBALS['version'];
+
+    // طريقة 2: global (الأفضل)
+    global $site_name, $version;
+    echo $site_name . " v" . $version;
+}
+
+showSiteInfo(); // PhineX v2.0
+
+// الأفضل دائماً: تمرير القيم كـ parameters
+function showInfo(string $name, string $ver): void {
+    echo "$name v$ver";
+}
+showInfo($site_name, $version);
+?&gt;</code></pre>
+  <div class="code-output"><div class="output-label">الناتج</div>PhineX v2.0
+PhineX v2.0
+PhineX v2.0</div>
+</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>أمان Superglobals — لا تثق في المدخلات!</h2>
+  <div class="section-body">
+<div class="note-box warn"><span class="note-title">⚠️ قاعدة ذهبية: لا تثق أبداً في مدخلات المستخدم</span>
+كل بيانات $_GET و$_POST و$_COOKIE يمكن تزويرها. دائماً نظّفها وتحقق منها قبل الاستخدام.</div>
+<div class="code-block">
+  <div class="code-header"><span class="code-lang">PHP — تنظيف المدخلات</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+  <pre class="code-pre"><code>&lt;?php
+// ❌ خاطئ — لا تستخدم المدخل مباشرةً
+$name = $_POST['name'];
+echo "مرحباً " . $name; // XSS Attack!
+
+// ✅ صحيح — تنظيف النص قبل العرض
+$name = htmlspecialchars($_POST['name'] ?? '');
+echo "مرحباً " . $name;
+
+// ✅ تنظيف متقدم
+function sanitize(string $input, string $type = 'string'): mixed {
+    $input = trim($input);
+    return match($type) {
+        'string'  => htmlspecialchars(strip_tags($input), ENT_QUOTES, 'UTF-8'),
+        'int'     => (int) filter_var($input, FILTER_SANITIZE_NUMBER_INT),
+        'float'   => (float) filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
+        'email'   => filter_var($input, FILTER_SANITIZE_EMAIL),
+        'url'     => filter_var($input, FILTER_SANITIZE_URL),
+        default   => htmlspecialchars($input),
+    };
+}
+
+// استخدام الدالة
+$name  = sanitize($_POST['name']  ?? '', 'string');
+$age   = sanitize($_POST['age']   ?? '', 'int');
+$email = sanitize($_POST['email'] ?? '', 'email');
+$page  = sanitize($_GET['page']   ?? '', 'int');
+
+// Validation مع filter_var
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo "البريد غير صحيح";
+}
+if (!filter_var($age, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 120]])) {
+    echo "العمر غير صحيح";
+}
+?&gt;</code></pre>
+</div>
+  </div>
+</div>
+
+</div><!-- /content-area -->
+
+<div class="quiz-section">
+  <div class="quiz-header"><h3>🧪 اختبر فهمك</h3><span class="quiz-badge">6 أسئلة</span></div>
+  <div class="quiz-body">
+
+    <div class="question-block"><div class="q-num">سؤال 1</div>
+    <div class="q-text">ما الفرق الرئيسي بين $_GET و$_POST؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q1" data-correct="false"> أ) لا فرق بينهما</label>
+      <label class="option"><input type="radio" name="q1" data-correct="true"> ب) GET تظهر في URL، POST لا تظهر وأكثر أماناً للبيانات الحساسة</label>
+      <label class="option"><input type="radio" name="q1" data-correct="false"> ج) POST أسرع من GET</label>
+      <label class="option"><input type="radio" name="q1" data-correct="false"> د) GET تُستخدم فقط للأرقام</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 2</div>
+    <div class="q-text">ما الدالة التي يجب استدعاؤها في أول سطر من كل صفحة تستخدم $_SESSION؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q2" data-correct="false"> أ) session_init()</label>
+      <label class="option"><input type="radio" name="q2" data-correct="false"> ب) start_session()</label>
+      <label class="option"><input type="radio" name="q2" data-correct="true"> ج) session_start()</label>
+      <label class="option"><input type="radio" name="q2" data-correct="false"> د) init_session()</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 3</div>
+    <div class="q-text">ما $_SERVER index الذي يعطيك IP المستخدم الزائر؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q3" data-correct="false"> أ) $_SERVER['USER_IP']</label>
+      <label class="option"><input type="radio" name="q3" data-correct="true"> ب) $_SERVER['REMOTE_ADDR']</label>
+      <label class="option"><input type="radio" name="q3" data-correct="false"> ج) $_SERVER['HTTP_IP']</label>
+      <label class="option"><input type="radio" name="q3" data-correct="false"> د) $_SERVER['CLIENT_IP']</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 4</div>
+    <div class="q-text">ما الـ attribute المطلوب في فورم HTML لرفع الملفات؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q4" data-correct="false"> أ) type="multipart"</label>
+      <label class="option"><input type="radio" name="q4" data-correct="true"> ب) enctype="multipart/form-data"</label>
+      <label class="option"><input type="radio" name="q4" data-correct="false"> ج) encoding="file"</label>
+      <label class="option"><input type="radio" name="q4" data-correct="false"> د) upload="true"</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 5</div>
+    <div class="q-text">ما الدالة المناسبة لتنظيف مدخل نصي لعرضه في HTML؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q5" data-correct="false"> أ) clean_input()</label>
+      <label class="option"><input type="radio" name="q5" data-correct="false"> ب) sanitize_html()</label>
+      <label class="option"><input type="radio" name="q5" data-correct="true"> ج) htmlspecialchars()</label>
+      <label class="option"><input type="radio" name="q5" data-correct="false"> د) escape_string()</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 6</div>
+    <div class="q-text">لحذف جلسة المستخدم عند تسجيل الخروج، ما الترتيب الصحيح؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q6" data-correct="false"> أ) session_destroy() ثم session_start()</label>
+      <label class="option"><input type="radio" name="q6" data-correct="true"> ب) session_start() ثم session_unset() ثم session_destroy()</label>
+      <label class="option"><input type="radio" name="q6" data-correct="false"> ج) session_end() فقط</label>
+      <label class="option"><input type="radio" name="q6" data-correct="false"> د) unset($_SESSION) فقط</label>
+    </div></div>
+
+    <div class="quiz-footer">
+      <button class="btn-submit" onclick="submitQuiz()">تحقق من الإجابات</button>
+      <button class="btn-retry" onclick="retryQuiz()">إعادة</button>
+      <div class="score-display" id="scoreDisplay"></div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <a href="lesson-10-forms.html" class="btn-nav">◀ النماذج</a>
+  <a href="index.html" class="btn-nav" style="opacity:.7">🏠 الفهرس</a>
+  <a href="lesson-12-weather.html" class="btn-nav btn-next-lesson locked" id="nextLessonBtn" style="display:none">مشروع الطقس ▶</a>
+</div>
+</main></div>
+<div class="toast" id="toast"></div>
+<script>
+const LESSON_ID='superglobals';
+function isCompleted(id){return localStorage.getItem('lesson-'+id)==='completed';}
+function markCompleted(id){localStorage.setItem('lesson-'+id,'completed');}
+function showNextButton(){const nb=document.getElementById('nextLessonBtn');if(nb){nb.style.display='inline-flex';nb.classList.remove('locked');}}
+function updateSidebar(){document.querySelectorAll('.lesson-link[data-lid]').forEach(a=>{const lid=a.getAttribute('data-lid'),badge=a.querySelector('.ll-badge');if(isCompleted(lid)){a.classList.add('done');if(badge){badge.textContent='✓';badge.className='ll-badge done';}}});}
+function updateProgressPill(){const all=document.querySelectorAll('.lesson-link[data-lid]');const done=[...all].filter(a=>isCompleted(a.getAttribute('data-lid'))).length;const pill=document.getElementById('progressPill');if(pill)pill.textContent=done+'/'+all.length+' مكتملة';}
+function highlight(code){let h=code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');h=h.replace(/(\/\/[^\n]*)/g,'<span class="cmt">$1</span>');h=h.replace(/(\/\*[\s\S]*?\*\/)/g,'<span class="cmt">$1</span>');h=h.replace(/(&lt;\?php|&lt;\?=|\?&gt;)/g,'<span class="tag">$1</span>');h=h.replace(/"([^"<]*)"/g,'<span class="str">"$1"</span>');h=h.replace(/'([^'<]*)'/g,"<span class='str'>'$1'</span>");const kws='echo|print|if|else|elseif|while|for|foreach|do|switch|case|break|continue|return|function|class|new|extends|implements|public|private|protected|static|this|self|match|default|null|true|false|require|include|try|catch|throw|exit|die|isset|empty|unset|global';h=h.replace(new RegExp('\\b('+kws+')\\b','g'),'<span class="kw">$1</span>');h=h.replace(/(\$[a-zA-Z_]\w*)/g,'<span class="var">$1</span>');h=h.replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');const fns='session_start|session_destroy|session_unset|session_regenerate_id|session_get_cookie_params|setcookie|header|htmlspecialchars|strip_tags|trim|filter_var|filter_input|in_array|pathinfo|strtolower|uniqid|move_uploaded_file|random_bytes|bin2hex|time|date|http_build_query|ini_get|session_name';h=h.replace(new RegExp('\\b('+fns+')(?=\\()', 'g'),'<span class="fn">$1</span>');return h;}
+function submitQuiz(){const questions=document.querySelectorAll('.question-block');let correct=0,answered=0;questions.forEach(q=>{const sel=q.querySelector('input[type=radio]:checked');if(!sel)return;answered++;const isCorrect=sel.dataset.correct==='true';q.querySelectorAll('.option').forEach(opt=>{opt.querySelector('input').disabled=true;if(opt.querySelector('input').dataset.correct==='true')opt.classList.add('correct');});if(isCorrect){correct++;sel.closest('.option').classList.add('correct');}else{sel.closest('.option').classList.add('wrong');}});if(answered<questions.length){showToast('أجب على كل الأسئلة!','err');return;}const scoreEl=document.getElementById('scoreDisplay');const pct=Math.round(correct/questions.length*100);scoreEl.style.display='flex';if(pct>=60){scoreEl.className='score-display pass';scoreEl.textContent='🎉 ممتاز! '+correct+'/'+questions.length+' صحيح ('+pct+'%)';markCompleted(LESSON_ID);updateSidebar();updateProgressPill();showNextButton();showToast('الدرس مكتمل ✓','ok');}else{scoreEl.className='score-display fail';scoreEl.textContent='💪 '+correct+'/'+questions.length+' — راجع الدرس وحاول مجدداً';}}
+function retryQuiz(){document.querySelectorAll('.option').forEach(o=>{o.classList.remove('correct','wrong');o.querySelector('input').disabled=false;o.querySelector('input').checked=false;});document.getElementById('scoreDisplay').style.display='none';}
+function showToast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),4000);}
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('pre.code-pre code').forEach(el=>{el.innerHTML=highlight(el.textContent);});document.querySelectorAll('.copy-btn').forEach(btn=>{btn.addEventListener('click',()=>{const code=btn.closest('.code-block').querySelector('pre.code-pre code');navigator.clipboard.writeText(code.textContent).then(()=>{btn.textContent='تم! ✓';setTimeout(()=>btn.textContent='نسخ',1800);});});});const menuBtn=document.getElementById('menuBtn');const sidebar=document.getElementById('sidebar');if(menuBtn)menuBtn.addEventListener('click',()=>sidebar.classList.toggle('open'));updateSidebar();updateProgressPill();if(isCompleted(LESSON_ID))showNextButton();});
+</script>
+</body></html>

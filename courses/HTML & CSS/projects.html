@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX | خريطة التعلم</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#39ff14;--neon-dim:rgba(57,255,20,.1);
+  --void:#05070a;--surface:#0b0e14;--card:#0f1219;
+  --border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.2);
+  --text:#c9d1d9;--muted:#4e5566;
+}
+body{
+  font-family:'Cairo',sans-serif;background-color:#0a0a10;color:var(--text);
+  min-height:100vh;padding:0;
+  background-image:linear-gradient(rgba(57,255,20,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(57,255,20,.02) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--neon);border-radius:3px;}
+
+/* HEADER */
+.site-header{background:rgba(5,5,8,.8);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+  padding:0 28px;height:60px;display:flex;align-items:center;gap:14px;}
+.site-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;
+  color:var(--neon);text-decoration:none;letter-spacing:-1px;}
+.site-sub{font-size:13px;color:var(--muted);}
+.header-right{margin-right:auto;display:flex;align-items:center;gap:10px;}
+.overall-badge{background:var(--neon-dim);border:1px solid var(--border2);
+  border-radius:100px;padding:5px 14px;font-size:12px;font-weight:700;
+  color:var(--neon);display:flex;align-items:center;gap:6px;}
+.overall-dot{width:6px;height:6px;border-radius:50%;background:var(--neon);
+  box-shadow:0 0 6px var(--neon);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+/* HERO */
+.hero{text-align:center;padding:70px 24px 50px;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,4rem);
+  font-weight:800;letter-spacing:-2px;margin-bottom:14px;}
+.hero h1 .acc{color:var(--neon);}
+.hero p{font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7;}
+
+/* PROGRESS BAR */
+.global-progress{max-width:700px;margin:40px auto 0;padding:0 24px;}
+.gp-label{display:flex;justify-content:space-between;font-size:12px;
+  color:var(--muted);margin-bottom:8px;font-family:'JetBrains Mono',monospace;}
+.gp-bar{height:6px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden;}
+.gp-fill{height:100%;background:linear-gradient(to left,var(--neon),#00cc88);
+  border-radius:100px;transition:width .6s ease;width:0%;}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:20px 24px 80px;}
+
+/* PROJECT CARD */
+.project-card{background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:28px;margin-bottom:24px;transition:border-color .3s;}
+.project-card:hover{border-color:rgba(57,255,20,.15);}
+.pc-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px;}
+.pc-icon{width:48px;height:48px;border-radius:13px;display:flex;
+  align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.pc-info h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:4px;}
+.pc-info p{font-size:13px;color:var(--muted);line-height:1.6;}
+.pc-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.pc-tag{font-size:11px;padding:2px 8px;border-radius:5px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);}
+
+/* PROGRESS RING */
+.pc-progress-ring{flex-shrink:0;margin-right:auto;text-align:center;}
+.ring-num{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--neon);}
+.ring-label{font-size:10px;color:var(--muted);}
+
+/* STEPS GRID */
+.steps-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.step-tile{
+  width:52px;height:52px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;
+  text-decoration:none;color:var(--muted);
+  background:rgba(255,255,255,.03);border:1px dashed var(--muted);
+  transition:all .25s;position:relative;
+}
+.step-tile:hover{border-color:var(--neon);color:var(--neon);transform:translateY(-2px);}
+.step-tile.done{
+  background:rgba(57,255,20,.1);border:1px solid var(--neon);
+  color:var(--neon);box-shadow:0 0 12px rgba(57,255,20,.15);
+}
+.step-tile.done::after{content:'✓';position:absolute;bottom:3px;right:5px;
+  font-size:9px;color:var(--neon);}
+.step-tile.locked{opacity:.35;cursor:not-allowed;pointer-events:none;}
+
+/* COMPLETION BANNER */
+.complete-banner{display:none;background:var(--neon-dim);border:1px solid var(--border2);
+  border-radius:12px;padding:14px 18px;margin-top:18px;
+  font-size:13px;color:var(--neon);text-align:center;font-weight:600;}
+.complete-banner.show{display:block;}
+
+/* COMING SOON */
+.coming-soon .pc-icon{filter:grayscale(.7);}
+.coming-soon .steps-grid{opacity:.4;pointer-events:none;}
+.cs-label{display:inline-block;background:rgba(255,255,255,.04);
+  border:1px dashed var(--muted);border-radius:8px;
+  padding:12px 20px;font-size:13px;color:var(--muted);
+  width:100%;text-align:center;margin-top:10px;}
+  .home-btn:hover{
+      color:rgb(255, 255, 255)!important;font-size:.9rem;
+      text-decoration:underline;margin-left: 10px; transition: all 0.3s ease;
+    }
+    
+    nav ul li{
+      display:flex;align-items:center;gap:6px;
+    }
+</style>
+</head>
+<body>
+<nav style="position:relative;z-index:10; padding:0 20px 20px;">
+  <ul>
+    <li><a href="../index.html" style="color:rgba(255, 255, 255, 0.413); text-decoration:none; font-size:.9rem;" class="home-btn">Back to Home</a><i class="fas fa-arrow-left"></i></li>
+  </ul>
+</nav>
+<header class="site-header">
+  <a href="#" class="site-logo">PhineX</a>
+  <span class="site-sub">/ خريطة التعلم</span>
+  <div class="header-right">
+    <div class="overall-badge">
+      <span class="overall-dot"></span>
+      <span id="overallText">0 / 8 مكتملة</span>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>مسارات <span class="acc">PhineX</span> التعليمية</h1>
+  <p>أكمل كل خطوة لتبني مهاراتك خطوة بخطوة وتضيف مشاريع حقيقية لـ Portfolio.</p>
+  <div class="global-progress">
+    <div class="gp-label">
+      <span>التقدم الكلي</span>
+      <span id="pctText">0%</span>
+    </div>
+    <div class="gp-bar"><div class="gp-fill" id="gpFill"></div></div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- PROJECT 1: Games Library -->
+  <div class="project-card" id="proj-games">
+    <div class="pc-header">
+      <div class="pc-icon" style="background:rgba(57,255,20,.08);">🎮</div>
+      <div class="pc-info">
+        <h3>مكتبة أسعار الألعاب</h3>
+        <p>بناء تطبيق ويب كامل من الصفر — HTML، CSS، وJavaScript. جدول تفاعلي بخاصيتي البحث والإضافة الديناميكية.</p>
+        <div class="pc-meta">
+          <span class="pc-tag">HTML</span>
+          <span class="pc-tag">CSS</span>
+          <span class="pc-tag">JavaScript</span>
+          <span class="pc-tag">8 خطوات</span>
+        </div>
+      </div>
+      <div class="pc-progress-ring">
+        <div class="ring-num" id="games-count">0/8</div>
+        <div class="ring-label">مكتملة</div>
+      </div>
+    </div>
+    <div class="steps-grid" id="games-steps">
+      <a href="projects/games price library/step1.html" class="step-tile" data-step="phinex_step_1">1</a>
+      <a href="projects/games price library/step2.html" class="step-tile" data-step="phinex_step_2">2</a>
+      <a href="projects/games price library/step3.html" class="step-tile" data-step="phinex_step_3">3</a>
+      <a href="projects/games price library/step4.html" class="step-tile" data-step="phinex_step_4">4</a>
+      <a href="projects/games price library/step5.html" class="step-tile" data-step="phinex_step_5">5</a>
+      <a href="projects/games price library/step6.html" class="step-tile" data-step="phinex_step_6">6</a>
+      <a href="projects/games price library/step7.html" class="step-tile" data-step="phinex_step_7">7</a>
+      <a href="projects/games price library/step8.html" class="step-tile" data-step="phinex_step_8">8</a>
+    </div>
+    <div class="complete-banner" id="games-banner">
+      🎉 أحسنت! أكملت مشروع مكتبة الألعاب بالكامل. المشروع جاهز لـ Portfolio!
+    </div>
+  </div>
+
+  <!-- PROJECT 3: Weather App (coming soon) -->
+  <div class="project-card coming-soon">
+    <div class="pc-header">
+      <div class="pc-icon" style="background:rgba(247,223,30,.06);">⛅</div>
+      <div class="pc-info">
+        <h3>تطبيق الطقس مع API</h3>
+        <p>اتصل بـ OpenWeather API واعرض بيانات الطقس في واجهة ديناميكية.</p>
+        <div class="pc-meta">
+          <span class="pc-tag">JavaScript</span>
+          <span class="pc-tag">Fetch API</span>
+          <span class="pc-tag">JSON</span>
+          <span class="pc-tag">8 خطوات</span>
+        </div>
+      </div>
+    </div>
+    <div class="cs-label">🔒 قريباً</div>
+  </div>
+
+</main>
+
+<script>
+function updateUI() {
+  const tiles = document.querySelectorAll('.step-tile[data-step]');
+  let done = 0;
+  tiles.forEach(tile => {
+    const key = tile.getAttribute('data-step');
+    if (localStorage.getItem(key) === 'complete') {
+      tile.classList.add('done');
+      done++;
+    } else {
+      tile.classList.remove('done');
+    }
+  });
+  // games counter
+  document.getElementById('games-count').textContent = done + '/8';
+  // global progress
+  const pct = Math.round((done / 8) * 100);
+  document.getElementById('gpFill').style.width = pct + '%';
+  document.getElementById('pctText').textContent = pct + '%';
+  document.getElementById('overallText').textContent = done + ' / 8 مكتملة';
+  // complete banner
+  if (done === 8) document.getElementById('games-banner').classList.add('show');
+}
+
+// Reset progress button (dev tool)
+window._resetProgress = () => {
+  for (let i=1;i<=8;i++) {
+    localStorage.removeItem(`phinex_step_${i}`);
+    for (const t of ['html','css','js']) localStorage.removeItem(`phinex_step_${i}_${t}`);
+  }
+  location.reload();
+};
+
+updateUI();
+// re-check when tab becomes visible again
+document.addEventListener('visibilitychange', () => { if (!document.hidden) updateUI(); });
+</script>
+
+</body>
+</html>

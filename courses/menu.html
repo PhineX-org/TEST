@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhineX Academy | قائمة الدورات</title>
+  <meta name="description" content="تصفح دوراتنا التعليمية في برمجة الويب — HTML, CSS, JavaScript, Tailwind والمزيد. تعلم من الصفر حتى الاحتراف مع شروحات مفصلة وأمثلة عملية.">
+  <link href="../PhineX_Courses.png" rel="icon" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg:       #050508;
+      --bg2:      #0a0a12;
+      --green:    #39ff14;
+      --yellow:   #eeff00;
+      --cyan:     #00d4ff;
+      --purple:   #b14fff;
+      --red:      #ff4444;
+      --card-bg:  rgba(255,255,255,0.03);
+      --border:   rgba(57,255,20,0.15);
+      --glow:     0 0 30px rgba(57,255,20,0.25);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:var(--bg);
+      color:#fff;
+      font-family:'Cairo',sans-serif;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    /* ── CANVAS BG ── */
+    #bg-canvas{position:fixed;inset:0;z-index:0;opacity:.35;}
+
+    /* ── HEADER ── */
+    header{
+      position:relative;z-index:10;
+      text-align:center;
+      padding:80px 20px 40px;
+    }
+    .academy-badge{
+      display:inline-block;
+      border:1px solid var(--green);
+      color:var(--green);
+      font-family:'Orbitron',sans-serif;
+      font-size:.7rem;
+      letter-spacing:4px;
+      padding:6px 20px;
+      border-radius:100px;
+      margin-bottom:24px;
+      animation:pulse-border 2s ease infinite;
+    }
+    @keyframes pulse-border{
+      0%,100%{box-shadow:0 0 0 0 rgba(57,255,20,.4);}
+      50%{box-shadow:0 0 0 8px rgba(57,255,20,0);}
+    }
+    h1{
+      font-family:'Orbitron',sans-serif;
+      font-size:clamp(2rem,5vw,3.5rem);
+      font-weight:900;
+      line-height:1.1;
+      background:linear-gradient(135deg,var(--green),var(--cyan));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:16px;
+      animation:fadeDown .8s ease both;
+    }
+    .subtitle{
+      color:rgba(255,255,255,.5);
+      font-size:1rem;
+      animation:fadeDown .8s .15s ease both;
+    }
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:none;}}
+
+    /* ── STATS BAR ── */
+    .stats{
+      display:flex;justify-content:center;gap:40px;flex-wrap:wrap;
+      padding:24px 20px;
+      position:relative;z-index:10;
+    }
+    .stat{text-align:center;}
+    .stat-num{
+      font-family:'Orbitron',sans-serif;
+      font-size:1.8rem;font-weight:700;
+      color:var(--green);
+    }
+    .stat-label{font-size:.8rem;color:rgba(255,255,255,.4);margin-top:2px;}
+
+    /* ── SEARCH ── */
+    .search-bar{
+      position:relative;z-index:10;
+      max-width:480px;margin:0 auto 60px;padding:0 20px;
+    }
+    .search-bar input{
+      width:100%;background:rgba(255,255,255,.05);
+      border:1px solid rgba(57,255,20,.2);
+      border-radius:100px;
+      padding:14px 24px 14px 50px;
+      color:#fff;font-family:'Cairo',sans-serif;font-size:1rem;
+      outline:none;transition:border-color .3s,box-shadow .3s;
+    }
+    .search-bar input:focus{
+      border-color:var(--green);
+      box-shadow:0 0 20px rgba(57,255,20,.15);
+    }
+    .search-bar .search-icon{
+      position:absolute;left:40px;top:50%;transform:translateY(-50%);
+      color:rgba(57,255,20,.5);font-size:1rem;
+    }
+
+    /* ── COURSES GRID ── */
+    .courses-section{
+      position:relative;z-index:10;
+      max-width:1200px;margin:0 auto;padding:0 24px 80px;
+    }
+    .section-label{
+      font-size:.75rem;letter-spacing:3px;color:rgba(255,255,255,.3);
+      text-transform:uppercase;font-family:'Orbitron',sans-serif;
+      margin-bottom:32px;text-align:center;
+    }
+    .courses-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:28px;
+    }
+
+    /* ── COURSE CARD ── */
+    .card{
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:36px 32px;
+      text-decoration:none;
+      color:#fff;
+      display:flex;flex-direction:column;gap:20px;
+      position:relative;overflow:hidden;
+      transition:transform .35s cubic-bezier(.175,.885,.32,1.275),
+                  border-color .35s,box-shadow .35s;
+      animation:cardIn .6s ease both;
+    }
+    .card:nth-child(1){animation-delay:.1s;}
+    .card:nth-child(2){animation-delay:.2s;}
+    .card:nth-child(3){animation-delay:.3s;}
+    @keyframes cardIn{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+    .card::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at 50% 0%,var(--accent-color,rgba(57,255,20,.08)) 0%,transparent 70%);
+      opacity:0;transition:opacity .35s;
+    }
+    .card:hover{
+      transform:translateY(-8px) scale(1.01);
+      border-color:var(--accent-color,var(--green));
+      box-shadow:0 20px 60px rgba(0,0,0,.4),var(--glow);
+    }
+    .card:hover::before{opacity:1;}
+
+    /* card accent colours */
+    .card-html{--accent-color:#e34c26;}
+    .card-html .card-icon i{color:#e34c26;}
+    .card-js .card-icon i{color:#f7df1e;}
+    .card-js{--accent-color:#f7df1e;}
+    .card-tailwind{--accent-color:#38bdf8;}
+    .card-tailwind{border-color:rgba(56,189,248,.2);}
+    .card-tailwind .card-icon i{color:#38bdf8;}
+    .card-tailwind:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 30px rgba(56,189,248,.25);}
+    .card-php{--accent-color:#777bb4;}
+    .card-php{border-color:rgba(119,123,180,.2);}
+    .card-php .card-icon i{color:#777bb4;}
+    .card-php:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 30px rgba(119,123,180,.25);}
+    .card-python{--accent-color:#4B8BBE;}
+    .card-python{border-color:rgba(75,139,190,.2);}
+    .card-python .card-icon i{color:#4B8BBE;}
+    .card-python:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 30px rgba(75,139,190,.25);}
+    .card-react{--accent-color:#61dafb;}
+    .card-react{border-color:rgba(97,218,251,.2);}
+    .card-react .card-icon i{color:#61dafb;}
+    .card-react:hover{box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 30px rgba(97,218,251,.25);}
+
+    .card-new-badge{
+      position:absolute;top:20px;left:20px;
+      background:var(--green);color:#000;
+      font-family:'Orbitron',sans-serif;font-size:.6rem;
+      letter-spacing:2px;padding:4px 12px;border-radius:100px;font-weight:700;
+    }
+
+    .card-icon{
+      width:64px;height:64px;
+      background:rgba(255,255,255,.05);
+      border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:2rem;
+    }
+    .card-icon i.fa-html5{color:#e34c26;}
+    .card-icon i.fa-js{color:#f7df1e;}
+
+    .card-title{
+      font-family:'Orbitron',sans-serif;
+      font-size:1.3rem;font-weight:700;
+    }
+    .card-desc{
+      font-size:.9rem;color:rgba(255,255,255,.5);
+      line-height:1.7;
+    }
+
+    .card-topics{
+      display:flex;flex-wrap:wrap;gap:8px;
+    }
+    .topic-tag{
+      font-size:.72rem;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:100px;padding:4px 12px;color:rgba(255,255,255,.6);
+    }
+
+    .card-footer{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);
+    }
+    .card-meta{font-size:.8rem;color:rgba(255,255,255,.35);}
+    .card-meta span{color:var(--accent-color,var(--green));font-weight:700;}
+    .card-arrow{
+      width:40px;height:40px;
+      border:1px solid rgba(255,255,255,.1);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      color:rgba(255,255,255,.4);transition:all .3s;
+    }
+    .card:hover .card-arrow{
+      border-color:var(--accent-color,var(--green));
+      color:var(--accent-color,var(--green));
+      box-shadow:0 0 15px var(--accent-color,var(--green));
+    }
+    .progress-bar{height:3px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;}
+    .progress-fill{height:100%;border-radius:100px;background:var(--accent-color,var(--green));}
+
+    /* ── COMING SOON CARD ── */
+    .card-soon{opacity:.5;pointer-events:none;}
+    .soon-badge{
+      position:absolute;top:20px;left:20px;
+      background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);
+      font-size:.65rem;letter-spacing:2px;padding:4px 12px;border-radius:100px;
+      font-family:'Orbitron',sans-serif;
+    }
+
+    /* ── FOOTER ── */
+    footer{
+      position:relative;z-index:10;text-align:center;
+      padding:40px 20px;border-top:1px solid rgba(255,255,255,.06);
+      color:rgba(255,255,255,.25);font-size:.85rem;
+    }
+    footer .logo{
+      font-family:'Orbitron',sans-serif;color:var(--green);
+      font-size:1.1rem;font-weight:700;margin-bottom:8px;
+    }
+    .home-btn:hover{
+      color:rgb(255, 255, 255)!important;font-size:.9rem;
+      text-decoration:underline;margin-left: 10px; transition: all 0.3s ease;
+    }
+    
+    nav ul li{
+      display:flex;align-items:center;gap:6px;
+    }
+    .amg{
+      color: linear-gradient(135deg,var(--green),var(--purple));
+      animation: infinite gradient 3s linear;
+      background: linear-gradient(135deg,var(--green),var(--purple)); 
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    @keyframes gradient {
+        0%{background-position:0% 50%;}
+        100%{background-position:200% 50%;}
+      }
+      @keyframes pulse-border{
+        0%,100%{box-shadow:0 0 0 0 rgba(57,255,20,.4);}
+        50%{box-shadow:0 0 0 8px rgba(57,255,20,0);}
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<header>
+  <div class="academy-badge">PHINEX Library</div>
+  <h1>قائمة الدورات التعليمية</h1>
+  <p class="subtitle">تعلّم برمجة الويب من الصفر حتى الاحتراف — بالعربي</p>
+</header>
+<nav style="position:relative;z-index:10; padding:0 20px 20px;">
+  <ul>
+    <li><a href="../index.html" style="color:rgba(255, 255, 255, 0.413); text-decoration:none; font-size:.9rem;" class="home-btn">Back to Home</a><i class="fas fa-arrow-left"></i></li>
+    <li><a href="../docs/index.html" style="color:#39ff14; text-decoration:none; font-size:.9rem;">📚 مرجع HTML (Docs)</a></li>
+  </ul>
+</nav>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">6</div><div class="stat-label">دورات متاحة</div></div>
+  <div class="stat"><div class="stat-num">80+</div><div class="stat-label">درس تفصيلي</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">مجاني</div></div>
+  <div class="stat"><div class="stat-num">∞</div><div class="stat-label">وصول دائم</div></div>
+</div>
+
+<div class="search-bar">
+  <i class="fas fa-search search-icon"></i>
+  <input type="text" placeholder="ابحث عن دورة أو موضوع..."/>
+</div>
+
+<div class="courses-section">
+  <p class="section-label">الدورات المتاحة</p>
+  <div class="courses-grid">
+
+    <!-- HTML & CSS -->
+    <a href="HTML & CSS/menu.html" class="card card-html">
+      <div class="card-icon"><i class="fab fa-html5"></i></div>
+      <div>
+        <div class="card-title">HTML & CSS</div>
+        <div class="card-desc">ابدأ رحلتك مع بناء صفحات الويب — من الأساسيات لحد الـ Flexbox والـ Grid وكل حاجة.</div>
+      </div>
+      <div class="card-topics">
+        <span class="topic-tag">HTML Elements</span>
+        <span class="topic-tag">Forms</span>
+        <span class="topic-tag">Flexbox</span>
+        <span class="topic-tag">Grid</span>
+        <span class="topic-tag">Animations</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%" id="htmlProgress"></div></div>
+      <div class="card-footer">
+        <div class="card-meta"><span>9</span> دروس</div>
+        <div class="card-arrow"><i class="fas fa-arrow-left"></i></div>
+      </div>
+    </a>
+
+    <!-- JavaScript -->
+    <a href="Js/menu.html" class="card card-js">
+      <div class="card-icon"><i class="fab fa-js"></i></div>
+      <div>
+        <div class="card-title">JavaScript</div>
+        <div class="card-desc">تعلم لغة البرمجة الأساسية لتطوير الويب — من المتغيرات للـ DOM والـ Events وكل حاجة.</div>
+      </div>
+      <div class="card-topics">
+        <span class="topic-tag">Variables</span>
+        <span class="topic-tag">Functions</span>
+        <span class="topic-tag">DOM</span>
+        <span class="topic-tag">Events</span>
+        <span class="topic-tag">Fetch API</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%" id="jsProgress"></div></div>
+      <div class="card-footer">
+        <div class="card-meta"><span>12</span> دروس</div>
+        <div class="card-arrow"><i class="fas fa-arrow-left"></i></div>
+      </div>
+
+
+    <!-- Tailwind CSS -->
+    <a href="Tailwind CSS/menu.html" class="card card-tailwind">
+      <div class="card-icon">
+        <svg width="36" height="36" viewBox="0 0 54 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M27 0C19.8 0 15.3 3.6 13.5 10.8C16.2 7.2 19.35 5.85 22.95 6.75C25.004 7.263 26.472 8.754 28.097 10.403C30.744 13.09 33.808 16.2 40.5 16.2C47.7 16.2 52.2 12.6 54 5.4C51.3 9 48.15 10.35 44.55 9.45C42.496 8.937 41.028 7.446 39.403 5.797C36.756 3.11 33.692 0 27 0ZM13.5 16.2C6.3 16.2 1.8 19.8 0 27C2.7 23.4 5.85 22.05 9.45 22.95C11.504 23.463 12.972 24.954 14.597 26.603C17.244 29.29 20.308 32.4 27 32.4C34.2 32.4 38.7 28.8 40.5 21.6C37.8 25.2 34.65 26.55 31.05 25.65C28.996 25.137 27.528 23.646 25.903 21.997C23.256 19.31 20.192 16.2 13.5 16.2Z" fill="#38BDF8"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">Tailwind CSS</div>
+        <div class="card-desc">أسرع طريقة لتصميم مواقع احترافية — اتعلم كل شيء من Animations لـ 3D Transforms بشرح مصري عميق.</div>
+      </div>
+      <div class="card-topics">
+        <span class="topic-tag">Utilities</span>
+        <span class="topic-tag">Flexbox</span>
+        <span class="topic-tag">Grid</span>
+        <span class="topic-tag">Animations</span>
+        <span class="topic-tag">3D</span>
+        <span class="topic-tag">Dark Mode</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%" id="tailwindProgress"></div></div>
+      <div class="card-footer">
+        <div class="card-meta"><span>15</span> دروس</div>
+        <div class="card-arrow"><i class="fas fa-arrow-left"></i></div>
+      </div>
+    </a>
+
+    <!-- PHP -->
+    <a href="php-course/index.html" class="card card-php">
+      <span class="card-new-badge">جديد</span>
+      <div class="card-icon"><i class="fab fa-php"></i></div>
+      <div>
+        <div class="card-title">PHP</div>
+        <div class="card-desc">لغة برمجة نصية تُستخدم بشكل واسع في تطوير المواقع والتطبيقات الويب.</div>
+      </div>
+      <div class="card-topics">
+        <span class="topic-tag">Variables</span>
+        <span class="topic-tag">Functions</span>
+        <span class="topic-tag">DOM</span>
+        <span class="topic-tag">Events</span>
+        <span class="topic-tag">Fetch API</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%" id="phpProgress"></div></div>
+      <div class="card-footer">
+        <div class="card-meta"><span>13</span> دروس</div>
+        <div class="card-arrow"><i class="fas fa-arrow-left"></i></div>
+      </div>
+    </a>
+
+    <a href="Python/menu.html" class="card card-python">
+      <span class="card-new-badge">جديد</span>
+      <div class="card-icon"><i class="fab fa-python"></i></div>
+      <div>
+        <div class="card-title">Python</div>
+        <div class="card-desc">بايثون حقيقية شغّالة جوا المتصفح — من المتغيرات للذكاء الاصطناعي.</div>
+      </div>
+      <div class="card-topics">
+        <span class="topic-tag">Variables</span>
+        <span class="topic-tag">Data Types</span>
+        <span class="topic-tag">f-strings</span>
+        <span class="topic-tag">Real Execution</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%" id="pythonProgress"></div></div>
+      <div class="card-footer">
+        <div class="card-meta"><span>1</span> درس تفاعلي</div>
+        <div class="card-arrow"><i class="fas fa-arrow-left"></i></div>
+      </div>
+    </a>
+
+    <a href="React/menu.html" class="card card-react">
+      <span class="card-new-badge">جديد</span>
+      <div class="card-icon"><i class="fab fa-react"></i></div>
+      <div>
+        <div class="card-title">React</div>
+        <div class="card-desc">JSX ومكونات حقيقية بتشتغل فعلياً جوا المتصفح — من الأساسيات للاحتراف.</div>
+      </div>
+      <div class="card-topics">
+        <span class="topic-tag">JSX</span>
+        <span class="topic-tag">Components</span>
+        <span class="topic-tag">Props</span>
+        <span class="topic-tag">State</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%" id="reactProgress"></div></div>
+      <div class="card-footer">
+        <div class="card-meta"><span>1</span> درس تفاعلي</div>
+        <div class="card-arrow"><i class="fas fa-arrow-left"></i></div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  <div class="logo">PhineX</div>
+  <p>&copy; 2026 PhineX Academy — <span class="amg">A M G</span>. جميع الحقوق محفوظة.</p>
+</footer>
+
+<script>
+  // ── Particle canvas ──
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = innerWidth;
+    H = canvas.height = innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.size = Math.random() * 1.5 + .3;
+      this.speedX = (Math.random() - .5) * .4;
+      this.speedY = (Math.random() - .5) * .4;
+      this.opacity = Math.random() * .6 + .1;
+      this.color = Math.random() > .5 ? '57,255,20' : '0,212,255';
+    }
+    update() {
+      this.x += this.speedX; this.y += this.speedY;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    // draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          ctx.strokeStyle = `rgba(57,255,20,${.15 * (1 - dist/100)})`;
+          ctx.lineWidth = .5;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // Search filter
+  document.querySelector('.search-bar input').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.card:not(.card-soon)').forEach(card => {
+      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  document.getElementById('htmlProgress').style.width = localStorage.getItem('progress-html') || '0%';
+  document.getElementById('jsProgress').style.width = localStorage.getItem('progress-js') || '0%';
+  document.getElementById('tailwindProgress').style.width = localStorage.getItem('progress-tailwind') || '0%';
+</script>
+</body>
+</html>

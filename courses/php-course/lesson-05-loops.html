@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX PHP | درس 5: الحلقات التكرارية</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+:root{
+  --neon:#39ff14;--neon-dim:rgba(57,255,20,.08);
+  --purple:#8b5cf6;--pink:#f472b6;
+  --void:#05070a;--surface:#09090f;--card:#0d1017;--card2:#111622;
+  --border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.18);
+  --text:#e2e8f0;--muted:#64748b;--radius:14px;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--neon);border-radius:3px;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(5,5,10,.85);
+  backdrop-filter:blur(18px);border-bottom:1px solid var(--border);
+  height:56px;display:flex;align-items:center;padding:0 20px;gap:14px;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;
+  color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.topbar-sep{color:var(--muted);}
+.topbar-title{font-size:13px;font-weight:600;color:var(--text);}
+.topbar-right{margin-right:auto;display:flex;align-items:center;gap:10px;}
+.menu-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);
+  color:var(--text);padding:6px 14px;border-radius:8px;cursor:pointer;
+  font-size:13px;font-family:'Cairo',sans-serif;transition:all .2s;}
+.menu-btn:hover{border-color:var(--neon);color:var(--neon);}
+.progress-pill{background:var(--neon-dim);border:1px solid var(--border2);
+  border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;
+  color:var(--neon);font-family:'JetBrains Mono',monospace;}
+
+/* ── LAYOUT ── */
+.page-wrap{display:flex;flex:1;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:280px;flex-shrink:0;background:var(--surface);
+  border-left:1px solid var(--border);overflow-y:auto;
+  height:calc(100vh - 56px);position:sticky;top:56px;
+  transition:transform .3s;}
+.sidebar.collapsed{transform:translateX(100%);}
+.sidebar-header{padding:16px 18px;border-bottom:1px solid var(--border);
+  font-size:11px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);}
+.lesson-link{display:flex;align-items:center;gap:10px;padding:10px 18px;
+  text-decoration:none;color:var(--muted);transition:all .2s;
+  border-right:3px solid transparent;font-size:13px;}
+.lesson-link:hover{background:rgba(255,255,255,.03);color:var(--text);}
+.lesson-link.active{color:var(--neon);background:var(--neon-dim);
+  border-right-color:var(--neon);}
+.lesson-link.done{color:var(--text);}
+.ll-icon{font-size:16px;flex-shrink:0;}
+.ll-info{flex:1;min-width:0;}
+.ll-title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ll-num{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.ll-badge{flex-shrink:0;font-size:10px;padding:2px 7px;border-radius:100px;}
+.ll-badge.done{background:rgba(57,255,20,.12);color:var(--neon);border:1px solid rgba(57,255,20,.25);}
+.ll-badge.locked{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border);}
+
+/* ── MAIN CONTENT ── */
+.main{flex:1;overflow-y:auto;padding:0 0 80px;}
+.lesson-hero{padding:48px 60px 36px;border-bottom:1px solid var(--border);
+  background:linear-gradient(to bottom,rgba(57,255,20,.03),transparent);}
+.lesson-num-badge{display:inline-flex;align-items:center;gap:6px;
+  background:var(--neon-dim);border:1px solid var(--border2);
+  border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;
+  color:var(--neon);letter-spacing:.6px;margin-bottom:16px;}
+.lesson-title{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;
+  letter-spacing:-1.5px;margin-bottom:8px;line-height:1.1;}
+.lesson-sub{font-size:1rem;color:var(--muted);margin-bottom:20px;}
+.lesson-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.meta-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;
+  color:var(--muted);background:rgba(255,255,255,.03);
+  border:1px solid var(--border);border-radius:8px;padding:5px 12px;}
+
+/* ── CONTENT SECTIONS ── */
+.content-area{padding:40px 60px;max-width:900px;}
+.section-block{margin-bottom:44px;}
+.section-block h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;
+  margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:8px;}
+.section-block h2::before{content:'';display:block;width:4px;height:20px;
+  background:var(--accent,var(--neon));border-radius:2px;flex-shrink:0;}
+.section-body{font-size:15px;line-height:1.85;color:var(--text);}
+.section-body ul{padding-right:20px;margin:10px 0;}
+.section-body li{margin-bottom:6px;}
+.section-body strong{color:var(--text);font-weight:700;}
+.section-body em{color:var(--neon);font-style:normal;}
+.section-body code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);
+  padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+
+/* ── CODE BLOCK ── */
+.code-block{margin:20px 0;border-radius:var(--radius);overflow:hidden;
+  border:1px solid rgba(255,255,255,.06);}
+.code-header{background:#0a0d14;padding:8px 16px;display:flex;
+  align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);}
+.code-lang{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  color:var(--accent,var(--neon));letter-spacing:1px;}
+.code-dots{display:flex;gap:5px;}
+.cd{width:10px;height:10px;border-radius:50%;}
+.cd.r{background:#ff5f57;}.cd.y{background:#febc2e;}.cd.g{background:var(--neon);}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);
+  font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer;
+  font-family:'Cairo',sans-serif;transition:all .2s;}
+.copy-btn:hover{border-color:var(--neon);color:var(--neon);}
+pre.code-pre{background:#080b10;padding:20px;margin:0;overflow-x:auto;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;
+  direction:ltr;text-align:left;tab-size:4;}
+.code-output{background:rgba(0,0,0,.4);border-top:1px solid rgba(255,255,255,.05);
+  padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:#c3e88d;direction:ltr;text-align:left;white-space:pre-wrap;}
+.output-label{font-size:10px;color:var(--muted);letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:6px;font-family:'Cairo',sans-serif;
+  direction:rtl;text-align:right;}
+
+/* Syntax colors */
+.kw{color:#c792ea;} .fn{color:#82aaff;} .str{color:#c3e88d;}
+.num{color:#f78c6c;} .cmt{color:#546e7a;font-style:italic;}
+.var{color:#eeffff;} .tag{color:#89ddff;} .op{color:#89ddff;}
+.cls{color:#ffcb6b;} .bool{color:#ff5874;}
+
+/* ── INFO TABLE ── */
+.info-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;}
+.info-table th{background:rgba(57,255,20,.08);color:var(--neon);
+  padding:8px 12px;text-align:right;border:1px solid var(--border2);}
+.info-table td{padding:8px 12px;border:1px solid var(--border);color:var(--text);}
+.info-table tr:hover td{background:rgba(255,255,255,.02);}
+.info-table td:first-child{font-family:'JetBrains Mono',monospace;
+  color:#c3e88d;font-size:12px;direction:ltr;}
+
+/* ── QUIZ ── */
+.quiz-section{margin:0 60px 60px;max-width:900px;}
+.quiz-header{background:var(--card);border:1px solid var(--border2);
+  border-radius:var(--radius) var(--radius) 0 0;padding:20px 24px;
+  display:flex;align-items:center;gap:12px;}
+.quiz-header h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;}
+.quiz-badge{background:var(--neon-dim);border:1px solid var(--border2);
+  border-radius:100px;padding:3px 10px;font-size:11px;
+  font-weight:700;color:var(--neon);}
+.quiz-body{background:var(--card);border:1px solid var(--border);
+  border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:0 24px 24px;}
+.question-block{padding:20px 0;border-bottom:1px solid var(--border);}
+.question-block:last-of-type{border-bottom:none;}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  color:var(--neon);background:var(--neon-dim);padding:2px 8px;
+  border-radius:5px;display:inline-block;margin-bottom:8px;}
+.q-text{font-size:15px;font-weight:600;margin-bottom:14px;line-height:1.6;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{display:flex;align-items:center;gap:10px;padding:10px 16px;
+  border-radius:10px;border:1px solid var(--border);cursor:pointer;
+  transition:all .2s;font-size:14px;background:rgba(255,255,255,.02);}
+.option:hover{border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);}
+.option input[type=radio]{accent-color:var(--neon);width:16px;height:16px;flex-shrink:0;}
+.option.correct{border-color:var(--neon);background:rgba(57,255,20,.08);color:var(--neon);}
+.option.wrong{border-color:#ff5874;background:rgba(255,88,116,.08);color:#ff5874;}
+.quiz-footer{margin-top:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.btn-submit{background:var(--neon);color:#050508;padding:10px 28px;
+  border:none;border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;
+  box-shadow:0 0 16px rgba(57,255,20,.2);}
+.btn-submit:hover{box-shadow:0 0 28px rgba(57,255,20,.45);}
+.btn-retry{background:transparent;border:1px solid var(--border);
+  color:var(--muted);padding:10px 20px;border-radius:10px;font-size:14px;
+  cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-retry:hover{border-color:var(--muted);color:var(--text);}
+.score-display{display:none;align-items:center;gap:10px;padding:12px 20px;
+  border-radius:10px;font-size:15px;font-weight:700;border:1px solid;}
+.score-display.pass{background:rgba(57,255,20,.08);border-color:var(--neon);color:var(--neon);}
+.score-display.fail{background:rgba(255,88,116,.08);border-color:#ff5874;color:#ff5874;}
+
+/* ── LESSON NAV ── */
+.lesson-nav{display:flex;align-items:center;justify-content:space-between;
+  padding:20px 60px;border-top:1px solid var(--border);
+  background:rgba(0,0,0,.15);gap:14px;flex-wrap:wrap;}
+.btn-nav{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;
+  border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;
+  text-decoration:none;border:1px solid var(--border);
+  background:transparent;color:var(--muted);transition:all .2s;
+  font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(.disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav.disabled{opacity:.3;pointer-events:none;}
+.btn-next-lesson{background:var(--neon);color:#050508;border-color:var(--neon);
+  box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-next-lesson:hover{box-shadow:0 0 24px rgba(57,255,20,.45);}
+.btn-next-lesson.locked{background:rgba(255,255,255,.07);color:var(--muted);
+  border-color:var(--border);box-shadow:none;pointer-events:none;}
+
+/* ── COMPLETION TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--card);border-radius:14px;padding:14px 24px;
+  font-size:14px;opacity:0;transition:all .35s;z-index:999;
+  min-width:240px;text-align:center;white-space:pre-line;pointer-events:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border:1px solid var(--neon);color:var(--neon);}
+.toast.err{border:1px solid #ff5874;color:#ff5874;}
+
+/* ── MOBILE TOGGLE ── */
+@media(max-width:900px){
+  .sidebar{position:fixed;top:56px;left:0;right:0;height:auto;max-height:60vh;
+    z-index:150;transform:translateY(-110%);border:none;border-bottom:1px solid var(--border);}
+  .sidebar.open{transform:translateY(0);}
+  .lesson-hero,.content-area,.quiz-section,.lesson-nav{padding-left:20px;padding-right:20px;}
+  .lesson-title{font-size:1.7rem;}
+}
+
+:root { --accent: #f7df1e; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a href="index.html" class="logo">PhineX</a>
+  <span class="topbar-sep">/</span>
+  <span class="topbar-title">دورة PHP الشاملة</span>
+  <div class="topbar-right">
+    <span class="progress-pill" id="progressPill">0/13 مكتملة</span>
+    <button class="menu-btn" id="menuBtn">☰ الدروس</button>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">قائمة الدروس — PHP الشاملة</div>
+    
+<a href="lesson-01-intro.html" class="lesson-link " data-lid="intro">
+  <span class="ll-icon">🐘</span>
+  <span class="ll-info">
+    <span class="ll-title">مقدمة إلى PHP</span>
+    <span class="ll-num">الدرس 01</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-02-variables.html" class="lesson-link " data-lid="variables">
+  <span class="ll-icon">📦</span>
+  <span class="ll-info">
+    <span class="ll-title">المتغيرات وأنواع البيانات</span>
+    <span class="ll-num">الدرس 02</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-03-operators.html" class="lesson-link " data-lid="operators">
+  <span class="ll-icon">➗</span>
+  <span class="ll-info">
+    <span class="ll-title">العمليات والمشغلات</span>
+    <span class="ll-num">الدرس 03</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-04-conditionals.html" class="lesson-link " data-lid="conditionals">
+  <span class="ll-icon">🔀</span>
+  <span class="ll-info">
+    <span class="ll-title">الجمل الشرطية</span>
+    <span class="ll-num">الدرس 04</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-05-loops.html" class="lesson-link active" data-lid="loops">
+  <span class="ll-icon">🔁</span>
+  <span class="ll-info">
+    <span class="ll-title">الحلقات التكرارية</span>
+    <span class="ll-num">الدرس 05</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-06-functions.html" class="lesson-link " data-lid="functions">
+  <span class="ll-icon">⚙️</span>
+  <span class="ll-info">
+    <span class="ll-title">الدوال (Functions)</span>
+    <span class="ll-num">الدرس 06</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-07-arrays.html" class="lesson-link " data-lid="arrays">
+  <span class="ll-icon">📚</span>
+  <span class="ll-info">
+    <span class="ll-title">المصفوفات (Arrays)</span>
+    <span class="ll-num">الدرس 07</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-08-strings.html" class="lesson-link " data-lid="strings">
+  <span class="ll-icon">✍️</span>
+  <span class="ll-info">
+    <span class="ll-title">السلاسل النصية (Strings)</span>
+    <span class="ll-num">الدرس 08</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-09-oop.html" class="lesson-link " data-lid="oop">
+  <span class="ll-icon">🏗️</span>
+  <span class="ll-info">
+    <span class="ll-title">البرمجة كائنية التوجه</span>
+    <span class="ll-num">الدرس 09</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-10-forms.html" class="lesson-link " data-lid="forms">
+  <span class="ll-icon">📝</span>
+  <span class="ll-info">
+    <span class="ll-title">النماذج ومدخلات المستخدم</span>
+    <span class="ll-num">الدرس 10</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-11-calculator.html" class="lesson-link " data-lid="calculator">
+  <span class="ll-icon">🧮</span>
+  <span class="ll-info">
+    <span class="ll-title">مشروع: آلة حاسبة PHP</span>
+    <span class="ll-num">الدرس 11</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-12-weather.html" class="lesson-link " data-lid="weather">
+  <span class="ll-icon">🌤️</span>
+  <span class="ll-info">
+    <span class="ll-title">مشروع: تطبيق الطقس</span>
+    <span class="ll-num">الدرس 12</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+<a href="lesson-13-review.html" class="lesson-link " data-lid="review">
+  <span class="ll-icon">🏆</span>
+  <span class="ll-info">
+    <span class="ll-title">مراجعة شاملة واختبار نهائي</span>
+    <span class="ll-num">الدرس 13</span>
+  </span>
+  <span class="ll-badge locked">○</span>
+</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="lesson-hero">
+      <div class="lesson-num-badge">🔁 الدرس 5 من 13</div>
+      <h1 class="lesson-title">الحلقات التكرارية</h1>
+      <p class="lesson-sub">تكرار الكود بذكاء</p>
+      <div class="lesson-meta">
+        <span class="meta-tag">🕐 30-45 دقيقة</span>
+        <span class="meta-tag">📝 5 أسئلة</span>
+        <span class="meta-tag">💻 3 أمثلة برمجية</span>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-area">
+      
+<div class="section-block">
+  <h2>حلقة for</h2>
+  <div class="section-body">
+حلقة <code>for</code> هي الأكثر استخداماً عندما تعرف عدد مرات التكرار مسبقاً.
+<br><br>
+<strong>الهيكل:</strong>
+<code>for (تهيئة; شرط; خطوة) { ... }</code>
+<ul>
+<li><strong>التهيئة:</strong> تنفذ مرة واحدة في البداية</li>
+<li><strong>الشرط:</strong> يُفحص قبل كل تكرار</li>
+<li><strong>الخطوة:</strong> تنفذ بعد كل تكرار</li>
+</ul>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-lang">PHP</span>
+    <div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div>
+    <button class="copy-btn">نسخ</button>
+  </div>
+  <pre class="code-pre"><code>&lt;?php
+// عد من 1 إلى 10
+for ($i = 1; $i &lt;= 10; $i++) {
+    echo &quot;$i &quot;;
+}
+echo &quot;&lt;br&gt;&quot;;
+
+// جدول الضرب
+echo &quot;&lt;br&gt;جدول ضرب 5:&lt;br&gt;&quot;;
+for ($i = 1; $i &lt;= 10; $i++) {
+    echo &quot;5 × $i = &quot; . (5 * $i) . &quot;&lt;br&gt;&quot;;
+}
+
+// عد تنازلي
+echo &quot;&lt;br&gt;عد تنازلي: &quot;;
+for ($i = 10; $i &gt;= 1; $i--) {
+    echo &quot;$i &quot;;
+}
+
+// حلقات متداخلة (Nested)
+echo &quot;&lt;br&gt;&lt;br&gt;مثلث النجوم:&lt;br&gt;&quot;;
+for ($i = 1; $i &lt;= 5; $i++) {
+    for ($j = 1; $j &lt;= $i; $j++) {
+        echo &quot;★ &quot;;
+    }
+    echo &quot;&lt;br&gt;&quot;;
+}
+?&gt;</code></pre>
+  <div class="code-output"><div class="output-label">الناتج المتوقع</div>1 2 3 4 5 6 7 8 9 10
+جدول ضرب 5:
+5 × 1 = 5
+...
+عد تنازلي: 10 9 8 7 6 5 4 3 2 1
+مثلث النجوم:
+★
+★ ★
+...</div>
+</div></div>
+</div>
+<div class="section-block">
+  <h2>حلقة while و do-while</h2>
+  <div class="section-body">
+<code>while</code> تكرر طالما الشرط صحيح. لا تحتاج أن تعرف عدد التكرارات مسبقاً.
+<br><br>
+<code>do-while</code>: الفرق الوحيد أن الكود ينفذ <strong>مرة واحدة على الأقل</strong> قبل فحص الشرط.
+<br><br>
+<strong>تحذير:</strong> احذر من الحلقة اللانهائية! تأكد دائماً أن الشرط سيصبح false في مرحلة ما.
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-lang">PHP</span>
+    <div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div>
+    <button class="copy-btn">نسخ</button>
+  </div>
+  <pre class="code-pre"><code>&lt;?php
+// while: كلمات كلود
+$word = 1;
+$total = 0;
+while ($total &lt; 100) {
+    $total += $word * 2;
+    $word++;
+}
+echo &quot;وصلنا لـ 100 بعد $word كلمة&lt;br&gt;&quot;;
+
+// قراءة أرقام حتى الصفر (محاكاة)
+$numbers = [7, 3, 9, 0]; // 0 = إيقاف
+$i = 0;
+$sum = 0;
+while ($numbers[$i] != 0) {
+    $sum += $numbers[$i];
+    $i++;
+}
+echo &quot;مجموع الأرقام: $sum&lt;br&gt;&quot;;
+
+// do-while: ينفذ مرة على الأقل
+$attempt = 0;
+do {
+    $attempt++;
+    $password = ($attempt == 3) ? &quot;secret&quot; : &quot;wrong&quot;;
+} while ($password != &quot;secret&quot;);
+
+echo &quot;نجح الدخول في المحاولة: $attempt&quot;;
+?&gt;</code></pre>
+  <div class="code-output"><div class="output-label">الناتج المتوقع</div>وصلنا لـ 100 بعد 8 كلمة
+مجموع الأرقام: 19
+nجح الدخول في المحاولة: 3</div>
+</div></div>
+</div>
+<div class="section-block">
+  <h2>foreach و break/continue</h2>
+  <div class="section-body">
+<code>foreach</code> مصممة خصيصاً للتعامل مع المصفوفات. أسهل وأوضح من for مع المصفوفات.
+<br><br>
+<strong>break:</strong> يوقف الحلقة تماماً.
+<br>
+<strong>continue:</strong> يتجاوز التكرار الحالي ويكمل للتالي.
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-lang">PHP</span>
+    <div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div>
+    <button class="copy-btn">نسخ</button>
+  </div>
+  <pre class="code-pre"><code>&lt;?php
+// foreach مع مصفوفة مفهرسة
+$fruits = [&quot;تفاح&quot;, &quot;موز&quot;, &quot;برتقال&quot;, &quot;عنب&quot;];
+echo &quot;الفواكه:&lt;br&gt;&quot;;
+foreach ($fruits as $fruit) {
+    echo &quot;- $fruit&lt;br&gt;&quot;;
+}
+
+// foreach مع مصفوفة ترابطية
+$student = [
+    &quot;name&quot;  =&gt; &quot;أحمد&quot;,
+    &quot;grade&quot; =&gt; 92,
+    &quot;city&quot;  =&gt; &quot;القاهرة&quot;
+];
+echo &quot;&lt;br&gt;بيانات الطالب:&lt;br&gt;&quot;;
+foreach ($student as $key =&gt; $value) {
+    echo &quot;$key: $value&lt;br&gt;&quot;;
+}
+
+// break: إيقاف عند إيجاد القيمة
+$numbers = [3, 7, 2, 9, 4, 1];
+echo &quot;&lt;br&gt;البحث عن أول رقم &gt; 8: &quot;;
+foreach ($numbers as $num) {
+    if ($num &gt; 8) {
+        echo &quot;وجدناه: $num&quot;;
+        break;
+    }
+}
+
+// continue: تجاوز الأرقام الزوجية
+echo &quot;&lt;br&gt;الأرقام الفردية: &quot;;
+for ($i = 1; $i &lt;= 10; $i++) {
+    if ($i % 2 == 0) continue;
+    echo &quot;$i &quot;;
+}
+?&gt;</code></pre>
+  <div class="code-output"><div class="output-label">الناتج المتوقع</div>الفواكه:
+- تفاح
+- موز
+- برتقال
+- عنب
+
+بيانات الطالب:
+name: أحمد
+...
+البحث عن أول رقم &gt; 8: وجدناه: 9
+الأرقام الفردية: 1 3 5 7 9</div>
+</div></div>
+</div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="quiz-section" id="quizSection">
+      <div class="quiz-header">
+        <div style="font-size:20px">🧠</div>
+        <h3>اختبر فهمك — الحلقات التكرارية</h3>
+        <span class="quiz-badge">5/5 للمتابعة</span>
+      </div>
+      <div class="quiz-body">
+        
+<div class="question-block">
+  <div class="q-num">السؤال 1</div>
+  <div class="q-text">ما الحلقة المناسبة عندما لا نعرف عدد مرات التكرار مسبقاً؟</div>
+  <div class="options"><label class="option" data-q="0"><input type="radio" name="q0" value="0"> for</label><label class="option" data-q="0"><input type="radio" name="q0" value="1"> while</label><label class="option" data-q="0"><input type="radio" name="q0" value="2"> do-while</label><label class="option" data-q="0"><input type="radio" name="q0" value="3"> foreach</label></div>
+</div>
+<div class="question-block">
+  <div class="q-num">السؤال 2</div>
+  <div class="q-text">ما الفرق بين while و do-while؟</div>
+  <div class="options"><label class="option" data-q="1"><input type="radio" name="q1" value="0"> لا فرق</label><label class="option" data-q="1"><input type="radio" name="q1" value="1"> do-while تنفذ الكود مرة على الأقل قبل فحص الشرط</label><label class="option" data-q="1"><input type="radio" name="q1" value="2"> while أسرع</label><label class="option" data-q="1"><input type="radio" name="q1" value="3"> do-while لا تقبل break</label></div>
+</div>
+<div class="question-block">
+  <div class="q-num">السؤال 3</div>
+  <div class="q-text">ما دور كلمة continue داخل حلقة؟</div>
+  <div class="options"><label class="option" data-q="2"><input type="radio" name="q2" value="0"> توقف الحلقة تماماً</label><label class="option" data-q="2"><input type="radio" name="q2" value="1"> تتجاوز التكرار الحالي وتكمل للتالي</label><label class="option" data-q="2"><input type="radio" name="q2" value="2"> تعيد الحلقة من البداية</label><label class="option" data-q="2"><input type="radio" name="q2" value="3"> تخرج من الدالة</label></div>
+</div>
+<div class="question-block">
+  <div class="q-num">السؤال 4</div>
+  <div class="q-text">ما الحلقة المصممة خصيصاً لتكرار المصفوفات؟</div>
+  <div class="options"><label class="option" data-q="3"><input type="radio" name="q3" value="0"> for</label><label class="option" data-q="3"><input type="radio" name="q3" value="1"> while</label><label class="option" data-q="3"><input type="radio" name="q3" value="2"> foreach</label><label class="option" data-q="3"><input type="radio" name="q3" value="3"> loop</label></div>
+</div>
+<div class="question-block">
+  <div class="q-num">السؤال 5</div>
+  <div class="q-text">ما نتيجة: for($i=0;$i&lt;3;$i++) echo $i; ؟</div>
+  <div class="options"><label class="option" data-q="4"><input type="radio" name="q4" value="0"> 123</label><label class="option" data-q="4"><input type="radio" name="q4" value="1"> 012</label><label class="option" data-q="4"><input type="radio" name="q4" value="2"> 0 1 2</label><label class="option" data-q="4"><input type="radio" name="q4" value="3"> 1 2 3</label></div>
+</div>
+        <div class="quiz-footer">
+          <button class="btn-submit" id="submitBtn" onclick="submitQuiz()">إرسال الإجابات ✓</button>
+          <button class="btn-retry"  id="retryBtn"  onclick="retryQuiz()" style="display:none">↺ حاول مجدداً</button>
+          <div class="score-display" id="scoreDisplay"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LESSON NAV -->
+    <div class="lesson-nav">
+      <a href="lesson-04-conditionals.html" class="btn-nav">◀ الجمل الشرطية</a>
+      <a href="index.html" class="btn-nav" style="opacity:.7">🏠 الفهرس</a>
+      <a href="lesson-06-functions.html" class="btn-nav btn-next-lesson locked" id="nextLessonBtn" style="display:none">
+        الدوال (Functions) ▶
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+const LESSON_ID  = 'loops';
+const NEXT_FILE  = 'lesson-06-functions.html';
+const QUIZ_DATA  = [{"q": "ما الحلقة المناسبة عندما لا نعرف عدد مرات التكرار مسبقاً؟", "opts": ["for", "while", "do-while", "foreach"], "ans": 1}, {"q": "ما الفرق بين while و do-while؟", "opts": ["لا فرق", "do-while تنفذ الكود مرة على الأقل قبل فحص الشرط", "while أسرع", "do-while لا تقبل break"], "ans": 1}, {"q": "ما دور كلمة continue داخل حلقة؟", "opts": ["توقف الحلقة تماماً", "تتجاوز التكرار الحالي وتكمل للتالي", "تعيد الحلقة من البداية", "تخرج من الدالة"], "ans": 1}, {"q": "ما الحلقة المصممة خصيصاً لتكرار المصفوفات؟", "opts": ["for", "while", "foreach", "loop"], "ans": 2}, {"q": "ما نتيجة: for($i=0;$i<3;$i++) echo $i; ؟", "opts": ["123", "012", "0 1 2", "1 2 3"], "ans": 1}];
+const TOTAL_Q    = QUIZ_DATA.length;
+
+// ── Progress ──
+function isCompleted(id) { return localStorage.getItem(`lesson-${id}`) === 'completed'; }
+function markCompleted(id) { localStorage.setItem(`lesson-${id}`, 'completed'); }
+
+// ── Sidebar completion dots ──
+function updateSidebar() {
+  document.querySelectorAll('.lesson-link[data-lid]').forEach(a => {
+    const lid = a.getAttribute('data-lid');
+    const badge = a.querySelector('.ll-badge');
+    if (isCompleted(lid)) {
+      a.classList.add('done');
+      if (badge) { badge.textContent = '✓'; badge.className = 'll-badge done'; }
+    }
+  });
+}
+
+// ── Top progress pill ──
+function updateProgressPill() {
+  const total = document.querySelectorAll('.lesson-link[data-lid]').length;
+  const done  = [...document.querySelectorAll('.lesson-link[data-lid]')]
+                  .filter(a => isCompleted(a.getAttribute('data-lid'))).length;
+  const pill = document.getElementById('progressPill');
+  if (pill) pill.textContent = `${done}/${total} مكتملة`;
+}
+
+// ── Syntax highlight PHP ──
+function highlight(code) {
+  let h = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Comments first (before other replacements)
+  h = h.replace(/(\/\/[^\n]*)/g,'<span class="cmt">$1</span>');
+  h = h.replace(/(#(?![\da-fA-F]{3,6}\b)[^\n]*)/g,'<span class="cmt">$1</span>');
+  h = h.replace(/(\/\*[\s\S]*?\*\/)/g,'<span class="cmt">$1</span>');
+  // PHP tags
+  h = h.replace(/(&lt;\?php|&lt;\?=|\?&gt;)/g,'<span class="tag">$1</span>');
+  // Strings (double quotes)
+  h = h.replace(/"([^"<]*)"/g,'<span class="str">"$1"</span>');
+  h = h.replace(/'([^'<]*)'/g,"<span class=\"str\">'$1'</span>");
+  // Keywords
+  const kws = 'echo|print|if|else|elseif|while|for|foreach|do|switch|case|break|continue|return|function|class|new|extends|implements|public|private|protected|static|this|self|parent|interface|abstract|namespace|use|require|include|match|default|null|true|false|void|string|int|float|bool|array|object|fn';
+  h = h.replace(new RegExp(`\\b(${kws})\\b`,'g'),'<span class="kw">$1</span>');
+  // Variables
+  h = h.replace(/(\$[a-zA-Z_]\w*)/g,'<span class="var">$1</span>');
+  // Numbers
+  h = h.replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');
+  // Built-in functions
+  const fns = 'strlen|strtolower|strtoupper|trim|substr|strpos|str_replace|explode|implode|array_push|array_pop|array_merge|array_map|array_filter|array_sum|count|isset|empty|var_dump|gettype|json_decode|json_encode|htmlspecialchars|filter_var|round|sqrt|fmod|date|session_start|header|urlencode|curl_init|curl_setopt|curl_exec|curl_close|password_hash|password_verify|sprintf|number_format|in_array|array_search|sort|array_slice|array_shift|array_unshift|settype|intval|floatval|strval|ucfirst|array_reverse|array_unique|array_keys|array_values';
+  h = h.replace(new RegExp(`\\b(${fns})(?=\\()`, 'g'), '<span class="fn">$1</span>');
+  return h;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Highlight all code blocks
+  document.querySelectorAll('pre.code-pre code').forEach(el => {
+    el.innerHTML = highlight(el.textContent);
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.closest('.code-block').querySelector('pre.code-pre code');
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        btn.textContent = 'تم! ✓';
+        setTimeout(() => btn.textContent = 'نسخ', 1800);
+      });
+    });
+  });
+
+  // Sidebar toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  menuBtn?.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+  updateSidebar();
+  updateProgressPill();
+
+  // If already completed, unlock next
+  if (isCompleted(LESSON_ID)) showNextButton();
+});
+
+// ── QUIZ LOGIC ──
+let submitted = false;
+
+function submitQuiz() {
+  if (submitted) return;
+  let score = 0;
+  let allAnswered = true;
+
+  QUIZ_DATA.forEach((q, qi) => {
+    const sel = document.querySelector(`input[name="q${qi}"]:checked`);
+    if (!sel) { allAnswered = false; return; }
+    const optEls = document.querySelectorAll(`.option[data-q="${qi}"]`);
+    const chosen = parseInt(sel.value);
+
+    if (chosen === q.ans) {
+      score++;
+      optEls[chosen].classList.add('correct');
+    } else {
+      optEls[chosen].classList.add('wrong');
+      optEls[q.ans].classList.add('correct');
+    }
+    optEls.forEach(o => o.querySelector('input').disabled = true);
+  });
+
+  if (!allAnswered) {
+    showToast('أجب على جميع الأسئلة أولاً', 'err');
+    return;
+  }
+
+  submitted = true;
+  document.getElementById('submitBtn').style.display = 'none';
+
+  const scoreEl = document.getElementById('scoreDisplay');
+  scoreEl.style.display = 'flex';
+
+  if (score === TOTAL_Q) {
+    scoreEl.className = 'score-display pass';
+    scoreEl.innerHTML = `🎉 ${score}/${TOTAL_Q} — إجابات صحيحة كاملة! تم فتح الدرس التالي.`;
+    markCompleted(LESSON_ID);
+    updateSidebar();
+    updateProgressPill();
+    showNextButton();
+    showToast(`✅ ممتاز! اجتزت الدرس بنجاح\n${score}/${TOTAL_Q} إجابات صحيحة`, 'ok');
+  } else {
+    scoreEl.className = 'score-display fail';
+    scoreEl.innerHTML = `❌ ${score}/${TOTAL_Q} — يجب الحصول على ${TOTAL_Q}/${TOTAL_Q} للمتابعة`;
+    document.getElementById('retryBtn').style.display = 'inline-flex';
+    showToast(`${score}/${TOTAL_Q} — حاول مجدداً للحصول على 5/5`, 'err');
+  }
+}
+
+function retryQuiz() {
+  submitted = false;
+  document.querySelectorAll('.option').forEach(o => {
+    o.classList.remove('correct','wrong');
+    if (o.querySelector('input')) o.querySelector('input').disabled = false;
+    if (o.querySelector('input')?.type === 'radio') o.querySelector('input').checked = false;
+  });
+  document.getElementById('submitBtn').style.display = 'inline-flex';
+  document.getElementById('retryBtn').style.display  = 'none';
+  document.getElementById('scoreDisplay').style.display = 'none';
+  window.scrollTo({top: document.getElementById('quizSection').offsetTop - 80, behavior:'smooth'});
+}
+
+function showNextButton() {
+  const nb = document.getElementById('nextLessonBtn');
+  if (nb) { nb.classList.remove('locked'); nb.style.display = 'inline-flex'; }
+}
+
+// ── TOAST ──
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المراجعة الشاملة | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --js-gold: #f7df1e;
+            --neon-cyan: #00d4ff;
+            --neon-green: #c3e88d;
+            --neon-pink: #ff5874;
+            --neon-purple: #bb86fc;
+            --bg: #080b10;
+            --bg2: #0d1117;
+            --card: #111827;
+            --card2: #1a2233;
+            --border: #1e2d42;
+            --text: #cdd6f4;
+            --muted: #6b7a99;
+            --code-bg: #0a0f1a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.8;
+        }
+
+        /* ───── HEADER ───── */
+        .site-header {
+            background: linear-gradient(135deg, #0d1117 0%, #111827 50%, #0d1117 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-family: 'Orbitron', monospace; color: var(--js-gold); font-size: 1.1rem; }
+        .back-btn {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--neon-cyan);
+            padding: 6px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { background: var(--neon-cyan); color: #000; }
+
+        /* ───── HERO ───── */
+        .hero {
+            background: radial-gradient(ellipse at 50% 0%, #1a2a0a 0%, #080b10 60%);
+            text-align: center;
+            padding: 80px 40px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: 'JS';
+            position: absolute;
+            font-family: 'Orbitron', monospace;
+            font-size: 20rem;
+            opacity: 0.03;
+            color: var(--js-gold);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            color: var(--neon-green);
+            margin-bottom: 16px;
+            text-shadow: 0 0 40px rgba(195,232,141,0.3);
+        }
+        .hero p { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 30px; }
+
+        /* Section Nav Tabs */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 0 40px 40px;
+            background: var(--bg);
+        }
+        .nav-tab {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover, .nav-tab.active {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            background: rgba(0,212,255,0.08);
+        }
+
+        /* ───── MAIN LAYOUT ───── */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 30px 80px; }
+
+        /* ───── SECTION ───── */
+        .rev-section {
+            margin-bottom: 60px;
+            scroll-margin-top: 80px;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .section-num {
+            background: var(--js-gold);
+            color: #000;
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .section-title h2 {
+            font-size: 1.6rem;
+            color: var(--js-gold);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* ───── CARD ───── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            color: var(--neon-cyan);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+        .card h4 {
+            color: var(--neon-green);
+            font-size: 1rem;
+            margin: 16px 0 8px;
+        }
+        .card p { color: var(--text); margin-bottom: 10px; }
+
+        /* 2-col grid */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        @media(max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+        /* ───── CODE BLOCK ───── */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 24px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            direction: ltr;
+            text-align: left;
+            color: #abb2bf;
+            overflow-x: auto;
+            margin: 14px 0;
+            position: relative;
+        }
+        .code-block .kw { color: #c678dd; }
+        .code-block .fn { color: #61afef; }
+        .code-block .str { color: #98c379; }
+        .code-block .num { color: #d19a66; }
+        .code-block .cm { color: #5c6370; font-style: italic; }
+        .code-block .var { color: #e5c07b; }
+        .code-block .op { color: #56b6c2; }
+
+        /* ───── NOTE BOX ───── */
+        .note {
+            border-right: 4px solid;
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin: 14px 0;
+            font-size: 0.95rem;
+        }
+        .note.info { border-color: var(--neon-cyan); background: rgba(0,212,255,0.06); }
+        .note.success { border-color: var(--neon-green); background: rgba(195,232,141,0.06); }
+        .note.warning { border-color: var(--js-gold); background: rgba(247,223,30,0.06); }
+        .note.danger { border-color: var(--neon-pink); background: rgba(255,88,116,0.06); }
+
+        /* ───── BADGE ───── */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin: 0 4px 4px 0;
+        }
+        .badge.cyan { background: rgba(0,212,255,0.15); color: var(--neon-cyan); border: 1px solid rgba(0,212,255,0.3); }
+        .badge.green { background: rgba(195,232,141,0.15); color: var(--neon-green); border: 1px solid rgba(195,232,141,0.3); }
+        .badge.pink { background: rgba(255,88,116,0.15); color: var(--neon-pink); border: 1px solid rgba(255,88,116,0.3); }
+        .badge.gold { background: rgba(247,223,30,0.15); color: var(--js-gold); border: 1px solid rgba(247,223,30,0.3); }
+        .badge.purple { background: rgba(187,134,252,0.15); color: var(--neon-purple); border: 1px solid rgba(187,134,252,0.3); }
+
+        /* ───── COMPARE TABLE ───── */
+        .compare-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+        .compare-table th {
+            background: var(--card2);
+            color: var(--neon-cyan);
+            padding: 10px 14px;
+            text-align: right;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        .compare-table td {
+            padding: 9px 14px;
+            border: 1px solid var(--border);
+            font-size: 0.88rem;
+            vertical-align: top;
+        }
+        .compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+        /* ───── CONCEPT MAP ───── */
+        .concept-flow {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-wrap: wrap;
+            margin: 16px 0;
+            direction: ltr;
+        }
+        .flow-step {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--neon-green);
+            text-align: center;
+        }
+        .flow-arrow {
+            color: var(--neon-cyan);
+            padding: 0 8px;
+            font-size: 1.2rem;
+        }
+
+        /* ───── MINI QUIZ PREVIEW ───── */
+        .quiz-link {
+            background: linear-gradient(135deg, #1a2233, #111827);
+            border: 2px solid var(--js-gold);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 60px;
+        }
+        .quiz-link h3 { font-size: 1.5rem; color: var(--js-gold); margin-bottom: 10px; }
+        .quiz-link p { color: var(--muted); margin-bottom: 20px; }
+        .btn-gold {
+            display: inline-block;
+            background: var(--js-gold);
+            color: #000;
+            font-weight: 700;
+            padding: 14px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            transition: 0.3s;
+        }
+        .btn-gold:hover { opacity: 0.85; transform: scale(1.03); }
+
+        /* Scroll progress */
+        .progress-line {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            height: 3px;
+            background: var(--neon-green);
+            width: 0%;
+            z-index: 200;
+            transition: width 0.1s;
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+    </style>
+</head>
+<body>
+
+<div class="progress-line" id="progressLine"></div>
+
+<header class="site-header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-btn">← العودة للقائمة</a>
+</header>
+
+<section class="hero">
+    <h1>المراجعة الشاملة لـ JavaScript</h1>
+    <p>كل مفاهيم الكورس في مكان واحد — من المتغيرات إلى قواعد البيانات. راجع كل شيء قبل الاختبار النهائي.</p>
+</section>
+
+<div class="nav-tabs">
+    <a class="nav-tab active" href="#s1" style="scroll-behavior: smooth;">المتغيرات</a>
+    <a class="nav-tab" href="#s2" style="scroll-behavior: smooth;">الشروط والحلقات</a>
+    <a class="nav-tab" href="#s3" style="scroll-behavior: smooth;">الدوال</a>
+    <a class="nav-tab" href="#s4" style="scroll-behavior: smooth;">المصفوفات والكائنات</a>
+    <a class="nav-tab" href="#s5" style="scroll-behavior: smooth;">DOM</a>
+    <a class="nav-tab" href="#s6" style="scroll-behavior: smooth;">الأحداث</a>
+    <a class="nav-tab" href="#s7" style="scroll-behavior: smooth;">Async</a>
+    <a class="nav-tab" href="#s8" style="scroll-behavior: smooth;">ES6+</a>
+    <a class="nav-tab" href="#s9" style="scroll-behavior: smooth;">OOP</a>
+    <a class="nav-tab" href="#s10" style="scroll-behavior: smooth;">قواعد البيانات</a>
+</div>
+
+<div class="container">
+
+    <!-- ═══════════════════════════════════════
+         SECTION 1 — المتغيرات وأنواع البيانات
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s1">
+        <div class="section-title">
+            <div class="section-num">1</div>
+            <h2>المتغيرات وأنواع البيانات</h2>
+        </div>
+
+        <div class="card">
+            <h3>الإعلان عن المتغيرات: let / const / var</h3>
+            <div class="grid-3">
+                <div>
+                    <div class="badge green">const</div>
+                    <p>للقيم الثابتة التي لا تتغير. يجب تعيين القيمة فور الإعلان.</p>
+                </div>
+                <div>
+                    <div class="badge cyan">let</div>
+                    <p>للقيم التي قد تتغير لاحقاً. نطاقها داخل الـ block فقط.</p>
+                </div>
+                <div>
+                    <div class="badge pink">var</div>
+                    <p>قديم ولا يُنصح به. نطاقه الدالة بأكملها — يسبب أخطاء خفية.</p>
+                </div>
+            </div>
+            <div class="code-block">
+<span class="cm">// ✅ الطريقة الحديثة</span>
+<span class="kw">const</span> <span class="var">gameName</span> <span class="op">=</span> <span class="str">"Valorant"</span>;       <span class="cm">// لا تتغير أبداً</span>
+<span class="kw">let</span>   <span class="var">playerScore</span> <span class="op">=</span> <span class="num">0</span>;             <span class="cm">// ستتغير أثناء اللعب</span>
+<span class="kw">let</span>   <span class="var">isLoggedIn</span> <span class="op">=</span> <span class="kw">false</span>;           <span class="cm">// قيمة منطقية</span>
+
+<span class="cm">// ❌ محاولة تغيير const تسبب خطأ</span>
+<span class="cm">// gameName = "CS2"; → TypeError!</span>
+
+<span class="cm">// إعادة الإعلان بـ let لاحقاً</span>
+<span class="var">playerScore</span> <span class="op">=</span> <span class="num">500</span>;
+<span class="var">isLoggedIn</span> <span class="op">=</span> <span class="kw">true</span>;</div>
+        </div>
+
+        <div class="card">
+            <h3>أنواع البيانات السبعة (Data Types)</h3>
+            <table class="compare-table">
+                <tr>
+                    <th>النوع</th><th>مثال</th><th>الوصف</th><th>typeof</th>
+                </tr>
+                <tr>
+                    <td><span class="badge gold">String</span></td>
+                    <td><code>"Ahmed"</code></td>
+                    <td>نصوص — داخل "" أو '' أو ``</td>
+                    <td><code>"string"</code></td>
+                </tr>
+                <tr>
+                    <td><span class="badge cyan">Number</span></td>
+                    <td><code>42, 3.14, -7</code></td>
+                    <td>أرقام صحيحة أو عشرية</td>
+                    <td><code>"number"</code></td>
+                </tr>
+                <tr>
+                    <td><span class="badge green">Boolean</span></td>
+                    <td><code>true / false</code></td>
+                    <td>صح أو خطأ فقط</td>
+                    <td><code>"boolean"</code></td>
+                </tr>
+                <tr>
+                    <td><span class="badge pink">Null</span></td>
+                    <td><code>null</code></td>
+                    <td>قيمة فارغة متعمدة</td>
+                    <td><code>"object"*</code></td>
+                </tr>
+                <tr>
+                    <td><span class="badge purple">Undefined</span></td>
+                    <td><code>undefined</code></td>
+                    <td>متغير معلن ولم يُعطَ قيمة</td>
+                    <td><code>"undefined"</code></td>
+                </tr>
+                <tr>
+                    <td><span class="badge gold">Object</span></td>
+                    <td><code>{ name: "Ali" }</code></td>
+                    <td>مجموعة خصائص</td>
+                    <td><code>"object"</code></td>
+                </tr>
+                <tr>
+                    <td><span class="badge cyan">Array</span></td>
+                    <td><code>[1, 2, 3]</code></td>
+                    <td>قائمة مرتبة (نوعها object)</td>
+                    <td><code>"object"</code></td>
+                </tr>
+            </table>
+            <div class="note warning">* خطأ مشهور في JS: <code>typeof null === "object"</code> رغم أن null ليست object. هذا bug قديم لن يُصلَح.</div>
+        </div>
+
+        <div class="card">
+            <h3>دمج النصوص (String Interpolation)</h3>
+            <div class="code-block">
+<span class="kw">const</span> <span class="var">name</span> <span class="op">=</span> <span class="str">"Ahmed"</span>;
+<span class="kw">const</span> <span class="var">level</span> <span class="op">=</span> <span class="num">42</span>;
+
+<span class="cm">// الطريقة القديمة (Concatenation)</span>
+<span class="fn">console</span>.log(<span class="str">"مرحباً يا "</span> <span class="op">+</span> <span class="var">name</span> <span class="op">+</span> <span class="str">"، مستواك: "</span> <span class="op">+</span> <span class="var">level</span>);
+
+<span class="cm">// الطريقة الحديثة — Template Literals (Backticks)</span>
+<span class="fn">console</span>.log(<span class="str">`مرحباً يا ${name}، مستواك: ${level}`</span>);
+<span class="fn">console</span>.log(<span class="str">`ضعف المستوى: ${level * 2}`</span>); <span class="cm">// يمكن كتابة تعابير داخل ${}</span>
+
+<span class="cm">// Template Literals تدعم الأسطر المتعددة</span>
+<span class="kw">const</span> <span class="var">msg</span> <span class="op">=</span> <span class="str">`
+  اللاعب: ${name}
+  المستوى: ${level}
+  الحالة: نشط
+`</span>;</div>
+        </div>
+
+        <div class="card">
+            <h3>تحويل أنواع البيانات (Type Conversion)</h3>
+            <div class="code-block">
+<span class="cm">// String → Number</span>
+<span class="kw">const</span> <span class="var">strNum</span> <span class="op">=</span> <span class="str">"42"</span>;
+<span class="fn">Number</span>(<span class="var">strNum</span>)      <span class="cm">// → 42</span>
+<span class="fn">parseInt</span>(<span class="str">"42.9px"</span>) <span class="cm">// → 42 (يأخذ الجزء الصحيح)</span>
+<span class="fn">parseFloat</span>(<span class="str">"3.14"</span>) <span class="cm">// → 3.14</span>
+<span class="op">+</span><span class="str">"100"</span>              <span class="cm">// → 100 (اختصار)</span>
+
+<span class="cm">// Number → String</span>
+(<span class="num">42</span>).toString()     <span class="cm">// → "42"</span>
+<span class="fn">String</span>(<span class="num">42</span>)         <span class="cm">// → "42"</span>
+
+<span class="cm">// أي قيمة → Boolean</span>
+<span class="fn">Boolean</span>(<span class="num">0</span>)         <span class="cm">// → false (Falsy)</span>
+<span class="fn">Boolean</span>(<span class="str">""</span>)        <span class="cm">// → false (Falsy)</span>
+<span class="fn">Boolean</span>(<span class="str">"hello"</span>)   <span class="cm">// → true  (Truthy)</span>
+<span class="fn">Boolean</span>([])        <span class="cm">// → true  (Truthy — مصفوفة فارغة!)</span></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 2 — الشروط والحلقات
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s2">
+        <div class="section-title">
+            <div class="section-num">2</div>
+            <h2>الشروط والحلقات التكرارية</h2>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>الشرط if / else if / else</h3>
+                <div class="code-block">
+<span class="kw">let</span> <span class="var">score</span> <span class="op">=</span> <span class="num">78</span>;
+
+<span class="kw">if</span> (<span class="var">score</span> <span class="op">>=</span> <span class="num">90</span>) {
+  <span class="fn">console</span>.log(<span class="str">"A — ممتاز"</span>);
+} <span class="kw">else if</span> (<span class="var">score</span> <span class="op">>=</span> <span class="num">75</span>) {
+  <span class="fn">console</span>.log(<span class="str">"B — جيد جداً"</span>);
+} <span class="kw">else if</span> (<span class="var">score</span> <span class="op">>=</span> <span class="num">60</span>) {
+  <span class="fn">console</span>.log(<span class="str">"C — مقبول"</span>);
+} <span class="kw">else</span> {
+  <span class="fn">console</span>.log(<span class="str">"F — راسب"</span>);
+}
+<span class="cm">// النتيجة: "B — جيد جداً"</span></div>
+            </div>
+            <div class="card">
+                <h3>Switch وTernary</h3>
+                <div class="code-block">
+<span class="cm">// Switch — للمقارنة بقيم محددة</span>
+<span class="kw">switch</span> (<span class="var">day</span>) {
+  <span class="kw">case</span> <span class="str">"Mon"</span>: <span class="fn">console</span>.log(<span class="str">"أول أسبوع"</span>); <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="str">"Fri"</span>: <span class="fn">console</span>.log(<span class="str">"آخر دوام"</span>); <span class="kw">break</span>;
+  <span class="kw">default</span>:   <span class="fn">console</span>.log(<span class="str">"يوم عادي"</span>);
+}
+
+<span class="cm">// Ternary — if/else في سطر واحد</span>
+<span class="kw">const</span> <span class="var">status</span> <span class="op">=</span> <span class="var">age</span> <span class="op">>=</span> <span class="num">18</span> <span class="op">?</span> <span class="str">"بالغ"</span> <span class="op">:</span> <span class="str">"قاصر"</span>;
+
+<span class="cm">// Logical Short-circuit</span>
+<span class="kw">const</span> <span class="var">name</span> <span class="op">=</span> <span class="var">user</span><span class="op">?.</span><span class="var">name</span> <span class="op">||</span> <span class="str">"ضيف"</span>; <span class="cm">// لو لا يوجد اسم</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>أنواع الحلقات التكرارية</h3>
+            <div class="grid-2">
+                <div>
+                    <h4>for — الأكثر شيوعاً</h4>
+                    <div class="code-block">
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span> <span class="op">=</span> <span class="num">0</span>; <span class="var">i</span> <span class="op"><</span> <span class="num">5</span>; <span class="var">i</span><span class="op">++</span>) {
+  <span class="fn">console</span>.log(<span class="str">`الجولة: ${i}`</span>);
+}
+
+<span class="cm">// for...of — للمرور على مصفوفة</span>
+<span class="kw">const</span> <span class="var">games</span> <span class="op">=</span> [<span class="str">"GTA"</span>, <span class="str">"FIFA"</span>, <span class="str">"MC"</span>];
+<span class="kw">for</span> (<span class="kw">const</span> <span class="var">game</span> <span class="kw">of</span> <span class="var">games</span>) {
+  <span class="fn">console</span>.log(<span class="var">game</span>); <span class="cm">// GTA, FIFA, MC</span>
+}</div>
+                </div>
+                <div>
+                    <h4>while — عندما لا نعرف عدد التكرارات</h4>
+                    <div class="code-block">
+<span class="kw">let</span> <span class="var">hp</span> <span class="op">=</span> <span class="num">100</span>;
+<span class="kw">while</span> (<span class="var">hp</span> <span class="op">></span> <span class="num">0</span>) {
+  <span class="var">hp</span> <span class="op">-=</span> <span class="fn">Math</span>.random() <span class="op">*</span> <span class="num">25</span>;
+  <span class="fn">console</span>.log(<span class="str">`HP: ${Math.floor(hp)}`</span>);
+}
+<span class="fn">console</span>.log(<span class="str">"Game Over"</span>);
+
+<span class="cm">// for...in — للمرور على Object</span>
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> {<span class="var">name</span>:<span class="str">"Ali"</span>, <span class="var">age</span>:<span class="num">20</span>};
+<span class="kw">for</span> (<span class="kw">const</span> <span class="var">key</span> <span class="kw">in</span> <span class="var">user</span>) {
+  <span class="fn">console</span>.log(<span class="str">`${key}: ${user[key]}`</span>);
+}</div>
+                </div>
+            </div>
+            <div class="note info">
+                <strong>break و continue:</strong>
+                <code>break</code> يوقف الحلقة كلياً.
+                <code>continue</code> يتخطى الدورة الحالية ويكمل للتالية.
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 3 — الدوال
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s3">
+        <div class="section-title">
+            <div class="section-num">3</div>
+            <h2>الدوال — المصنع الذكي للكود</h2>
+        </div>
+
+        <div class="card">
+            <h3>أنواع الدوال الثلاثة</h3>
+            <div class="code-block">
+<span class="cm">// 1. Function Declaration — يمكن استدعاؤها قبل تعريفها (Hoisting)</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="var">name</span> <span class="op">=</span> <span class="str">"ضيف"</span>) {       <span class="cm">// Default Parameter</span>
+  <span class="kw">return</span> <span class="str">`أهلاً يا ${name}!`</span>;
+}
+<span class="fn">greet</span>(<span class="str">"Ahmed"</span>);  <span class="cm">// → "أهلاً يا Ahmed!"</span>
+<span class="fn">greet</span>();         <span class="cm">// → "أهلاً يا ضيف!"</span>
+
+<span class="cm">// 2. Function Expression — مخزنة في متغير</span>
+<span class="kw">const</span> <span class="fn">square</span> <span class="op">=</span> <span class="kw">function</span>(<span class="var">n</span>) {
+  <span class="kw">return</span> <span class="var">n</span> <span class="op">*</span> <span class="var">n</span>;
+};
+
+<span class="cm">// 3. Arrow Function — الأكثر استخداماً في الكود الحديث</span>
+<span class="kw">const</span> <span class="fn">multiply</span> <span class="op">=</span> (<span class="var">a</span>, <span class="var">b</span>) <span class="op">=></span> <span class="var">a</span> <span class="op">*</span> <span class="var">b</span>;               <span class="cm">// سطر واحد</span>
+<span class="kw">const</span> <span class="fn">add</span>      <span class="op">=</span> (<span class="var">a</span>, <span class="var">b</span>) <span class="op">=></span> { <span class="kw">return</span> <span class="var">a</span> <span class="op">+</span> <span class="var">b</span>; }; <span class="cm">// أو مع block</span>
+
+<span class="cm">// دالة تقبل دالة أخرى (Higher-Order Function)</span>
+<span class="kw">function</span> <span class="fn">applyTwice</span>(<span class="var">fn</span>, <span class="var">value</span>) {
+  <span class="kw">return</span> <span class="fn">fn</span>(<span class="fn">fn</span>(<span class="var">value</span>));
+}
+<span class="fn">applyTwice</span>(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">*</span> <span class="num">2</span>, <span class="num">3</span>); <span class="cm">// → 12  (3→6→12)</span></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Scope والـ Closure</h3>
+                <div class="code-block">
+<span class="cm">// Global vs Local Scope</span>
+<span class="kw">const</span> <span class="var">globalVar</span> <span class="op">=</span> <span class="str">"مرئي للكل"</span>;
+
+<span class="kw">function</span> <span class="fn">myFunc</span>() {
+  <span class="kw">const</span> <span class="var">localVar</span> <span class="op">=</span> <span class="str">"داخل الدالة فقط"</span>;
+  <span class="fn">console</span>.log(<span class="var">globalVar</span>); <span class="cm">// ✅</span>
+}
+<span class="cm">// console.log(localVar); // ❌ ReferenceError</span>
+
+<span class="cm">// Closure — الدالة تتذكر بيئتها</span>
+<span class="kw">function</span> <span class="fn">makeCounter</span>() {
+  <span class="kw">let</span> <span class="var">count</span> <span class="op">=</span> <span class="num">0</span>;
+  <span class="kw">return</span> () <span class="op">=></span> <span class="op">++</span><span class="var">count</span>;
+}
+<span class="kw">const</span> <span class="fn">counter</span> <span class="op">=</span> <span class="fn">makeCounter</span>();
+<span class="fn">counter</span>(); <span class="cm">// 1</span>
+<span class="fn">counter</span>(); <span class="cm">// 2 — يتذكر count!</span></div>
+            </div>
+            <div class="card">
+                <h3>Callbacks وArray Methods</h3>
+                <div class="code-block">
+<span class="kw">const</span> <span class="var">nums</span> <span class="op">=</span> [<span class="num">10</span>, <span class="num">25</span>, <span class="num">6</span>, <span class="num">40</span>, <span class="num">13</span>];
+
+<span class="cm">// map — يحول كل عنصر ويعيد مصفوفة جديدة</span>
+<span class="var">nums</span>.map(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">*</span> <span class="num">2</span>);        <span class="cm">// [20,50,12,80,26]</span>
+
+<span class="cm">// filter — يرجع العناصر المطابقة للشرط</span>
+<span class="var">nums</span>.filter(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">></span> <span class="num">15</span>);    <span class="cm">// [25, 40]</span>
+
+<span class="cm">// find — أول عنصر مطابق</span>
+<span class="var">nums</span>.find(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">></span> <span class="num">20</span>);     <span class="cm">// 25</span>
+
+<span class="cm">// reduce — يجمع كل شيء في قيمة واحدة</span>
+<span class="var">nums</span>.reduce((<span class="var">acc</span>, <span class="var">n</span>) <span class="op">=></span> <span class="var">acc</span> <span class="op">+</span> <span class="var">n</span>, <span class="num">0</span>); <span class="cm">// 94</span>
+
+<span class="cm">// every / some</span>
+<span class="var">nums</span>.every(<span class="var">n</span> <span class="op">=></span> <span class="var">n</span> <span class="op">></span> <span class="num">0</span>); <span class="cm">// true</span>
+<span class="var">nums</span>.some(<span class="var">n</span> <span class="op">></span> <span class="num">30</span>);     <span class="cm">// true</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 4 — المصفوفات والكائنات
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s4">
+        <div class="section-title">
+            <div class="section-num">4</div>
+            <h2>المصفوفات والكائنات</h2>
+        </div>
+
+        <div class="card">
+            <h3>عمليات المصفوفات الأساسية</h3>
+            <div class="code-block">
+<span class="kw">const</span> <span class="var">games</span> <span class="op">=</span> [<span class="str">"Roblox"</span>, <span class="str">"Minecraft"</span>, <span class="str">"Fortnite"</span>];
+
+<span class="cm">// الوصول — الفهرس يبدأ من 0</span>
+<span class="var">games</span>[<span class="num">0</span>]                <span class="cm">// "Roblox"</span>
+<span class="var">games</span>[<span class="var">games</span>.length<span class="op">-</span><span class="num">1</span>] <span class="cm">// "Fortnite" (آخر عنصر)</span>
+<span class="var">games</span>.at(<span class="op">-</span><span class="num">1</span>)            <span class="cm">// "Fortnite" (الطريقة الحديثة)</span>
+
+<span class="cm">// إضافة وحذف</span>
+<span class="var">games</span>.push(<span class="str">"Valorant"</span>)    <span class="cm">// أضف للآخر</span>
+<span class="var">games</span>.unshift(<span class="str">"GTA"</span>)     <span class="cm">// أضف للأول</span>
+<span class="var">games</span>.pop()               <span class="cm">// احذف الأخير</span>
+<span class="var">games</span>.shift()             <span class="cm">// احذف الأول</span>
+<span class="var">games</span>.splice(<span class="num">1</span>, <span class="num">1</span>)       <span class="cm">// احذف من index 1 عنصراً واحداً</span>
+
+<span class="cm">// البحث</span>
+<span class="var">games</span>.indexOf(<span class="str">"Minecraft"</span>) <span class="cm">// 1</span>
+<span class="var">games</span>.includes(<span class="str">"FIFA"</span>)     <span class="cm">// false</span>
+
+<span class="cm">// نسخ ودمج</span>
+<span class="kw">const</span> <span class="var">copy</span> <span class="op">=</span> [...<span class="var">games</span>];                    <span class="cm">// Spread للنسخ</span>
+<span class="kw">const</span> <span class="var">all</span> <span class="op">=</span> [<span class="str">"CS2"</span>, ...<span class="var">games</span>, <span class="str">"FIFA"</span>];    <span class="cm">// دمج</span>
+<span class="kw">const</span> <span class="var">sliced</span> <span class="op">=</span> <span class="var">games</span>.slice(<span class="num">0</span>, <span class="num">2</span>);          <span class="cm">// أول عنصرين</span></div>
+        </div>
+
+        <div class="card">
+            <h3>الكائنات (Objects) والتفكيك (Destructuring)</h3>
+            <div class="code-block">
+<span class="kw">const</span> <span class="var">player</span> <span class="op">=</span> {
+  <span class="var">name</span>:   <span class="str">"Ahmed"</span>,
+  <span class="var">level</span>:  <span class="num">42</span>,
+  <span class="var">skills</span>: [<span class="str">"Sniper"</span>, <span class="str">"Driver"</span>],
+  <span class="var">stats</span>:  { <span class="var">kills</span>: <span class="num">1200</span>, <span class="var">deaths</span>: <span class="num">300</span> },
+  <span class="fn">getKD</span>() { <span class="kw">return</span> (<span class="kw">this</span>.<span class="var">stats</span>.<span class="var">kills</span> <span class="op">/</span> <span class="kw">this</span>.<span class="var">stats</span>.<span class="var">deaths</span>).toFixed(<span class="num">2</span>); }
+};
+
+<span class="cm">// الوصول</span>
+<span class="var">player</span>.<span class="var">name</span>          <span class="cm">// "Ahmed"</span>
+<span class="var">player</span>[<span class="str">"level"</span>]      <span class="cm">// 42 (مفيد للمفاتيح المتغيرة)</span>
+<span class="var">player</span>.<span class="fn">getKD</span>()       <span class="cm">// "4.00"</span>
+
+<span class="cm">// Destructuring — استخراج القيم بذكاء</span>
+<span class="kw">const</span> { <span class="var">name</span>, <span class="var">level</span>, <span class="var">stats</span>: { <span class="var">kills</span> } } <span class="op">=</span> <span class="var">player</span>;
+<span class="fn">console</span>.log(<span class="var">name</span>, <span class="var">level</span>, <span class="var">kills</span>); <span class="cm">// Ahmed 42 1200</span>
+
+<span class="cm">// إضافة وتعديل وحذف خصائص</span>
+<span class="var">player</span>.<span class="var">rank</span> <span class="op">=</span> <span class="str">"Gold"</span>; <span class="cm">// إضافة</span>
+<span class="var">player</span>.<span class="var">level</span> <span class="op">=</span> <span class="num">50</span>;    <span class="cm">// تعديل</span>
+<span class="kw">delete</span> <span class="var">player</span>.<span class="var">rank</span>;   <span class="cm">// حذف</span>
+
+<span class="cm">// Object Methods</span>
+<span class="fn">Object</span>.keys(<span class="var">player</span>)    <span class="cm">// ["name", "level", ...]</span>
+<span class="fn">Object</span>.values(<span class="var">player</span>)  <span class="cm">// ["Ahmed", 42, ...]</span>
+<span class="fn">Object</span>.entries(<span class="var">player</span>) <span class="cm">// [["name","Ahmed"], ...]</span>
+
+<span class="cm">// نسخ Object (Spread)</span>
+<span class="kw">const</span> <span class="var">updated</span> <span class="op">=</span> { ...<span class="var">player</span>, <span class="var">level</span>: <span class="num">55</span> }; <span class="cm">// نسخة جديدة مع تغيير</span></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 5 — DOM Manipulation
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s5">
+        <div class="section-title">
+            <div class="section-num">5</div>
+            <h2>التحكم في الـ DOM</h2>
+        </div>
+
+        <div class="card">
+            <h3>اختيار العناصر وتعديلها</h3>
+            <div class="code-block">
+<span class="cm">// ─── اختيار العناصر ───</span>
+<span class="kw">const</span> <span class="var">el</span>   <span class="op">=</span> document.<span class="fn">getElementById</span>(<span class="str">"myId"</span>);
+<span class="kw">const</span> <span class="var">el2</span>  <span class="op">=</span> document.<span class="fn">querySelector</span>(<span class="str">".myClass"</span>);   <span class="cm">// أول مطابق</span>
+<span class="kw">const</span> <span class="var">all</span>  <span class="op">=</span> document.<span class="fn">querySelectorAll</span>(<span class="str">"p"</span>);        <span class="cm">// NodeList</span>
+
+<span class="cm">// ─── تعديل المحتوى ───</span>
+<span class="var">el</span>.<span class="var">innerText</span>  <span class="op">=</span> <span class="str">"نص جديد"</span>;        <span class="cm">// نص فقط</span>
+<span class="var">el</span>.<span class="var">innerHTML</span>  <span class="op">=</span> <span class="str">"&lt;b&gt;نص غامق&lt;/b&gt;"</span>; <span class="cm">// يدعم HTML</span>
+<span class="var">el</span>.<span class="var">textContent</span> <span class="op">=</span> <span class="str">"نص بدون تنسيق"</span>;  <span class="cm">// أسرع وأأمن</span>
+
+<span class="cm">// ─── تعديل الـ CSS ───</span>
+<span class="var">el</span>.<span class="var">style</span>.<span class="var">backgroundColor</span> <span class="op">=</span> <span class="str">"#ff0"</span>;
+<span class="var">el</span>.<span class="var">style</span>.<span class="var">display</span>         <span class="op">=</span> <span class="str">"none"</span>;
+
+<span class="cm">// ─── الـ classList ───</span>
+<span class="var">el</span>.<span class="var">classList</span>.<span class="fn">add</span>(<span class="str">"active"</span>);
+<span class="var">el</span>.<span class="var">classList</span>.<span class="fn">remove</span>(<span class="str">"hidden"</span>);
+<span class="var">el</span>.<span class="var">classList</span>.<span class="fn">toggle</span>(<span class="str">"dark-mode"</span>);
+<span class="var">el</span>.<span class="var">classList</span>.<span class="fn">contains</span>(<span class="str">"active"</span>); <span class="cm">// true/false</span>
+
+<span class="cm">// ─── الـ Attributes ───</span>
+<span class="var">el</span>.<span class="fn">setAttribute</span>(<span class="str">"href"</span>, <span class="str">"#"</span>);
+<span class="var">el</span>.<span class="fn">getAttribute</span>(<span class="str">"id"</span>);
+<span class="var">el</span>.<span class="var">dataset</span>.<span class="var">userId</span>;  <span class="cm">// يقرأ data-user-id</span>
+
+<span class="cm">// ─── إنشاء وحذف عناصر ───</span>
+<span class="kw">const</span> <span class="var">div</span> <span class="op">=</span> document.<span class="fn">createElement</span>(<span class="str">"div"</span>);
+<span class="var">div</span>.<span class="var">innerHTML</span> <span class="op">=</span> <span class="str">"&lt;p&gt;محتوى جديد&lt;/p&gt;"</span>;
+document.<span class="var">body</span>.<span class="fn">appendChild</span>(<span class="var">div</span>);    <span class="cm">// إضافة</span>
+<span class="var">div</span>.<span class="fn">remove</span>();                        <span class="cm">// حذف</span></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 6 — Events
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s6">
+        <div class="section-title">
+            <div class="section-num">6</div>
+            <h2>الأحداث (Events)</h2>
+        </div>
+
+        <div class="card">
+            <h3>addEventListener وأهم الأحداث</h3>
+            <div class="code-block">
+<span class="kw">const</span> <span class="var">btn</span> <span class="op">=</span> document.<span class="fn">querySelector</span>(<span class="str">"#myBtn"</span>);
+
+<span class="cm">// الطريقة الصحيحة للاستماع للأحداث</span>
+<span class="var">btn</span>.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="var">event</span>) <span class="op">=></span> {
+  <span class="var">event</span>.<span class="fn">preventDefault</span>(); <span class="cm">// منع السلوك الافتراضي (مثل submit)</span>
+  <span class="fn">console</span>.log(<span class="str">"تم الضغط!"</span>, <span class="var">event</span>.<span class="var">target</span>);
+});
+
+<span class="cm">// أهم الأحداث:</span>
+<span class="cm">// click / dblclick    — النقر</span>
+<span class="cm">// mouseover / mouseout — تمرير الفأرة</span>
+<span class="cm">// keydown / keyup      — لوحة المفاتيح</span>
+<span class="cm">// input / change       — تغيير حقل النص</span>
+<span class="cm">// submit               — إرسال نموذج</span>
+<span class="cm">// load / DOMContentLoaded — تحميل الصفحة</span>
+<span class="cm">// scroll               — التمرير</span>
+
+<span class="cm">// Event Delegation — استمع على الأب بدلاً من كل ابن</span>
+document.<span class="fn">querySelector</span>(<span class="str">"#gameList"</span>).<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="var">e</span>) <span class="op">=></span> {
+  <span class="kw">if</span> (<span class="var">e</span>.<span class="var">target</span>.<span class="var">tagName</span> <span class="op">===</span> <span class="str">"LI"</span>) {
+    <span class="fn">console</span>.log(<span class="str">"ضغطت على:"</span>, <span class="var">e</span>.<span class="var">target</span>.<span class="var">textContent</span>);
+  }
+});</div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 7 — Async/Await & APIs
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s7">
+        <div class="section-title">
+            <div class="section-num">7</div>
+            <h2>البرمجة غير المتزامنة وربط الـ APIs</h2>
+        </div>
+
+        <div class="card">
+            <h3>Promises وAsync/Await — الفهم الحقيقي</h3>
+            <div class="concept-flow">
+                <div class="flow-step">طلب fetch()</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Promise (Pending)</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">await</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">Fulfilled / Rejected</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">try / catch</div>
+            </div>
+            <div class="code-block">
+<span class="cm">// ─── Promise الأساسية ───</span>
+<span class="kw">const</span> <span class="var">myPromise</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Promise</span>((<span class="var">resolve</span>, <span class="var">reject</span>) <span class="op">=></span> {
+  <span class="kw">const</span> <span class="var">success</span> <span class="op">=</span> <span class="kw">true</span>;
+  <span class="kw">if</span> (<span class="var">success</span>) <span class="fn">resolve</span>({ <span class="var">data</span>: <span class="str">"نجح الطلب"</span> });
+  <span class="kw">else</span>         <span class="fn">reject</span>(<span class="str">"حدث خطأ"</span>);
+});
+
+<span class="cm">// ─── Async/Await — الطريقة المحترفة ───</span>
+<span class="kw">async function</span> <span class="fn">fetchPlayerData</span>(<span class="var">playerId</span>) {
+  <span class="kw">try</span> {
+    <span class="cm">// 1. إرسال الطلب</span>
+    <span class="kw">const</span> <span class="var">res</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`https://api.game.com/players/${playerId}`</span>);
+
+    <span class="cm">// 2. التحقق من نجاح الاستجابة</span>
+    <span class="kw">if</span> (<span class="op">!</span><span class="var">res</span>.<span class="var">ok</span>) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">`HTTP Error: ${res.status}`</span>);
+
+    <span class="cm">// 3. تحويل الرد إلى JSON</span>
+    <span class="kw">const</span> <span class="var">player</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">res</span>.<span class="fn">json</span>();
+
+    <span class="cm">// 4. استخدام البيانات</span>
+    <span class="fn">console</span>.log(<span class="str">`اللاعب: ${player.name}، الرتبة: ${player.rank}`</span>);
+    <span class="kw">return</span> <span class="var">player</span>;
+
+  } <span class="kw">catch</span> (<span class="var">error</span>) {
+    <span class="fn">console</span>.error(<span class="str">"فشل جلب البيانات:"</span>, <span class="var">error</span>.<span class="var">message</span>);
+    <span class="kw">return</span> <span class="kw">null</span>;
+  }
+}
+
+<span class="cm">// ─── POST Request — إرسال بيانات للسيرفر ───</span>
+<span class="kw">async function</span> <span class="fn">saveScore</span>(<span class="var">score</span>) {
+  <span class="kw">const</span> <span class="var">res</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"https://api.game.com/scores"</span>, {
+    <span class="var">method</span>:  <span class="str">"POST"</span>,
+    <span class="var">headers</span>: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+    <span class="var">body</span>:    <span class="fn">JSON</span>.stringify({ <span class="var">score</span>, <span class="var">timestamp</span>: <span class="fn">Date</span>.now() })
+  });
+  <span class="kw">return</span> <span class="var">res</span>.<span class="fn">json</span>();
+}
+
+<span class="cm">// ─── Promise.all — تنفيذ طلبات متعددة بالتوازي ───</span>
+<span class="kw">const</span> [<span class="var">players</span>, <span class="var">maps</span>, <span class="var">rankings</span>] <span class="op">=</span> <span class="kw">await</span> <span class="fn">Promise</span>.all([
+  <span class="fn">fetch</span>(<span class="str">"/api/players"</span>).then(<span class="var">r</span> <span class="op">=></span> <span class="var">r</span>.<span class="fn">json</span>()),
+  <span class="fn">fetch</span>(<span class="str">"/api/maps"</span>).then(<span class="var">r</span> <span class="op">=></span> <span class="var">r</span>.<span class="fn">json</span>()),
+  <span class="fn">fetch</span>(<span class="str">"/api/rankings"</span>).then(<span class="var">r</span> <span class="op">=></span> <span class="var">r</span>.<span class="fn">json</span>())
+]); <span class="cm">// كلها تُنفَّذ معاً — أسرع بكثير</span></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 8 — ES6+ Modern JS
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s8">
+        <div class="section-title">
+            <div class="section-num">8</div>
+            <h2>ميزات ES6+ الأساسية</h2>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Destructuring متقدم</h3>
+                <div class="code-block">
+<span class="cm">// Array Destructuring</span>
+<span class="kw">const</span> [<span class="var">first</span>, <span class="var">second</span>, ...<span class="var">rest</span>] <span class="op">=</span> [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>];
+<span class="cm">// first=1, second=2, rest=[3,4]</span>
+
+<span class="cm">// Object Destructuring مع إعادة التسمية</span>
+<span class="kw">const</span> { <span class="var">name</span>: <span class="var">playerName</span>, <span class="var">level</span> <span class="op">=</span> <span class="num">1</span> } <span class="op">=</span> <span class="var">user</span>;
+<span class="cm">// playerName = user.name, level أو 1 كافتراضي</span>
+
+<span class="cm">// Swap بدون متغير مؤقت</span>
+<span class="kw">let</span> <span class="var">a</span> <span class="op">=</span> <span class="num">1</span>, <span class="var">b</span> <span class="op">=</span> <span class="num">2</span>;
+[<span class="var">a</span>, <span class="var">b</span>] <span class="op">=</span> [<span class="var">b</span>, <span class="var">a</span>]; <span class="cm">// a=2, b=1</span></div>
+            </div>
+            <div class="card">
+                <h3>Optional Chaining وNullish</h3>
+                <div class="code-block">
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> { <span class="var">profile</span>: { <span class="var">avatar</span>: <span class="str">"pic.jpg"</span> } };
+
+<span class="cm">// ?. — لا يرمي خطأ إذا القيمة null/undefined</span>
+<span class="var">user</span><span class="op">?.</span><span class="var">profile</span><span class="op">?.</span><span class="var">avatar</span>  <span class="cm">// "pic.jpg"</span>
+<span class="var">user</span><span class="op">?.</span><span class="var">settings</span><span class="op">?.</span><span class="var">theme</span> <span class="cm">// undefined (لا خطأ)</span>
+
+<span class="cm">// ?? — القيمة الافتراضية إذا null/undefined فقط</span>
+<span class="kw">const</span> <span class="var">theme</span> <span class="op">=</span> <span class="var">user</span><span class="op">?.</span><span class="var">settings</span><span class="op">?.</span><span class="var">theme</span> <span class="op">??</span> <span class="str">"dark"</span>;
+<span class="cm">// إذا لم يوجد theme → "dark"</span>
+
+<span class="cm">// ||= و &&= و ??=</span>
+<span class="var">user</span>.<span class="var">score</span> <span class="op">||=</span> <span class="num">0</span>; <span class="cm">// إذا falsy → 0</span>
+<span class="var">user</span>.<span class="var">name</span>  <span class="op">??=</span> <span class="str">"ضيف"</span>; <span class="cm">// إذا null/undefined → ضيف</span></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Modules (Import / Export)</h3>
+            <div class="code-block">
+<span class="cm">// ─── math.js ───</span>
+<span class="kw">export const</span> <span class="fn">add</span> <span class="op">=</span> (<span class="var">a</span>, <span class="var">b</span>) <span class="op">=></span> <span class="var">a</span> <span class="op">+</span> <span class="var">b</span>;
+<span class="kw">export const</span> <span class="fn">PI</span> <span class="op">=</span> <span class="num">3.14159</span>;
+<span class="kw">export default function</span> <span class="fn">calculate</span>() { <span class="cm">/* ... */</span> }
+
+<span class="cm">// ─── main.js ───</span>
+<span class="kw">import</span> <span class="fn">calculate</span>, { <span class="fn">add</span>, <span class="fn">PI</span> } <span class="kw">from</span> <span class="str">"./math.js"</span>;
+<span class="kw">import</span> * <span class="kw">as</span> <span class="var">MathUtils</span> <span class="kw">from</span> <span class="str">"./math.js"</span>; <span class="cm">// استيراد الكل</span></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 9 — OOP & Classes
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s9">
+        <div class="section-title">
+            <div class="section-num">9</div>
+            <h2>البرمجة كائنية التوجه (OOP)</h2>
+        </div>
+
+        <div class="card">
+            <h3>Classes والوراثة (Inheritance)</h3>
+            <div class="code-block">
+<span class="cm">// ─── الـ Class الأساسية ───</span>
+<span class="kw">class</span> <span class="fn">Character</span> {
+  <span class="cm">// Private Fields (خاصة لا تُرى من الخارج)</span>
+  <span class="var">#health</span>;
+
+  <span class="fn">constructor</span>(<span class="var">name</span>, <span class="var">hp</span>) {
+    <span class="kw">this</span>.<span class="var">name</span>   <span class="op">=</span> <span class="var">name</span>;
+    <span class="kw">this</span>.<span class="var">#health</span> <span class="op">=</span> <span class="var">hp</span>;
+  }
+
+  <span class="cm">// Getter — للوصول للقيم الخاصة</span>
+  <span class="kw">get</span> <span class="fn">hp</span>() { <span class="kw">return</span> <span class="kw">this</span>.<span class="var">#health</span>; }
+
+  <span class="fn">attack</span>(<span class="var">target</span>, <span class="var">damage</span>) {
+    <span class="fn">console</span>.log(<span class="str">`${this.name} attacks ${target.name} for ${damage}!`</span>);
+    <span class="var">target</span>.<span class="fn">takeDamage</span>(<span class="var">damage</span>);
+  }
+
+  <span class="fn">takeDamage</span>(<span class="var">dmg</span>) {
+    <span class="kw">this</span>.<span class="var">#health</span> <span class="op">=</span> <span class="fn">Math</span>.max(<span class="num">0</span>, <span class="kw">this</span>.<span class="var">#health</span> <span class="op">-</span> <span class="var">dmg</span>);
+  }
+
+  <span class="cm">// Static — يُستدعى على الـ Class مباشرة</span>
+  <span class="kw">static</span> <span class="fn">create</span>(<span class="var">name</span>) { <span class="kw">return new</span> <span class="fn">Character</span>(<span class="var">name</span>, <span class="num">100</span>); }
+
+  <span class="fn">toString</span>() { <span class="kw">return</span> <span class="str">`${this.name} (HP: ${this.hp})`</span>; }
+}
+
+<span class="cm">// ─── الوراثة (Inheritance) ───</span>
+<span class="kw">class</span> <span class="fn">Warrior</span> <span class="kw">extends</span> <span class="fn">Character</span> {
+  <span class="fn">constructor</span>(<span class="var">name</span>) {
+    <span class="kw">super</span>(<span class="var">name</span>, <span class="num">150</span>); <span class="cm">// استدعاء Constructor الأب</span>
+    <span class="kw">this</span>.<span class="var">armor</span> <span class="op">=</span> <span class="num">30</span>;
+  }
+
+  <span class="cm">// تجاوز (Override) دالة الأب</span>
+  <span class="fn">takeDamage</span>(<span class="var">dmg</span>) {
+    <span class="kw">const</span> <span class="var">reduced</span> <span class="op">=</span> <span class="fn">Math</span>.max(<span class="num">0</span>, <span class="var">dmg</span> <span class="op">-</span> <span class="kw">this</span>.<span class="var">armor</span>);
+    <span class="kw">super</span>.<span class="fn">takeDamage</span>(<span class="var">reduced</span>); <span class="cm">// استدعاء دالة الأب</span>
+  }
+}
+
+<span class="kw">const</span> <span class="var">hero</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">Warrior</span>(<span class="str">"Ahmed"</span>);
+<span class="kw">const</span> <span class="var">boss</span> <span class="op">=</span> <span class="fn">Character</span>.<span class="fn">create</span>(<span class="str">"Dragon"</span>);
+<span class="var">boss</span>.<span class="fn">attack</span>(<span class="var">hero</span>, <span class="num">50</span>); <span class="cm">// Warrior يمتص 30 درع → يأخذ 20 ضرر فقط</span></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         SECTION 10 — Databases
+    ═══════════════════════════════════════ -->
+    <div class="rev-section" id="s10">
+        <div class="section-title">
+            <div class="section-num">10</div>
+            <h2>ربط قواعد البيانات</h2>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Firebase Firestore</h3>
+                <div class="code-block">
+<span class="kw">import</span> { <span class="fn">getFirestore</span>, <span class="fn">collection</span>,
+         <span class="fn">addDoc</span>, <span class="fn">getDocs</span>, <span class="fn">onSnapshot</span> }
+  <span class="kw">from</span> <span class="str">"firebase/firestore"</span>;
+
+<span class="kw">const</span> <span class="var">db</span> <span class="op">=</span> <span class="fn">getFirestore</span>(<span class="var">app</span>);
+<span class="kw">const</span> <span class="var">ref</span> <span class="op">=</span> <span class="fn">collection</span>(<span class="var">db</span>, <span class="str">"scores"</span>);
+
+<span class="cm">// كتابة</span>
+<span class="kw">await</span> <span class="fn">addDoc</span>(<span class="var">ref</span>, { <span class="var">name</span>:<span class="str">"Ahmed"</span>, <span class="var">score</span>:<span class="num">999</span> });
+
+<span class="cm">// قراءة مرة واحدة</span>
+<span class="kw">const</span> <span class="var">snap</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">getDocs</span>(<span class="var">ref</span>);
+<span class="var">snap</span>.<span class="fn">forEach</span>(<span class="var">d</span> <span class="op">=></span> <span class="fn">console</span>.log(d.<span class="fn">data</span>()));
+
+<span class="cm">// استماع مباشر Real-time</span>
+<span class="fn">onSnapshot</span>(<span class="var">ref</span>, <span class="var">snap</span> <span class="op">=></span> {
+  <span class="var">snap</span>.<span class="fn">forEach</span>(<span class="var">d</span> <span class="op">=></span> <span class="fn">renderScore</span>(d.<span class="fn">data</span>()));
+});</div>
+            </div>
+            <div class="card">
+                <h3>Supabase</h3>
+                <div class="code-block">
+<span class="kw">import</span> { <span class="fn">createClient</span> } <span class="kw">from</span> <span class="str">"@supabase/supabase-js"</span>;
+<span class="kw">const</span> <span class="var">sb</span> <span class="op">=</span> <span class="fn">createClient</span>(<span class="var">URL</span>, <span class="var">ANON_KEY</span>);
+
+<span class="cm">// SELECT</span>
+<span class="kw">const</span> { <span class="var">data</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">sb</span>
+  .from(<span class="str">"scores"</span>)
+  .select(<span class="str">"*"</span>)
+  .order(<span class="str">"score"</span>, { <span class="var">ascending</span>: <span class="kw">false</span> })
+  .limit(<span class="num">10</span>);
+
+<span class="cm">// INSERT</span>
+<span class="kw">await</span> <span class="var">sb</span>.from(<span class="str">"scores"</span>)
+  .insert({ <span class="var">name</span>:<span class="str">"Ahmed"</span>, <span class="var">score</span>:<span class="num">500</span> });
+
+<span class="cm">// Real-time</span>
+<span class="var">sb</span>.channel(<span class="str">"scores"</span>)
+  .on(<span class="str">"postgres_changes"</span>, { <span class="var">event</span>:<span class="str">"INSERT"</span>,
+    <span class="var">schema</span>:<span class="str">"public"</span>, <span class="var">table</span>:<span class="str">"scores"</span> }, <span class="var">payload</span> <span class="op">=></span> {
+    <span class="fn">renderScore</span>(<span class="var">payload</span>.<span class="var">new</span>);
+  }).<span class="fn">subscribe</span>();</div>
+            </div>
+        </div>
+
+        <div class="note success">
+            <strong>الفرق الجوهري:</strong> Firebase → NoSQL مرنة، مثالية للبدء السريع. Supabase → PostgreSQL منظمة، مثالية للعلاقات المعقدة والاستعلامات القوية.
+        </div>
+    </div>
+
+    <!-- ── Final Quiz CTA ── -->
+    <div class="quiz-link">
+        <h3>🏆 مستعد للاختبار النهائي؟</h3>
+        <p>30 سؤالاً تختبر كل ما راجعته — من المتغيرات حتى قواعد البيانات</p>
+        <a href="js-quiz.html" class="btn-gold">ابدأ الاختبار الآن</a>
+    </div>
+
+</div>
+
+<script>
+    function scrollTo(id) {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('.nav-tab').forEach((t, i) => {
+            t.classList.toggle('active', ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'][i] === id);
+        });
+    }
+
+    window.addEventListener('scroll', () => {
+        const p = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+        document.getElementById('progressLine').style.width = p + '%';
+    });
+</script>
+</body>
+</html>

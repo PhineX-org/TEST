@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX Lab | PHP Login · Step 3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.1);--void:#05070a;--surface:#0b0e14;--editor:#080b10;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.2);--text:#c9d1d9;--muted:#4e5566;--accent:#c3e88d;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}.ws-title{font-size:13px;font-weight:600;color:var(--text);}.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:5px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;}
+.ws-body{display:grid;grid-template-columns:300px 1fr 1fr;flex:1;overflow:hidden;}
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(57,255,20,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--accent);line-height:1.3;}
+.ins-intro{font-size:13px;color:var(--text);line-height:1.75;}
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.hint{background:rgba(130,170,255,.05);border:1px solid rgba(130,170,255,.15);border-radius:8px;padding:11px 13px;font-size:12px;color:#82aaff;line-height:1.65;}
+.hint strong{color:#c3e88d;}
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.file-tab:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.file-tab.active{color:var(--text);border-bottom-color:var(--neon);background:var(--editor);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#c9d1d9;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;display:none;}
+.code-ed.active{display:block;}.code-ed::selection{background:rgba(57,255,20,.12);}
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}.pdot{width:10px;height:10px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:white;}
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover{border-color:var(--muted);color:var(--text);}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:rgba(57,255,20,.1);color:var(--neon);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.45);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:420px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.5;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:#ff5874;color:#ff5874;}
+</style>
+</head>
+<body>
+<header class="ws-header">
+  <span class="ws-logo">PhineX</span>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">PHP Login Project · تصميم CSS</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track">
+    <div class="prog-dot" data-s="1"></div><div class="prog-dot" data-s="2"></div>
+    <div class="prog-dot" data-s="3"></div><div class="prog-dot" data-s="4"></div>
+    <div class="prog-dot" data-s="5"></div><div class="prog-dot" data-s="6"></div>
+    <div class="prog-dot" data-s="7"></div><div class="prog-dot" data-s="8"></div>
+  </div>
+  <span class="ws-step-label">3/8</span>
+</header>
+
+<div class="ws-body">
+  <aside class="ws-instructions">
+    <div class="ins-badge">🎨 الخطوة ٣</div>
+    <div class="ins-title">تصميم CSS لصفحة الـ Login</div>
+    <div class="ins-intro">
+      هنضيف CSS احترافي لصفحة الـ Login والـ Register. الهدف تصميم dark theme جميل مع animations على التابين والـ inputs.
+    </div>
+
+    <div class="task-list">
+      <div class="task-list-title">🎯 المهام</div>
+      <div class="task-item"><div class="task-num">١</div>
+        <div>أضف <code>background</code> داكن لـ <code>body</code> — استخدم gradient أو لون <code>#0f172a</code></div></div>
+      <div class="task-item"><div class="task-num">٢</div>
+        <div>صمّم <code>.auth-wrapper</code> بـ <code>border-radius</code> و <code>box-shadow</code> وعرض <code>max-width: 420px</code></div></div>
+      <div class="task-item"><div class="task-num">٣</div>
+        <div>صمّم <code>.tab-btn.active</code> بلون مختلف يبرز الـ tab المحدد</div></div>
+      <div class="task-item"><div class="task-num">٤</div>
+        <div>الـ <code>.auth-form</code> يكون <code>display: none</code> والـ <code>.auth-form.active</code> يكون <code>display: flex</code></div></div>
+      <div class="task-item"><div class="task-num">٥</div>
+        <div>أضف <code>transition</code> على الـ inputs عند <code>:focus</code> مع تغيير <code>border-color</code></div></div>
+      <div class="task-item"><div class="task-num">٦</div>
+        <div>اضغط <strong>تشغيل</strong> وتأكد إن الصفحة تبدو احترافية في الـ preview</div></div>
+    </div>
+
+    <div class="hint">
+      <strong>CSS Variables مقترحة:</strong><br>
+      <code>--primary: #3b82f6</code><br>
+      <code>--surface: #1e293b</code><br>
+      <code>--bg: #0f172a</code><br>
+      <code>--text: #f1f5f9</code><br>
+      <code>--muted: #64748b</code>
+    </div>
+  </aside>
+
+  <div class="ws-editor">
+    <div class="editor-tabs">
+      <button class="file-tab active" id="tab-html" onclick="switchTab('html')">
+        <span class="tab-dot" style="background:#82aaff"></span>style.css
+      </button>
+      <button class="file-tab" id="tab-css" onclick="switchTab('css')">
+        <span class="tab-dot" style="background:#f78c6c"></span>index.php
+      </button>
+      <div class="editor-action">
+        <button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed active" id="ed-html" spellcheck="false"></textarea>
+      <textarea class="code-ed" id="ed-css" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div class="ws-preview">
+    <div class="preview-bar">
+      <div class="preview-dots"><span class="pdot r"></span><span class="pdot y"></span><span class="pdot g"></span></div>
+      <div class="preview-url">localhost/php-login/index.php</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </div>
+</div>
+
+<footer class="ws-footer">
+  <a class="btn-nav" href="step2.html">← السابق</a>
+  <button class="btn-run" onclick="runPreview()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" onclick="checkStep()">✓ تحقق من الخطوة</button>
+  <a class="btn-nav" id="nextBtn" href="step4.html">التالي ←</a>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const STEP_NUM = 3;
+const KEY = `phinex_php_login_${STEP_NUM}`;
+const eds = { html: document.getElementById('ed-html'), css: document.getElementById('ed-css') };
+const lnDiv = document.getElementById('lineNums');
+let curTab = 'html';
+
+const STARTER = {
+  html: `/* ========================================
+   style.css — تصميم صفحة Login & Register
+   ======================================== */
+
+:root {
+  --primary:  #3b82f6;
+  --primary-dark: #2563eb;
+  --bg:       #0f172a;
+  --surface:  #1e293b;
+  --surface2: #0f172a;
+  --text:     #f1f5f9;
+  --muted:    #64748b;
+  --border:   #334155;
+  --success:  #22c55e;
+  --error:    #ef4444;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ── Auth Card ── */
+.auth-wrapper {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.5),
+              0 0 0 1px rgba(255,255,255,.05);
+  animation: slideUp .4s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ── */
+.auth-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.auth-logo {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  display: block;
+}
+.auth-header h1 {
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.auth-header p {
+  color: var(--muted);
+  font-size: .875rem;
+}
+
+/* ── Tab Buttons ── */
+.tab-btns {
+  display: flex;
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 28px;
+  gap: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  transition: all .25s ease;
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(59,130,246,.4);
+}
+
+/* ── Forms ── */
+.auth-form {
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  animation: fadeIn .3s ease both;
+}
+.auth-form.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Form Groups ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.form-group label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: .3px;
+}
+.form-group input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 15px;
+  color: var(--text);
+  font-size: .9rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+}
+.form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+}
+.form-group input::placeholder { color: var(--muted); }
+
+/* ── Submit Button ── */
+.btn-submit {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 13px;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: all .25s;
+  letter-spacing: .3px;
+  margin-top: 4px;
+}
+.btn-submit:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(59,130,246,.3);
+}
+.btn-submit:active { transform: scale(.98); }
+
+/* ── Footer Link ── */
+.form-footer {
+  text-align: center;
+  font-size: .82rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.form-footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.form-footer a:hover { text-decoration: underline; }
+
+/* ── Alert Messages ── */
+.alert {
+  padding: 11px 15px;
+  border-radius: 10px;
+  font-size: .875rem;
+  font-weight: 500;
+  text-align: center;
+}
+.alert-error   { background: rgba(239,68,68,.1); color: #ef4444; border: 1px solid rgba(239,68,68,.2); }
+.alert-success { background: rgba(34,197,94,.1);  color: #22c55e; border: 1px solid rgba(34,197,94,.2); }`,
+
+  css: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PHP Login System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-header">
+      <span class="auth-logo">🔐</span>
+      <h1>Welcome Back</h1>
+      <p>Login or create a new account</p>
+    </div>
+    <div class="tab-btns">
+      <button class="tab-btn active btn-login" onclick="switchTab('login')">Login</button>
+      <button class="tab-btn btn-register" onclick="switchTab('register')">Register</button>
+    </div>
+    <form id="login-form" class="auth-form active" action="login.php" method="POST">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-submit">Login →</button>
+      <p class="form-footer">No account? <a href="#" onclick="switchTab('register')">Register</a></p>
+    </form>
+    <form id="register-form" class="auth-form" action="register.php" method="POST">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="johndoe" required>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Min. 8 chars" required minlength="8">
+      </div>
+      <button type="submit" class="btn-submit">Create Account →</button>
+      <p class="form-footer">Have account? <a href="#" onclick="switchTab('login')">Login</a></p>
+    </form>
+  </div>
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tab + '-form').classList.add('active');
+      document.querySelector('.btn-' + tab).classList.add('active');
+    }
+  <\/script>
+</body>
+</html>`
+};
+
+function init() {
+  for (const t in eds) {
+    eds[t].value = localStorage.getItem(`${KEY}_${t}`) || STARTER[t];
+    eds[t].addEventListener('input', () => { updateLN(); saveCode(); scheduleRun(); });
+    eds[t].addEventListener('scroll', () => { lnDiv.scrollTop = eds[curTab].scrollTop; });
+    eds[t].addEventListener('keydown', handleTab);
+  }
+  updateProgress(); updateLN(); buildPreview();
+}
+
+function switchTab(t) {
+  curTab = t;
+  for (const k in eds) {
+    eds[k].classList.toggle('active', k === t);
+    document.getElementById(`tab-${k}`).classList.toggle('active', k === t);
+  }
+  updateLN(); eds[t].focus();
+}
+
+function updateLN() {
+  const n = eds[curTab].value.split('\n').length;
+  lnDiv.innerHTML = Array.from({length:n},(_,i)=>i+1).join('<br>');
+}
+
+function handleTab(e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  const ta = e.target, s = ta.selectionStart, en = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s) + '  ' + ta.value.slice(en);
+  ta.selectionStart = ta.selectionEnd = s + 2;
+  updateLN(); saveCode();
+}
+
+let saveT;
+function saveCode() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => { for (const t in eds) localStorage.setItem(`${KEY}_${t}`, eds[t].value); }, 400);
+}
+
+function resetCode() {
+  if (!confirm('إعادة ضبط الكود للنسخة الأصلية؟')) return;
+  for (const t in eds) { eds[t].value = STARTER[t]; localStorage.removeItem(`${KEY}_${t}`); }
+  updateLN(); buildPreview();
+}
+
+function buildPreview() {
+  const css = eds.html.value;
+  const html = eds.css.value;
+  let combined = html;
+  if (combined.includes('</head>')) combined = combined.replace('</head>', `<style>${css}</style></head>`);
+  else combined = `<style>${css}</style>${combined}`;
+  const fr = document.getElementById('previewFrame');
+  const d = fr.contentDocument || fr.contentWindow.document;
+  d.open(); d.write(combined); d.close();
+}
+
+let runT;
+function scheduleRun() { clearTimeout(runT); runT = setTimeout(buildPreview, 700); }
+function runPreview() { buildPreview(); }
+
+function updateProgress() {
+  document.querySelectorAll('.prog-dot').forEach((dot, i) => {
+    const n = i + 1;
+    dot.classList.remove('done','current');
+    if (localStorage.getItem(`phinex_php_login_${n}`) === 'complete') dot.classList.add('done');
+    else if (n === STEP_NUM) dot.classList.add('current');
+  });
+}
+
+function markComplete() {
+  localStorage.setItem(KEY, 'complete');
+  updateProgress();
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function toast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = `toast ${type} show`;
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3800);
+}
+
+function checkStep() {
+  buildPreview();
+  setTimeout(() => {
+    const fr = document.getElementById('previewFrame');
+    const doc = fr.contentDocument || fr.contentWindow.document;
+    const css = eds.html.value;
+    const hasWrapper = css.includes('.auth-wrapper');
+    const hasTabBtn = css.includes('.tab-btn');
+    const hasForm = css.includes('.auth-form');
+    const hasActive = css.includes('.auth-form.active') || css.includes('.active');
+    const hasInput = css.includes('.form-group input');
+    const hasFocus = css.includes(':focus');
+    const hasBtnSubmit = css.includes('.btn-submit');
+    const hasBackground = css.includes('background') && (css.includes('#0f172a') || css.includes('var(--bg)') || css.includes('#1e293b'));
+    const wrapper = doc.querySelector('.auth-wrapper');
+    const isStyled = wrapper ? window.getComputedStyle ? true : true : false;
+    if (hasWrapper && hasTabBtn && hasForm && hasActive && hasInput && hasFocus && hasBtnSubmit && hasBackground) {
+      markComplete();
+      toast('التصميم CSS رائع ✨\nالصفحة تبدو احترافية! انتقل للخطوة 4 لإنشاء قاعدة البيانات', 'ok');
+    } else {
+      let e = [];
+      if (!hasWrapper)   e.push('• أضف styles لـ .auth-wrapper');
+      if (!hasTabBtn)    e.push('• أضف styles لـ .tab-btn و .tab-btn.active');
+      if (!hasForm || !hasActive) e.push('• أضف .auth-form { display:none } و .auth-form.active { display:flex }');
+      if (!hasInput)     e.push('• أضف styles لـ .form-group input');
+      if (!hasFocus)     e.push('• أضف :focus style على الـ inputs');
+      if (!hasBtnSubmit) e.push('• أضف styles لـ .btn-submit');
+      if (!hasBackground) e.push('• أضف background داكن لـ body');
+      toast('تحقق من:\n' + e.slice(0,4).join('\n'), 'err');
+    }
+  }, 400);
+}
+
+init();
+</script>
+</body>
+</html>

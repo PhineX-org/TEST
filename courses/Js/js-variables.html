@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhineX Lab | JS Fundamentals</title>
+    <style>
+        :root {
+            --editor-bg: #011627;
+            --sidebar-bg: #0b0e14;
+            --accent-yellow: #ffcb6b;
+            --accent-blue: #82aaff;
+            --text-silver: #d6deeb;
+            --header-dark: #1a1a2e;
+        }
+
+        body {
+            background-color: var(--sidebar-bg);
+            color: var(--text-silver);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .lab-header {
+            background: var(--header-dark);
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d2d44;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .instructions-panel {
+            background: var(--sidebar-bg);
+            padding: 25px;
+            overflow-y: auto;
+            border-left: 1px solid #2d2d44;
+            line-height: 1.8;
+        }
+
+        .instructions-panel h2 { color: var(--accent-yellow); margin-top: 0; }
+
+        .editor-container { 
+            background: var(--editor-bg); 
+            display: flex;
+            flex-direction: column;
+        }
+
+        #codeEditor {
+            flex: 1;
+            background: transparent;
+            color: #d6deeb;
+            font-family: 'Consolas', monospace;
+            font-size: 16px;
+            padding: 25px;
+            border: none;
+            outline: none;
+            direction: ltr !important;
+            text-align: left !important;
+            resize: none;
+        }
+
+        .console-output {
+            height: 150px;
+            background: #010c15;
+            border-top: 2px solid #2d2d44;
+            padding: 15px;
+            font-family: 'Consolas', monospace;
+            color: #c3e88d;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .lab-footer {
+            background: var(--header-dark);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn-run {
+            background: var(--accent-blue);
+            color: #0b0e14;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-run:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        .status-badge {
+            background: #232931;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: var(--accent-yellow);
+        }
+    </style>
+</head>
+<body>
+
+<header class="lab-header">
+    <div style="font-weight: bold; color: var(--accent-yellow);">PhineX JS Academy</div>
+    <div class="status-badge" id="currentTask">Task 1: Variables</div>
+</header>
+
+<div class="main-layout">
+    <aside class="instructions-panel" id="instructions">
+        <h2>المهمة 1: المتغيرات (Variables)</h2>
+        <p>المتغيرات هي "صناديق" بنخزن فيها البيانات. في JS بنستخدم <code>let</code> للأشياء اللي ممكن تتغير، و <code>const</code> للأشياء الثابتة.</p>
+        
+        <div style="background: #1e1e3f; padding: 15px; border-radius: 8px; border-right: 4px solid var(--accent-yellow);">
+            <strong>المطلوب منك يا بطل:</strong>
+            <ol>
+                <li>عرف متغير باسم <code>playerName</code> وضع فيه اسمك.</li>
+                <li>عرف متغير ثابت باسم <code>level</code> وقيمته <code>1</code>.</li>
+                <li>استخدم <code>console.log()</code> لطباعة المتغيرين.</li>
+            </ol>
+        </div>
+    </aside>
+
+    <section class="editor-container">
+        <textarea id="codeEditor" spellcheck="false" placeholder="// اكتب كود الجافا سكريبت هنا..."></textarea>
+        <div class="console-output" id="consoleOutput">> Console Ready...</div>
+    </section>
+</div>
+
+<footer class="lab-footer">
+    <button class="btn-check" style="background:#28a745; color:white; border:none; padding:10px 25px; border-radius:5px; cursor:pointer;" onclick="runCode()">Run Code & Check ▶️</button>
+</footer>
+
+<script>
+    const editor = document.getElementById('codeEditor');
+    const consoleOut = document.getElementById('consoleOutput');
+    let currentStep = 1;
+
+    // محاكاة الـ Console.log
+    const originalLog = console.log;
+    console.log = function(msg) {
+        consoleOut.innerHTML += `\n> ${msg}`;
+        return msg;
+    };
+
+    function runCode() {
+        const code = editor.value;
+        consoleOut.innerHTML = "> Executing...";
+        
+        try {
+            eval(code);
+            validateStep(code);
+        } catch (err) {
+            consoleOut.innerHTML += `\n[Error]: ${err.message}`;
+        }
+    }
+
+    function validateStep(code) {
+        if (currentStep === 1) {
+            if (code.includes('playerName') && code.includes('level') && code.includes('console.log')) {
+                alert("ممتاز! عرفت المتغيرات بنجاح. جاري الانتقال للتحدي الثاني...");
+                loadStep2();
+            } else {
+                alert("تأكد من تعريف playerName و level وطباعتهما.");
+            }
+        } else if (currentStep === 2) {
+            if (code.includes('+') || code.includes('`')) {
+                alert("عبقري! دمج النصوص (Concatenation) هو أساس رسائل النظام. جاري الانتقال للتحدي الثالث...");
+                loadStep3();
+            }
+        }
+    }
+
+    function loadStep2() {
+        currentStep = 2;
+        document.getElementById('currentTask').innerText = "Task 2: Concatenation";
+        document.getElementById('instructions').innerHTML = `
+            <h2>المهمة 2: دمج النصوص</h2>
+            <p>دلوقتي يا بطل، جرب تدمج النصوص مع بعضها عشان تطلع رسالة ترحيب احترافية.</p>
+            <div style="background: #1e1e3f; padding: 15px; border-radius: 8px; border-right: 4px solid var(--accent-blue);">
+                <strong>المطلوب:</strong>
+                <ol>
+                    <li>استخدم المتغيرات اللي عرفتها في المهمة اللي فاتت.</li>
+                    <li>اطبع جملة: "Welcome [Name], your level is [Level]".</li>
+                    <li>تلميح: استخدم علامة + أو الـ Backticks (\`).</li>
+                </ol>
+            </div>
+        `;
+        editor.value += "\n\n// Task 2:\n";
+    }
+
+    function loadStep3() {
+        currentStep = 3;
+        document.getElementById('currentTask').innerText = "Task 3: Basic Math";
+        document.getElementById('instructions').innerHTML = `
+            <h2>المهمة 3: العمليات الحسابية</h2>
+            <p>الجافا سكريبت محرك حسابي قوي جداً.</p>
+            <div style="background: #1e1e3f; padding: 15px; border-radius: 8px; border-right: 4px solid #c3e88d;">
+                <strong>المطلوب:</strong>
+                <ol>
+                    <li>عرف متغير <code>score</code> بـ 100.</li>
+                    <li>عرف متغير <code>bonus</code> بـ 50.</li>
+                    <li>اطبع ناتج جمعهم في الـ Console.</li>
+                </ol>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>

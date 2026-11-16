@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Course | PhineX Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,0.08);--bg:#080a0d;--card:#0f1219;--card2:#141b24;--border:rgba(255,255,255,0.07);--bn:rgba(57,255,20,0.25);--text:#c9d1d9;--muted:#5a6478;--red:#ff4d4d;--gold:#f7df1e;--blue:#58a6ff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;}
+.hdr{background:rgba(8,10,13,.96);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);}
+.logo{color:var(--neon);font-weight:800;font-size:1.05rem;display:flex;align-items:center;gap:9px;}
+.logo-b{width:32px;height:32px;background:var(--neon);color:#000;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;font-family:'Fira Code',monospace;}
+.hdr-r{display:flex;align-items:center;gap:9px;}
+.pill{background:var(--neon-dim);border:1px solid var(--bn);color:var(--neon);padding:4px 13px;border-radius:20px;font-size:.76rem;font-weight:700;}
+.hl{color:var(--muted);text-decoration:none;font-size:.8rem;border:1px solid var(--border);padding:5px 13px;border-radius:6px;transition:.3s;}
+.hl:hover{border-color:var(--neon);color:var(--neon);}
+.pline{height:3px;background:var(--border);}
+.pfill{height:100%;background:linear-gradient(90deg,var(--neon),#00e5aa);transition:width .5s;box-shadow:0 0 8px var(--neon);}
+.hero{background:radial-gradient(ellipse at 50% -10%,rgba(57,255,20,.07) 0%,transparent 65%);text-align:center;padding:54px 22px 36px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'HTML';font-family:'Fira Code',monospace;position:absolute;font-size:13rem;font-weight:900;opacity:.025;color:var(--neon);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none;user-select:none;}
+.cbadge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,77,77,.1);border:1px solid rgba(255,77,77,.3);color:#ff6b6b;padding:5px 13px;border-radius:20px;font-size:.78rem;font-weight:700;margin-bottom:14px;}
+.hero h1{font-size:1.9rem;font-weight:800;color:#fff;margin-bottom:9px;line-height:1.2;}
+.hero h1 span{color:var(--neon);}
+.hero p{color:var(--muted);font-size:.93rem;max-width:460px;margin:0 auto 20px;}
+.srow{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.s{display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--muted);}
+.s strong{color:var(--neon);}
+.pw{display:flex;align-items:center;gap:13px;justify-content:center;}
+.pn{font-size:1.5rem;font-weight:800;color:var(--neon);font-family:'Fira Code',monospace;min-width:50px;text-align:left;}
+.pbo{width:190px;}
+.pbt{background:rgba(255,255,255,.06);height:6px;border-radius:10px;overflow:hidden;}
+.pbi{height:100%;background:var(--neon);border-radius:10px;transition:width .5s;box-shadow:0 0 8px rgba(57,255,20,.5);}
+.pbl{font-size:.72rem;color:var(--muted);margin-top:5px;}
+.sw{max-width:640px;margin:0 auto;padding:20px 24px 0;}
+.si{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:10px;color:var(--text);padding:11px 16px;font-family:'Cairo',sans-serif;font-size:.92rem;outline:none;direction:rtl;transition:.3s;}
+.si:focus{border-color:var(--neon);}
+.si::placeholder{color:var(--muted);}
+.main{max-width:640px;margin:0 auto;padding:20px 24px 80px;}
+.chl{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:5px 0 9px;margin-top:26px;border-bottom:1px solid var(--border);margin-bottom:11px;font-family:'Fira Code',monospace;}
+.les{display:flex;align-items:center;gap:11px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:8px;transition:all .25s;position:relative;overflow:hidden;}
+.les:hover{border-color:rgba(57,255,20,.4);transform:translateX(-3px);}
+.les.done{border-color:rgba(57,255,20,.25);background:rgba(57,255,20,.03);}
+.ll{text-decoration:none;display:flex;align-items:center;gap:11px;flex:1;min-width:0;}
+.li{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;background:var(--card2);border:1px solid var(--border);transition:.25s;}
+.les:hover .li{border-color:rgba(57,255,20,.3);}
+.lt{flex:1;min-width:0;}
+.ln{font-size:.92rem;font-weight:700;color:var(--text);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ls{font-size:.77rem;color:var(--muted);margin-top:2px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.les.done .ln{color:var(--muted);}
+.lr{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.b{padding:2px 8px;border-radius:11px;font-size:.67rem;font-weight:700;border:1px solid;}
+.bt{color:var(--blue);border-color:rgba(88,166,255,.3);background:rgba(88,166,255,.08);}
+.br{color:var(--gold);border-color:rgba(247,223,30,.3);background:rgba(247,223,30,.08);}
+.bn2{color:var(--neon);border-color:var(--bn);background:var(--neon-dim);}
+.chk{width:27px;height:27px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;background:none;font-size:.8rem;flex-shrink:0;}
+.chk:hover{border-color:var(--neon);color:var(--neon);}
+.les.done .chk{background:var(--neon);border-color:var(--neon);color:#000;font-weight:700;}
+.spcards{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:18px 0;}
+@media(max-width:460px){.spcards{grid-template-columns:1fr;}}
+.spc{background:var(--card);border:1.5px solid var(--border);border-radius:13px;padding:17px;text-decoration:none;display:block;transition:all .3s;}
+.spc:hover{transform:translateY(-3px);}
+.spc.pr{border-color:rgba(255,77,77,.3);}
+.spc.pr:hover{box-shadow:0 8px 24px rgba(255,77,77,.12);}
+.spc.mo{border-color:rgba(88,166,255,.3);}
+.spc.mo:hover{box-shadow:0 8px 24px rgba(88,166,255,.12);}
+.spi{font-size:1.65rem;margin-bottom:7px;}
+.spt{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:3px;}
+.sps{font-size:.77rem;color:var(--muted);}
+.tipbox{background:var(--card);border:1px solid var(--bn);border-radius:13px;padding:18px 20px;margin-top:22px;}
+.tipbox h4{color:var(--neon);font-size:.93rem;margin-bottom:11px;}
+.tipr{display:flex;gap:8px;font-size:.81rem;color:var(--muted);margin-bottom:6px;align-items:flex-start;}
+.tipr span{flex-shrink:0;}
+.nor{text-align:center;padding:34px;color:var(--muted);font-size:.91rem;display:none;}
+.pf{text-align:center;padding:24px;border-top:1px solid var(--border);color:var(--muted);font-size:.77rem;}
+.pf b{color:var(--neon);}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+    <div class="logo"><div class="logo-b">H</div>PhineX Academy</div>
+    <div class="hdr-r">
+        <div class="pill" id="pill">0 / 9 مكتمل</div>
+        <a href="../menu.html" class="hl">← الرئيسية</a>
+    </div>
+</header>
+
+<div class="pline"><div class="pfill" id="pf2" style="width:0%"></div></div>
+
+<section class="hero">
+    <div class="cbadge">🔴 HTML Course — محدّث 2026</div>
+    <h1>تعلّم <span>HTML</span> من الصفر<br>حتى الاحتراف الكامل</h1>
+    <p>9 دروس عميقة — كل سطر كود موضّح بشرح تفصيلي مع أمثلة حية واختبارات.</p>
+    <div class="srow">
+        <div class="s">📚 <strong>9</strong> دروس</div>
+        <div class="s">⚡ <strong>شرح سطر بسطر</strong></div>
+        <div class="s">🧪 <strong>محررات حية</strong></div>
+        <div class="s">🏆 <strong>اختبار لكل درس</strong></div>
+    </div>
+    <div class="pw">
+        <div class="pn" id="pct">0%</div>
+        <div class="pbo">
+            <div class="pbt"><div class="pbi" id="pb" style="width:0%"></div></div>
+            <div class="pbl">تقدمك في الكورس</div>
+        </div>
+    </div>
+</section>
+
+<div class="sw">
+    <input class="si" id="srch" type="text" placeholder="ابحث عن درس... (مثل: SEO أو forms أو CSS)">
+</div>
+
+<div class="main">
+
+<div class="chl" data-ch>الفصل الأول — المفاهيم والأساسيات</div>
+
+<div class="les" id="i-gs" data-kw="getting started البداية vscode html اول صفحة بيئة العمل">
+    <a class="ll" href="getting-started.html">
+        <div class="li">🚀</div>
+        <div class="lt">
+            <span class="ln">البداية من الصفر الكامل</span>
+            <span class="ls">كيف يعمل الويب؟ ما هو HTML؟ إعداد VS Code خطوة بخطوة</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b bt">نظري</span><div class="chk" onclick="tog(this,'gs')">✓</div></div>
+</div>
+
+<div class="les" id="i-hb" data-kw="html basics أساسيات عناوين فقرات قوائم روابط صور semantic هيكل">
+    <a class="ll" href="html-basics.html">
+        <div class="li">📄</div>
+        <div class="lt">
+            <span class="ln">أساسيات HTML — كل شيء من الصفر</span>
+            <span class="ls">h1–h6، p، strong، em، ul، ol، a، img، Semantic HTML</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b bt">نظري</span><div class="chk" onclick="tog(this,'hb')">✓</div></div>
+</div>
+
+<div class="les" id="i-ae" data-kw="all elements جميع العناصر موسوعة مرجع table form media figure video">
+    <a class="ll" href="all-html-elements.html">
+        <div class="li">📚</div>
+        <div class="lt">
+            <span class="ln">موسوعة جميع عناصر HTML</span>
+            <span class="ls">كل عنصر بشرح + مثال + بحث فوري — المرجع الدائم</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b br">مرجع</span><div class="chk" onclick="tog(this,'ae')">✓</div></div>
+</div>
+
+<div class="chl" data-ch>الفصل الثاني — التنسيق والتحكم</div>
+
+<div class="les" id="i-at" data-kw="attributes سمات id class style href src alt data global">
+    <a class="ll" href="html-attributes.html">
+        <div class="li">⚙️</div>
+        <div class="lt">
+            <span class="ln">سمات HTML (Attributes) — شرح كل سمة</span>
+            <span class="ls">id, class, style, href, src, alt, data-*, السمات العامة</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b bt">نظري</span><div class="chk" onclick="tog(this,'at')">✓</div></div>
+</div>
+
+<div class="les" id="i-css" data-kw="css تنسيق ألوان خطوط box model selectors variables responsive">
+    <a class="ll" href="html-with-css.html">
+        <div class="li">🎨</div>
+        <div class="lt">
+            <span class="ln">HTML مع CSS — من رمادي لجميل</span>
+            <span class="ls">Box Model، Selectors، الألوان، الخطوط، CSS Variables</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b bt">نظري</span><div class="chk" onclick="tog(this,'css')">✓</div></div>
+</div>
+
+<div class="chl" data-ch>الفصل الثالث — التفاعل والنشر الاحترافي</div>
+
+<div class="les" id="i-fm" data-kw="forms نماذج validation تحقق input select checkbox radio regex submit">
+    <a class="ll" href="forms-and-validation.html">
+        <div class="li">📝</div>
+        <div class="lt">
+            <span class="ln">النماذج والتحقق من البيانات</span>
+            <span class="ls">form، input، select، textarea، التحقق بـ JS وRegEx</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b bt">نظري</span><div class="chk" onclick="tog(this,'fm')">✓</div></div>
+</div>
+
+<div class="les" id="i-seo" data-kw="seo محركات البحث meta title description open graph performance">
+    <a class="ll" href="seo-for-html.html">
+        <div class="li">🔍</div>
+        <div class="lt">
+            <span class="ln">SEO لـ HTML — تصدّر نتائج البحث</span>
+            <span class="ls">meta tags، Open Graph، Twitter Cards، defer/async</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b bt">نظري</span><div class="chk" onclick="tog(this,'seo')">✓</div></div>
+</div>
+
+<div class="les" id="i-js" data-kw="javascript dom events querySelector innerHTML classList addEventListener تفاعل">
+    <a class="ll" href="html-with-javascript.html">
+        <div class="li">⚡</div>
+        <div class="lt">
+            <span class="ln">HTML مع JavaScript — أضف الحياة</span>
+            <span class="ls">DOM، تعديل العناصر، الأحداث، إنشاء المحتوى ديناميكياً</span>
+        </div>
+    </a>
+    <div class="lr"><span class="b bn2">جديد ✨</span><div class="chk" onclick="tog(this,'js')">✓</div></div>
+</div>
+
+<div class="chl" data-ch>التطبيق العملي والمشاريع</div>
+
+<div class="spcards">
+    <a class="spc pr" href="projects.html">
+        <div class="spi">🎮</div>
+        <div class="spt">مشاريع HTML التطبيقية</div>
+        <div class="sps">طبّق كل ما تعلمته في مشاريع حقيقية خطوة بخطوة</div>
+    </a>
+    <a class="spc mo" href="../menu.html">
+        <div class="spi">📦</div>
+        <div class="spt">الدورات التالية</div>
+        <div class="sps">CSS المتقدم، JavaScript، وربط قواعد البيانات</div>
+    </a>
+</div>
+
+<div class="tipbox">
+    <h4>💡 نصائح للإتقان السريع</h4>
+    <div class="tipr"><span>✅</span>اقرأ كل درس كاملاً ثم طبّق المحرر الحي</div>
+    <div class="tipr"><span>✅</span>اجتز اختبار كل درس قبل الانتقال للتالي</div>
+    <div class="tipr"><span>✅</span>ابنِ مشروعاً خاصاً بك بعد كل فصل لتثبيت المعلومة</div>
+    <div class="tipr"><span>✅</span>استخدم DevTools (F12) لفحص كود أي موقع يعجبك</div>
+</div>
+
+<div class="nor" id="nor">لا توجد نتائج. جرب كلمة أخرى.</div>
+
+</div>
+
+<div class="pf">صُنع بـ ❤️ في <b>PhineX Academy</b> — HTML Masterclass 2026</div>
+
+<script>
+const IDS=['gs','hb','ae','at','css','fm','seo','js'];
+const K=id=>'pxh_'+id;
+const LEG={gs:['getting-started'],hb:['lesson-html-basics'],at:['lesson-attributes'],css:['lesson-html-css'],fm:['lesson-forms'],seo:['lesson-seo'],js:['lesson-html-js']};
+IDS.forEach(id=>{if(!localStorage.getItem(K(id))){const lk=LEG[id]||[];if(lk.some(k=>{const v=localStorage.getItem(k);return v==='completed'||v==='done';}))localStorage.setItem(K(id),'done');}});
+function upd(){const done=IDS.filter(id=>localStorage.getItem(K(id))==='done').length;const pct=Math.round(done/IDS.length*100);document.getElementById('pf2').style.width=pct+'%';document.getElementById('pb').style.width=pct+'%';document.getElementById('pct').textContent=pct+'%';document.getElementById('pill').textContent=done+' / '+IDS.length+' مكتمل';}
+function tog(btn,id){const item=document.getElementById('i-'+id);const done=localStorage.getItem(K(id))==='done';done?localStorage.removeItem(K(id)):localStorage.setItem(K(id),'done');item.classList.toggle('done',!done);upd();}
+window.addEventListener('load',()=>{IDS.forEach(id=>{if(localStorage.getItem(K(id))==='done')document.getElementById('i-'+id)?.classList.add('done');});upd();});
+document.getElementById('srch').addEventListener('input',function(){const term=this.value.trim().toLowerCase();const rows=document.querySelectorAll('.les');let vis=0;rows.forEach(r=>{const hay=((r.dataset.kw||'')+' '+r.innerText).toLowerCase();const show=!term||hay.includes(term);r.style.display=show?'':'none';if(show)vis++;});document.querySelectorAll('[data-ch]').forEach(c=>c.style.display=term?'none':'');document.querySelector('.spcards').style.display=term?'none':'';document.querySelector('.tipbox').style.display=term?'none':'';document.getElementById('nor').style.display=vis===0?'block':'none';});
+</script>
+</body>
+</html>

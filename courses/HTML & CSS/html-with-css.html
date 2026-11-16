@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS الاحترافي | PhineX Academy</title>
+<meta name="description" content="تعلّم CSS بعمق: Selectors، Box Model، الألوان، الطباعة، ثم Flexbox وGrid والتصميم المتجاوب ومتغيرات CSS — مهارات احترافية حقيقية، خطوة بخطوة مع تطبيق فوري.">
+<link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#39ff14; --neon-dim:rgba(57,255,20,.1);
+  --void:#080b10; --surface:#0b0e14; --editor:#0a0d12; --card:#111827;
+  --border:rgba(255,255,255,.08); --border2:rgba(57,255,20,.25);
+  --text:#cdd6f4; --muted:#6b7a99; --accent:#c3e88d;
+  --blue:#82aaff; --pink:#ff5874; --gold:#f7df1e; --purple:#bb86fc;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:3px;}
+
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}
+.ws-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:3px;flex-wrap:nowrap;}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;flex-shrink:0;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;flex-shrink:0;}
+.pro-badge{background:linear-gradient(90deg,var(--purple),var(--blue));color:#050508;font-size:9px;font-weight:800;padding:2px 8px;border-radius:100px;letter-spacing:.5px;}
+
+.ws-body{display:grid;grid-template-columns:420px 1fr 340px;flex:1;overflow:hidden;}
+.ws-body.wide-mode{grid-template-columns:1fr;}
+.ws-body.wide-mode .ws-editor,.ws-body.wide-mode .ws-preview{display:none;}
+
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:22px 22px 40px;display:flex;flex-direction:column;gap:14px;}
+.ws-body.wide-mode .ws-instructions{max-width:760px;margin:0 auto;width:100%;border-left:none;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(57,255,20,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;line-height:1.35;}
+
+.ins-body{font-size:13.5px;line-height:1.85;color:var(--text);display:flex;flex-direction:column;gap:12px;}
+.ins-body h4{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-top:4px;}
+.ins-body p{margin:0;}
+.ins-body ul{padding-right:20px;display:flex;flex-direction:column;gap:5px;}
+.ins-body strong{color:#fff;}
+.ins-body code{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.18);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#9dffb0;direction:ltr;display:inline-block;unicode-bidi:isolate;}
+.ins-body pre{background:#05070a;border:1px solid var(--border);border-radius:9px;padding:12px 14px;overflow-x:auto;direction:ltr;text-align:left;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c3e88d;line-height:1.7;}
+
+.note{border-right:3px solid;padding:11px 14px;border-radius:0 8px 8px 0;font-size:12.5px;line-height:1.75;}
+.note.warn{border-color:var(--gold);background:rgba(247,223,30,.06);color:#f5e6a3;}
+.note.info{border-color:var(--blue);background:rgba(130,170,255,.06);color:#a9c4ff;}
+.note.good{border-color:var(--neon);background:var(--neon-dim);color:#b8f5a8;}
+.note.pro{border-color:var(--purple);background:rgba(187,134,252,.06);color:#dcc4ff;}
+.note strong{color:inherit;}
+
+.box-model-viz{background:#05070a;border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;}
+.bm-margin{background:rgba(255,88,116,.12);border:1px dashed rgba(255,88,116,.4);padding:14px;text-align:center;color:#ffb3c0;}
+.bm-border{background:rgba(247,223,30,.1);border:2px solid rgba(247,223,30,.5);padding:12px;margin-top:6px;color:#f5e6a3;}
+.bm-padding{background:rgba(130,170,255,.12);border:1px dashed rgba(130,170,255,.4);padding:14px;margin-top:6px;color:#a9c4ff;}
+.bm-content{background:rgba(57,255,20,.15);border:1px solid var(--border2);padding:12px;margin-top:6px;text-align:center;color:var(--neon);font-weight:700;}
+
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list:empty{display:none;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+.hint{background:rgba(195,232,141,.05);border:1px solid rgba(195,232,141,.18);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--accent);line-height:1.65;display:none;}
+.hint strong{color:#fff;}
+
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;}
+.file-tab.active{color:var(--text);border-bottom-color:var(--neon);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+.tab-html{background:#e34c26;} .tab-css{background:#2965f1;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;position:relative;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#d6deeb;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;position:absolute;inset:0 0 0 42px;}
+.code-ed.hidden{display:none;}
+.code-ed::selection{background:rgba(57,255,20,.15);}
+
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}
+.pdot{width:9px;height:9px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:white;}
+
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(:disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav:disabled{opacity:.3;cursor:not-allowed;}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(57,255,20,.1);color:var(--neon);border:1px solid var(--border2);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.25);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.5);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:440px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.6;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:var(--pink);color:var(--pink);}
+
+.quiz-container{display:none;flex-direction:column;gap:16px;}
+.ws-body.wide-mode .quiz-container{display:flex;}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color .25s;}
+.quiz-q.correct{border-color:rgba(195,232,141,.5);background:rgba(195,232,141,.04);}
+.quiz-q.wrong{border-color:rgba(255,88,116,.5);background:rgba(255,88,116,.04);}
+.quiz-q-title{font-weight:700;font-size:13.5px;margin-bottom:12px;line-height:1.6;}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid transparent;transition:background .2s;}
+.quiz-opt:hover{background:rgba(255,255,255,.03);}
+.quiz-opt input{accent-color:var(--neon);width:15px;height:15px;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<header class="ws-header">
+  <a href="menu.html" class="ws-logo">PhineX</a>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">CSS · من الأساسيات للاحتراف</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track" id="progressTrack"></div>
+  <span class="ws-step-label" id="stepLabel">1/10</span>
+</header>
+
+<div class="ws-body" id="wsBody">
+  <aside class="ws-instructions">
+    <div class="ins-badge" id="insBadge"></div>
+    <div class="ins-title" id="insTitle"></div>
+    <div class="ins-body" id="insBody"></div>
+    <div class="task-list" id="taskList"></div>
+    <div class="hint" id="hintBox"></div>
+    <div class="quiz-container" id="quizContainer"></div>
+  </aside>
+
+  <div class="ws-editor" id="wsEditor">
+    <div class="editor-tabs">
+      <button class="file-tab active" id="tabBtnHtml" onclick="switchTab('html')"><span class="tab-dot tab-html"></span>index.html</button>
+      <button class="file-tab" id="tabBtnCss" onclick="switchTab('css')"><span class="tab-dot tab-css"></span>style.css</button>
+      <div class="editor-action"><button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button></div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed" id="htmlEditor" spellcheck="false"></textarea>
+      <textarea class="code-ed hidden" id="cssEditor" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <aside class="ws-preview" id="wsPreview">
+    <div class="preview-bar">
+      <div class="preview-dots"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div></div>
+      <div class="preview-url">index.html + style.css</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </aside>
+</div>
+
+<footer class="ws-footer">
+  <button class="btn-nav" id="prevBtn" onclick="goPrev()">← السابق</button>
+  <button class="btn-run" id="runBtn" onclick="runCode()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" id="checkBtn" onclick="checkStep()">✓ تحقق من الخطوة</button>
+  <button class="btn-nav" id="nextBtn" onclick="goNext()">التالي ←</button>
+</footer>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ THEORY TEMPLATES ══════════════ -->
+
+<template id="tpl-s1">
+<p><strong>CSS</strong> اختصار لـ <strong>Cascading Style Sheets</strong> — هي اللي بتدّي شكل وجمال لهيكل HTML العاري. من غيرها أي صفحة هتبقى نص أسود على خلفية بيضاء بس.</p>
+<h4>3 طرق تربط CSS بـ HTML</h4>
+<ul>
+  <li><strong>Inline:</strong> <code>&lt;h1 style="color:red"&gt;</code> — جوا العنصر نفسه. سريع بس صعب الصيانة، نتجنبه في المشاريع الحقيقية.</li>
+  <li><strong>Internal:</strong> <code>&lt;style&gt;...&lt;/style&gt;</code> جوا الـ head — كويس للتجربة السريعة (زي اللي هنستخدمه في الدرس ده).</li>
+  <li><strong>External:</strong> ملف <code>.css</code> منفصل مربوط بـ <code>&lt;link rel="stylesheet" href="style.css"&gt;</code> — الطريقة الاحترافية في أي مشروع حقيقي.</li>
+</ul>
+<p>شكل قاعدة CSS الأساسي:</p>
+<pre>selector {
+  property: value;
+}</pre>
+<div class="note info"><strong>Selector</strong> بيحدد <em>مين</em> هيتنسّق، و<strong>property: value</strong> بتحدد <em>إيه</em> التنسيق. خلينا نجرب.</div>
+</template>
+
+<template id="tpl-s2">
+<p>الـ Selectors هي إزاي تختار العناصر اللي عايز تنسّقها. أهم 4 أنواع:</p>
+<ul>
+  <li><strong>Element selector:</strong> <code>p { }</code> — بينسّق كل عناصر p في الصفحة</li>
+  <li><strong>Class selector:</strong> <code>.note { }</code> — بينسّق أي عنصر عنده <code>class="note"</code> (ممكن تستخدمه على أكتر من عنصر)</li>
+  <li><strong>ID selector:</strong> <code>#header { }</code> — بينسّق عنصر واحد بس عنده <code>id="header"</code> (فريد في الصفحة)</li>
+  <li><strong>Universal:</strong> <code>* { }</code> — بينسّق كل حاجة في الصفحة</li>
+</ul>
+<div class="note pro"><strong>💡 نصيحة احترافية:</strong> استخدم <strong>class</strong> في أغلب الحالات — هي الأمرن والأكتر قابلية لإعادة الاستخدام. سيب الـ ID لحالات خاصة (زي JavaScript hooks).</div>
+</template>
+
+<template id="tpl-s3">
+<p>نموذج الصندوق هو أهم مفهوم في CSS كله. أي عنصر في الصفحة عبارة عن صندوق مكوّن من 4 طبقات، من جوه لبره:</p>
+<div class="box-model-viz">
+  <div class="bm-margin">Margin (المسافة الخارجية)
+    <div class="bm-border">Border (الحدود)
+      <div class="bm-padding">Padding (المسافة الداخلية)
+        <div class="bm-content">Content</div>
+      </div>
+    </div>
+  </div>
+</div>
+<ul>
+  <li><code>padding</code> — المسافة بين المحتوى والحدود (جوا العنصر)</li>
+  <li><code>border</code> — خط حول العنصر (سمك + نوع + لون)</li>
+  <li><code>margin</code> — المسافة بره العنصر، بينه وبين اللي حواليه</li>
+</ul>
+<div class="note warn"><strong>⚠️ فخ شائع:</strong> افتراضياً، <code>width</code> بتحسب للـ content بس — فلو ضفت padding وborder، حجم العنصر الفعلي بيكبر عن اللي متوقعه! الحل الاحترافي: <code>box-sizing: border-box;</code> بيخلي الـ padding والـ border يتحسبوا جوا الـ width المحدد.</div>
+</template>
+
+<template id="tpl-s4">
+<p>3 طرق تكتب بيها لون في CSS، وكلهم بيوصلوا لنفس النتيجة:</p>
+<ul>
+  <li><strong>Named:</strong> <code>red</code>, <code>blue</code>, <code>tomato</code> — أسماء جاهزة، محدودة</li>
+  <li><strong>HEX:</strong> <code>#ff0000</code> — الأكتر استخداماً، 6 خانات (أحمر/أخضر/أزرق)</li>
+  <li><strong>RGB:</strong> <code>rgb(255, 0, 0)</code> — نفس الفكرة بأرقام من 0 لـ 255</li>
+  <li><strong>HSL:</strong> <code>hsl(0, 100%, 50%)</code> — الأسهل للتعديل (Hue/Saturation/Lightness)</li>
+</ul>
+<p><code>color</code> بيلوّن النص، و<code>background-color</code> بيلوّن الخلفية.</p>
+</template>
+
+<template id="tpl-s5">
+<p>خصائص الطباعة الأساسية اللي هتستخدمها في كل صفحة تقريباً:</p>
+<ul>
+  <li><code>font-family</code> — نوع الخط</li>
+  <li><code>font-size</code> — حجم الخط</li>
+  <li><code>font-weight</code> — سمك الخط (normal / bold / 400 / 700...)</li>
+  <li><code>line-height</code> — المسافة بين الأسطر (بتحسّن القراءة كتير)</li>
+  <li><code>text-align</code> — محاذاة النص (left / center / right / justify)</li>
+</ul>
+</template>
+
+<template id="tpl-s6">
+<p><strong>Flexbox</strong> هو النظام اللي هتستخدمه كل يوم في أي شغل احترافي — بيحل مشكلة ترتيب العناصر جنب بعض أو فوق بعض من غير أي تعقيد.</p>
+<pre>.container {
+  display: flex;
+  justify-content: center; /* المحور الأفقي */
+  align-items: center;     /* المحور العمودي */
+  gap: 16px;                /* مسافة بين العناصر */
+}</pre>
+<ul>
+  <li><code>justify-content</code> — ترتيب العناصر على المحور الرئيسي (flex-start / center / space-between / space-around)</li>
+  <li><code>align-items</code> — ترتيبهم على المحور العرضي</li>
+  <li><code>flex-direction</code> — row (الافتراضي، جنب بعض) أو column (فوق بعض)</li>
+  <li><code>gap</code> — مسافة نضيفة بين العناصر من غير margin يدوي</li>
+</ul>
+<div class="note pro"><strong>💡 ليه Flexbox مهم؟</strong> 90% من تصميمات الويب الحديثة (Navbars، Cards، أي ترتيب أفقي أو عمودي) بتتبني عليه.</div>
+</template>
+
+<template id="tpl-s7">
+<p><strong>Grid</strong> هو نظام تخطيط ثنائي الأبعاد (صفوف + أعمدة مع بعض) — بينفع لما محتاج شبكة كاملة، مش بس صف واحد زي Flexbox.</p>
+<pre>.grid-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}</pre>
+<ul>
+  <li><code>grid-template-columns</code> — عدد وحجم الأعمدة. <code>repeat(3, 1fr)</code> = 3 أعمدة متساوية</li>
+  <li><code>1fr</code> = "جزء واحد من المساحة المتاحة" — وحدة مرنة خاصة بالـ Grid</li>
+  <li><code>gap</code> — نفس فكرته في Flexbox، مسافة بين كل الخلايا</li>
+</ul>
+<div class="note info"><strong>Flexbox ولا Grid؟</strong> استخدم Flexbox لترتيب في اتجاه واحد (صف أو عمود). استخدم Grid لما محتاج شبكة كاملة (صفوف وأعمدة مع بعض) — زي معرض صور أو Dashboard.</div>
+</template>
+
+<template id="tpl-s8">
+<p><strong>Responsive Design</strong> يعني صفحتك تشتغل حلوة على أي شاشة — موبايل، تابلت، شاشة كمبيوتر كبيرة. الأداة الأساسية: <strong>Media Queries</strong>.</p>
+<pre>@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+}</pre>
+<p>الكود ده بيقول: "لو عرض الشاشة 600px أو أقل، غيّر .container من صف لعمود". أي CSS جوا الـ media query بيتطبق بس لما الشرط يتحقق.</p>
+<div class="note pro"><strong>💡 مبدأ Mobile-First:</strong> المحترفين بيصمموا للموبايل الأول (الأبسط)، وبعدين بيضيفوا media queries للشاشات الأكبر. ده بيخلي موقعك سريع وبسيط للغالبية اللي بتفتح من الموبايل.</div>
+</template>
+
+<template id="tpl-s9">
+<p><strong>متغيرات CSS (Custom Properties)</strong> بتخليك تعرّف قيمة مرة واحدة وتستخدمها في كل الصفحة — لو غيّرتها، كل حاجة بتتحدث تلقائياً. ده أساس أي نظام تصميم احترافي (Design System).</p>
+<pre>:root {
+  --main-color: #39ff14;
+}
+
+h1 {
+  color: var(--main-color);
+}</pre>
+<ul>
+  <li>بتتعرّف جوا <code>:root</code> (بتخليها متاحة في كل الصفحة)</li>
+  <li>اسمها لازم يبدأ بـ <code>--</code></li>
+  <li>بتتستخدم عن طريق <code>var(--الاسم)</code></li>
+</ul>
+<div class="note good"><strong>✅ ليه ده احترافي؟</strong> تخيل موقع فيه 50 عنصر بنفس اللون. من غير متغيرات، لازم تغيّر اللون في 50 مكان. بمتغير واحد، بتغيّره في سطر واحد بس.</div>
+</template>
+
+<template id="tpl-s10">
+<p>وصلت لآخر خطوة! جاوب صح على الأسئلة الـ 6 دي عشان تنهي الدرس.</p>
+</template>
+
+<script>
+/* ══════════════ BUILD + PROBE: دمج HTML مع CSS في iframe حقيقي ══════════════ */
+function buildAndProbe(html, css) {
+  var full = html;
+  var styleTag = '<style>\n' + css + '\n</style>';
+  if (full.indexOf('</head>') !== -1) full = full.replace('</head>', styleTag + '\n</head>');
+  else full = styleTag + full;
+  var fr = document.getElementById('previewFrame');
+  var doc = fr.contentDocument || fr.contentWindow.document;
+  doc.open(); doc.write(full); doc.close();
+  return doc;
+}
+
+function findRules(doc, selectorContains) {
+  var out = [];
+  var sheet = doc.styleSheets && doc.styleSheets[0];
+  if (!sheet) return out;
+  for (var i = 0; i < sheet.cssRules.length; i++) {
+    var r = sheet.cssRules[i];
+    if (r.selectorText && (!selectorContains || r.selectorText.indexOf(selectorContains) !== -1)) out.push(r);
+  }
+  return out;
+}
+function findMediaRules(doc) {
+  var out = [];
+  var sheet = doc.styleSheets && doc.styleSheets[0];
+  if (!sheet) return out;
+  for (var i = 0; i < sheet.cssRules.length; i++) {
+    if (sheet.cssRules[i].media) out.push(sheet.cssRules[i]);
+  }
+  return out;
+}
+
+var ARABIC_NUM = ['', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', '١٠'];
+
+var BASE_HTML = '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<title>تجربة CSS</title>\n</head>\n<body>\n{{BODY}}\n</body>\n</html>\n';
+
+var STEPS = [
+  {
+    id: 's1', badge: 'الخطوة ١', title: 'ما هو CSS ولماذا نحتاجه؟', type: 'code',
+    tasks: ['اكتب Selector للعنصر h1', 'خلي لونه أحمر: <code>color: red;</code>'],
+    hint: 'h1 { color: red; }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <h1>عنوان تجريبي</h1>\n  <p>فقرة عادية تحت العنوان.</p>'),
+    starterCss: '/* اكتب هنا قاعدة CSS تخلي لون h1 أحمر */\n\n',
+    check: function (doc) {
+      var h1 = doc.querySelector('h1');
+      if (!h1) return { ok: false, msg: 'عنصر h1 مش موجود في HTML، متمسحوش.' };
+      var color = doc.defaultView.getComputedStyle(h1).color;
+      if (color !== 'rgb(255, 0, 0)') return { ok: false, msg: 'لون h1 لازم يكون أحمر. استخدم: h1 { color: red; }' };
+      return { ok: true };
+    },
+    success: 'تمام! كتبت أول قاعدة CSS وشفت أثرها فوراً على الصفحة.'
+  },
+  {
+    id: 's2', badge: 'الخطوة ٢', title: 'بنية CSS و Selectors', type: 'code',
+    tasks: ['استخدم class selector: <code>.note { }</code>', 'خلي خلفيتها صفراء: <code>background-color: yellow;</code>'],
+    hint: '.note { background-color: yellow; }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <h1>عنوان</h1>\n  <p class="note">ملاحظة مهمة لازم تتلاحظ</p>'),
+    starterCss: '/* استخدم class selector هنا */\n\n',
+    check: function (doc) {
+      var note = doc.querySelector('.note');
+      if (!note) return { ok: false, msg: 'عنصر .note مش موجود في HTML، متمسحوش.' };
+      var bg = doc.defaultView.getComputedStyle(note).backgroundColor;
+      if (bg !== 'rgb(255, 255, 0)') return { ok: false, msg: 'خلفية .note لازم تكون صفراء. استخدم: .note { background-color: yellow; }' };
+      return { ok: true };
+    },
+    success: 'ممتاز! دلوقتي تفرّق بين element وclass وid selectors.'
+  },
+  {
+    id: 's3', badge: 'الخطوة ٣', title: 'نموذج الصندوق (Box Model)', type: 'code',
+    tasks: ['للعنصر <code>.card</code> ضيف: <code>padding: 20px;</code>', 'ضيف: <code>border: 2px solid black;</code>', 'ضيف: <code>margin: 10px;</code>'],
+    hint: '.card { padding: 20px; border: 2px solid black; margin: 10px; }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <div class="card">بطاقة تجريبية</div>'),
+    starterCss: '/* نسّق .card بالـ padding وborder وmargin */\n\n',
+    check: function (doc) {
+      var card = doc.querySelector('.card');
+      if (!card) return { ok: false, msg: 'عنصر .card مش موجود في HTML، متمسحوش.' };
+      var cs = doc.defaultView.getComputedStyle(card);
+      if (cs.paddingTop !== '20px') return { ok: false, msg: 'محتاج padding: 20px; على .card' };
+      if (cs.borderTopWidth !== '2px' || cs.borderTopStyle !== 'solid') return { ok: false, msg: 'محتاج border: 2px solid ...; على .card' };
+      if (cs.marginTop !== '10px') return { ok: false, msg: 'محتاج margin: 10px; على .card' };
+      return { ok: true };
+    },
+    success: 'محترف! نموذج الصندوق هو أساس كل تخطيط في CSS — وفهمته صح.'
+  },
+  {
+    id: 's4', badge: 'الخطوة ٤', title: 'الألوان والخلفيات — كل الصيغ', type: 'code',
+    tasks: ['استخدم صيغة <code>rgb()</code>', 'خلي خلفية <code>.banner</code>: <code>rgb(30, 60, 114)</code>'],
+    hint: '.banner { background-color: rgb(30, 60, 114); }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <div class="banner">بانر ترحيبي</div>'),
+    starterCss: '/* استخدم rgb() هنا */\n\n',
+    check: function (doc) {
+      var el = doc.querySelector('.banner');
+      if (!el) return { ok: false, msg: 'عنصر .banner مش موجود في HTML، متمسحوش.' };
+      var bg = doc.defaultView.getComputedStyle(el).backgroundColor;
+      if (bg !== 'rgb(30, 60, 114)') return { ok: false, msg: 'استخدم بالظبط: background-color: rgb(30, 60, 114);' };
+      return { ok: true };
+    },
+    success: 'تمام! بقيت تعرف تستخدم rgb() جنب الـ hex والأسماء الجاهزة.'
+  },
+  {
+    id: 's5', badge: 'الخطوة ٥', title: 'الخطوط والطباعة', type: 'code',
+    tasks: ['للعنصر <code>.quote</code> ضيف: <code>font-weight: bold;</code>', 'ضيف: <code>text-align: center;</code>', 'ضيف: <code>font-size: 20px;</code>'],
+    hint: '.quote { font-weight: bold; text-align: center; font-size: 20px; }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <p class="quote">النجاح مش صدفة</p>'),
+    starterCss: '/* نسّق .quote هنا */\n\n',
+    check: function (doc) {
+      var el = doc.querySelector('.quote');
+      if (!el) return { ok: false, msg: 'عنصر .quote مش موجود في HTML، متمسحوش.' };
+      var cs = doc.defaultView.getComputedStyle(el);
+      if (cs.fontWeight !== 'bold' && cs.fontWeight !== '700') return { ok: false, msg: 'محتاج font-weight: bold; على .quote' };
+      if (cs.textAlign !== 'center') return { ok: false, msg: 'محتاج text-align: center; على .quote' };
+      if (cs.fontSize !== '20px') return { ok: false, msg: 'محتاج font-size: 20px; على .quote' };
+      return { ok: true };
+    },
+    success: 'جميل! التنسيق ده بتستخدمه في كل عنوان واقتباس هتعمله.'
+  },
+  {
+    id: 's6', badge: 'الخطوة ٦', title: 'Flexbox — التخطيط الاحترافي', type: 'code',
+    tasks: ['للعنصر <code>.container</code> ضيف: <code>display: flex;</code>', 'ضيف: <code>justify-content: center;</code>', 'ضيف: <code>align-items: center;</code>'],
+    hint: '.container { display: flex; justify-content: center; align-items: center; gap: 16px; }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <div class="container">\n    <div class="box">1</div>\n    <div class="box">2</div>\n    <div class="box">3</div>\n  </div>'),
+    starterCss: '.box { background: #39ff14; color: #000; padding: 20px; font-weight: bold; }\n\n/* حوّل .container لـ flex هنا */\n.container {\n\n}\n',
+    check: function (doc) {
+      var el = doc.querySelector('.container');
+      if (!el) return { ok: false, msg: 'عنصر .container مش موجود في HTML، متمسحوش.' };
+      var cs = doc.defaultView.getComputedStyle(el);
+      if (cs.display !== 'flex') return { ok: false, msg: 'محتاج display: flex; على .container' };
+      if (cs.justifyContent !== 'center') return { ok: false, msg: 'محتاج justify-content: center; على .container' };
+      if (cs.alignItems !== 'center') return { ok: false, msg: 'محتاج align-items: center; على .container' };
+      return { ok: true };
+    },
+    success: '🚀 دي أول مرة تستخدم فيها Flexbox — المهارة اللي هتستخدمها في كل صفحة تعملها من هنا لقدام.'
+  },
+  {
+    id: 's7', badge: 'الخطوة ٧', title: 'Grid — نظام الشبكة الاحترافي', type: 'code',
+    tasks: ['للعنصر <code>.grid-wrap</code> ضيف: <code>display: grid;</code>', 'ضيف: <code>grid-template-columns: repeat(3, 1fr);</code>'],
+    hint: '.grid-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <div class="grid-wrap">\n    <div class="item">1</div><div class="item">2</div><div class="item">3</div>\n    <div class="item">4</div><div class="item">5</div><div class="item">6</div>\n  </div>'),
+    starterCss: '.item { background: #82aaff; padding: 16px; text-align: center; }\n\n/* حوّل .grid-wrap لشبكة 3 أعمدة هنا */\n.grid-wrap {\n\n}\n',
+    check: function (doc) {
+      var el = doc.querySelector('.grid-wrap');
+      if (!el) return { ok: false, msg: 'عنصر .grid-wrap مش موجود في HTML، متمسحوش.' };
+      var cs = doc.defaultView.getComputedStyle(el);
+      if (cs.display !== 'grid') return { ok: false, msg: 'محتاج display: grid; على .grid-wrap' };
+      var rules = findRules(doc, '.grid-wrap');
+      var hasCols = rules.some(function (r) {
+        var v = r.style.getPropertyValue('grid-template-columns');
+        return v && v.trim().length > 0 && v.trim() !== 'none';
+      });
+      if (!hasCols) return { ok: false, msg: 'ضيف grid-template-columns على .grid-wrap (مثلاً repeat(3, 1fr)).' };
+      return { ok: true };
+    },
+    success: 'ممتاز! Grid هو أقوى أداة عندك لبناء شبكات كاملة زي معارض الصور والـ Dashboards.'
+  },
+  {
+    id: 's8', badge: 'الخطوة ٨', title: 'التصميم المتجاوب — Media Queries', type: 'code',
+    tasks: ['ضيف <code>@media (max-width: 600px)</code>', 'جواها خلي <code>.container</code>: <code>flex-direction: column;</code>'],
+    hint: '@media (max-width: 600px) {\n  .container { flex-direction: column; }\n}',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <div class="container">\n    <div class="box">1</div>\n    <div class="box">2</div>\n  </div>'),
+    starterCss: '.container { display: flex; gap: 12px; }\n.box { background: #39ff14; padding: 20px; }\n\n/* ضيف media query هنا */\n\n',
+    check: function (doc) {
+      var mediaRules = findMediaRules(doc);
+      var target = null;
+      for (var i = 0; i < mediaRules.length; i++) {
+        var cond = mediaRules[i].conditionText || mediaRules[i].media.mediaText;
+        if (cond.indexOf('600px') !== -1) { target = mediaRules[i]; break; }
+      }
+      if (!target) return { ok: false, msg: 'ضيف @media (max-width: 600px) { ... }' };
+      var found = false;
+      for (var j = 0; j < target.cssRules.length; j++) {
+        var r = target.cssRules[j];
+        if (r.selectorText && r.selectorText.indexOf('.container') !== -1 && r.style.getPropertyValue('flex-direction').trim() === 'column') {
+          found = true; break;
+        }
+      }
+      if (!found) return { ok: false, msg: 'جوا الـ media query، خلي .container: flex-direction: column;' };
+      return { ok: true };
+    },
+    success: '📱 كده صفحتك بتتأقلم مع أي شاشة — ده اللي بيفرّق موقع احترافي عن موقع هاوي.'
+  },
+  {
+    id: 's9', badge: 'الخطوة ٩', title: 'متغيرات CSS — إعادة استخدام احترافية', type: 'code',
+    tasks: ['عرّف <code>--main-color</code> جوا <code>:root</code>', 'استخدمه في h1: <code>color: var(--main-color);</code>'],
+    hint: ':root { --main-color: #39ff14; }\nh1 { color: var(--main-color); }',
+    starterHtml: BASE_HTML.replace('{{BODY}}', '  <h1>عنوان بلون متغيّر</h1>\n  <p>جرّب تغيّر قيمة المتغير وشوف العنوان بيتغيّر معاه.</p>'),
+    starterCss: '/* عرّف المتغير هنا */\n:root {\n\n}\n\n/* استخدمه هنا */\nh1 {\n\n}\n',
+    check: function (doc) {
+      var rootRules = findRules(doc, ':root');
+      var varValue = null;
+      rootRules.forEach(function (r) {
+        var v = r.style.getPropertyValue('--main-color');
+        if (v && v.trim()) varValue = v.trim();
+      });
+      if (!varValue) return { ok: false, msg: 'عرّف --main-color جوا :root، وحط فيه أي لون.' };
+      var h1Rules = findRules(doc, 'h1');
+      var usesVar = h1Rules.some(function (r) { return r.style.cssText.indexOf('var(--main-color)') !== -1; });
+      if (!usesVar) return { ok: false, msg: 'استخدم color: var(--main-color); جوا قاعدة h1.' };
+      return { ok: true };
+    },
+    success: '🏆 دلوقتي تعرف تبني نظام ألوان قابل لإعادة الاستخدام — أساس أي Design System احترافي.'
+  },
+  {
+    id: 's10', badge: 'الخطوة ١٠', title: 'اختبار الدرس النهائي 🏁', type: 'quiz',
+    tasks: [], hint: '',
+    questions: [
+      { q: 'الطريقة الاحترافية لربط CSS بـ HTML في مشروع حقيقي؟', options: ['Inline style=""', 'ملف .css خارجي مربوط بـ link', 'كتابة كل شيء جوا body', 'مفيش فرق'], correct: 1 },
+      { q: 'أنهي selector بيختار عنصر واحد بس بالتحديد؟', options: ['.card', 'p', '#header', '*'], correct: 2 },
+      { q: 'ترتيب طبقات نموذج الصندوق من الداخل للخارج؟', options: ['Margin, Border, Padding, Content', 'Content, Padding, Border, Margin', 'Padding, Content, Margin, Border', 'Border, Content, Padding, Margin'], correct: 1 },
+      { q: 'أنهي خاصية بترتّب عناصر Flexbox على المحور الرئيسي؟', options: ['align-items', 'justify-content', 'flex-wrap', 'grid-gap'], correct: 1 },
+      { q: '@media (max-width: 600px) بتشتغل إمتى؟', options: ['لما عرض الشاشة 600px أو أقل', 'لما عرض الشاشة 600px أو أكتر', 'دايماً', 'أبداً على الموبايل'], correct: 0 },
+      { q: 'اسم متغير CSS لازم يبدأ بـ؟', options: ['$', '@', '--', '#'], correct: 2 }
+    ]
+  }
+];
+
+/* ══════════════ محرّك الخطوات ══════════════ */
+var currentIndex = 0;
+var activeTab = 'html';
+var htmlEditor = document.getElementById('htmlEditor');
+var cssEditor = document.getElementById('cssEditor');
+var lnDiv = document.getElementById('lineNums');
+var wsBody = document.getElementById('wsBody');
+var quizAnswers = {};
+
+function doneKey(id) { return 'px_css_pro_done_' + id; }
+function codeKeyHtml(id) { return 'px_css_pro_html_' + id; }
+function codeKeyCss(id) { return 'px_css_pro_css_' + id; }
+function isDone(id) { return localStorage.getItem(doneKey(id)) === '1'; }
+function setDone(id) { localStorage.setItem(doneKey(id), '1'); }
+
+function activeEditor() { return activeTab === 'html' ? htmlEditor : cssEditor; }
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabBtnHtml').classList.toggle('active', tab === 'html');
+  document.getElementById('tabBtnCss').classList.toggle('active', tab === 'css');
+  htmlEditor.classList.toggle('hidden', tab !== 'html');
+  cssEditor.classList.toggle('hidden', tab !== 'css');
+  updateLN();
+}
+
+function updateDots() {
+  var track = document.getElementById('progressTrack');
+  track.innerHTML = '';
+  STEPS.forEach(function (step, i) {
+    var dot = document.createElement('div');
+    dot.className = 'prog-dot' + (isDone(step.id) ? ' done' : '') + (i === currentIndex ? ' current' : '');
+    track.appendChild(dot);
+  });
+}
+
+function updateLN() {
+  var ed = activeEditor();
+  var n = ed.value.split('\n').length;
+  var out = '';
+  for (var i = 1; i <= n; i++) out += i + '<br>';
+  lnDiv.innerHTML = out;
+}
+
+function saveCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return;
+  localStorage.setItem(codeKeyHtml(step.id), htmlEditor.value);
+  localStorage.setItem(codeKeyCss(step.id), cssEditor.value);
+}
+
+function resetCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return;
+  if (!confirm('إعادة ضبط الكود (HTML وCSS) للنسخة الأصلية؟')) return;
+  htmlEditor.value = step.starterHtml;
+  cssEditor.value = step.starterCss;
+  localStorage.removeItem(codeKeyHtml(step.id));
+  localStorage.removeItem(codeKeyCss(step.id));
+  updateLN();
+  runCode();
+}
+
+function runCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return null;
+  return buildAndProbe(htmlEditor.value, cssEditor.value);
+}
+
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || 'ok') + ' show';
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.classList.remove('show'); }, 4200);
+}
+
+function checkStep() {
+  var step = STEPS[currentIndex];
+  if (step.type === 'quiz') { gradeQuiz(step); return; }
+  var doc = runCode();
+  var verdict = step.check(doc);
+  if (verdict.ok) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast(step.success || 'تمام! كمّل للي بعده 👍', 'ok');
+  } else {
+    toast(verdict.msg || 'حاول تاني، راجع التعليمات.', 'err');
+  }
+}
+
+function renderTaskList(tasks) {
+  var el = document.getElementById('taskList');
+  if (!tasks || !tasks.length) { el.innerHTML = ''; return; }
+  var html = '<div class="task-list-title">المطلوب في الخطوة دي</div>';
+  tasks.forEach(function (t, i) {
+    html += '<div class="task-item"><div class="task-num">' + (ARABIC_NUM[i + 1] || (i + 1)) + '</div><div>' + t + '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+function renderQuiz(step) {
+  var wrap = document.getElementById('quizContainer');
+  var html = '';
+  step.questions.forEach(function (q, qi) {
+    html += '<div class="quiz-q" id="quizQ' + qi + '">';
+    html += '<div class="quiz-q-title">' + (ARABIC_NUM[qi + 1] || (qi + 1)) + '. ' + q.q + '</div>';
+    q.options.forEach(function (opt, oi) {
+      html += '<label class="quiz-opt"><input type="radio" name="qz' + qi + '" value="' + oi + '" onchange="quizAnswers[' + qi + ']=' + oi + '"> <span>' + opt + '</span></label>';
+    });
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function gradeQuiz(step) {
+  var score = 0;
+  step.questions.forEach(function (q, qi) {
+    var qEl = document.getElementById('quizQ' + qi);
+    qEl.classList.remove('correct', 'wrong');
+    if (quizAnswers[qi] === q.correct) { qEl.classList.add('correct'); score++; }
+    else if (quizAnswers[qi] !== undefined) { qEl.classList.add('wrong'); }
+  });
+  if (score === step.questions.length) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast('🏆 ' + score + '/' + step.questions.length + ' — ممتاز! الدرس خلص.', 'ok');
+  } else {
+    toast('حصلت على ' + score + '/' + step.questions.length + ' — راجع الأسئلة المعلّمة باللون الوردي.', 'err');
+  }
+}
+
+function finishLesson() {
+  localStorage.setItem('html-with-css', 'completed');
+  window.location.href = 'menu.html';
+}
+
+function renderStep(i) {
+  currentIndex = i;
+  var step = STEPS[i];
+  document.getElementById('stepLabel').textContent = (i + 1) + '/' + STEPS.length;
+  updateDots();
+  document.getElementById('insBadge').textContent = step.badge;
+  document.getElementById('insTitle').textContent = step.title;
+  var body = document.getElementById('insBody');
+  body.innerHTML = '';
+  body.appendChild(document.getElementById('tpl-' + step.id).content.cloneNode(true));
+  renderTaskList(step.tasks);
+  var hintEl = document.getElementById('hintBox');
+  if (step.hint) { hintEl.style.display = 'block'; hintEl.innerHTML = '<strong>تلميح:</strong> ' + step.hint; }
+  else { hintEl.style.display = 'none'; }
+
+  var runBtn = document.getElementById('runBtn');
+  var checkBtn = document.getElementById('checkBtn');
+
+  if (step.type === 'quiz') {
+    wsBody.classList.add('wide-mode');
+    quizAnswers = {};
+    renderQuiz(step);
+    runBtn.style.display = 'none';
+    checkBtn.textContent = '✓ تحقق من الإجابات';
+  } else {
+    wsBody.classList.remove('wide-mode');
+    runBtn.style.display = 'inline-flex';
+    checkBtn.textContent = '✓ تحقق من الخطوة';
+    var savedHtml = localStorage.getItem(codeKeyHtml(step.id));
+    var savedCss = localStorage.getItem(codeKeyCss(step.id));
+    htmlEditor.value = (savedHtml !== null) ? savedHtml : step.starterHtml;
+    cssEditor.value = (savedCss !== null) ? savedCss : step.starterCss;
+    switchTab('css');
+    runCode();
+  }
+
+  document.getElementById('prevBtn').disabled = (i === 0);
+  var nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.toggle('visible', isDone(step.id));
+  nextBtn.textContent = (i === STEPS.length - 1) ? 'إنهاء الدرس 🚀' : 'التالي ←';
+}
+
+function goPrev() { if (currentIndex > 0) renderStep(currentIndex - 1); }
+function goNext() {
+  if (currentIndex === STEPS.length - 1) { finishLesson(); return; }
+  if (currentIndex < STEPS.length - 1) renderStep(currentIndex + 1);
+}
+
+/* ══════════════ الإعداد الأولي ══════════════ */
+var runTimer;
+function bindEditor(ed) {
+  ed.addEventListener('input', function () {
+    updateLN(); saveCode();
+    clearTimeout(runTimer);
+    runTimer = setTimeout(runCode, 700);
+  });
+  ed.addEventListener('scroll', function () { lnDiv.scrollTop = ed.scrollTop; });
+  ed.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    e.preventDefault();
+    var s = ed.selectionStart, en = ed.selectionEnd;
+    ed.value = ed.value.slice(0, s) + '  ' + ed.value.slice(en);
+    ed.selectionStart = ed.selectionEnd = s + 2;
+    updateLN(); saveCode();
+  });
+}
+bindEditor(htmlEditor);
+bindEditor(cssEditor);
+
+(function init() {
+  var start = 0;
+  for (var i = 0; i < STEPS.length; i++) { if (!isDone(STEPS[i].id)) { start = i; break; } if (i === STEPS.length - 1) start = i; }
+  renderStep(start);
+})();
+</script>
+</body>
+</html>

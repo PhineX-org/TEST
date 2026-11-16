@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX | دورة PHP الشاملة</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.08);--void:#05070a;
+  --card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.18);
+  --text:#e2e8f0;--muted:#64748b;}
+body{font-family:'Cairo',sans-serif;background:#0a0a10;color:var(--text);min-height:100vh;
+  background-image:linear-gradient(rgba(57,255,20,.02) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(57,255,20,.02) 1px,transparent 1px);background-size:44px 44px;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--neon);border-radius:3px;}
+/* header */
+.site-header{background:rgba(5,5,10,.85);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+  padding:0 28px;height:60px;display:flex;align-items:center;gap:14px;}
+.site-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;
+  color:var(--neon);text-decoration:none;letter-spacing:-1px;}
+.site-sep{color:var(--muted);}
+.site-sub{font-size:13px;color:var(--muted);}
+/* hero */
+.index-hero{text-align:center;padding:70px 24px 50px;}
+.index-hero h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,4rem);
+  font-weight:800;letter-spacing:-2px;margin-bottom:14px;}
+.index-hero h1 .acc{color:var(--neon);}
+.index-hero p{font-size:1rem;color:var(--muted);max-width:500px;margin:0 auto 32px;line-height:1.7;}
+/* global progress */
+.global-prog{max-width:600px;margin:0 auto 50px;padding:0 24px;}
+.gp-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);
+  margin-bottom:8px;font-family:'JetBrains Mono',monospace;}
+.gp-bar{height:6px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden;}
+.gp-fill{height:100%;background:linear-gradient(to left,var(--neon),#00cc88);
+  border-radius:100px;transition:width .8s ease;width:0%;}
+/* stats */
+.stats-row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:50px;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:20px 28px;text-align:center;min-width:120px;}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;
+  color:var(--neon);display:block;}
+.stat-lbl{font-size:12px;color:var(--muted);}
+/* courses list */
+.courses-wrap{max-width:900px;margin:0 auto;padding:0 24px 80px;}
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;padding-right:4px;}
+.course-card{display:flex;align-items:center;gap:16px;background:var(--card);
+  border:1px solid var(--border);border-radius:14px;padding:18px 20px;
+  text-decoration:none;color:var(--text);transition:all .25s;margin-bottom:10px;}
+.course-card:hover{border-color:rgba(57,255,20,.25);transform:translateX(-4px);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.course-card.completed{border-color:rgba(57,255,20,.2);}
+.cc-icon{width:48px;height:48px;border-radius:12px;border:1px solid;
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.cc-body{flex:1;min-width:0;}
+.cc-meta{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.cc-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+.cc-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:2px;}
+.cc-sub{font-size:12px;color:var(--muted);}
+.cc-right{flex-shrink:0;}
+.status-ring{width:36px;height:36px;position:relative;}
+.status-ring svg{width:36px;height:36px;}
+.status-label{font-size:12px;color:var(--muted);text-align:center;display:block;
+  font-family:'JetBrains Mono',monospace;margin-top:2px;}
+/* reset btn */
+.reset-link{display:inline-block;font-size:12px;color:var(--muted);cursor:pointer;
+  margin-top:20px;text-decoration:underline;text-underline-offset:3px;}
+.reset-link:hover{color:#ff5874;}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a href="../menu.html" class="site-logo">PhineX</a>
+  <span class="site-sep">/</span>
+  <span class="site-sub">دورة PHP الشاملة</span>
+</header>
+
+<div class="index-hero">
+  <h1>دورة <span class="acc">PHP</span> الشاملة 🐘</h1>
+  <p>من الصفر إلى بناء تطبيقات ويب حقيقية. كل درس مدعوم بأمثلة برمجية عميقة واختبار 5/5 للتقدم.</p>
+  <div class="global-prog">
+    <div class="gp-row"><span>التقدم الكلي</span><span id="pctTxt">0%</span></div>
+    <div class="gp-bar"><div class="gp-fill" id="gpFill"></div></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-num" id="doneCount">0</span><span class="stat-lbl">درس مكتمل</span></div>
+    <div class="stat-box"><span class="stat-num">13</span><span class="stat-lbl">درس إجمالي</span></div>
+    <div class="stat-box"><span class="stat-num">65</span><span class="stat-lbl">سؤال تدريبي</span></div>
+    <div class="stat-box"><span class="stat-num">2</span><span class="stat-lbl">مشروع عملي</span></div>
+  </div>
+</div>
+
+<div class="courses-wrap">
+  <div class="section-label">📚 الدروس الأساسية</div>
+  
+<a href="lesson-01-intro.html" class="course-card" data-lid="intro">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">🐘</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 01</span>
+      
+    </div>
+    <h3 class="cc-title">مقدمة إلى PHP</h3>
+    <p class="cc-sub">ما هو PHP ولماذا نتعلمه؟</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="intro">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-02-variables.html" class="course-card" data-lid="variables">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">📦</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 02</span>
+      
+    </div>
+    <h3 class="cc-title">المتغيرات وأنواع البيانات</h3>
+    <p class="cc-sub">كيف نخزن البيانات في PHP؟</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="variables">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-03-operators.html" class="course-card" data-lid="operators">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">➗</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 03</span>
+      
+    </div>
+    <h3 class="cc-title">العمليات والمشغلات</h3>
+    <p class="cc-sub">الحسابية والمقارنة والمنطقية</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="operators">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-04-conditionals.html" class="course-card" data-lid="conditionals">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">🔀</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 04</span>
+      
+    </div>
+    <h3 class="cc-title">الجمل الشرطية</h3>
+    <p class="cc-sub">اتخاذ القرارات في الكود</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="conditionals">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-05-loops.html" class="course-card" data-lid="loops">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">🔁</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 05</span>
+      
+    </div>
+    <h3 class="cc-title">الحلقات التكرارية</h3>
+    <p class="cc-sub">تكرار الكود بذكاء</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="loops">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-06-functions.html" class="course-card" data-lid="functions">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">⚙️</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 06</span>
+      
+    </div>
+    <h3 class="cc-title">الدوال (Functions)</h3>
+    <p class="cc-sub">كتابة كود قابل لإعادة الاستخدام</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="functions">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-07-arrays.html" class="course-card" data-lid="arrays">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">📚</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 07</span>
+      
+    </div>
+    <h3 class="cc-title">المصفوفات (Arrays)</h3>
+    <p class="cc-sub">تخزين مجموعات من البيانات</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="arrays">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-08-strings.html" class="course-card" data-lid="strings">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">✍️</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 08</span>
+      
+    </div>
+    <h3 class="cc-title">السلاسل النصية (Strings)</h3>
+    <p class="cc-sub">التعامل الاحترافي مع النصوص</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="strings">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-09-oop.html" class="course-card" data-lid="oop">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">🏗️</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 09</span>
+      
+    </div>
+    <h3 class="cc-title">البرمجة كائنية التوجه</h3>
+    <p class="cc-sub">Classes, Objects & Inheritance</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="oop">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-10-forms.html" class="course-card" data-lid="forms">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">📝</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 10</span>
+      
+    </div>
+    <h3 class="cc-title">النماذج ومدخلات المستخدم</h3>
+    <p class="cc-sub">$_GET و $_POST والتحقق من البيانات</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="forms">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-11-calculator.html" class="course-card" data-lid="calculator">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">🧮</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 11</span>
+      <span style="background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:#8b5cf6;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">مشروع</span>
+    </div>
+    <h3 class="cc-title">مشروع: آلة حاسبة PHP</h3>
+    <p class="cc-sub">تطبيق عملي شامل</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="calculator">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-12-weather.html" class="course-card" data-lid="weather">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">🌤️</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 12</span>
+      <span style="background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:#8b5cf6;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">مشروع</span>
+    </div>
+    <h3 class="cc-title">مشروع: تطبيق الطقس</h3>
+    <p class="cc-sub">API Requests و JSON في PHP</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="weather">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+<a href="lesson-13-review.html" class="course-card" data-lid="review">
+  <div class="cc-left">
+    <div class="cc-icon" style="background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.15);">🏆</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-meta">
+      <span class="cc-num">الدرس 13</span>
+      <span style="background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:#8b5cf6;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">مشروع</span>
+    </div>
+    <h3 class="cc-title">مراجعة شاملة واختبار نهائي</h3>
+    <p class="cc-sub">تقييم شامل لكل ما تعلمته</p>
+  </div>
+  <div class="cc-right">
+    <div class="cc-status" data-lid="review">
+      <div class="status-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/><circle class="ring-fill" cx="18" cy="18" r="15" fill="none" stroke="var(--neon)" stroke-width="3" stroke-dasharray="0 94" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg></div>
+      <span class="status-label">○</span>
+    </div>
+  </div>
+</a>
+  <div style="text-align:center;">
+    <span class="reset-link" onclick="resetProgress()">↺ إعادة ضبط التقدم (للاختبار)</span>
+  </div>
+</div>
+
+<script>
+const LESSONS_IDS = ['intro', 'variables', 'operators', 'conditionals', 'loops', 'functions', 'arrays', 'strings', 'oop', 'forms', 'calculator', 'weather', 'review'];
+const TOTAL = LESSONS_IDS.length;
+
+function isCompleted(id) { return localStorage.getItem(`lesson-${id}`) === 'completed'; }
+
+function updateUI() {
+  let done = 0;
+  LESSONS_IDS.forEach(id => {
+    if (isCompleted(id)) {
+      done++;
+      const card = document.querySelector(`.course-card[data-lid="${id}"]`);
+      if (card) {
+        card.classList.add('completed');
+        const lbl   = card.querySelector('.status-label');
+        const ring  = card.querySelector('.ring-fill');
+        if (lbl)  lbl.textContent = '✓';
+        if (ring) { ring.style.stroke = 'var(--neon)'; ring.setAttribute('stroke-dasharray','94 0'); }
+      }
+    }
+  });
+  const pct = Math.round(done / TOTAL * 100);
+  document.getElementById('gpFill').style.width  = pct + '%';
+  document.getElementById('pctTxt').textContent   = pct + '%';
+  document.getElementById('doneCount').textContent = done;
+}
+
+function resetProgress() {
+  if (!confirm('هل تريد حذف كل التقدم؟')) return;
+  LESSONS_IDS.forEach(id => localStorage.removeItem(`lesson-${id}`));
+  location.reload();
+}
+
+updateUI();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) updateUI(); });
+</script>
+</body>
+</html>

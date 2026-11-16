@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhineX Workshop | Logic Mastery</title>
+    <style>
+        :root {
+            --editor-bg: #011627;
+            --sidebar-bg: #0b0e14;
+            --accent-pink: #ff5874;
+            --accent-cyan: #00d4ff;
+            --text-silver: #d6deeb;
+            --header-dark: #1a1a2e;
+        }
+
+        body {
+            background-color: var(--sidebar-bg);
+            color: var(--text-silver);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .lab-header {
+            background: var(--header-dark);
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d2d44;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr 1fr;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .instructions-panel {
+            background: var(--sidebar-bg);
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #2d2d44;
+            line-height: 1.6;
+        }
+
+        .instructions-panel h2 { color: var(--accent-cyan); }
+
+        .editor-container { background: var(--editor-bg); position: relative; }
+
+        #codeEditor {
+            width: 100%; height: 100%;
+            background: transparent;
+            color: #d6deeb;
+            font-family: 'Consolas', monospace;
+            font-size: 15px;
+            padding: 20px;
+            border: none;
+            outline: none;
+            direction: ltr !important;
+            text-align: left !important;
+            resize: none;
+        }
+
+        .preview-panel { background: #fff; overflow: hidden; color: #333; padding: 20px; }
+        #outputArea { 
+            background: #f4f4f9; 
+            height: 100%; 
+            border-radius: 8px; 
+            padding: 15px;
+            font-family: monospace;
+            overflow-y: auto;
+        }
+
+        .lab-footer {
+            background: var(--header-dark);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-check {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 50px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .mission-box {
+            background: #1e1e3f;
+            padding: 15px;
+            border-radius: 8px;
+            border-right: 4px solid var(--accent-pink);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<header class="lab-header">
+    <div style="font-weight: bold; color: var(--accent-cyan);">PhineX Logic Workshop</div>
+    <div style="color: var(--accent-pink);">Variables + Loops + Conditionals</div>
+</header>
+
+<div class="main-layout">
+    <aside class="instructions-panel">
+        <h2>تحدي الجرد الذكي 🛒</h2>
+        <p>مهمتك يا مبرمج هي بناء نظام يمر على قائمة أسعار ألعاب، ويحدد أيها "رخيص" وأيها "غالي" بناءً على ميزانية محددة.</p>
+        
+        <div class="mission-box">
+            <strong>المتطلبات:</strong>
+            <ol>
+                <li>عرف مصفوفة (Array) باسم <code>prices</code> تحتوي على 5 أرقام.</li>
+                <li>عرف متغير <code>budget</code> بقيمة 50.</li>
+                <li>استخدم <code>for loop</code> للمرور على الأسعار.</li>
+                <li>داخل اللوب، استخدم <code>if</code>:
+                    <ul>
+                        <li>لو السعر <= الميزانية، اطبع: "Buy this!"</li>
+                        <li>لو السعر > الميزانية، اطبع: "Too expensive!"</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        <p><small>استخدم <code>document.getElementById('outputArea').innerHTML += ...</code> للطباعة في المعاينة.</small></p>
+    </aside>
+
+    <section class="editor-container">
+        <textarea id="codeEditor" spellcheck="false" oninput="updateSystem()">
+// اكتب كودك هنا يا بطل
+        </textarea>
+    </section>
+
+    <section class="preview-panel">
+        <div id="outputArea">بانتظار تشغيل الكود...</div>
+    </section>
+</div>
+
+<footer class="lab-footer">
+    <button class="btn-check" onclick="validateWorkshop()">تحقق من النظام ✅</button>
+</footer>
+
+<script>
+    function updateSystem() {
+        const code = document.getElementById('codeEditor').value;
+        const output = document.getElementById('outputArea');
+        try {
+            // تنفيذ كود المستخدم بأمان في المعاينة
+            eval(code);
+        } catch (e) {
+            output.innerHTML = "<span style='color:red'>[Error]: " + e.message + "</span>";
+        }
+    }
+
+    function validateWorkshop() {
+        const code = document.getElementById('codeEditor').value;
+        
+        const hasArray = code.includes('prices') && code.includes('[');
+        const hasLoop = code.includes('for') && code.includes('prices.length');
+        const hasIf = code.includes('if') && code.includes('else');
+
+        if (hasArray && hasLoop && hasIf) {
+            alert("عبقري! لقد قمت بدمج المتغيرات مع الحلقات التكرارية والمنطق الشرطي بنجاح. أنت الآن مبرمج جافا سكريبت حقيقي! 🚀");
+            localStorage.setItem('lesson-js-loops-workshop', 'completed');
+            window.location.href = 'js-functions.html';
+        } else {
+            alert("تأكد من استخدام المصفوفة، وحلقة for، وشرط if/else بشكل صحيح.");
+        }
+    }
+
+    // التشغيل الأول
+    updateSystem();
+</script>
+
+</body>
+</html>

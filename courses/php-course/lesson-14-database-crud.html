@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX PHP | درس 14: قاعدة البيانات — CRUD</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.08);--void:#05070a;--surface:#09090f;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.18);--text:#e2e8f0;--muted:#64748b;--radius:14px;--accent:#22d3ee;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--neon);border-radius:3px;}
+.topbar{position:sticky;top:0;z-index:200;background:rgba(5,5,10,.85);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 20px;gap:14px;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.topbar-sep{color:var(--muted);}.topbar-title{font-size:13px;font-weight:600;}
+.topbar-right{margin-right:auto;display:flex;align-items:center;gap:10px;}
+.menu-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Cairo',sans-serif;transition:all .2s;}.menu-btn:hover{border-color:var(--neon);color:var(--neon);}
+.progress-pill{background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--neon);font-family:'JetBrains Mono',monospace;}
+.page-wrap{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:280px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;height:calc(100vh - 56px);position:sticky;top:56px;}.sidebar.open{transform:none!important;}
+.sidebar-header{padding:16px 18px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.lesson-link{display:flex;align-items:center;gap:10px;padding:10px 18px;text-decoration:none;color:var(--muted);transition:all .2s;border-right:3px solid transparent;font-size:13px;}.lesson-link:hover{background:rgba(255,255,255,.03);color:var(--text);}.lesson-link.active{color:var(--neon);background:var(--neon-dim);border-right-color:var(--neon);}.lesson-link.done{color:var(--text);}
+.ll-icon{font-size:16px;flex-shrink:0;}.ll-info{flex:1;min-width:0;}.ll-title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.ll-num{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}.ll-badge{flex-shrink:0;font-size:10px;padding:2px 7px;border-radius:100px;}.ll-badge.done{background:rgba(57,255,20,.12);color:var(--neon);border:1px solid rgba(57,255,20,.25);}.ll-badge.locked{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border);}
+.main{flex:1;overflow-y:auto;padding:0 0 80px;}
+.lesson-hero{padding:48px 60px 36px;border-bottom:1px solid var(--border);background:linear-gradient(to bottom,rgba(34,211,238,.03),transparent);}
+.lesson-num-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:#22d3ee;letter-spacing:.6px;margin-bottom:16px;}
+.lesson-title{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;line-height:1.1;}
+.lesson-sub{font-size:1rem;color:var(--muted);margin-bottom:20px;}
+.lesson-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.meta-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:5px 12px;}
+.content-area{padding:40px 60px;max-width:900px;}
+.section-block{margin-bottom:44px;}
+.section-block h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-block h2::before{content:'';display:block;width:4px;height:20px;background:var(--accent);border-radius:2px;flex-shrink:0;}
+.section-body{font-size:15px;line-height:1.85;}
+.section-body ul,.section-body ol{padding-right:20px;margin:10px 0;}.section-body li{margin-bottom:6px;}
+.section-body strong{font-weight:700;}.section-body em{color:var(--neon);font-style:normal;}
+.section-body code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.code-block{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,.06);}
+.code-header{background:#0a0d14;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);}
+.code-lang{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#22d3ee;letter-spacing:1px;}
+.code-dots{display:flex;gap:5px;}.cd{width:10px;height:10px;border-radius:50%;}.cd.r{background:#ff5f57;}.cd.y{background:#febc2e;}.cd.g{background:var(--neon);}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}.copy-btn:hover{border-color:var(--neon);color:var(--neon);}
+pre.code-pre{background:#080b10;padding:20px;margin:0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;direction:ltr;text-align:left;tab-size:4;}
+.code-output{background:rgba(0,0,0,.4);border-top:1px solid rgba(255,255,255,.05);padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c3e88d;direction:ltr;text-align:left;white-space:pre-wrap;}
+.output-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;}
+.kw{color:#c792ea;}.fn{color:#82aaff;}.str{color:#c3e88d;}.num{color:#f78c6c;}.cmt{color:#546e7a;font-style:italic;}.var{color:#eeffff;}.tag{color:#89ddff;}.sql-kw{color:#f59e0b;font-weight:bold;}
+.quiz-section{margin:0 60px 60px;max-width:900px;}
+.quiz-header{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius) var(--radius) 0 0;padding:20px 24px;display:flex;align-items:center;gap:12px;}
+.quiz-header h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;}
+.quiz-badge{background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--neon);}
+.quiz-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:0 24px 24px;}
+.question-block{padding:20px 0;border-bottom:1px solid var(--border);}.question-block:last-of-type{border-bottom:none;}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--neon);background:var(--neon-dim);padding:2px 8px;border-radius:5px;display:inline-block;margin-bottom:8px;}
+.q-text{font-size:15px;font-weight:600;margin-bottom:14px;line-height:1.6;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all .2s;font-size:14px;background:rgba(255,255,255,.02);}
+.option:hover{border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);}
+.option input[type=radio]{accent-color:var(--neon);width:16px;height:16px;flex-shrink:0;}
+.option.correct{border-color:var(--neon);background:rgba(57,255,20,.08);color:var(--neon);}
+.option.wrong{border-color:#ff5874;background:rgba(255,88,116,.08);color:#ff5874;}
+.quiz-footer{margin-top:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.btn-submit{background:var(--neon);color:#050508;padding:10px 28px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 0 16px rgba(57,255,20,.2);}
+.btn-submit:hover{box-shadow:0 0 28px rgba(57,255,20,.45);}
+.btn-retry{background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px 20px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.score-display{display:none;align-items:center;gap:10px;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:700;border:1px solid;}
+.score-display.pass{background:rgba(57,255,20,.08);border-color:var(--neon);color:var(--neon);}
+.score-display.fail{background:rgba(255,88,116,.08);border-color:#ff5874;color:#ff5874;}
+.lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 60px;border-top:1px solid var(--border);background:rgba(0,0,0,.15);gap:14px;flex-wrap:wrap;}
+.btn-nav{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(.disabled){border-color:var(--muted);color:var(--text);}
+.btn-next-lesson{background:var(--neon);color:#050508;border-color:var(--neon);box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-next-lesson:hover{box-shadow:0 0 24px rgba(57,255,20,.45);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card);border-radius:14px;padding:14px 24px;font-size:14px;opacity:0;transition:all .35s;z-index:999;min-width:240px;text-align:center;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}.toast.ok{border:1px solid var(--neon);color:var(--neon);}.toast.err{border:1px solid #ff5874;color:#ff5874;}
+.note-box{background:rgba(130,170,255,.06);border:1px solid rgba(130,170,255,.25);border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.8;}
+.note-box.warn{background:rgba(247,140,108,.06);border-color:rgba(247,140,108,.3);}
+.note-box.success{background:rgba(57,255,20,.06);border-color:rgba(57,255,20,.25);}
+.note-title{font-weight:700;margin-bottom:6px;font-size:13px;letter-spacing:.3px;display:block;}
+.note-box.warn .note-title{color:#f78c6c;}.note-box .note-title{color:#82aaff;}.note-box.success .note-title{color:var(--neon);}
+.crud-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;margin-left:6px;}
+.crud-c{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);}
+.crud-r{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+.crud-u{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+.crud-d{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
+@media(max-width:900px){.sidebar{position:fixed;top:56px;left:0;right:0;height:auto;max-height:60vh;z-index:150;transform:translateY(-110%);border:none;border-bottom:1px solid var(--border);}.sidebar.open{transform:translateY(0);}.lesson-hero,.content-area,.quiz-section,.lesson-nav{padding-left:20px;padding-right:20px;}.lesson-title{font-size:1.7rem;}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html" class="logo">PhineX</a><span class="topbar-sep">/</span>
+  <span class="topbar-title">دورة PHP الشاملة</span>
+  <div class="topbar-right">
+    <span class="progress-pill" id="progressPill">0/17 مكتملة</span>
+    <button class="menu-btn" id="menuBtn">☰ الدروس</button>
+  </div>
+</header>
+<div class="page-wrap">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">دورة PHP الشاملة — 17 درساً</div>
+<a href="lesson-00-setup.html" class="lesson-link" data-lid="setup"><span class="ll-icon">🔧</span><span class="ll-info"><span class="ll-title">إعداد بيئة العمل</span><span class="ll-num">الدرس 00</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-01-intro.html" class="lesson-link" data-lid="intro"><span class="ll-icon">🐘</span><span class="ll-info"><span class="ll-title">مقدمة إلى PHP</span><span class="ll-num">الدرس 01</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-02-variables.html" class="lesson-link" data-lid="variables"><span class="ll-icon">📦</span><span class="ll-info"><span class="ll-title">المتغيرات وأنواع البيانات</span><span class="ll-num">الدرس 02</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-03-operators.html" class="lesson-link" data-lid="operators"><span class="ll-icon">➗</span><span class="ll-info"><span class="ll-title">العمليات والمشغلات</span><span class="ll-num">الدرس 03</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-04-conditionals.html" class="lesson-link" data-lid="conditionals"><span class="ll-icon">🔀</span><span class="ll-info"><span class="ll-title">الجمل الشرطية</span><span class="ll-num">الدرس 04</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-05-loops.html" class="lesson-link" data-lid="loops"><span class="ll-icon">🔁</span><span class="ll-info"><span class="ll-title">الحلقات التكرارية</span><span class="ll-num">الدرس 05</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-06-functions.html" class="lesson-link" data-lid="functions"><span class="ll-icon">⚙️</span><span class="ll-info"><span class="ll-title">الدوال (Functions)</span><span class="ll-num">الدرس 06</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-07-arrays.html" class="lesson-link" data-lid="arrays"><span class="ll-icon">📚</span><span class="ll-info"><span class="ll-title">المصفوفات (Arrays)</span><span class="ll-num">الدرس 07</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-08-strings.html" class="lesson-link" data-lid="strings"><span class="ll-icon">✍️</span><span class="ll-info"><span class="ll-title">السلاسل النصية (Strings)</span><span class="ll-num">الدرس 08</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-09-oop.html" class="lesson-link" data-lid="oop"><span class="ll-icon">🏗️</span><span class="ll-info"><span class="ll-title">البرمجة كائنية التوجه</span><span class="ll-num">الدرس 09</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-10-forms.html" class="lesson-link" data-lid="forms"><span class="ll-icon">📝</span><span class="ll-info"><span class="ll-title">النماذج ومدخلات المستخدم</span><span class="ll-num">الدرس 10</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-11-superglobals.html" class="lesson-link" data-lid="superglobals"><span class="ll-icon">🌐</span><span class="ll-info"><span class="ll-title">المتغيرات العامة Superglobals</span><span class="ll-num">الدرس 11</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-12-weather.html" class="lesson-link" data-lid="weather"><span class="ll-icon">🌤️</span><span class="ll-info"><span class="ll-title">مشروع: تطبيق الطقس</span><span class="ll-num">الدرس 12</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-13-database-intro.html" class="lesson-link" data-lid="db-intro"><span class="ll-icon">🗄️</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — المقدمة</span><span class="ll-num">الدرس 13</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-14-database-crud.html" class="lesson-link active" data-lid="db-crud"><span class="ll-icon">💾</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — CRUD</span><span class="ll-num">الدرس 14</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-15-database-advanced.html" class="lesson-link" data-lid="db-advanced"><span class="ll-icon">⚡</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — تحسين وأمان</span><span class="ll-num">الدرس 15</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-16-final.html" class="lesson-link" data-lid="final"><span class="ll-icon">🏆</span><span class="ll-info"><span class="ll-title">مراجعة شاملة واختبار نهائي</span><span class="ll-num">الدرس 16</span></span><span class="ll-badge locked">○</span></a>
+</aside>
+<main class="main">
+<div class="lesson-hero">
+  <div class="lesson-num-badge">درس 14 من 17</div>
+  <h1 class="lesson-title">قاعدة البيانات — CRUD</h1>
+  <p class="lesson-sub">Create · Read · Update · Delete — تطبيق شامل مع PDO وتحقق كامل</p>
+  <div class="lesson-meta">
+    <span class="meta-tag">🕐 65 دقيقة</span>
+    <span class="meta-tag">💾 CRUD كامل</span>
+    <span class="meta-tag">📝 6 أسئلة</span>
+  </div>
+</div>
+<div class="content-area">
+
+<div class="section-block">
+  <h2>ما هو CRUD؟</h2>
+  <div class="section-body">
+CRUD هو اختصار للعمليات الأربع الأساسية على قاعدة البيانات:
+<br><br>
+<span class="crud-badge crud-c">C — Create</span> إضافة بيانات جديدة (INSERT)<br>
+<span class="crud-badge crud-r">R — Read</span> قراءة وعرض البيانات (SELECT)<br>
+<span class="crud-badge crud-u">U — Update</span> تعديل بيانات موجودة (UPDATE)<br>
+<span class="crud-badge crud-d">D — Delete</span> حذف بيانات (DELETE)
+<br><br>
+كل تطبيق ويب — مهما كان — يُنجز هذه العمليات الأربع بأشكال مختلفة.
+  </div>
+</div>
+
+<div class="section-block">
+  <h2><span class="crud-badge crud-c">C</span> Create — إضافة بيانات</h2>
+  <div class="section-body">سنبني نظام إضافة منتج كامل مع Validation:</div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — add-product.php</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+require_once 'db.php';
+session_start();
+
+$errors  = [];
+$success = '';
+
+// ─── معالجة الـ form عند الإرسال ─────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // 1. استقبال وتنظيف المدخلات
+    $name        = trim($_POST['name']        ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $price       = $_POST['price']            ?? '';
+    $stock       = $_POST['stock']            ?? '';
+    $category    = trim($_POST['category']    ?? '');
+
+    // 2. التحقق (Validation)
+    if (empty($name))             $errors[] = 'اسم المنتج مطلوب';
+    if (strlen($name) > 200)      $errors[] = 'اسم المنتج طويل جداً (200 حرف)';
+    if (!is_numeric($price) || $price &lt; 0) $errors[] = 'السعر يجب أن يكون رقماً موجباً';
+    if (!is_numeric($stock) || $stock &lt; 0) $errors[] = 'الكمية يجب أن تكون رقماً موجباً';
+    if (empty($category))         $errors[] = 'الفئة مطلوبة';
+
+    // 3. التحقق من عدم تكرار الاسم
+    if (empty($errors)) {
+        $check = $pdo-&gt;prepare("SELECT id FROM products WHERE name = ? LIMIT 1");
+        $check-&gt;execute([$name]);
+        if ($check-&gt;fetch()) {
+            $errors[] = 'يوجد منتج بهذا الاسم بالفعل';
+        }
+    }
+
+    // 4. الإضافة إلى قاعدة البيانات
+    if (empty($errors)) {
+        try {
+            $stmt = $pdo-&gt;prepare("
+                INSERT INTO products (name, description, price, stock, category)
+                VALUES (:name, :description, :price, :stock, :category)
+            ");
+            $stmt-&gt;execute([
+                ':name'        =&gt; $name,
+                ':description' =&gt; $description ?: null,
+                ':price'       =&gt; (float) $price,
+                ':stock'       =&gt; (int) $stock,
+                ':category'    =&gt; $category,
+            ]);
+
+            $new_id  = $pdo-&gt;lastInsertId();
+            $success = "تم إضافة المنتج بنجاح! (المعرف: $new_id)";
+
+            // تفريغ المدخلات بعد النجاح
+            $name = $description = $price = $stock = $category = '';
+
+        } catch (PDOException $e) {
+            $errors[] = 'خطأ في قاعدة البيانات: ' . $e-&gt;getMessage();
+        }
+    }
+}
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ar" dir="rtl"&gt;
+&lt;body&gt;
+    &lt;h2&gt;إضافة منتج جديد&lt;/h2&gt;
+
+    &lt;?php foreach ($errors as $err): ?&gt;
+        &lt;div style="color:red"&gt;❌ &lt;?= htmlspecialchars($err) ?&gt;&lt;/div&gt;
+    &lt;?php endforeach; ?&gt;
+
+    &lt;?php if ($success): ?&gt;
+        &lt;div style="color:green"&gt;✅ &lt;?= htmlspecialchars($success) ?&gt;&lt;/div&gt;
+    &lt;?php endif; ?&gt;
+
+    &lt;form method="POST"&gt;
+        &lt;input type="text"   name="name"        placeholder="اسم المنتج" required
+               value="&lt;?= htmlspecialchars($name ?? '') ?&gt;"&gt;
+        &lt;textarea name="description" placeholder="الوصف"&gt;&lt;?= htmlspecialchars($description ?? '') ?&gt;&lt;/textarea&gt;
+        &lt;input type="number" name="price"       placeholder="السعر"  step="0.01" min="0" required&gt;
+        &lt;input type="number" name="stock"       placeholder="الكمية" min="0"     required&gt;
+        &lt;select name="category" required&gt;
+            &lt;option value=""&gt;اختر الفئة&lt;/option&gt;
+            &lt;option value="كتب"&gt;كتب&lt;/option&gt;
+            &lt;option value="كورسات"&gt;كورسات&lt;/option&gt;
+            &lt;option value="ملابس"&gt;ملابس&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;button type="submit"&gt;إضافة المنتج&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;&lt;/html&gt;</code></pre>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2><span class="crud-badge crud-r">R</span> Read — قراءة وعرض البيانات مع Pagination</h2>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — products-list.php (مع ترقيم الصفحات)</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+require_once 'db.php';
+
+// ─── Pagination ───────────────────────────────────────────
+$per_page    = 10;
+$page        = max(1, (int)($_GET['page'] ?? 1));
+$offset      = ($page - 1) * $per_page;
+
+// ─── بحث وفلترة ──────────────────────────────────────────
+$search   = trim($_GET['search']   ?? '');
+$category = trim($_GET['category'] ?? '');
+$sort     = $_GET['sort'] ?? 'created_at';
+$order    = $_GET['order'] ?? 'DESC';
+
+// تحقق من sort المسموح بها (لمنع SQL Injection)
+$allowed_sorts  = ['name', 'price', 'stock', 'created_at'];
+$allowed_orders = ['ASC', 'DESC'];
+if (!in_array($sort, $allowed_sorts))   $sort  = 'created_at';
+if (!in_array($order, $allowed_orders)) $order = 'DESC';
+
+// ─── بناء الاستعلام ────────────────────────────────────────
+$where_parts = [];
+$params      = [];
+
+if ($search) {
+    $where_parts[] = "(name LIKE :search OR description LIKE :search2)";
+    $params[':search']  = "%$search%";
+    $params[':search2'] = "%$search%";
+}
+if ($category) {
+    $where_parts[] = "category = :category";
+    $params[':category'] = $category;
+}
+
+$where_sql = $where_parts ? "WHERE " . implode(" AND ", $where_parts) : "";
+
+// ─── عد الكل لـ Pagination ────────────────────────────────
+$count_sql  = "SELECT COUNT(*) FROM products $where_sql";
+$count_stmt = $pdo-&gt;prepare($count_sql);
+$count_stmt-&gt;execute($params);
+$total_rows = $count_stmt-&gt;fetchColumn();
+$total_pages = ceil($total_rows / $per_page);
+
+// ─── الاستعلام الرئيسي ────────────────────────────────────
+$sql = "SELECT * FROM products $where_sql
+        ORDER BY $sort $order
+        LIMIT :limit OFFSET :offset";
+
+$stmt = $pdo-&gt;prepare($sql);
+foreach ($params as $key =&gt; $val) {
+    $stmt-&gt;bindValue($key, $val);
+}
+$stmt-&gt;bindValue(':limit',  $per_page, PDO::PARAM_INT);
+$stmt-&gt;bindValue(':offset', $offset,   PDO::PARAM_INT);
+$stmt-&gt;execute();
+$products = $stmt-&gt;fetchAll();
+
+// ─── عرض النتائج ──────────────────────────────────────────
+echo "&lt;p&gt;إجمالي: $total_rows منتج | الصفحة $page من $total_pages&lt;/p&gt;";
+
+echo "&lt;table border='1'&gt;";
+echo "&lt;tr&gt;&lt;th&gt;المعرف&lt;/th&gt;&lt;th&gt;الاسم&lt;/th&gt;&lt;th&gt;السعر&lt;/th&gt;&lt;th&gt;المخزون&lt;/th&gt;&lt;th&gt;الفئة&lt;/th&gt;&lt;th&gt;إجراءات&lt;/th&gt;&lt;/tr&gt;";
+
+foreach ($products as $p) {
+    $name = htmlspecialchars($p['name']);
+    echo "&lt;tr&gt;";
+    echo "&lt;td&gt;" . $p['id'] . "&lt;/td&gt;";
+    echo "&lt;td&gt;$name&lt;/td&gt;";
+    echo "&lt;td&gt;" . number_format($p['price'], 2) . " ر.س&lt;/td&gt;";
+    echo "&lt;td&gt;" . $p['stock'] . "&lt;/td&gt;";
+    echo "&lt;td&gt;" . htmlspecialchars($p['category']) . "&lt;/td&gt;";
+    echo "&lt;td&gt;
+        &lt;a href='edit-product.php?id=" . $p['id'] . "'&gt;تعديل&lt;/a&gt; |
+        &lt;a href='delete-product.php?id=" . $p['id'] . "' onclick='return confirm(\"حذف؟\")'&gt;حذف&lt;/a&gt;
+    &lt;/td&gt;";
+    echo "&lt;/tr&gt;";
+}
+echo "&lt;/table&gt;";
+
+// ─── روابط التنقل بين الصفحات ─────────────────────────────
+for ($i = 1; $i &lt;= $total_pages; $i++) {
+    $active = ($i === $page) ? "font-weight:bold" : "";
+    echo "&lt;a href='?page=$i&amp;search=" . urlencode($search) . "' style='$active'&gt;$i&lt;/a&gt; ";
+}
+?&gt;</code></pre>
+    <div class="code-output"><div class="output-label">الناتج</div>إجمالي: 3 منتج | الصفحة 1 من 1
+
+| المعرف | الاسم              | السعر     | المخزون | الفئة   |
+|--------|-------------------|-----------|---------|---------|
+| 1      | كتاب PHP المتقدم  | 89.99 ر.س | 50      | كتب     |
+| 2      | كورس تصميم الويب  | 299.00 ر.س| 999     | كورسات  |
+| 3      | قميص المبرمجين    | 149.50 ر.س| 30      | ملابس   |</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2><span class="crud-badge crud-u">U</span> Update — تعديل البيانات</h2>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — edit-product.php</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+require_once 'db.php';
+
+// ─── التحقق من الـ ID ─────────────────────────────────────
+$id = (int)($_GET['id'] ?? 0);
+if ($id &lt;= 0) {
+    die("معرف غير صحيح");
+}
+
+// ─── جلب بيانات المنتج الحالية ────────────────────────────
+$stmt = $pdo-&gt;prepare("SELECT * FROM products WHERE id = ? LIMIT 1");
+$stmt-&gt;execute([$id]);
+$product = $stmt-&gt;fetch();
+
+if (!$product) {
+    die("المنتج غير موجود");
+}
+
+$errors  = [];
+$success = '';
+
+// ─── معالجة الـ form ──────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name        = trim($_POST['name']        ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $price       = $_POST['price']            ?? 0;
+    $stock       = $_POST['stock']            ?? 0;
+    $category    = trim($_POST['category']    ?? '');
+
+    // Validation
+    if (empty($name))        $errors[] = 'الاسم مطلوب';
+    if ($price &lt; 0)          $errors[] = 'السعر لا يمكن أن يكون سالباً';
+    if ($stock &lt; 0)          $errors[] = 'المخزون لا يمكن أن يكون سالباً';
+
+    // تحقق من عدم تكرار الاسم (مع استثناء المنتج الحالي)
+    if (empty($errors)) {
+        $check = $pdo-&gt;prepare("SELECT id FROM products WHERE name = ? AND id != ? LIMIT 1");
+        $check-&gt;execute([$name, $id]);
+        if ($check-&gt;fetch()) {
+            $errors[] = 'يوجد منتج آخر بهذا الاسم';
+        }
+    }
+
+    if (empty($errors)) {
+        $stmt = $pdo-&gt;prepare("
+            UPDATE products
+            SET name = :name,
+                description = :description,
+                price = :price,
+                stock = :stock,
+                category = :category
+            WHERE id = :id
+        ");
+        $stmt-&gt;execute([
+            ':name'        =&gt; $name,
+            ':description' =&gt; $description ?: null,
+            ':price'       =&gt; (float) $price,
+            ':stock'       =&gt; (int) $stock,
+            ':category'    =&gt; $category,
+            ':id'          =&gt; $id,
+        ]);
+
+        // تحقق هل تم التعديل فعلاً
+        if ($stmt-&gt;rowCount() &gt; 0) {
+            $success = 'تم تحديث المنتج بنجاح!';
+        } else {
+            $success = 'لم يتغير شيء (البيانات مطابقة للموجود)';
+        }
+
+        // إعادة جلب البيانات المحدّثة
+        $stmt2 = $pdo-&gt;prepare("SELECT * FROM products WHERE id = ?");
+        $stmt2-&gt;execute([$id]);
+        $product = $stmt2-&gt;fetch();
+    }
+}
+?&gt;
+&lt;!-- عرض الـ form مع القيم الحالية --&gt;
+&lt;h2&gt;تعديل: &lt;?= htmlspecialchars($product['name']) ?&gt;&lt;/h2&gt;
+
+&lt;form method="POST"&gt;
+    &lt;input type="text" name="name"
+           value="&lt;?= htmlspecialchars($product['name']) ?&gt;" required&gt;
+    &lt;input type="number" name="price" step="0.01"
+           value="&lt;?= $product['price'] ?&gt;" required&gt;
+    &lt;input type="number" name="stock"
+           value="&lt;?= $product['stock'] ?&gt;" required&gt;
+    &lt;textarea name="description"&gt;&lt;?= htmlspecialchars($product['description'] ?? '') ?&gt;&lt;/textarea&gt;
+    &lt;button type="submit"&gt;حفظ التعديلات&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2><span class="crud-badge crud-d">D</span> Delete — حذف البيانات بأمان</h2>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — delete-product.php (مع CSRF Protection)</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+require_once 'db.php';
+session_start();
+
+// ─── يجب أن يكون POST وليس GET للحذف ──────────────────────
+// (GET يمكن تزويره بسهولة - رابط في صورة في بريد إلكتروني مثلاً)
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    die("Method Not Allowed — استخدم POST للحذف");
+}
+
+// ─── CSRF Token Protection ─────────────────────────────────
+$token = $_POST['csrf_token'] ?? '';
+if (!hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
+    http_response_code(403);
+    die("CSRF Token غير صحيح");
+}
+
+$id = (int)($_POST['id'] ?? 0);
+if ($id &lt;= 0) die("معرف غير صحيح");
+
+// ─── تحقق من وجود المنتج أولاً ────────────────────────────
+$check = $pdo-&gt;prepare("SELECT id, name FROM products WHERE id = ?");
+$check-&gt;execute([$id]);
+$product = $check-&gt;fetch();
+
+if (!$product) die("المنتج غير موجود");
+
+// ─── الحذف الفعلي ─────────────────────────────────────────
+try {
+    $pdo-&gt;beginTransaction();
+
+    // حذف الصور المرتبطة إن وجدت
+    if (!empty($product['image']) &amp;&amp; file_exists("uploads/" . $product['image'])) {
+        unlink("uploads/" . $product['image']);
+    }
+
+    // حذف من DB
+    $stmt = $pdo-&gt;prepare("DELETE FROM products WHERE id = ?");
+    $stmt-&gt;execute([$id]);
+
+    $pdo-&gt;commit();
+
+    $_SESSION['flash'] = "تم حذف المنتج «" . $product['name'] . "» بنجاح";
+    header("Location: products-list.php");
+    exit;
+
+} catch (PDOException $e) {
+    $pdo-&gt;rollBack();
+    die("خطأ في الحذف: " . $e-&gt;getMessage());
+}
+?&gt;
+
+&lt;?php
+// ─── في صفحة القائمة — إنشاء CSRF Token ──────────────────
+session_start();
+$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+?&gt;
+&lt;!-- زر الحذف الصحيح --&gt;
+&lt;form method="POST" action="delete-product.php"
+      onsubmit="return confirm('هل أنت متأكد من الحذف؟')"&gt;
+    &lt;input type="hidden" name="id"         value="&lt;?= $product['id'] ?&gt;"&gt;
+    &lt;input type="hidden" name="csrf_token" value="&lt;?= $_SESSION['csrf_token'] ?&gt;"&gt;
+    &lt;button type="submit"&gt;🗑️ حذف&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+  </div>
+  <div class="note-box warn">
+    <span class="note-title">⚠️ لماذا POST وليس GET للحذف؟</span>
+    رابط GET يمكن تضمينه في صورة في بريد إلكتروني أو صفحة خارجية. لو فتح المستخدم البريد وجُمِّل المتصفح الرابط تلقائياً، ستُحذف البيانات! POST يتطلب إرسال form متعمّد.
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>نظام CRUD كامل — Class Database Helper</h2>
+  <div class="section-body">لتجنب تكرار الكود، نبني Class مساعدة:</div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — Database Helper Class</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+class DB {
+    private static ?PDO $instance = null;
+
+    // Singleton — اتصال واحد فقط
+    public static function connect(): PDO {
+        if (self::$instance === null) {
+            self::$instance = new PDO(
+                "mysql:host=localhost;dbname=php_course_db;charset=utf8mb4",
+                'root', '',
+                [
+                    PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES   =&gt; false,
+                ]
+            );
+        }
+        return self::$instance;
+    }
+
+    // SELECT — قراءة صفوف متعددة
+    public static function select(string $sql, array $params = []): array {
+        $stmt = self::connect()-&gt;prepare($sql);
+        $stmt-&gt;execute($params);
+        return $stmt-&gt;fetchAll();
+    }
+
+    // SELECT — صف واحد
+    public static function find(string $sql, array $params = []): ?array {
+        $stmt = self::connect()-&gt;prepare($sql);
+        $stmt-&gt;execute($params);
+        return $stmt-&gt;fetch() ?: null;
+    }
+
+    // SELECT بـ ID مباشرة
+    public static function findById(string $table, int $id): ?array {
+        return self::find("SELECT * FROM $table WHERE id = ?", [$id]);
+    }
+
+    // INSERT
+    public static function insert(string $table, array $data): int {
+        $cols    = implode(', ', array_keys($data));
+        $holders = implode(', ', array_fill(0, count($data), '?'));
+        $sql     = "INSERT INTO $table ($cols) VALUES ($holders)";
+        self::connect()-&gt;prepare($sql)-&gt;execute(array_values($data));
+        return (int) self::connect()-&gt;lastInsertId();
+    }
+
+    // UPDATE
+    public static function update(string $table, array $data, string $where, array $where_params = []): int {
+        $sets = implode(', ', array_map(fn($col) =&gt; "$col = ?", array_keys($data)));
+        $sql  = "UPDATE $table SET $sets WHERE $where";
+        $stmt = self::connect()-&gt;prepare($sql);
+        $stmt-&gt;execute([...array_values($data), ...$where_params]);
+        return $stmt-&gt;rowCount();
+    }
+
+    // DELETE
+    public static function delete(string $table, string $where, array $params = []): int {
+        $stmt = self::connect()-&gt;prepare("DELETE FROM $table WHERE $where");
+        $stmt-&gt;execute($params);
+        return $stmt-&gt;rowCount();
+    }
+
+    // COUNT
+    public static function count(string $table, string $where = '1', array $params = []): int {
+        return (int) self::select("SELECT COUNT(*) as cnt FROM $table WHERE $where", $params)[0]['cnt'] ?? 0;
+    }
+}
+
+// ─── استخدام الـ Class ────────────────────────────────────
+// إضافة منتج
+$new_id = DB::insert('products', [
+    'name'     =&gt; 'منتج جديد',
+    'price'    =&gt; 99.99,
+    'stock'    =&gt; 10,
+    'category' =&gt; 'كتب',
+]);
+echo "أُضيف بمعرف: $new_id";
+
+// قراءة منتج بـ ID
+$product = DB::findById('products', 1);
+echo $product['name'];
+
+// قراءة كل منتجات فئة
+$books = DB::select("SELECT * FROM products WHERE category = ?", ['كتب']);
+
+// تعديل سعر
+$affected = DB::update('products', ['price' =&gt; 79.99], 'id = ?', [1]);
+echo "تم تعديل $affected سجل";
+
+// حذف
+$deleted = DB::delete('products', 'id = ?', [5]);
+echo "تم حذف $deleted سجل";
+
+// عد
+$total = DB::count('products', 'category = ?', ['كتب']);
+echo "عدد الكتب: $total";
+?&gt;</code></pre>
+    <div class="code-output"><div class="output-label">الناتج</div>أُضيف بمعرف: 4
+كتاب PHP المتقدم
+تم تعديل 1 سجل
+تم حذف 1 سجل
+عدد الكتب: 1</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>Transactions — ضمان اتساق البيانات</h2>
+  <div class="section-body">
+الـ Transaction يضمن أن مجموعة عمليات تتم <strong>كلها أو لا شيء</strong>. مثلاً: عند شراء منتج، يجب خصم من المخزون وإضافة للطلبات معاً.
+  </div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — Transactions</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+require_once 'db.php';
+
+function purchaseProduct(PDO $pdo, int $user_id, int $product_id, int $quantity): array {
+    try {
+        $pdo-&gt;beginTransaction(); // بدء الـ Transaction
+
+        // 1. جلب المنتج مع LOCK (يمنع التعديل المتزامن)
+        $product = $pdo-&gt;prepare("SELECT * FROM products WHERE id = ? FOR UPDATE");
+        $product-&gt;execute([$product_id]);
+        $prod = $product-&gt;fetch();
+
+        if (!$prod) throw new Exception("المنتج غير موجود");
+
+        // 2. التحقق من توافر المخزون
+        if ($prod['stock'] &lt; $quantity) {
+            throw new Exception("المخزون غير كافٍ. المتاح: " . $prod['stock']);
+        }
+
+        // 3. خصم من المخزون
+        $update = $pdo-&gt;prepare("UPDATE products SET stock = stock - ? WHERE id = ?");
+        $update-&gt;execute([$quantity, $product_id]);
+
+        // 4. إنشاء الطلب
+        $total    = $prod['price'] * $quantity;
+        $order    = $pdo-&gt;prepare("INSERT INTO orders (user_id, total, status) VALUES (?, ?, 'pending')");
+        $order-&gt;execute([$user_id, $total]);
+        $order_id = $pdo-&gt;lastInsertId();
+
+        $pdo-&gt;commit(); // نجح كل شيء — احفظ!
+
+        return [
+            'success'  =&gt; true,
+            'order_id' =&gt; $order_id,
+            'total'    =&gt; $total,
+            'message'  =&gt; "تم الشراء بنجاح! رقم الطلب: $order_id",
+        ];
+
+    } catch (Exception $e) {
+        $pdo-&gt;rollBack(); // فشل شيء — تراجع عن كل شيء!
+        return [
+            'success' =&gt; false,
+            'message' =&gt; $e-&gt;getMessage(),
+        ];
+    }
+}
+
+// استخدام
+$result = purchaseProduct($pdo, user_id: 1, product_id: 2, quantity: 3);
+
+if ($result['success']) {
+    echo "✅ " . $result['message'];
+    echo " | الإجمالي: " . number_format($result['total'], 2) . " ر.س";
+} else {
+    echo "❌ " . $result['message'];
+}
+?&gt;</code></pre>
+    <div class="code-output"><div class="output-label">الناتج (نجاح)</div>✅ تم الشراء بنجاح! رقم الطلب: 1 | الإجمالي: 897.00 ر.س</div>
+  </div>
+</div>
+
+</div>
+
+<div class="quiz-section">
+  <div class="quiz-header"><h3>🧪 اختبر فهمك — CRUD</h3><span class="quiz-badge">6 أسئلة</span></div>
+  <div class="quiz-body">
+    <div class="question-block"><div class="q-num">سؤال 1</div>
+    <div class="q-text">ما الاختصار الصحيح لـ CRUD؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q1" data-correct="false"> أ) Copy, Remove, Update, Delete</label>
+      <label class="option"><input type="radio" name="q1" data-correct="true"> ب) Create, Read, Update, Delete</label>
+      <label class="option"><input type="radio" name="q1" data-correct="false"> ج) Connect, Retrieve, Upload, Drop</label>
+      <label class="option"><input type="radio" name="q1" data-correct="false"> د) Create, Retrieve, Undo, Destroy</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 2</div>
+    <div class="q-text">ما الدالة التي تُعيد عدد الصفوف المتأثرة بعد UPDATE أو DELETE؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q2" data-correct="false"> أ) $stmt->count()</label>
+      <label class="option"><input type="radio" name="q2" data-correct="true"> ب) $stmt->rowCount()</label>
+      <label class="option"><input type="radio" name="q2" data-correct="false"> ج) $pdo->affected()</label>
+      <label class="option"><input type="radio" name="q2" data-correct="false"> د) $stmt->getRows()</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 3</div>
+    <div class="q-text">لماذا يجب استخدام POST وليس GET لحذف البيانات؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q3" data-correct="false"> أ) لأن POST أسرع</label>
+      <label class="option"><input type="radio" name="q3" data-correct="true"> ب) لأن رابط GET يمكن تضمينه في صورة أو رابط خارجي وتنفيذه تلقائياً</label>
+      <label class="option"><input type="radio" name="q3" data-correct="false"> ج) لأن DELETE لا تعمل مع GET في PHP</label>
+      <label class="option"><input type="radio" name="q3" data-correct="false"> د) لا فرق، الاثنان آمنان</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 4</div>
+    <div class="q-text">ما فائدة beginTransaction() و commit() و rollBack() في PDO؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q4" data-correct="false"> أ) لتسريع الاستعلامات</label>
+      <label class="option"><input type="radio" name="q4" data-correct="true"> ب) لضمان أن مجموعة عمليات تتم كلها أو لا شيء (Atomicity)</label>
+      <label class="option"><input type="radio" name="q4" data-correct="false"> ج) لتشفير البيانات</label>
+      <label class="option"><input type="radio" name="q4" data-correct="false"> د) لإنشاء نسخة احتياطية</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 5</div>
+    <div class="q-text">ما الكود الصحيح لحساب عدد الصفحات في Pagination؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q5" data-correct="false"> أ) $pages = $total / $per_page;</label>
+      <label class="option"><input type="radio" name="q5" data-correct="true"> ب) $pages = ceil($total / $per_page);</label>
+      <label class="option"><input type="radio" name="q5" data-correct="false"> ج) $pages = floor($total / $per_page);</label>
+      <label class="option"><input type="radio" name="q5" data-correct="false"> د) $pages = round($total / $per_page);</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 6</div>
+    <div class="q-text">ما هو CSRF وكيف نحميه؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q6" data-correct="false"> أ) هجوم SQL، نحميه بـ Prepared Statements</label>
+      <label class="option"><input type="radio" name="q6" data-correct="true"> ب) هجوم تزوير طلب بين المواقع، نحميه بـ Token سري في الـ form يُتحقق منه عند الإرسال</label>
+      <label class="option"><input type="radio" name="q6" data-correct="false"> ج) هجوم XSS، نحميه بـ htmlspecialchars</label>
+      <label class="option"><input type="radio" name="q6" data-correct="false"> د) هجوم DDoS، نحميه بـ firewall</label>
+    </div></div>
+
+    <div class="quiz-footer">
+      <button class="btn-submit" onclick="submitQuiz()">تحقق من الإجابات</button>
+      <button class="btn-retry" onclick="retryQuiz()">إعادة</button>
+      <div class="score-display" id="scoreDisplay"></div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <a href="lesson-13-database-intro.html" class="btn-nav">◀ مقدمة DB</a>
+  <a href="index.html" class="btn-nav" style="opacity:.7">🏠 الفهرس</a>
+  <a href="lesson-15-database-advanced.html" class="btn-nav btn-next-lesson locked" id="nextLessonBtn" style="display:none">تحسين وأمان DB ▶</a>
+</div>
+</main></div>
+<div class="toast" id="toast"></div>
+<script>
+const LESSON_ID='db-crud';
+function isCompleted(id){return localStorage.getItem('lesson-'+id)==='completed';}
+function markCompleted(id){localStorage.setItem('lesson-'+id,'completed');}
+function showNextButton(){const nb=document.getElementById('nextLessonBtn');if(nb){nb.style.display='inline-flex';nb.classList.remove('locked');}}
+function updateSidebar(){document.querySelectorAll('.lesson-link[data-lid]').forEach(a=>{const lid=a.getAttribute('data-lid'),badge=a.querySelector('.ll-badge');if(isCompleted(lid)){a.classList.add('done');if(badge){badge.textContent='✓';badge.className='ll-badge done';}}});}
+function updateProgressPill(){const all=document.querySelectorAll('.lesson-link[data-lid]');const done=[...all].filter(a=>isCompleted(a.getAttribute('data-lid'))).length;const pill=document.getElementById('progressPill');if(pill)pill.textContent=done+'/'+all.length+' مكتملة';}
+function highlight(code){let h=code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');h=h.replace(/(\/\/[^\n]*)/g,'<span class="cmt">$1</span>');h=h.replace(/(\/\*[\s\S]*?\*\/)/g,'<span class="cmt">$1</span>');h=h.replace(/(&lt;\?php|&lt;\?=|\?&gt;)/g,'<span class="tag">$1</span>');h=h.replace(/"([^"<]*)"/g,'<span class="str">"$1"</span>');h=h.replace(/'([^'<]*)'/g,"<span class='str'>'$1'</span>");const sqlkws='SELECT|FROM|WHERE|INSERT|INTO|UPDATE|SET|DELETE|BEGIN|COMMIT|ROLLBACK|LOCK|FOR';h=h.replace(new RegExp('\\b('+sqlkws+')\\b','g'),'<span class="sql-kw">$1</span>');const kws='echo|if|else|elseif|foreach|return|function|class|new|static|private|public|try|catch|throw|die|match|null|true|false|require_once|empty|isset|implode|array_keys|array_map|array_fill|array_values|in_array|fn';h=h.replace(new RegExp('\\b('+kws+')\\b','g'),'<span class="kw">$1</span>');h=h.replace(/(\$[a-zA-Z_]\w*)/g,'<span class="var">$1</span>');h=h.replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');const fns='require_once|error_log|sprintf|password_hash|htmlspecialchars|count|json_encode|number_format|fetchAll|fetch|fetchColumn|execute|prepare|query|lastInsertId|rowCount|bindValue|beginTransaction|commit|rollBack|ceil|floor|max|trim|empty|isset|unlink|file_exists|bin2hex|random_bytes|hash_equals|http_response_code|implode|urlencode|is_numeric|header|ob_start|ob_get_clean';h=h.replace(new RegExp('\\b('+fns+')(?=\\()','g'),'<span class="fn">$1</span>');return h;}
+function submitQuiz(){const questions=document.querySelectorAll('.question-block');let correct=0,answered=0;questions.forEach(q=>{const sel=q.querySelector('input[type=radio]:checked');if(!sel)return;answered++;const isCorrect=sel.dataset.correct==='true';q.querySelectorAll('.option').forEach(opt=>{opt.querySelector('input').disabled=true;if(opt.querySelector('input').dataset.correct==='true')opt.classList.add('correct');});if(isCorrect){correct++;sel.closest('.option').classList.add('correct');}else{sel.closest('.option').classList.add('wrong');}});if(answered<questions.length){showToast('أجب على كل الأسئلة!','err');return;}const scoreEl=document.getElementById('scoreDisplay');const pct=Math.round(correct/questions.length*100);scoreEl.style.display='flex';if(pct>=60){scoreEl.className='score-display pass';scoreEl.textContent='🎉 ممتاز! '+correct+'/'+questions.length+' صحيح ('+pct+'%)';markCompleted(LESSON_ID);updateSidebar();updateProgressPill();showNextButton();showToast('الدرس مكتمل ✓','ok');}else{scoreEl.className='score-display fail';scoreEl.textContent='💪 '+correct+'/'+questions.length+' — راجع وحاول مجدداً';}}
+function retryQuiz(){document.querySelectorAll('.option').forEach(o=>{o.classList.remove('correct','wrong');o.querySelector('input').disabled=false;o.querySelector('input').checked=false;});document.getElementById('scoreDisplay').style.display='none';}
+function showToast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),4000);}
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('pre.code-pre code').forEach(el=>{el.innerHTML=highlight(el.textContent);});document.querySelectorAll('.copy-btn').forEach(btn=>{btn.addEventListener('click',()=>{const code=btn.closest('.code-block').querySelector('pre.code-pre code');navigator.clipboard.writeText(code.textContent).then(()=>{btn.textContent='تم! ✓';setTimeout(()=>btn.textContent='نسخ',1800);});});});const menuBtn=document.getElementById('menuBtn');const sidebar=document.getElementById('sidebar');if(menuBtn)menuBtn.addEventListener('click',()=>sidebar.classList.toggle('open'));updateSidebar();updateProgressPill();if(isCompleted(LESSON_ID))showNextButton();});
+</script>
+</body></html>

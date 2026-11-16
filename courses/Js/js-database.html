@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ربط قواعد البيانات | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --firebase:  #FFCA28;
+            --supabase:  #3ECF8E;
+            --mongo:     #00ED64;
+            --local:     #82aaff;
+            --rest:      #ff9f43;
+            --bg:        #080b10;
+            --card:      #111827;
+            --card2:     #1a2233;
+            --border:    #1e2d42;
+            --text:      #cdd6f4;
+            --muted:     #6b7a99;
+            --code-bg:   #0a0f1a;
+            --neon-cyan: #00d4ff;
+            --neon-green:#c3e88d;
+            --neon-pink: #ff5874;
+            --js-gold:   #f7df1e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; line-height: 1.8; }
+
+        /* ── HEADER ── */
+        .site-header {
+            background: #0d1117; border-bottom: 1px solid var(--border);
+            padding: 0 40px; display: flex; align-items: center;
+            justify-content: space-between; height: 60px;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Orbitron', monospace; color: var(--js-gold); font-size: 1.1rem; }
+        .back-btn {
+            color: var(--neon-cyan); text-decoration: none; font-size: 0.9rem;
+            border: 1px solid var(--neon-cyan); padding: 6px 16px; border-radius: 6px; transition: .3s;
+        }
+        .back-btn:hover { background: var(--neon-cyan); color: #000; }
+
+        /* ── HERO ── */
+        .hero {
+            background: radial-gradient(ellipse at 50% 0%, #0a1a10 0%, #080b10 70%);
+            text-align: center; padding: 70px 40px 50px;
+        }
+        .hero-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .hero-tag {
+            padding: 4px 14px; border-radius: 20px; font-size: 0.8rem;
+            font-family: 'Orbitron', monospace; font-weight: 700;
+        }
+        .hero h1 { font-family: 'Orbitron', monospace; font-size: 2.2rem; color: #fff; margin-bottom: 14px; }
+        .hero p { color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+        /* ── DB NAV ── */
+        .db-nav {
+            display: flex; gap: 10px; justify-content: center;
+            flex-wrap: wrap; padding: 30px 30px 0; background: var(--bg);
+        }
+        .db-nav-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--card); border: 1.5px solid var(--border);
+            color: var(--muted); padding: 10px 20px; border-radius: 30px;
+            cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 0.9rem;
+            font-weight: 600; transition: all .3s; text-decoration: none;
+        }
+        .db-nav-btn .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .db-nav-btn:hover { border-color: var(--neon-cyan); color: #fff; }
+
+        /* ── CONTAINER ── */
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 30px 80px; }
+
+        /* ── SECTION HEADER ── */
+        .db-section { margin-bottom: 70px; scroll-margin-top: 80px; }
+        .db-section-head {
+            display: flex; align-items: center; gap: 16px;
+            padding: 20px 24px; border-radius: 16px 16px 0 0;
+            border: 1px solid; border-bottom: none; margin-bottom: 0;
+        }
+        .db-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; font-weight: 900;
+        }
+        .db-section-head h2 { font-size: 1.6rem; }
+        .db-section-head p { font-size: 0.9rem; color: var(--muted); margin-top: 2px; }
+        .db-body {
+            border: 1px solid; border-top: none; border-radius: 0 0 16px 16px;
+            overflow: hidden;
+        }
+
+        /* Firebase */
+        .firebase .db-section-head { border-color: var(--firebase); background: rgba(255,202,40,.05); }
+        .firebase .db-section-head h2 { color: var(--firebase); }
+        .firebase .db-body { border-color: var(--firebase); }
+        .firebase .db-icon { background: rgba(255,202,40,.15); color: var(--firebase); }
+
+        /* Supabase */
+        .supabase .db-section-head { border-color: var(--supabase); background: rgba(62,207,142,.05); }
+        .supabase .db-section-head h2 { color: var(--supabase); }
+        .supabase .db-body { border-color: var(--supabase); }
+        .supabase .db-icon { background: rgba(62,207,142,.15); color: var(--supabase); }
+
+        /* MongoDB */
+        .mongo .db-section-head { border-color: var(--mongo); background: rgba(0,237,100,.05); }
+        .mongo .db-section-head h2 { color: var(--mongo); }
+        .mongo .db-body { border-color: var(--mongo); }
+        .mongo .db-icon { background: rgba(0,237,100,.15); color: var(--mongo); }
+
+        /* LocalStorage */
+        .local .db-section-head { border-color: var(--local); background: rgba(130,170,255,.05); }
+        .local .db-section-head h2 { color: var(--local); }
+        .local .db-body { border-color: var(--local); }
+        .local .db-icon { background: rgba(130,170,255,.15); color: var(--local); }
+
+        /* REST */
+        .rest .db-section-head { border-color: var(--rest); background: rgba(255,159,67,.05); }
+        .rest .db-section-head h2 { color: var(--rest); }
+        .rest .db-body { border-color: var(--rest); }
+        .rest .db-icon { background: rgba(255,159,67,.15); color: var(--rest); }
+
+        /* ── TABS inside section ── */
+        .tabs-nav {
+            display: flex; background: var(--card);
+            border-bottom: 1px solid var(--border);
+        }
+        .tab-btn {
+            padding: 14px 22px; border: none; background: none;
+            color: var(--muted); cursor: pointer; font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem; font-weight: 600; border-bottom: 2px solid transparent;
+            transition: .25s;
+        }
+        .tab-btn.active { color: #fff; border-bottom-color: var(--neon-cyan); }
+        .tab-btn:hover:not(.active) { color: var(--text); }
+        .tab-content { display: none; padding: 28px; background: var(--card); }
+        .tab-content.active { display: block; }
+
+        /* ── CODE BLOCK ── */
+        .code-block {
+            background: var(--code-bg); border: 1px solid var(--border);
+            border-radius: 10px; padding: 20px 24px; font-family: 'Fira Code', monospace;
+            font-size: 0.87rem; line-height: 1.75; direction: ltr; text-align: left;
+            color: #abb2bf; overflow-x: auto; margin: 14px 0;
+        }
+        .code-block .kw  { color: #c678dd; }
+        .code-block .fn  { color: #61afef; }
+        .code-block .str { color: #98c379; }
+        .code-block .num { color: #d19a66; }
+        .code-block .cm  { color: #5c6370; font-style: italic; }
+        .code-block .var { color: #e5c07b; }
+        .code-block .op  { color: #56b6c2; }
+        .code-label {
+            font-size: 0.78rem; color: var(--muted); font-family: 'Fira Code', monospace;
+            margin-bottom: -8px; padding: 6px 14px; background: var(--code-bg);
+            border: 1px solid var(--border); border-bottom: none;
+            border-radius: 8px 8px 0 0; display: inline-block;
+        }
+
+        /* ── CARDS GRID ── */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        @media(max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+        .info-card {
+            background: var(--card2); border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px; margin-bottom: 14px;
+        }
+        .info-card h4 { font-size: 1rem; color: var(--neon-cyan); margin-bottom: 8px; }
+        .info-card p  { font-size: 0.9rem; color: var(--muted); }
+
+        /* ── NOTE ── */
+        .note {
+            border-right: 4px solid; padding: 12px 16px; border-radius: 0 10px 10px 0;
+            margin: 14px 0; font-size: 0.93rem; line-height: 1.7;
+        }
+        .note.info    { border-color: var(--neon-cyan);  background: rgba(0,212,255,.06);  }
+        .note.success { border-color: var(--neon-green); background: rgba(195,232,141,.06); }
+        .note.warn    { border-color: var(--js-gold);    background: rgba(247,223,30,.06);  }
+        .note.danger  { border-color: var(--neon-pink);  background: rgba(255,88,116,.06);  }
+
+        /* ── BADGE ── */
+        .badge {
+            display: inline-block; padding: 2px 10px; border-radius: 20px;
+            font-size: 0.76rem; font-weight: 700; margin: 2px;
+        }
+        .badge-g  { background: rgba(195,232,141,.15); color: var(--neon-green); border: 1px solid rgba(195,232,141,.3); }
+        .badge-c  { background: rgba(0,212,255,.15);   color: var(--neon-cyan);  border: 1px solid rgba(0,212,255,.3);  }
+        .badge-r  { background: rgba(255,88,116,.15);  color: var(--neon-pink);  border: 1px solid rgba(255,88,116,.3); }
+        .badge-y  { background: rgba(247,223,30,.15);  color: var(--js-gold);    border: 1px solid rgba(247,223,30,.3); }
+
+        /* ── COMPARE ── */
+        .compare-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.88rem; }
+        .compare-table th {
+            background: var(--card2); color: var(--neon-cyan); padding: 10px 14px;
+            border: 1px solid var(--border); text-align: right;
+        }
+        .compare-table td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; }
+        .compare-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+        /* ── FLOW ── */
+        .flow {
+            display: flex; align-items: center; gap: 0;
+            flex-wrap: wrap; margin: 16px 0; direction: ltr;
+        }
+        .flow-step {
+            background: var(--card2); border: 1px solid var(--border);
+            padding: 8px 14px; border-radius: 8px; font-family: 'Fira Code', monospace;
+            font-size: 0.82rem; color: var(--neon-green); text-align: center;
+        }
+        .flow-arr { color: var(--neon-cyan); padding: 0 8px; font-size: 1.2rem; }
+
+        /* ── FINAL COMPARE ── */
+        .final-compare {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden; margin-top: 50px;
+        }
+        .final-compare h3 {
+            padding: 20px 24px; background: var(--card2);
+            color: var(--js-gold); border-bottom: 1px solid var(--border);
+            font-size: 1.2rem;
+        }
+
+        /* ── QUIZ FOOTER ── */
+        .quiz-cta {
+            background: linear-gradient(135deg, var(--card2), var(--card));
+            border: 2px solid var(--js-gold); border-radius: 16px;
+            padding: 30px; text-align: center; margin-top: 50px;
+        }
+        .quiz-cta h3 { color: var(--js-gold); font-size: 1.4rem; margin-bottom: 8px; }
+        .quiz-cta p  { color: var(--muted); margin-bottom: 20px; }
+        .btn-gold {
+            display: inline-block; background: var(--js-gold); color: #000;
+            font-weight: 700; padding: 14px 36px; border-radius: 10px;
+            text-decoration: none; font-size: 1rem; transition: .3s; margin: 6px;
+        }
+        .btn-outline {
+            display: inline-block; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan);
+            font-weight: 600; padding: 13px 30px; border-radius: 10px;
+            text-decoration: none; font-size: 1rem; transition: .3s; margin: 6px;
+        }
+        .btn-gold:hover   { opacity: .85; transform: scale(1.03); }
+        .btn-outline:hover { background: var(--neon-cyan); color: #000; }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-btn">← القائمة</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-tags">
+        <span class="hero-tag" style="background:rgba(255,202,40,.12);color:#FFCA28;border:1px solid #FFCA28">Firebase</span>
+        <span class="hero-tag" style="background:rgba(62,207,142,.12);color:#3ECF8E;border:1px solid #3ECF8E">Supabase</span>
+        <span class="hero-tag" style="background:rgba(0,237,100,.12);color:#00ED64;border:1px solid #00ED64">MongoDB</span>
+        <span class="hero-tag" style="background:rgba(130,170,255,.12);color:#82aaff;border:1px solid #82aaff">LocalStorage</span>
+        <span class="hero-tag" style="background:rgba(255,159,67,.12);color:#ff9f43;border:1px solid #ff9f43">REST API</span>
+    </div>
+    <h1>الربط السحابي الشامل ☁️</h1>
+    <p>تعلّم ربط تطبيقاتك بخمس أنظمة تخزين مختلفة — من المتصفح حتى السحابة — مع أكواد كاملة قابلة للنسخ مباشرة.</p>
+</section>
+
+<!-- DB NAV -->
+<div class="db-nav">
+    <a class="db-nav-btn" href="#firebase"><span class="dot" style="background:#FFCA28"></span>Firebase</a>
+    <a class="db-nav-btn" href="#supabase"><span class="dot" style="background:#3ECF8E"></span>Supabase</a>
+    <a class="db-nav-btn" href="#mongo"><span class="dot" style="background:#00ED64"></span>MongoDB Atlas</a>
+    <a class="db-nav-btn" href="#local"><span class="dot" style="background:#82aaff"></span>LocalStorage</a>
+    <a class="db-nav-btn" href="#rest"><span class="dot" style="background:#ff9f43"></span>REST API</a>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════
+     1. FIREBASE
+══════════════════════════════════════════════ -->
+<div class="db-section firebase" id="firebase">
+    <div class="db-section-head">
+        <div class="db-icon">🔥</div>
+        <div>
+            <h2>Firebase (Google)</h2>
+            <p>NoSQL Cloud Database — الأسرع للبدء، مثالي للمشاريع المتوسطة والكبيرة</p>
+        </div>
+    </div>
+    <div class="db-body">
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('fb','setup')">الإعداد</button>
+            <button class="tab-btn" onclick="switchTab('fb','auth')">المصادقة</button>
+            <button class="tab-btn" onclick="switchTab('fb','firestore')">Firestore</button>
+            <button class="tab-btn" onclick="switchTab('fb','realtime')">Realtime DB</button>
+            <button class="tab-btn" onclick="switchTab('fb','storage')">Storage</button>
+        </div>
+
+        <!-- SETUP -->
+        <div class="tab-content active" id="fb-setup">
+            <h4 style="color:var(--firebase);margin-bottom:16px">خطوات الإعداد الكاملة</h4>
+            <div class="grid-3">
+                <div class="info-card"><h4>1. إنشاء المشروع</h4><p>في console.firebase.google.com أنشئ مشروعاً جديداً واحصل على ملف التكوين.</p></div>
+                <div class="info-card"><h4>2. تثبيت الـ SDK</h4><p>عبر CDN أو npm install firebase حسب نوع مشروعك.</p></div>
+                <div class="info-card"><h4>3. التهيئة</h4><p>انسخ firebaseConfig من لوحة المشروع والصقها في كودك.</p></div>
+            </div>
+            <div class="code-label">firebase-config.js</div>
+            <div class="code-block">
+<span class="cm">// ─── تثبيت عبر CDN (في HTML) ───</span>
+<span class="cm">// &lt;script type="module"&gt; ... &lt;/script&gt;</span>
+
+<span class="kw">import</span> { <span class="fn">initializeApp</span> }   <span class="kw">from</span> <span class="str">"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"</span>;
+<span class="kw">import</span> { <span class="fn">getFirestore</span> }     <span class="kw">from</span> <span class="str">"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"</span>;
+<span class="kw">import</span> { <span class="fn">getAuth</span> }          <span class="kw">from</span> <span class="str">"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"</span>;
+<span class="kw">import</span> { <span class="fn">getStorage</span> }       <span class="kw">from</span> <span class="str">"https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js"</span>;
+
+<span class="cm">// ─── معلومات مشروعك (من Firebase Console) ───</span>
+<span class="kw">const</span> <span class="var">firebaseConfig</span> <span class="op">=</span> {
+  <span class="var">apiKey</span>:            <span class="str">"AIzaSy..."</span>,
+  <span class="var">authDomain</span>:        <span class="str">"myapp.firebaseapp.com"</span>,
+  <span class="var">projectId</span>:         <span class="str">"myapp-12345"</span>,
+  <span class="var">storageBucket</span>:     <span class="str">"myapp-12345.appspot.com"</span>,
+  <span class="var">messagingSenderId</span>: <span class="str">"123456789"</span>,
+  <span class="var">appId</span>:             <span class="str">"1:123456789:web:abcdef"</span>
+};
+
+<span class="cm">// ─── تهيئة Firebase ───</span>
+<span class="kw">const</span> <span class="var">app</span>     <span class="op">=</span> <span class="fn">initializeApp</span>(<span class="var">firebaseConfig</span>);
+<span class="kw">const</span> <span class="var">db</span>      <span class="op">=</span> <span class="fn">getFirestore</span>(<span class="var">app</span>);   <span class="cm">// Firestore Database</span>
+<span class="kw">const</span> <span class="var">auth</span>    <span class="op">=</span> <span class="fn">getAuth</span>(<span class="var">app</span>);        <span class="cm">// Authentication</span>
+<span class="kw">const</span> <span class="var">storage</span> <span class="op">=</span> <span class="fn">getStorage</span>(<span class="var">app</span>);     <span class="cm">// File Storage</span>
+
+<span class="kw">export</span> { <span class="var">db</span>, <span class="var">auth</span>, <span class="var">storage</span> };</div>
+            <div class="note warn">⚠️ لا تضع الـ apiKey في مستودع GitHub عام. استخدم Environment Variables في مشاريع الـ Production.</div>
+        </div>
+
+        <!-- AUTH -->
+        <div class="tab-content" id="fb-auth">
+            <h4 style="color:var(--firebase);margin-bottom:16px">نظام المصادقة الكامل</h4>
+            <div class="code-label">auth.js — تسجيل / دخول / مراقبة</div>
+            <div class="code-block">
+<span class="kw">import</span> { <span class="var">auth</span> } <span class="kw">from</span> <span class="str">"./firebase-config.js"</span>;
+<span class="kw">import</span> {
+  <span class="fn">createUserWithEmailAndPassword</span>,
+  <span class="fn">signInWithEmailAndPassword</span>,
+  <span class="fn">signOut</span>,
+  <span class="fn">onAuthStateChanged</span>,
+  <span class="fn">updateProfile</span>,
+  <span class="fn">sendPasswordResetEmail</span>,
+  <span class="fn">GoogleAuthProvider</span>,
+  <span class="fn">signInWithPopup</span>
+} <span class="kw">from</span> <span class="str">"firebase/auth"</span>;
+
+<span class="cm">// ─── 1. إنشاء حساب جديد ───</span>
+<span class="kw">async function</span> <span class="fn">register</span>(<span class="var">email</span>, <span class="var">password</span>, <span class="var">displayName</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">cred</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">createUserWithEmailAndPassword</span>(<span class="var">auth</span>, <span class="var">email</span>, <span class="var">password</span>);
+    <span class="cm">// تحديث الاسم فور الإنشاء</span>
+    <span class="kw">await</span> <span class="fn">updateProfile</span>(<span class="var">cred</span>.<span class="var">user</span>, { <span class="var">displayName</span> });
+    <span class="fn">console</span>.log(<span class="str">"✅ تم إنشاء الحساب:"</span>, <span class="var">cred</span>.<span class="var">user</span>.<span class="var">uid</span>);
+    <span class="kw">return</span> <span class="var">cred</span>.<span class="var">user</span>;
+  } <span class="kw">catch</span> (<span class="var">err</span>) {
+    <span class="kw">const</span> <span class="var">msgs</span> <span class="op">=</span> {
+      <span class="str">'auth/email-already-in-use'</span>: <span class="str">"الإيميل مستخدم بالفعل"</span>,
+      <span class="str">'auth/weak-password'</span>:         <span class="str">"كلمة المرور ضعيفة جداً (6+ أحرف)"</span>,
+      <span class="str">'auth/invalid-email'</span>:         <span class="str">"صيغة الإيميل غير صحيحة"</span>,
+    };
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="var">msgs</span>[<span class="var">err</span>.<span class="var">code</span>] <span class="op">||</span> <span class="var">err</span>.<span class="var">message</span>);
+  }
+}
+
+<span class="cm">// ─── 2. تسجيل الدخول ───</span>
+<span class="kw">async function</span> <span class="fn">login</span>(<span class="var">email</span>, <span class="var">password</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">cred</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">signInWithEmailAndPassword</span>(<span class="var">auth</span>, <span class="var">email</span>, <span class="var">password</span>);
+    window.location.href <span class="op">=</span> <span class="str">"dashboard.html"</span>; <span class="cm">// redirect بعد الدخول</span>
+  } <span class="kw">catch</span> (<span class="var">err</span>) {
+    <span class="kw">const</span> <span class="var">msgs</span> <span class="op">=</span> {
+      <span class="str">'auth/user-not-found'</span>:   <span class="str">"لا يوجد حساب بهذا الإيميل"</span>,
+      <span class="str">'auth/wrong-password'</span>:   <span class="str">"كلمة المرور غير صحيحة"</span>,
+      <span class="str">'auth/too-many-requests'</span>: <span class="str">"محاولات كثيرة، انتظر قليلاً"</span>,
+    };
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="var">msgs</span>[<span class="var">err</span>.<span class="var">code</span>] <span class="op">||</span> <span class="var">err</span>.<span class="var">message</span>);
+  }
+}
+
+<span class="cm">// ─── 3. الدخول بـ Google OAuth ───</span>
+<span class="kw">async function</span> <span class="fn">loginWithGoogle</span>() {
+  <span class="kw">const</span> <span class="var">provider</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">GoogleAuthProvider</span>();
+  <span class="kw">const</span> <span class="var">cred</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">signInWithPopup</span>(<span class="var">auth</span>, <span class="var">provider</span>);
+  <span class="fn">console</span>.log(<span class="str">"مسجل كـ:"</span>, <span class="var">cred</span>.<span class="var">user</span>.<span class="var">email</span>);
+}
+
+<span class="cm">// ─── 4. مراقب الحالة (أهم دالة في Auth) ───</span>
+<span class="fn">onAuthStateChanged</span>(<span class="var">auth</span>, (<span class="var">user</span>) <span class="op">=></span> {
+  <span class="kw">if</span> (<span class="var">user</span>) {
+    <span class="fn">console</span>.log(<span class="str">`مرحباً ${user.displayName} (${user.uid})`</span>);
+    <span class="fn">loadUserData</span>(<span class="var">user</span>.<span class="var">uid</span>); <span class="cm">// جلب بيانات المستخدم من Firestore</span>
+  } <span class="kw">else</span> {
+    window.location.href <span class="op">=</span> <span class="str">"login.html"</span>; <span class="cm">// redirect لو لم يدخل</span>
+  }
+});
+
+<span class="cm">// ─── 5. تسجيل الخروج وإعادة التعيين ───</span>
+<span class="kw">const</span> <span class="fn">logout</span>      <span class="op">=</span> () <span class="op">=></span> <span class="fn">signOut</span>(<span class="var">auth</span>);
+<span class="kw">const</span> <span class="fn">resetPassword</span> <span class="op">=</span> (<span class="var">email</span>) <span class="op">=></span> <span class="fn">sendPasswordResetEmail</span>(<span class="var">auth</span>, <span class="var">email</span>);</div>
+        </div>
+
+        <!-- FIRESTORE -->
+        <div class="tab-content" id="fb-firestore">
+            <h4 style="color:var(--firebase);margin-bottom:16px">Firestore — CRUD كامل</h4>
+            <div class="code-label">firestore.js — القراءة / الكتابة / الحذف / Real-time</div>
+            <div class="code-block">
+<span class="kw">import</span> { <span class="var">db</span> } <span class="kw">from</span> <span class="str">"./firebase-config.js"</span>;
+<span class="kw">import</span> {
+  <span class="fn">collection</span>, <span class="fn">doc</span>, <span class="fn">addDoc</span>, <span class="fn">setDoc</span>,
+  <span class="fn">getDoc</span>, <span class="fn">getDocs</span>, <span class="fn">updateDoc</span>, <span class="fn">deleteDoc</span>,
+  <span class="fn">onSnapshot</span>, <span class="fn">query</span>, <span class="fn">where</span>, <span class="fn">orderBy</span>, <span class="fn">limit</span>,
+  <span class="fn">serverTimestamp</span>, <span class="fn">increment</span>
+} <span class="kw">from</span> <span class="str">"firebase/firestore"</span>;
+
+<span class="kw">const</span> <span class="var">playersRef</span> <span class="op">=</span> <span class="fn">collection</span>(<span class="var">db</span>, <span class="str">"players"</span>);
+
+<span class="cm">// ─── CREATE — إضافة وثيقة (ID تلقائي) ───</span>
+<span class="kw">async function</span> <span class="fn">addPlayer</span>(<span class="var">data</span>) {
+  <span class="kw">const</span> <span class="var">docRef</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">addDoc</span>(<span class="var">playersRef</span>, {
+    ...<span class="var">data</span>,
+    <span class="var">createdAt</span>: <span class="fn">serverTimestamp</span>(),   <span class="cm">// وقت السيرفر لا العميل</span>
+    <span class="var">score</span>: <span class="num">0</span>
+  });
+  <span class="fn">console</span>.log(<span class="str">"ID الجديد:"</span>, <span class="var">docRef</span>.<span class="var">id</span>);
+}
+
+<span class="cm">// CREATE بـ ID محدد (مثلاً UID المستخدم)</span>
+<span class="kw">async function</span> <span class="fn">createUserProfile</span>(<span class="var">uid</span>, <span class="var">data</span>) {
+  <span class="kw">await</span> <span class="fn">setDoc</span>(<span class="fn">doc</span>(<span class="var">db</span>, <span class="str">"users"</span>, <span class="var">uid</span>), {
+    ...<span class="var">data</span>, <span class="var">createdAt</span>: <span class="fn">serverTimestamp</span>()
+  });
+}
+
+<span class="cm">// ─── READ — قراءة وثيقة واحدة ───</span>
+<span class="kw">async function</span> <span class="fn">getPlayer</span>(<span class="var">id</span>) {
+  <span class="kw">const</span> <span class="var">snap</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">getDoc</span>(<span class="fn">doc</span>(<span class="var">db</span>, <span class="str">"players"</span>, <span class="var">id</span>));
+  <span class="kw">if</span> (<span class="var">snap</span>.<span class="var">exists</span>()) <span class="kw">return</span> { <span class="var">id</span>: <span class="var">snap</span>.<span class="var">id</span>, ...<span class="var">snap</span>.<span class="fn">data</span>() };
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"اللاعب غير موجود"</span>);
+}
+
+<span class="cm">// READ — استعلام متقدم مع فلترة وترتيب</span>
+<span class="kw">async function</span> <span class="fn">getTopPlayers</span>() {
+  <span class="kw">const</span> <span class="var">q</span> <span class="op">=</span> <span class="fn">query</span>(
+    <span class="var">playersRef</span>,
+    <span class="fn">where</span>(<span class="str">"rank"</span>, <span class="str">"=="</span>, <span class="str">"Gold"</span>),
+    <span class="fn">where</span>(<span class="str">"score"</span>, <span class="str">">="</span>, <span class="num">1000</span>),
+    <span class="fn">orderBy</span>(<span class="str">"score"</span>, <span class="str">"desc"</span>),
+    <span class="fn">limit</span>(<span class="num">10</span>)
+  );
+  <span class="kw">const</span> <span class="var">snap</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">getDocs</span>(<span class="var">q</span>);
+  <span class="kw">return</span> <span class="var">snap</span>.<span class="var">docs</span>.map(<span class="var">d</span> <span class="op">=></span> ({ <span class="var">id</span>: <span class="var">d</span>.<span class="var">id</span>, ...<span class="var">d</span>.<span class="fn">data</span>() }));
+}
+
+<span class="cm">// ─── UPDATE ───</span>
+<span class="kw">async function</span> <span class="fn">updateScore</span>(<span class="var">id</span>, <span class="var">points</span>) {
+  <span class="kw">await</span> <span class="fn">updateDoc</span>(<span class="fn">doc</span>(<span class="var">db</span>, <span class="str">"players"</span>, <span class="var">id</span>), {
+    <span class="var">score</span>:     <span class="fn">increment</span>(<span class="var">points</span>),   <span class="cm">// زيادة ذرية آمنة</span>
+    <span class="var">lastSeen</span>:  <span class="fn">serverTimestamp</span>()
+  });
+}
+
+<span class="cm">// ─── DELETE ───</span>
+<span class="kw">const</span> <span class="fn">deletePlayer</span> <span class="op">=</span> (<span class="var">id</span>) <span class="op">=></span>
+  <span class="fn">deleteDoc</span>(<span class="fn">doc</span>(<span class="var">db</span>, <span class="str">"players"</span>, <span class="var">id</span>));
+
+<span class="cm">// ─── REAL-TIME LISTENER — يحدّث تلقائياً ───</span>
+<span class="kw">function</span> <span class="fn">watchLeaderboard</span>(<span class="var">onUpdate</span>) {
+  <span class="kw">const</span> <span class="var">q</span> <span class="op">=</span> <span class="fn">query</span>(<span class="var">playersRef</span>, <span class="fn">orderBy</span>(<span class="str">"score"</span>, <span class="str">"desc"</span>), <span class="fn">limit</span>(<span class="num">20</span>));
+  <span class="kw">return</span> <span class="fn">onSnapshot</span>(<span class="var">q</span>, (<span class="var">snap</span>) <span class="op">=></span> {
+    <span class="kw">const</span> <span class="var">players</span> <span class="op">=</span> <span class="var">snap</span>.<span class="var">docs</span>.map(<span class="var">d</span> <span class="op">=></span> ({ <span class="var">id</span>: <span class="var">d</span>.<span class="var">id</span>, ...<span class="var">d</span>.<span class="fn">data</span>() }));
+    <span class="fn">onUpdate</span>(<span class="var">players</span>); <span class="cm">// يُستدعى كلما تغيرت البيانات</span>
+  });
+  <span class="cm">// ✅ لإيقاف الاستماع: const unsub = watchLeaderboard(...); unsub();</span>
+}</div>
+            <div class="note success">🔒 Security Rules: في Firestore، اكتب قواعد تتحقق من auth.uid مثل: <code>allow write: if request.auth.uid == userId;</code></div>
+        </div>
+
+        <!-- REALTIME DB -->
+        <div class="tab-content" id="fb-realtime">
+            <h4 style="color:var(--firebase);margin-bottom:16px">Realtime Database — البيانات الحية الفورية</h4>
+            <div class="code-block">
+<span class="kw">import</span> { <span class="fn">getDatabase</span>, <span class="fn">ref</span>, <span class="fn">set</span>, <span class="fn">push</span>, <span class="fn">onValue</span>, <span class="fn">get</span>, <span class="fn">remove</span>, <span class="fn">update</span> }
+  <span class="kw">from</span> <span class="str">"firebase/database"</span>;
+
+<span class="kw">const</span> <span class="var">rtdb</span> <span class="op">=</span> <span class="fn">getDatabase</span>(<span class="var">app</span>);
+
+<span class="cm">// ─── كتابة بمسار محدد ───</span>
+<span class="kw">await</span> <span class="fn">set</span>(<span class="fn">ref</span>(<span class="var">rtdb</span>, <span class="str">`users/${uid}`</span>), {
+  <span class="var">name</span>: <span class="str">"Ahmed"</span>, <span class="var">online</span>: <span class="kw">true</span>
+});
+
+<span class="cm">// ─── إضافة بـ ID تلقائي (مثل Array) ───</span>
+<span class="kw">const</span> <span class="var">newRef</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">push</span>(<span class="fn">ref</span>(<span class="var">rtdb</span>, <span class="str">"messages"</span>), {
+  <span class="var">text</span>: <span class="str">"مرحباً!"</span>, <span class="var">time</span>: <span class="fn">Date</span>.now()
+});
+
+<span class="cm">// ─── قراءة مرة واحدة ───</span>
+<span class="kw">const</span> <span class="var">snap</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">get</span>(<span class="fn">ref</span>(<span class="var">rtdb</span>, <span class="str">`users/${uid}`</span>));
+<span class="kw">if</span> (<span class="var">snap</span>.<span class="var">exists</span>()) <span class="fn">console</span>.log(<span class="var">snap</span>.<span class="fn">val</span>());
+
+<span class="cm">// ─── مستمع Real-time ───</span>
+<span class="fn">onValue</span>(<span class="fn">ref</span>(<span class="var">rtdb</span>, <span class="str">"game/state"</span>), (<span class="var">snap</span>) <span class="op">=></span> {
+  <span class="fn">renderGame</span>(<span class="var">snap</span>.<span class="fn">val</span>()); <span class="cm">// يُشغَّل فور أي تغيير</span>
+});
+
+<span class="cm">// ─── Presence System (هل المستخدم متصل؟) ───</span>
+<span class="kw">import</span> { <span class="fn">serverTimestamp</span>, <span class="fn">onDisconnect</span> } <span class="kw">from</span> <span class="str">"firebase/database"</span>;
+<span class="kw">const</span> <span class="var">presRef</span> <span class="op">=</span> <span class="fn">ref</span>(<span class="var">rtdb</span>, <span class="str">`presence/${uid}`</span>);
+<span class="kw">await</span> <span class="fn">set</span>(<span class="var">presRef</span>, { <span class="var">online</span>: <span class="kw">true</span>, <span class="var">lastSeen</span>: <span class="fn">serverTimestamp</span>() });
+<span class="fn">onDisconnect</span>(<span class="var">presRef</span>).<span class="fn">set</span>({ <span class="var">online</span>: <span class="kw">false</span>, <span class="var">lastSeen</span>: <span class="fn">serverTimestamp</span>() });</div>
+        </div>
+
+        <!-- STORAGE -->
+        <div class="tab-content" id="fb-storage">
+            <h4 style="color:var(--firebase);margin-bottom:16px">Firebase Storage — رفع الملفات</h4>
+            <div class="code-block">
+<span class="kw">import</span> { <span class="var">storage</span> } <span class="kw">from</span> <span class="str">"./firebase-config.js"</span>;
+<span class="kw">import</span> { <span class="fn">ref</span> <span class="kw">as</span> <span class="fn">storageRef</span>, <span class="fn">uploadBytesResumable</span>,
+          <span class="fn">getDownloadURL</span>, <span class="fn">deleteObject</span> } <span class="kw">from</span> <span class="str">"firebase/storage"</span>;
+
+<span class="cm">// ─── رفع صورة مع شريط التقدم ───</span>
+<span class="kw">async function</span> <span class="fn">uploadAvatar</span>(<span class="var">uid</span>, <span class="var">file</span>, <span class="var">onProgress</span>) {
+  <span class="kw">const</span> <span class="var">ext</span>  <span class="op">=</span> <span class="var">file</span>.<span class="var">name</span>.split(<span class="str">"."</span>).pop();
+  <span class="kw">const</span> <span class="var">path</span> <span class="op">=</span> <span class="str">`avatars/${uid}.${ext}`</span>;
+  <span class="kw">const</span> <span class="var">sRef</span> <span class="op">=</span> <span class="fn">storageRef</span>(<span class="var">storage</span>, <span class="var">path</span>);
+
+  <span class="kw">const</span> <span class="var">task</span> <span class="op">=</span> <span class="fn">uploadBytesResumable</span>(<span class="var">sRef</span>, <span class="var">file</span>);
+
+  <span class="kw">return new</span> <span class="fn">Promise</span>((<span class="var">resolve</span>, <span class="var">reject</span>) <span class="op">=></span> {
+    <span class="var">task</span>.<span class="fn">on</span>(<span class="str">"state_changed"</span>,
+      (<span class="var">snap</span>) <span class="op">=></span> {                              <span class="cm">// أثناء الرفع</span>
+        <span class="kw">const</span> <span class="var">pct</span> <span class="op">=</span> (<span class="var">snap</span>.<span class="var">bytesTransferred</span> <span class="op">/</span> <span class="var">snap</span>.<span class="var">totalBytes</span>) <span class="op">*</span> <span class="num">100</span>;
+        <span class="fn">onProgress</span>(<span class="fn">Math</span>.round(<span class="var">pct</span>));
+      },
+      <span class="var">reject</span>,                                  <span class="cm">// عند الخطأ</span>
+      <span class="kw">async</span> () <span class="op">=></span> {                            <span class="cm">// بعد الانتهاء</span>
+        <span class="kw">const</span> <span class="var">url</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">getDownloadURL</span>(<span class="var">task</span>.<span class="var">snapshot</span>.<span class="var">ref</span>);
+        <span class="fn">resolve</span>(<span class="var">url</span>);  <span class="cm">// رابط قابل للنشر</span>
+      }
+    );
+  });
+}</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     2. SUPABASE
+══════════════════════════════════════════════ -->
+<div class="db-section supabase" id="supabase">
+    <div class="db-section-head">
+        <div class="db-icon">⚡</div>
+        <div>
+            <h2>Supabase</h2>
+            <p>PostgreSQL مفتوح المصدر — SQL كامل، RLS قوي، Real-time مدمج</p>
+        </div>
+    </div>
+    <div class="db-body">
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('sb','setup')">الإعداد</button>
+            <button class="tab-btn" onclick="switchTab('sb','auth')">المصادقة</button>
+            <button class="tab-btn" onclick="switchTab('sb','crud')">CRUD كامل</button>
+            <button class="tab-btn" onclick="switchTab('sb','realtime')">Real-time</button>
+        </div>
+
+        <div class="tab-content active" id="sb-setup">
+            <h4 style="color:var(--supabase);margin-bottom:16px">الإعداد والتهيئة</h4>
+            <div class="code-block">
+<span class="cm">// ─── CDN ───</span>
+<span class="cm">// &lt;script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"&gt;&lt;/script&gt;</span>
+
+<span class="cm">// ─── أو npm ───</span>
+<span class="cm">// npm install @supabase/supabase-js</span>
+
+<span class="kw">import</span> { <span class="fn">createClient</span> } <span class="kw">from</span> <span class="str">"@supabase/supabase-js"</span>;
+
+<span class="kw">const</span> <span class="var">SUPABASE_URL</span>  <span class="op">=</span> <span class="str">"https://xyzxyz.supabase.co"</span>;
+<span class="kw">const</span> <span class="var">SUPABASE_KEY</span>  <span class="op">=</span> <span class="str">"eyJhbGciOi..."</span>;   <span class="cm">// anon public key</span>
+
+<span class="kw">export const</span> <span class="var">supabase</span> <span class="op">=</span> <span class="fn">createClient</span>(<span class="var">SUPABASE_URL</span>, <span class="var">SUPABASE_KEY</span>);</div>
+        </div>
+
+        <div class="tab-content" id="sb-auth">
+            <div class="code-block">
+<span class="kw">import</span> { <span class="var">supabase</span> } <span class="kw">from</span> <span class="str">"./supabase-client.js"</span>;
+
+<span class="cm">// ─── تسجيل ───</span>
+<span class="kw">const</span> { <span class="var">data</span>, <span class="var">error</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>.<span class="var">auth</span>.<span class="fn">signUp</span>({
+  <span class="var">email</span>: <span class="str">"ahmed@example.com"</span>, <span class="var">password</span>: <span class="str">"SecurePass123"</span>,
+  <span class="var">options</span>: { <span class="var">data</span>: { <span class="var">username</span>: <span class="str">"ahmed_gamer"</span> } } <span class="cm">// metadata</span>
+});
+<span class="kw">if</span> (<span class="var">error</span>) <span class="kw">throw</span> <span class="var">error</span>;
+
+<span class="cm">// ─── دخول ───</span>
+<span class="kw">const</span> { <span class="var">data</span>: <span class="var">session</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>.<span class="var">auth</span>.<span class="fn">signInWithPassword</span>({
+  <span class="var">email</span>: <span class="str">"ahmed@example.com"</span>, <span class="var">password</span>: <span class="str">"SecurePass123"</span>
+});
+
+<span class="cm">// ─── Google OAuth ───</span>
+<span class="kw">await</span> <span class="var">supabase</span>.<span class="var">auth</span>.<span class="fn">signInWithOAuth</span>({ <span class="var">provider</span>: <span class="str">"google"</span> });
+
+<span class="cm">// ─── مراقب الحالة ───</span>
+<span class="var">supabase</span>.<span class="var">auth</span>.<span class="fn">onAuthStateChange</span>((<span class="var">event</span>, <span class="var">session</span>) <span class="op">=></span> {
+  <span class="kw">if</span> (<span class="var">session</span>) { <span class="fn">loadDashboard</span>(<span class="var">session</span>.<span class="var">user</span>); }
+  <span class="kw">else</span>         { window.location.href <span class="op">=</span> <span class="str">"login.html"</span>; }
+});
+
+<span class="cm">// ─── المستخدم الحالي ───</span>
+<span class="kw">const</span> { <span class="var">data</span>: { <span class="var">user</span> } } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>.<span class="var">auth</span>.<span class="fn">getUser</span>();
+
+<span class="cm">// ─── تسجيل خروج ───</span>
+<span class="kw">await</span> <span class="var">supabase</span>.<span class="var">auth</span>.<span class="fn">signOut</span>();</div>
+        </div>
+
+        <div class="tab-content" id="sb-crud">
+            <div class="code-block">
+<span class="cm">// ─── SELECT — قراءة بفلترة وترتيب ───</span>
+<span class="kw">const</span> { <span class="var">data</span>: <span class="var">players</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>
+  .from(<span class="str">"players"</span>)
+  .select(<span class="str">"id, name, score, avatar_url, created_at"</span>)
+  .eq(<span class="str">"rank"</span>, <span class="str">"Gold"</span>)          <span class="cm">// WHERE rank = 'Gold'</span>
+  .gte(<span class="str">"score"</span>, <span class="num">1000</span>)           <span class="cm">// AND score >= 1000</span>
+  .order(<span class="str">"score"</span>, { <span class="var">ascending</span>: <span class="kw">false</span> })
+  .limit(<span class="num">10</span>);
+
+<span class="cm">// SELECT مع JOIN (القوة الحقيقية لـ Supabase)</span>
+<span class="kw">const</span> { <span class="var">data</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>
+  .from(<span class="str">"posts"</span>)
+  .select(<span class="str">"*, profiles(username, avatar), comments(count)"</span>);
+
+<span class="cm">// ─── INSERT ───</span>
+<span class="kw">const</span> { <span class="var">data</span>: <span class="var">newPlayer</span>, <span class="var">error</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>
+  .from(<span class="str">"players"</span>)
+  .insert({ <span class="var">name</span>: <span class="str">"Ahmed"</span>, <span class="var">score</span>: <span class="num">0</span>, <span class="var">rank</span>: <span class="str">"Bronze"</span> })
+  .select()      <span class="cm">// يُرجع الصف المُدرج</span>
+  .single();     <span class="cm">// نتيجة واحدة لا مصفوفة</span>
+
+<span class="cm">// ─── UPDATE ───</span>
+<span class="kw">const</span> { <span class="var">error</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>
+  .from(<span class="str">"players"</span>)
+  .update({ <span class="var">score</span>: <span class="num">1500</span>, <span class="var">rank</span>: <span class="str">"Platinum"</span> })
+  .eq(<span class="str">"id"</span>, <span class="var">playerId</span>);
+
+<span class="cm">// ─── UPSERT — Insert أو Update تلقائياً ───</span>
+<span class="kw">await</span> <span class="var">supabase</span>.from(<span class="str">"profiles"</span>).upsert({
+  <span class="var">id</span>: <span class="var">user</span>.<span class="var">id</span>, <span class="var">username</span>: <span class="str">"ahmed"</span>, <span class="var">updated_at</span>: <span class="kw">new</span> <span class="fn">Date</span>()
+}, { <span class="var">onConflict</span>: <span class="str">"id"</span> });
+
+<span class="cm">// ─── DELETE ───</span>
+<span class="kw">await</span> <span class="var">supabase</span>.from(<span class="str">"players"</span>).delete().eq(<span class="str">"id"</span>, <span class="var">playerId</span>);
+
+<span class="cm">// ─── RPC — استدعاء دالة SQL ───</span>
+<span class="kw">const</span> { <span class="var">data</span> } <span class="op">=</span> <span class="kw">await</span> <span class="var">supabase</span>.rpc(<span class="str">"increment_score"</span>, {
+  <span class="var">player_id</span>: <span class="var">id</span>, <span class="var">points</span>: <span class="num">50</span>
+});</div>
+        </div>
+
+        <div class="tab-content" id="sb-realtime">
+            <div class="code-block">
+<span class="cm">// ─── الاستماع لتغييرات جدول ───</span>
+<span class="kw">const</span> <span class="var">channel</span> <span class="op">=</span> <span class="var">supabase</span>
+  .<span class="fn">channel</span>(<span class="str">"leaderboard-changes"</span>)
+  .on(<span class="str">"postgres_changes"</span>, {
+    <span class="var">event</span>:  <span class="str">"*"</span>,          <span class="cm">// INSERT | UPDATE | DELETE | *</span>
+    <span class="var">schema</span>: <span class="str">"public"</span>,
+    <span class="var">table</span>:  <span class="str">"scores"</span>,
+    <span class="var">filter</span>: <span class="str">"game_id=eq.42"</span>  <span class="cm">// فلتر اختياري</span>
+  }, (<span class="var">payload</span>) <span class="op">=></span> {
+    <span class="fn">console</span>.log(<span class="var">payload</span>.<span class="var">eventType</span>, <span class="var">payload</span>.<span class="var">new</span>, <span class="var">payload</span>.<span class="var">old</span>);
+    <span class="fn">refreshLeaderboard</span>();
+  })
+  .<span class="fn">subscribe</span>();
+
+<span class="cm">// إيقاف الاستماع</span>
+<span class="kw">await</span> <span class="var">supabase</span>.<span class="fn">removeChannel</span>(<span class="var">channel</span>);
+
+<span class="cm">// ─── Presence — من هو متصل الآن؟ ───</span>
+<span class="kw">const</span> <span class="var">room</span> <span class="op">=</span> <span class="var">supabase</span>.<span class="fn">channel</span>(<span class="str">"online-users"</span>);
+<span class="var">room</span>
+  .on(<span class="str">"presence"</span>, { <span class="var">event</span>: <span class="str">"sync"</span> }, () <span class="op">=></span> {
+    <span class="kw">const</span> <span class="var">online</span> <span class="op">=</span> <span class="fn">Object</span>.values(<span class="var">room</span>.<span class="fn">presenceState</span>());
+    <span class="fn">renderOnlineUsers</span>(<span class="var">online</span>);
+  })
+  .<span class="fn">subscribe</span>(<span class="kw">async</span> (<span class="var">status</span>) <span class="op">=></span> {
+    <span class="kw">if</span> (<span class="var">status</span> <span class="op">===</span> <span class="str">"SUBSCRIBED"</span>) {
+      <span class="kw">await</span> <span class="var">room</span>.<span class="fn">track</span>({ <span class="var">user_id</span>: <span class="var">user</span>.<span class="var">id</span>, <span class="var">online_at</span>: <span class="kw">new</span> <span class="fn">Date</span>() });
+    }
+  });</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     3. MONGODB ATLAS
+══════════════════════════════════════════════ -->
+<div class="db-section mongo" id="mongo">
+    <div class="db-section-head">
+        <div class="db-icon">🌿</div>
+        <div>
+            <h2>MongoDB Atlas</h2>
+            <p>NoSQL مرن — مثالي مع Node.js/Express وتطبيقات API</p>
+        </div>
+    </div>
+    <div class="db-body">
+        <div class="tab-content active" style="display:block">
+            <div class="note info">💡 MongoDB يعمل عادةً مع Backend (Node.js). لا تتصل به مباشرة من المتصفح لأسباب أمنية — بدلاً من ذلك اصنع API.</div>
+            <div class="code-label">server.js — Node.js + MongoDB Atlas</div>
+            <div class="code-block">
+<span class="cm">// npm install mongoose express cors dotenv</span>
+
+<span class="kw">const</span> <span class="var">mongoose</span> <span class="op">=</span> <span class="fn">require</span>(<span class="str">"mongoose"</span>);
+<span class="kw">const</span> <span class="var">express</span>  <span class="op">=</span> <span class="fn">require</span>(<span class="str">"express"</span>);
+<span class="kw">const</span> <span class="var">app</span>       <span class="op">=</span> <span class="fn">express</span>();
+<span class="var">app</span>.<span class="fn">use</span>(<span class="var">express</span>.<span class="fn">json</span>());
+
+<span class="cm">// ─── الاتصال بـ Atlas ───</span>
+<span class="kw">await</span> <span class="var">mongoose</span>.<span class="fn">connect</span>(process.env.<span class="var">MONGO_URI</span>);
+<span class="fn">console</span>.log(<span class="str">"✅ Connected to MongoDB Atlas"</span>);
+
+<span class="cm">// ─── تعريف Schema ───</span>
+<span class="kw">const</span> <span class="var">PlayerSchema</span> <span class="op">=</span> <span class="kw">new</span> <span class="var">mongoose</span>.<span class="fn">Schema</span>({
+  <span class="var">name</span>:      { <span class="var">type</span>: <span class="fn">String</span>, <span class="var">required</span>: <span class="kw">true</span>, <span class="var">trim</span>: <span class="kw">true</span> },
+  <span class="var">email</span>:     { <span class="var">type</span>: <span class="fn">String</span>, <span class="var">unique</span>: <span class="kw">true</span>, <span class="var">lowercase</span>: <span class="kw">true</span> },
+  <span class="var">score</span>:     { <span class="var">type</span>: <span class="fn">Number</span>, <span class="var">default</span>: <span class="num">0</span>, <span class="var">min</span>: <span class="num">0</span> },
+  <span class="var">rank</span>:      { <span class="var">type</span>: <span class="fn">String</span>, <span class="var">enum</span>: [<span class="str">"Bronze"</span>,<span class="str">"Silver"</span>,<span class="str">"Gold"</span>,<span class="str">"Platinum"</span>] },
+  <span class="var">createdAt</span>: { <span class="var">type</span>: <span class="fn">Date</span>, <span class="var">default</span>: <span class="fn">Date</span>.now }
+});
+<span class="kw">const</span> <span class="var">Player</span> <span class="op">=</span> <span class="var">mongoose</span>.<span class="fn">model</span>(<span class="str">"Player"</span>, <span class="var">PlayerSchema</span>);
+
+<span class="cm">// ─── REST API Endpoints ───</span>
+<span class="cm">// GET /api/players — جلب كل اللاعبين</span>
+<span class="var">app</span>.<span class="fn">get</span>(<span class="str">"/api/players"</span>, <span class="kw">async</span> (<span class="var">req</span>, <span class="var">res</span>) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">players</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">Player</span>
+      .<span class="fn">find</span>({ <span class="var">score</span>: { <span class="op">$</span><span class="var">gte</span>: <span class="num">0</span> } })
+      .<span class="fn">sort</span>({ <span class="var">score</span>: <span class="op">-</span><span class="num">1</span> })
+      .<span class="fn">limit</span>(<span class="num">50</span>)
+      .<span class="fn">select</span>(<span class="str">"-__v"</span>);      <span class="cm">// إخفاء حقل __v</span>
+    <span class="var">res</span>.<span class="fn">json</span>({ <span class="var">success</span>: <span class="kw">true</span>, <span class="var">data</span>: <span class="var">players</span> });
+  } <span class="kw">catch</span> (<span class="var">e</span>) { <span class="var">res</span>.<span class="fn">status</span>(<span class="num">500</span>).<span class="fn">json</span>({ <span class="var">error</span>: <span class="var">e</span>.<span class="var">message</span> }); }
+});
+
+<span class="cm">// POST /api/players — إضافة لاعب</span>
+<span class="var">app</span>.<span class="fn">post</span>(<span class="str">"/api/players"</span>, <span class="kw">async</span> (<span class="var">req</span>, <span class="var">res</span>) <span class="op">=></span> {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">player</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">Player</span>.<span class="fn">create</span>(<span class="var">req</span>.<span class="var">body</span>);
+    <span class="var">res</span>.<span class="fn">status</span>(<span class="num">201</span>).<span class="fn">json</span>({ <span class="var">success</span>: <span class="kw">true</span>, <span class="var">data</span>: <span class="var">player</span> });
+  } <span class="kw">catch</span> (<span class="var">e</span>) { <span class="var">res</span>.<span class="fn">status</span>(<span class="num">400</span>).<span class="fn">json</span>({ <span class="var">error</span>: <span class="var">e</span>.<span class="var">message</span> }); }
+});
+
+<span class="cm">// PATCH /api/players/:id/score — تحديث النقاط</span>
+<span class="var">app</span>.<span class="fn">patch</span>(<span class="str">"/api/players/:id/score"</span>, <span class="kw">async</span> (<span class="var">req</span>, <span class="var">res</span>) <span class="op">=></span> {
+  <span class="kw">const</span> <span class="var">updated</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">Player</span>.<span class="fn">findByIdAndUpdate</span>(
+    <span class="var">req</span>.<span class="var">params</span>.<span class="var">id</span>,
+    { <span class="op">$</span><span class="var">inc</span>: { <span class="var">score</span>: <span class="var">req</span>.<span class="var">body</span>.<span class="var">points</span> } },  <span class="cm">// $inc يزيد القيمة</span>
+    { <span class="kw">new</span>: <span class="kw">true</span> }                           <span class="cm">// يُرجع القيمة الجديدة</span>
+  );
+  <span class="var">res</span>.<span class="fn">json</span>(<span class="var">updated</span>);
+});
+
+<span class="var">app</span>.<span class="fn">listen</span>(<span class="num">3000</span>);</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     4. LOCALSTORAGE & INDEXEDDB
+══════════════════════════════════════════════ -->
+<div class="db-section local" id="local">
+    <div class="db-section-head">
+        <div class="db-icon">💾</div>
+        <div>
+            <h2>LocalStorage & IndexedDB</h2>
+            <p>تخزين المتصفح — بدون إنترنت، سريع جداً، مثالي للإعدادات والبيانات المؤقتة</p>
+        </div>
+    </div>
+    <div class="db-body">
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('ls','local')">LocalStorage</button>
+            <button class="tab-btn" onclick="switchTab('ls','indexed')">IndexedDB</button>
+        </div>
+        <div class="tab-content active" id="ls-local">
+            <div class="code-block">
+<span class="cm">// ─── LocalStorage — نص فقط (5MB) ───</span>
+
+<span class="cm">// الكتابة — يجب تحويل Objects لـ JSON</span>
+localStorage.<span class="fn">setItem</span>(<span class="str">"theme"</span>, <span class="str">"dark"</span>);
+localStorage.<span class="fn">setItem</span>(<span class="str">"user"</span>, <span class="fn">JSON</span>.<span class="fn">stringify</span>({
+  <span class="var">name</span>: <span class="str">"Ahmed"</span>, <span class="var">level</span>: <span class="num">42</span>, <span class="var">settings</span>: { <span class="var">sound</span>: <span class="kw">true</span> }
+}));
+
+<span class="cm">// القراءة — يجب تحويل JSON لـ Object</span>
+<span class="kw">const</span> <span class="var">theme</span>    <span class="op">=</span> localStorage.<span class="fn">getItem</span>(<span class="str">"theme"</span>);      <span class="cm">// "dark"</span>
+<span class="kw">const</span> <span class="var">userRaw</span>  <span class="op">=</span> localStorage.<span class="fn">getItem</span>(<span class="str">"user"</span>);
+<span class="kw">const</span> <span class="var">user</span>     <span class="op">=</span> <span class="var">userRaw</span> <span class="op">?</span> <span class="fn">JSON</span>.<span class="fn">parse</span>(<span class="var">userRaw</span>) <span class="op">:</span> <span class="kw">null</span>;
+
+<span class="cm">// الحذف</span>
+localStorage.<span class="fn">removeItem</span>(<span class="str">"theme"</span>);
+localStorage.<span class="fn">clear</span>();                               <span class="cm">// حذف الكل</span>
+
+<span class="cm">// ─── Wrapper احترافي مع معالجة الأخطاء ───</span>
+<span class="kw">const</span> <span class="var">Store</span> <span class="op">=</span> {
+  <span class="fn">set</span>(<span class="var">key</span>, <span class="var">value</span>) {
+    <span class="kw">try</span> { localStorage.<span class="fn">setItem</span>(<span class="var">key</span>, <span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="var">value</span>)); <span class="kw">return</span> <span class="kw">true</span>; }
+    <span class="kw">catch</span> { <span class="kw">return</span> <span class="kw">false</span>; } <span class="cm">// لو الذاكرة ممتلئة</span>
+  },
+  <span class="fn">get</span>(<span class="var">key</span>, <span class="var">fallback</span> <span class="op">=</span> <span class="kw">null</span>) {
+    <span class="kw">try</span> { <span class="kw">return</span> <span class="fn">JSON</span>.<span class="fn">parse</span>(localStorage.<span class="fn">getItem</span>(<span class="var">key</span>)) <span class="op">??</span> <span class="var">fallback</span>; }
+    <span class="kw">catch</span> { <span class="kw">return</span> <span class="var">fallback</span>; }
+  },
+  <span class="fn">del</span>(<span class="var">key</span>) { localStorage.<span class="fn">removeItem</span>(<span class="var">key</span>); },
+  <span class="fn">has</span>(<span class="var">key</span>) { <span class="kw">return</span> localStorage.<span class="fn">getItem</span>(<span class="var">key</span>) <span class="op">!==</span> <span class="kw">null</span>; }
+};
+
+<span class="cm">// الاستخدام</span>
+<span class="var">Store</span>.<span class="fn">set</span>(<span class="str">"player"</span>, { <span class="var">name</span>:<span class="str">"Ahmed"</span>, <span class="var">score</span>:<span class="num">999</span> });
+<span class="kw">const</span> <span class="var">p</span> <span class="op">=</span> <span class="var">Store</span>.<span class="fn">get</span>(<span class="str">"player"</span>, { <span class="var">name</span>:<span class="str">"Guest"</span>, <span class="var">score</span>:<span class="num">0</span> });</div>
+            <div class="note warn">⚠️ LocalStorage متزامن (Synchronous) ويمكن أن يُبطئ الموقع مع البيانات الكبيرة. للبيانات الكبيرة استخدم IndexedDB.</div>
+        </div>
+        <div class="tab-content" id="ls-indexed">
+            <div class="code-block">
+<span class="cm">// IndexedDB — قاعدة بيانات كاملة في المتصفح (GBs)</span>
+<span class="cm">// نستخدم مكتبة idb لتبسيطها</span>
+<span class="cm">// &lt;script src="https://cdn.jsdelivr.net/npm/idb@7/build/umd.js"&gt;&lt;/script&gt;</span>
+
+<span class="kw">const</span> { <span class="fn">openDB</span> } <span class="op">=</span> idb;
+
+<span class="cm">// ─── فتح / إنشاء قاعدة البيانات ───</span>
+<span class="kw">const</span> <span class="var">dbPromise</span> <span class="op">=</span> <span class="fn">openDB</span>(<span class="str">"PhineXGameDB"</span>, <span class="num">1</span>, {
+  <span class="fn">upgrade</span>(<span class="var">db</span>) {
+    <span class="cm">// إنشاء Object Store (مثل الجدول)</span>
+    <span class="kw">const</span> <span class="var">store</span> <span class="op">=</span> <span class="var">db</span>.<span class="fn">createObjectStore</span>(<span class="str">"players"</span>, { <span class="var">keyPath</span>: <span class="str">"id"</span>, <span class="var">autoIncrement</span>: <span class="kw">true</span> });
+    <span class="var">store</span>.<span class="fn">createIndex</span>(<span class="str">"score"</span>, <span class="str">"score"</span>);  <span class="cm">// فهرس للبحث السريع</span>
+    <span class="var">store</span>.<span class="fn">createIndex</span>(<span class="str">"rank"</span>, <span class="str">"rank"</span>);
+  }
+});
+
+<span class="cm">// ─── CRUD ───</span>
+<span class="kw">const</span> <span class="var">GameDB</span> <span class="op">=</span> {
+  <span class="kw">async</span> <span class="fn">addPlayer</span>(<span class="var">data</span>) {
+    <span class="kw">const</span> <span class="var">db</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">dbPromise</span>;
+    <span class="kw">return</span> <span class="var">db</span>.<span class="fn">add</span>(<span class="str">"players"</span>, data);
+  },
+  <span class="kw">async</span> <span class="fn">getAll</span>() {
+    <span class="kw">const</span> <span class="var">db</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">dbPromise</span>;
+    <span class="kw">return</span> <span class="var">db</span>.<span class="fn">getAll</span>(<span class="str">"players"</span>);
+  },
+  <span class="kw">async</span> <span class="fn">updateScore</span>(<span class="var">id</span>, <span class="var">score</span>) {
+    <span class="kw">const</span> <span class="var">db</span>     <span class="op">=</span> <span class="kw">await</span> <span class="var">dbPromise</span>;
+    <span class="kw">const</span> <span class="var">player</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">db</span>.<span class="fn">get</span>(<span class="str">"players"</span>, <span class="var">id</span>);
+    <span class="kw">return</span> <span class="var">db</span>.<span class="fn">put</span>(<span class="str">"players"</span>, { ...<span class="var">player</span>, <span class="var">score</span> });
+  }
+};</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     5. REST API
+══════════════════════════════════════════════ -->
+<div class="db-section rest" id="rest">
+    <div class="db-section-head">
+        <div class="db-icon">🔗</div>
+        <div>
+            <h2>REST API Patterns</h2>
+            <p>كيف تتحدث مع أي سيرفر بشكل احترافي — GET, POST, PUT, DELETE</p>
+        </div>
+    </div>
+    <div class="db-body">
+        <div class="tab-content active" style="display:block">
+            <div class="code-block">
+<span class="cm">// ─── API Client احترافي قابل لإعادة الاستخدام ───</span>
+<span class="kw">class</span> <span class="fn">ApiClient</span> {
+  <span class="fn">constructor</span>(<span class="var">baseURL</span>, <span class="var">token</span> <span class="op">=</span> <span class="kw">null</span>) {
+    <span class="kw">this</span>.<span class="var">baseURL</span> <span class="op">=</span> <span class="var">baseURL</span>;
+    <span class="kw">this</span>.<span class="var">token</span>   <span class="op">=</span> <span class="var">token</span>;
+  }
+
+  <span class="fn">_headers</span>() {
+    <span class="kw">const</span> <span class="var">h</span> <span class="op">=</span> { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> };
+    <span class="kw">if</span> (<span class="kw">this</span>.<span class="var">token</span>) <span class="var">h</span>[<span class="str">"Authorization"</span>] <span class="op">=</span> <span class="str">`Bearer ${this.token}`</span>;
+    <span class="kw">return</span> <span class="var">h</span>;
+  }
+
+  <span class="kw">async</span> <span class="fn">_request</span>(<span class="var">method</span>, <span class="var">path</span>, <span class="var">body</span> <span class="op">=</span> <span class="kw">null</span>) {
+    <span class="kw">const</span> <span class="var">opts</span> <span class="op">=</span> { <span class="var">method</span>, <span class="var">headers</span>: <span class="kw">this</span>.<span class="fn">_headers</span>() };
+    <span class="kw">if</span> (<span class="var">body</span>) <span class="var">opts</span>.<span class="var">body</span> <span class="op">=</span> <span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="var">body</span>);
+
+    <span class="kw">const</span> <span class="var">res</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">fetch</span>(<span class="kw">this</span>.<span class="var">baseURL</span> <span class="op">+</span> <span class="var">path</span>, <span class="var">opts</span>);
+    <span class="kw">if</span> (<span class="op">!</span><span class="var">res</span>.<span class="var">ok</span>) {
+      <span class="kw">const</span> <span class="var">err</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">res</span>.<span class="fn">json</span>().catch(() <span class="op">=></span> ({}));
+      <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="var">err</span>.<span class="var">message</span> <span class="op">||</span> <span class="str">`HTTP ${res.status}`</span>);
+    }
+    <span class="kw">return</span> <span class="var">res</span>.<span class="var">status</span> <span class="op">!==</span> <span class="num">204</span> <span class="op">?</span> <span class="var">res</span>.<span class="fn">json</span>() <span class="op">:</span> <span class="kw">null</span>;
+  }
+
+  <span class="fn">get</span>(<span class="var">path</span>)              { <span class="kw">return</span> <span class="kw">this</span>.<span class="fn">_request</span>(<span class="str">"GET"</span>,    <span class="var">path</span>); }
+  <span class="fn">post</span>(<span class="var">path</span>, <span class="var">body</span>)       { <span class="kw">return</span> <span class="kw">this</span>.<span class="fn">_request</span>(<span class="str">"POST"</span>,   <span class="var">path</span>, <span class="var">body</span>); }
+  <span class="fn">put</span>(<span class="var">path</span>, <span class="var">body</span>)        { <span class="kw">return</span> <span class="kw">this</span>.<span class="fn">_request</span>(<span class="str">"PUT"</span>,    <span class="var">path</span>, <span class="var">body</span>); }
+  <span class="fn">patch</span>(<span class="var">path</span>, <span class="var">body</span>)      { <span class="kw">return</span> <span class="kw">this</span>.<span class="fn">_request</span>(<span class="str">"PATCH"</span>,  <span class="var">path</span>, <span class="var">body</span>); }
+  <span class="fn">delete</span>(<span class="var">path</span>)           { <span class="kw">return</span> <span class="kw">this</span>.<span class="fn">_request</span>(<span class="str">"DELETE"</span>, <span class="var">path</span>); }
+}
+
+<span class="cm">// ─── الاستخدام ───</span>
+<span class="kw">const</span> <span class="var">api</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">ApiClient</span>(<span class="str">"https://api.mygame.com"</span>, <span class="var">userToken</span>);
+
+<span class="kw">const</span> <span class="var">players</span>   <span class="op">=</span> <span class="kw">await</span> <span class="var">api</span>.<span class="fn">get</span>(<span class="str">"/players?limit=10"</span>);
+<span class="kw">const</span> <span class="var">newPlayer</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">api</span>.<span class="fn">post</span>(<span class="str">"/players"</span>, { <span class="var">name</span>:<span class="str">"Ahmed"</span> });
+<span class="kw">await</span> <span class="var">api</span>.<span class="fn">patch</span>(<span class="str">`/players/${id}/score`</span>, { <span class="var">points</span>: <span class="num">50</span> });
+<span class="kw">await</span> <span class="var">api</span>.<span class="fn">delete</span>(<span class="str">`/players/${id}`</span>);</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ COMPARISON TABLE ══ -->
+<div class="final-compare">
+    <h3>📊 متى تختار أي نظام؟</h3>
+    <div style="padding:20px">
+        <table class="compare-table">
+            <tr>
+                <th>المعيار</th>
+                <th>Firebase</th>
+                <th>Supabase</th>
+                <th>MongoDB</th>
+                <th>LocalStorage</th>
+            </tr>
+            <tr>
+                <td>نوع البيانات</td>
+                <td>NoSQL مرن</td>
+                <td>SQL منظم</td>
+                <td>NoSQL مستندات</td>
+                <td>نص/JSON فقط</td>
+            </tr>
+            <tr>
+                <td>Real-time</td>
+                <td><span class="badge badge-g">ممتاز</span></td>
+                <td><span class="badge badge-g">ممتاز</span></td>
+                <td><span class="badge badge-y">يحتاج إعداد</span></td>
+                <td><span class="badge badge-r">لا</span></td>
+            </tr>
+            <tr>
+                <td>سهولة البداية</td>
+                <td><span class="badge badge-g">سهل جداً</span></td>
+                <td><span class="badge badge-c">متوسط</span></td>
+                <td><span class="badge badge-r">يحتاج Backend</span></td>
+                <td><span class="badge badge-g">سهل جداً</span></td>
+            </tr>
+            <tr>
+                <td>الاستعلامات</td>
+                <td>محدودة</td>
+                <td>SQL كامل</td>
+                <td>قوية جداً</td>
+                <td>يدوية</td>
+            </tr>
+            <tr>
+                <td>التخزين</td>
+                <td>سحابي</td>
+                <td>سحابي</td>
+                <td>سحابي/محلي</td>
+                <td>المتصفح فقط</td>
+            </tr>
+            <tr>
+                <td>مثالي لـ</td>
+                <td>تطبيقات تسجيل دخول، ألعاب، دردشة</td>
+                <td>SaaS، متاجر، منصات اجتماعية</td>
+                <td>APIs كبيرة، بيانات معقدة</td>
+                <td>إعدادات، ذاكرة تخزين مؤقت</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="quiz-cta">
+    <h3>🏆 جاهز للاختبار؟</h3>
+    <p>اختبر معرفتك بكل مواضيع الكورس — 30 سؤالاً</p>
+    <a href="js-quiz.html" class="btn-gold">الاختبار النهائي ⚡</a>
+    <a href="js-revision.html" class="btn-outline">المراجعة الشاملة 📖</a>
+</div>
+
+</div><!-- /container -->
+
+<script>
+function switchTab(section, tab) {
+    const allBtns     = document.querySelectorAll(`[onclick*="switchTab('${section}'"]`);
+    const allContents = document.querySelectorAll(`[id^="${section}-"]`);
+    allBtns.forEach(b => b.classList.remove('active'));
+    allContents.forEach(c => { c.classList.remove('active'); c.style.display = 'none'; });
+    const target = document.getElementById(`${section}-${tab}`);
+    if (target) { target.classList.add('active'); target.style.display = 'block'; }
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

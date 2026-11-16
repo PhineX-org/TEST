@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO لـ HTML | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--neon:#39ff14;--neon-dim:rgba(57,255,20,0.08);--bg:#080a0d;--card:#0f1219;--card2:#141b24;--border:rgba(255,255,255,0.07);--border-neon:rgba(57,255,20,0.25);--text:#c9d1d9;--muted:#5a6478;--gold:#f7df1e;--blue:#58a6ff;--red:#ff4d4d;}
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;line-height:1.85;}
+        .header{background:rgba(8,10,13,.95);border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+        .logo{color:var(--neon);font-weight:800;font-size:1.1rem;}
+        .back-link{color:var(--muted);text-decoration:none;font-size:.85rem;border:1px solid var(--border);padding:5px 14px;border-radius:6px;transition:.3s;}
+        .back-link:hover{border-color:var(--neon);color:var(--neon);}
+        .hero{background:radial-gradient(ellipse at 50% 0%,rgba(57,255,20,.06) 0%,transparent 65%);text-align:center;padding:64px 24px 48px;border-bottom:1px solid var(--border);}
+        .lesson-pill{display:inline-block;background:var(--neon-dim);border:1px solid var(--border-neon);color:var(--neon);padding:4px 16px;border-radius:20px;font-size:.78rem;font-weight:700;letter-spacing:1px;margin-bottom:18px;}
+        .hero h1{font-size:2.1rem;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2;}
+        .hero h1 span{color:var(--neon);}
+        .hero p{color:var(--muted);font-size:1rem;max-width:560px;margin:0 auto;}
+        .container{max-width:860px;margin:0 auto;padding:44px 28px 80px;}
+        .section-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden;}
+        .section-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--neon);}
+        .step-label{font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--neon);margin-bottom:8px;text-transform:uppercase;}
+        .section-card h2{color:#fff;font-size:1.35rem;font-weight:700;margin-bottom:14px;}
+        .section-card h3{color:var(--neon);font-size:1.05rem;font-weight:700;margin:20px 0 10px;}
+        .section-card p{color:var(--text);margin-bottom:12px;}
+        .explain-box{background:var(--card2);border-right:3px solid var(--neon);border-radius:0 10px 10px 0;padding:16px 18px;margin:14px 0;font-size:.93rem;}
+        .explain-box strong{color:var(--neon);}
+        .code-wrap{margin:16px 0;}
+        .code-title{background:var(--card2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:7px 16px;font-family:'Fira Code',monospace;font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+        .dot{width:8px;height:8px;border-radius:50%;}
+        .code-block{background:#0a0d12;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;font-family:'Fira Code',monospace;font-size:.86rem;direction:ltr;overflow-x:auto;}
+        .code-line{display:flex;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.03);}
+        .code-line:last-child{border-bottom:none;}
+        .code-line:hover{background:rgba(57,255,20,.03);}
+        .line-num{min-width:42px;padding:9px 10px;text-align:right;color:var(--muted);font-size:.78rem;user-select:none;border-left:1px solid rgba(255,255,255,.04);flex-shrink:0;}
+        .line-code{padding:9px 16px;flex:1;color:#abb2bf;white-space:pre;}
+        .line-note{padding:9px 16px 9px 0;font-size:.78rem;color:var(--muted);font-family:'Cairo',sans-serif;direction:rtl;min-width:200px;max-width:250px;flex-shrink:0;line-height:1.4;border-right:1px solid rgba(57,255,20,.1);}
+        .line-note.hi{color:var(--neon);}
+        .t{color:#e06c75;}.a{color:#e5c07b;}.v{color:#98c379;}.c{color:#5c6370;font-style:italic;}.tx{color:#abb2bf;}
+        .note{border-right:3px solid;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.91rem;}
+        .note.warn{border-color:var(--gold);background:rgba(247,223,30,.06);}
+        .note.info{border-color:var(--blue);background:rgba(88,166,255,.06);}
+        .note.good{border-color:var(--neon);background:var(--neon-dim);}
+        .note.danger{border-color:var(--red);background:rgba(255,77,77,.06);}
+        /* SERP MOCK */
+        .serp-mock{background:#fff;border-radius:10px;padding:20px;margin:14px 0;direction:ltr;text-align:left;font-family:Arial,sans-serif;}
+        .serp-url{color:#006621;font-size:.8rem;margin-bottom:2px;}
+        .serp-title{color:#1a0dab;font-size:1.1rem;font-weight:400;margin-bottom:4px;cursor:pointer;text-decoration:none;display:block;}
+        .serp-title:hover{text-decoration:underline;}
+        .serp-desc{color:#545454;font-size:.88rem;line-height:1.5;}
+        .serp-date{color:#70757a;font-size:.8rem;}
+        /* SCORE BARS */
+        .score-item{margin-bottom:12px;}
+        .score-label{display:flex;justify-content:space-between;margin-bottom:4px;font-size:.88rem;}
+        .score-bar{background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden;}
+        .score-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+        /* CHECKLIST */
+        .checklist{list-style:none;margin:14px 0;}
+        .checklist li{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;margin-bottom:6px;background:var(--card2);border:1px solid var(--border);font-size:.91rem;}
+        .checklist li .ck{font-size:1rem;flex-shrink:0;margin-top:2px;}
+        /* QUIZ */
+        .quiz-section{background:var(--card);border:2px solid var(--border-neon);border-radius:16px;padding:28px 32px;margin-top:40px;}
+        .quiz-section h2{color:var(--neon);font-size:1.3rem;margin-bottom:6px;}
+        .quiz-section>p{color:var(--muted);font-size:.88rem;margin-bottom:24px;}
+        .q-card{background:var(--card2);border-radius:10px;padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
+        .q-card p{font-weight:600;color:#fff;margin-bottom:12px;font-size:.95rem;}
+        .q-card code{background:rgba(57,255,20,.1);color:var(--neon);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem;}
+        .q-options label{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;font-size:.91rem;transition:.2s;}
+        .q-options label:hover{border-color:var(--neon);background:var(--neon-dim);}
+        .q-options input[type=radio]{accent-color:var(--neon);}
+        .btn-quiz{background:var(--neon);color:#000;border:none;padding:13px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+        #quiz-result{margin-top:14px;padding:14px;border-radius:8px;text-align:center;font-weight:700;display:none;}
+        .btn-finish{display:block;background:var(--neon);color:#000;padding:15px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;width:100%;margin-top:20px;text-align:center;text-decoration:none;}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-link">← القائمة</a>
+</header>
+
+<section class="hero">
+    <div class="lesson-pill">LESSON 07 · SEO FOR HTML</div>
+    <h1>SEO في HTML<br><span>كيف تجعل موقعك يتصدر نتائج البحث؟</span></h1>
+    <p>تعلّم كيف تكتب HTML يفهمه المتصفح ومحركات البحث — كل tag صحيح يعني زوار أكثر مجاناً.</p>
+</section>
+
+<div class="container">
+
+<!-- ══ 1. ما هو SEO؟ ══ -->
+<div class="section-card">
+    <div class="step-label">المفهوم الأساسي</div>
+    <h2>🔍 ما هو SEO ولماذا يبدأ من HTML؟</h2>
+
+    <p><strong>SEO</strong> اختصار لـ <strong>Search Engine Optimization</strong> — تهيئة الموقع لمحركات البحث. الهدف: أن يظهر موقعك في أعلى نتائج Google عندما يبحث شخص عن ما تقدمه.</p>
+
+    <div class="explain-box">
+        <strong>كيف يعمل Google تحديداً؟</strong><br>
+        1️⃣ <strong>Crawling:</strong> روبوتات Google تجول صفحات الإنترنت وتقرأ HTML<br>
+        2️⃣ <strong>Indexing:</strong> تُخزّن فهرساً بكل ما وجدته<br>
+        3️⃣ <strong>Ranking:</strong> تُرتّب الصفحات حسب الجودة والصلة بالبحث<br>
+        كلما كان HTML صحيحاً ودلالياً، كلما فهم Google موقعك أفضل → ترتيب أعلى.
+    </div>
+
+    <h3>ماذا يبدو موقعك على Google؟</h3>
+    <div class="serp-mock">
+        <div class="serp-url">https://phinex-academy.com › courses › html</div>
+        <a class="serp-title" href="#">تعلّم HTML من الصفر | PhineX Academy — دورة مجانية شاملة</a>
+        <div class="serp-date">12 ديسمبر 2025 — </div>
+        <div class="serp-desc">دورة HTML المجانية من PhineX Academy. تعلّم بناء صفحات الويب خطوة بخطوة مع شرح كل عنصر وكود. مناسبة للمبتدئين تماماً. ابدأ الآن مجاناً.</div>
+    </div>
+    <p>هذا المربع يُبنى من ثلاثة أشياء في HTML: الـ title، الـ meta description، والـ URL. ستتعلمها جميعاً هنا.</p>
+</div>
+
+<!-- ══ 2. The Essential Head Tags ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الأول</div>
+    <h2>🧠 Tags الـ head الأساسية للـ SEO</h2>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> seo-head.html — كل سطر ومعناه</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;head&gt;</span></div><div class="line-note">كل ما يلي خفي — للمتصفح ومحركات البحث</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">  <span class="c">&lt;!── 1. ترميز الأحرف ──&gt;</span></div><div class="line-note">الأول دائماً</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code">  <span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span></div><div class="line-note hi">دعم كل اللغات — إلزامي ويجب أن يكون أول شيء</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">  <span class="c">&lt;!── 2. التوافق مع الموبايل ──&gt;</span></div><div class="line-note">Google يعاقب المواقع غير المتجاوبة</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">  <span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"viewport"</span> <span class="a">content</span>=<span class="v">"width=device-width, initial-scale=1.0"</span><span class="t">&gt;</span></div><div class="line-note hi">width=device-width: عرض الصفحة = عرض الشاشة</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">  <span class="c">&lt;!── 3. عنوان الصفحة (أهم عنصر SEO) ──&gt;</span></div><div class="line-note">يظهر في نتائج البحث والتبويب</div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">  <span class="t">&lt;title&gt;</span><span class="tx">تعلّم HTML | PhineX Academy — دورة مجانية</span><span class="t">&lt;/title&gt;</span></div><div class="line-note hi">50-60 حرف مثالي. كلمة مفتاحية + اسم الموقع</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">  <span class="c">&lt;!── 4. وصف الصفحة (Meta Description) ──&gt;</span></div><div class="line-note">النص تحت العنوان في نتائج البحث</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">  <span class="t">&lt;meta</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">    <span class="a">name</span>=<span class="v">"description"</span></div><div class="line-note">name="description" يعرّف هذا الـ meta لمحركات البحث</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code">    <span class="a">content</span>=<span class="v">"تعلّم بناء صفحات الويب باحترافية مع PhineX Academy. دورة HTML شاملة ومجانية تغطي كل المفاهيم من الصفر."</span><span class="t">&gt;</span></div><div class="line-note hi">120-160 حرف. جملة مغرية تشجع على النقر</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">  <span class="c">&lt;!── 5. الكلمات المفتاحية (أقل أهمية اليوم) ──&gt;</span></div><div class="line-note">Google لا يستخدمها كثيراً لكنها لا تضر</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code">  <span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"keywords"</span> <span class="a">content</span>=<span class="v">"تعلم HTML, دورة ويب, PhineX Academy"</span><span class="t">&gt;</span></div><div class="line-note">مفصولة بفاصلة — Bing يستخدمها</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code">  <span class="c">&lt;!── 6. اللغة للمتصفح ──&gt;</span></div><div class="line-note">يخبر Google بلغة المحتوى</div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code">  <span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"language"</span> <span class="a">content</span>=<span class="v">"Arabic"</span><span class="t">&gt;</span></div><div class="line-note">يعزز الظهور في بحث اللغة العربية</div></div>
+            <div class="code-line"><div class="line-num">22</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">23</div><div class="line-code">  <span class="c">&lt;!── 7. أيقونة الموقع (Favicon) ──&gt;</span></div><div class="line-note">الأيقونة الصغيرة في التبويب</div></div>
+            <div class="code-line"><div class="line-num">24</div><div class="line-code">  <span class="t">&lt;link</span> <span class="a">rel</span>=<span class="v">"icon"</span> <span class="a">type</span>=<span class="v">"image/png"</span> <span class="a">href</span>=<span class="v">"favicon.png"</span><span class="t">&gt;</span></div><div class="line-note">تظهر في التبويب والـ Bookmarks — مهمة للهوية</div></div>
+            <div class="code-line"><div class="line-num">25</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">26</div><div class="line-code">  <span class="c">&lt;!── 8. Canonical URL — منع تكرار المحتوى ──&gt;</span></div><div class="line-note">مهم جداً عند وجود صفحات متشابهة</div></div>
+            <div class="code-line"><div class="line-num">27</div><div class="line-code">  <span class="t">&lt;link</span> <span class="a">rel</span>=<span class="v">"canonical"</span> <span class="a">href</span>=<span class="v">"https://phinex.com/courses/html"</span><span class="t">&gt;</span></div><div class="line-note hi">يخبر Google: هذه هي الصفحة الأصلية — لا تعاقبنا على التكرار</div></div>
+            <div class="code-line"><div class="line-num">28</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">29</div><div class="line-code">  <span class="c">&lt;!── 9. تعليمات الروبوتات ──&gt;</span></div><div class="line-note">للتحكم في الفهرسة</div></div>
+            <div class="code-line"><div class="line-num">30</div><div class="line-code">  <span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"robots"</span> <span class="a">content</span>=<span class="v">"index, follow"</span><span class="t">&gt;</span></div><div class="line-note hi">index=فهرس هذه الصفحة، follow=تتبع روابطها</div></div>
+            <div class="code-line"><div class="line-num">31</div><div class="line-code">  <span class="c">&lt;!-- noindex, nofollow = لا تفهرس ولا تتبع --&gt;</span></div><div class="line-note">لصفحات تسجيل الدخول والسياسات الخاصة</div></div>
+            <div class="code-line"><div class="line-num">32</div><div class="line-code"><span class="t">&lt;/head&gt;</span></div><div class="line-note"></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ 3. Open Graph ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثاني</div>
+    <h2>📱 Open Graph — بطاقات المشاركة الاجتماعية</h2>
+
+    <p>عندما تشارك رابطاً على WhatsApp أو Twitter أو Facebook، تظهر بطاقة جميلة بصورة وعنوان ووصف. هذه البطاقة تُبنى من Open Graph tags في HTML.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> open-graph.html</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!── Open Graph للمشاركة على وسائل التواصل ──&gt;</span></div><div class="line-note">توضع في head</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">property</span>=<span class="v">"og:title"</span> <span class="a">content</span>=<span class="v">"تعلّم HTML مع PhineX Academy"</span><span class="t">&gt;</span></div><div class="line-note hi">property=og:title — عنوان البطاقة عند المشاركة</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">property</span>=<span class="v">"og:description"</span> <span class="a">content</span>=<span class="v">"دورة HTML شاملة ومجانية — ابدأ رحلتك في الويب اليوم"</span><span class="t">&gt;</span></div><div class="line-note">وصف يظهر أسفل العنوان في البطاقة</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">property</span>=<span class="v">"og:image"</span> <span class="a">content</span>=<span class="v">"https://phinex.com/og-image.jpg"</span><span class="t">&gt;</span></div><div class="line-note hi">الصورة الكبيرة في البطاقة — 1200×630 px مثالي</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">property</span>=<span class="v">"og:url"</span> <span class="a">content</span>=<span class="v">"https://phinex.com/courses/html"</span><span class="t">&gt;</span></div><div class="line-note">الرابط الرسمي للصفحة</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">property</span>=<span class="v">"og:type"</span> <span class="a">content</span>=<span class="v">"website"</span><span class="t">&gt;</span></div><div class="line-note">النوع: website / article / video / product</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">property</span>=<span class="v">"og:site_name"</span> <span class="a">content</span>=<span class="v">"PhineX Academy"</span><span class="t">&gt;</span></div><div class="line-note">اسم الموقع — يظهر في بعض منصات التواصل</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">property</span>=<span class="v">"og:locale"</span> <span class="a">content</span>=<span class="v">"ar_AR"</span><span class="t">&gt;</span></div><div class="line-note">لغة المحتوى: ar_AR للعربية</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code"><span class="c">&lt;!── Twitter Card ──&gt;</span></div><div class="line-note">خاص بـ Twitter/X</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"twitter:card"</span> <span class="a">content</span>=<span class="v">"summary_large_image"</span><span class="t">&gt;</span></div><div class="line-note hi">summary_large_image = بطاقة كبيرة بصورة</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"twitter:title"</span> <span class="a">content</span>=<span class="v">"تعلّم HTML | PhineX Academy"</span><span class="t">&gt;</span></div><div class="line-note">عنوان البطاقة على Twitter</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code"><span class="t">&lt;meta</span> <span class="a">name</span>=<span class="v">"twitter:image"</span> <span class="a">content</span>=<span class="v">"https://phinex.com/twitter-img.jpg"</span><span class="t">&gt;</span></div><div class="line-note">الصورة الخاصة بـ Twitter — يمكن أن تختلف عن og:image</div></div>
+        </div>
+    </div>
+
+    <div class="note good">
+        <strong>✅ اختبر بطاقة مشاركتك:</strong> بعد نشر موقعك، استخدم <strong>Facebook Sharing Debugger</strong> أو <strong>Twitter Card Validator</strong> للتحقق من شكل البطاقة قبل المشاركة.
+    </div>
+</div>
+
+<!-- ══ 4. Semantic HTML for SEO ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثالث</div>
+    <h2>🏛️ HTML الدلالي — أساس SEO الحقيقي</h2>
+
+    <p>استخدام Tags الدلالية الصحيحة يساعد Google على فهم هيكل صفحتك ومحتواها — وهذا يعني ترتيباً أفضل.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> semantic-seo.html — هيكل صحيح لـ SEO</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;body&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">  <span class="t">&lt;header&gt;</span></div><div class="line-note hi">رأس الصفحة — Google يفهم أنه التنقل والهوية</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code">    <span class="c">&lt;!── h1 واحد فقط — الكلمة المفتاحية الرئيسية ──&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">    <span class="t">&lt;h1&gt;</span><span class="tx">تعلّم HTML من الصفر حتى الاحتراف</span><span class="t">&lt;/h1&gt;</span></div><div class="line-note hi">h1 = الكلمة المفتاحية الرئيسية. مرة واحدة فقط!</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">    <span class="t">&lt;nav</span> <span class="a">aria-label</span>=<span class="v">"القائمة الرئيسية"</span><span class="t">&gt;</span></div><div class="line-note">aria-label يوضح الغرض لمحركات البحث</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">      <span class="t">&lt;ul&gt;</span></div><div class="line-note">قائمة التنقل كـ ul — الأفضل لـ SEO</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">        <span class="t">&lt;li&gt;&lt;a</span> <span class="a">href</span>=<span class="v">"/html"</span><span class="t">&gt;</span><span class="tx">HTML</span><span class="t">&lt;/a&gt;&lt;/li&gt;</span></div><div class="line-note">روابط التنقل مهمة لـ SEO</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">        <span class="t">&lt;li&gt;&lt;a</span> <span class="a">href</span>=<span class="v">"/css"</span><span class="t">&gt;</span><span class="tx">CSS</span><span class="t">&lt;/a&gt;&lt;/li&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">      <span class="t">&lt;/ul&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">    <span class="t">&lt;/nav&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">  <span class="t">&lt;/header&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">  <span class="t">&lt;main&gt;</span></div><div class="line-note hi">main = المحتوى الأساسي — Google يعطيه أولوية</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code">    <span class="t">&lt;article&gt;</span></div><div class="line-note">article = محتوى مستقل يمكن نشره وحده</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code">      <span class="t">&lt;h2&gt;</span><span class="tx">ما هي HTML؟</span><span class="t">&lt;/h2&gt;</span></div><div class="line-note">h2 = عنوان قسم — الكلمة المفتاحية الثانوية</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">      <span class="t">&lt;p&gt;</span><span class="tx">HTML هي لغة بناء صفحات الويب...</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">محتوى الفقرة — يجب أن يحتوي الكلمات المفتاحية</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code">      <span class="t">&lt;h3&gt;</span><span class="tx">عناصر HTML الأساسية</span><span class="t">&lt;/h3&gt;</span></div><div class="line-note">h3 تفصيل أعمق — هيكل هرمي صحيح</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">    <span class="t">&lt;/article&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code">    <span class="c">&lt;!── الصور مع alt تحتوي الكلمة المفتاحية ──&gt;</span></div><div class="line-note">Google يقرأ alt</div></div>
+            <div class="code-line"><div class="line-num">22</div><div class="line-code">    <span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"html-tutorial.jpg"</span> <span class="a">alt</span>=<span class="v">"دروس HTML للمبتدئين — PhineX Academy"</span> <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span></div><div class="line-note hi">alt تحتوي الكلمة المفتاحية + loading=lazy لسرعة التحميل</div></div>
+            <div class="code-line"><div class="line-num">23</div><div class="line-code">  <span class="t">&lt;/main&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">24</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">25</div><div class="line-code">  <span class="t">&lt;footer&gt;</span></div><div class="line-note">footer يحتوي روابط وإشارات الحقوق</div></div>
+            <div class="code-line"><div class="line-num">26</div><div class="line-code">    <span class="t">&lt;p&gt;</span><span class="tx">© 2025 PhineX Academy. جميع الحقوق محفوظة.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">حقوق النشر — إشارة ثقة لمحركات البحث</div></div>
+            <div class="code-line"><div class="line-num">27</div><div class="line-code">  <span class="t">&lt;/footer&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">28</div><div class="line-code"><span class="t">&lt;/body&gt;</span></div><div class="line-note"></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ 4. Performance SEO ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الرابع</div>
+    <h2>⚡ سرعة التحميل = SEO مباشر</h2>
+
+    <p>Google يضع سرعة الصفحة ضمن عوامل الترتيب. كل ثانية تحميل إضافية تفقدك 7% من الزوار.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> performance.html — تحسين السرعة في HTML</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!── تحميل CSS قبل الـ body (في head) ──&gt;</span></div><div class="line-note hi">CSS يجب أن يكون في head دائماً</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;link</span> <span class="a">rel</span>=<span class="v">"stylesheet"</span> <span class="a">href</span>=<span class="v">"styles.css"</span><span class="t">&gt;</span></div><div class="line-note">يمنع وميض المحتوى غير المنسق</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="c">&lt;!── تحميل JS في آخر الـ body ──&gt;</span></div><div class="line-note">أو defer في head</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="t">&lt;script</span> <span class="a">src</span>=<span class="v">"app.js"</span> <span class="a">defer</span><span class="t">&gt;&lt;/script&gt;</span></div><div class="line-note hi">defer = حمّل JS لكن نفّذه بعد تحميل HTML</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code"><span class="t">&lt;script</span> <span class="a">src</span>=<span class="v">"analytics.js"</span> <span class="a">async</span><span class="t">&gt;&lt;/script&gt;</span></div><div class="line-note">async = حمّل ونفّذ فوراً بدون انتظار HTML</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="c">&lt;!── صور بـ lazy loading ──&gt;</span></div><div class="line-note">يؤجل تحميل الصور البعيدة</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code"><span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"hero.jpg"</span> <span class="a">alt</span>=<span class="v">"..."</span> <span class="a">loading</span>=<span class="v">"eager"</span><span class="t">&gt;</span></div><div class="line-note">eager = حمّل فوراً (للصور المرئية عند الفتح)</div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code"><span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"gallery.jpg"</span> <span class="a">alt</span>=<span class="v">"..."</span> <span class="a">loading</span>=<span class="v">"lazy"</span><span class="t">&gt;</span></div><div class="line-note hi">lazy = لا تحمّل حتى يقترب المستخدم منها</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code"><span class="c">&lt;!── تلميح للمتصفح بتحميل الموارد مسبقاً ──&gt;</span></div><div class="line-note">Resource Hints</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code"><span class="t">&lt;link</span> <span class="a">rel</span>=<span class="v">"preload"</span> <span class="a">href</span>=<span class="v">"hero-font.woff2"</span> <span class="a">as</span>=<span class="v">"font"</span> <span class="a">crossorigin</span><span class="t">&gt;</span></div><div class="line-note hi">preload = حمّل هذا المورد بأولوية عالية</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code"><span class="t">&lt;link</span> <span class="a">rel</span>=<span class="v">"preconnect"</span> <span class="a">href</span>=<span class="v">"https://fonts.googleapis.com"</span><span class="t">&gt;</span></div><div class="line-note">افتح اتصالاً مع هذا الدومين مسبقاً</div></div>
+        </div>
+    </div>
+
+    <div class="note info">
+        <strong>defer مقابل async:</strong><br>
+        <code>defer</code> → ينفّذ الـ JS بعد انتهاء تحليل HTML، بترتيب الملفات — الأفضل للـ scripts التي تتفاعل مع DOM.<br>
+        <code>async</code> → يحمّل بالتوازي وينفّذ فوراً — الأفضل للـ scripts المستقلة مثل Analytics وChat widgets.
+    </div>
+</div>
+
+<!-- ══ 5. SEO Checklist ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الخامس</div>
+    <h2>✅ قائمة تدقيق SEO — افحص موقعك</h2>
+
+    <p>قبل نشر أي صفحة، تحقق من هذه النقاط:</p>
+
+    <ul class="checklist">
+        <li><span class="ck">✅</span><div><strong>title فريد لكل صفحة</strong> — 50-60 حرف، يحتوي الكلمة المفتاحية الرئيسية</div></li>
+        <li><span class="ck">✅</span><div><strong>meta description مكتوب</strong> — 120-160 حرف، جذاب ويحتوي call-to-action</div></li>
+        <li><span class="ck">✅</span><div><strong>h1 واحد فقط</strong> — يحتوي الكلمة المفتاحية الرئيسية</div></li>
+        <li><span class="ck">✅</span><div><strong>هيكل عناوين منطقي</strong> — h1 ← h2 ← h3 بدون قفز</div></li>
+        <li><span class="ck">✅</span><div><strong>كل الصور لها alt</strong> — وصفي ويحتوي الكلمة المفتاحية عند الملاءمة</div></li>
+        <li><span class="ck">✅</span><div><strong>الموقع متجاوب</strong> — يعمل على الموبايل (viewport meta)</div></li>
+        <li><span class="ck">✅</span><div><strong>روابط وصفية</strong> — URL يحتوي الكلمة المفتاحية (لا أرقام عشوائية)</div></li>
+        <li><span class="ck">✅</span><div><strong>Open Graph مكتمل</strong> — og:title, og:description, og:image</div></li>
+        <li><span class="ck">✅</span><div><strong>الصفحة سريعة</strong> — JS بـ defer، صور بـ lazy، CSS محسّن</div></li>
+        <li><span class="ck">✅</span><div><strong>محتوى فريد وقيّم</strong> — لا نسخ، لا حشو — Google يكافئ الجودة</div></li>
+    </ul>
+
+    <div class="note good">
+        <strong>✅ أدوات مجانية للتحقق:</strong><br>
+        <strong>Google Search Console</strong> — مجاني ورسمي من Google<br>
+        <strong>PageSpeed Insights</strong> — يقيس سرعة صفحتك ويعطيك توصيات<br>
+        <strong>Ahrefs Free Tools</strong> — تحليل الروابط والكلمات المفتاحية
+    </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="quiz-section">
+    <h2>🧠 اختبار SEO</h2>
+    <p>5 أسئلة تختبر فهمك لتهيئة محركات البحث</p>
+
+    <div class="q-card">
+        <p>س1: ما الطول المثالي لعنوان الصفحة (<code>&lt;title&gt;</code>) في نتائج البحث؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q1" value="w"> 200 حرف أو أكثر</label>
+            <label><input type="radio" name="q1" value="c"> 50-60 حرف تقريباً</label>
+            <label><input type="radio" name="q1" value="w"> 10 أحرف فقط</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س2: ما وظيفة <code>loading="lazy"</code> على الصور؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q2" value="w"> يجعل الصورة تظهر ببطء تدريجياً</label>
+            <label><input type="radio" name="q2" value="c"> يؤجل تحميل الصورة حتى تقترب من مجال رؤية المستخدم — يُسرّع الصفحة</label>
+            <label><input type="radio" name="q2" value="w"> يضغط الصورة تلقائياً</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س3: ما الفرق بين <code>defer</code> و <code>async</code> في تحميل JS؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q3" value="c"> defer ينفّذ بعد HTML بترتيب، async ينفّذ فوراً بدون ترتيب</label>
+            <label><input type="radio" name="q3" value="w"> كلاهما متطابق تماماً</label>
+            <label><input type="radio" name="q3" value="w"> async أبطأ دائماً من defer</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س4: ما وظيفة Open Graph tags في HTML؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q4" value="w"> تُزيّن الصفحة بإطار مميز</label>
+            <label><input type="radio" name="q4" value="c"> تتحكم في شكل البطاقة عند مشاركة الرابط على وسائل التواصل الاجتماعي</label>
+            <label><input type="radio" name="q4" value="w"> تُترجم الصفحة لغات أخرى</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س5: لماذا يجب أن يكون هناك <code>&lt;h1&gt;</code> واحد فقط في الصفحة؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q5" value="w"> لأسباب تجميلية فقط</label>
+            <label><input type="radio" name="q5" value="c"> لأن Google يعتبره الكلمة المفتاحية الرئيسية — تكراره يُربك محرك البحث ويضعف التركيز</label>
+            <label><input type="radio" name="q5" value="w"> لأن المتصفح يرفض أكثر من h1</label>
+        </div>
+    </div>
+
+    <button class="btn-quiz" onclick="checkQuiz()">تحقق من إجاباتي ✅</button>
+    <div id="quiz-result"></div>
+    <a href="menu.html" class="btn-finish" id="finish-btn" style="display:none" onclick="saveProgress()">✅ إنهاء الدرس والعودة للقائمة</a>
+</div>
+
+</div>
+
+<script>
+function checkQuiz(){
+    const ans={q1:'c',q2:'c',q3:'c',q4:'c',q5:'c'};
+    let sc=0;
+    for(const[q,a] of Object.entries(ans)){if(document.querySelector(`input[name="${q}"]:checked`)?.value===a)sc++;}
+    const total=Object.keys(ans).length,el=document.getElementById('quiz-result');
+    el.style.display='block';
+    if(sc===total){el.style.cssText='display:block;background:rgba(57,255,20,.1);color:#39ff14;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent='🏆 ممتاز! موقعك سيتصدر النتائج!';document.getElementById('finish-btn').style.display='block';}
+    else{el.style.cssText='display:block;background:rgba(255,77,77,.1);color:#ff4d4d;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent=`${sc} من ${total} — راجع الأقسام الخاطئة.`;}
+}
+function saveProgress(){localStorage.setItem('lesson-seo','completed');}
+</script>
+</body>
+</html>

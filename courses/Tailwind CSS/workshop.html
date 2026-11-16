@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الورش العملية | Tailwind CSS | PhineX Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{
+      --bg:#050508;--bg2:#0c0c18;
+      --tw:#38bdf8;--purple:#a78bfa;--green:#34d399;--orange:#fb923c;--pink:#f472b6;
+      --border:rgba(255,255,255,.07);--muted:rgba(255,255,255,.45);
+      --code-bg:#0d1117;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:#fff;font-family:'Cairo',sans-serif;line-height:1.7;}
+
+    /* TOPBAR */
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(5,5,8,.92);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 40px;
+    }
+    .topbar-left{display:flex;align-items:center;gap:12px;}
+    .topbar a{color:var(--muted);text-decoration:none;font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s;}
+    .topbar a:hover{color:var(--tw);}
+    .topbar .sep{color:var(--border);}
+    .topbar .current{color:var(--tw);}
+    .topbar-right{display:flex;gap:8px;}
+    .nav-pill{
+      background:rgba(255,255,255,.05);border:1px solid var(--border);
+      border-radius:100px;padding:6px 16px;font-size:.8rem;color:var(--muted);
+      text-decoration:none;transition:all .2s;
+    }
+    .nav-pill:hover{border-color:var(--tw);color:var(--tw);}
+    .nav-pill.active{background:rgba(56,189,248,.1);border-color:var(--tw);color:var(--tw);}
+
+    /* HERO */
+    .page-hero{
+      padding:70px 40px 50px;text-align:center;
+      background:linear-gradient(180deg,rgba(56,189,248,.05) 0%,transparent 100%);
+      border-bottom:1px solid var(--border);
+    }
+    .page-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'Orbitron',sans-serif;font-size:.65rem;letter-spacing:3px;
+      color:var(--purple);border:1px solid rgba(167,139,250,.3);
+      border-radius:100px;padding:6px 20px;margin-bottom:20px;
+    }
+    .page-hero h1{
+      font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;
+      background:linear-gradient(135deg,var(--purple),var(--tw));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-bottom:12px;
+    }
+    .page-hero p{color:var(--muted);font-size:1rem;max-width:550px;margin:0 auto;}
+
+    /* WORKSHOPS GRID */
+    .workshops-wrap{max-width:1100px;margin:0 auto;padding:60px 40px;}
+    .ws-tabs{
+      display:flex;gap:10px;margin-bottom:40px;flex-wrap:wrap;
+    }
+    .ws-tab{
+      background:rgba(255,255,255,.04);border:1px solid var(--border);
+      border-radius:100px;padding:8px 20px;font-size:.85rem;color:var(--muted);
+      cursor:pointer;transition:all .2s;
+    }
+    .ws-tab:hover,.ws-tab.active{background:rgba(167,139,250,.1);border-color:var(--purple);color:var(--purple);}
+
+    /* WORKSHOP CARD */
+    .workshop{
+      background:var(--bg2);border:1px solid var(--border);
+      border-radius:24px;margin-bottom:60px;overflow:hidden;
+      transition:border-color .3s;
+    }
+    .workshop:hover{border-color:rgba(167,139,250,.3);}
+
+    .ws-header{
+      padding:36px 40px 32px;
+      background:linear-gradient(135deg,rgba(167,139,250,.06),rgba(56,189,248,.03));
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    }
+    .ws-meta{display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+    .ws-num{
+      font-family:'Orbitron',sans-serif;font-size:.65rem;letter-spacing:2px;
+      color:var(--purple);background:rgba(167,139,250,.12);
+      border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:5px 12px;
+    }
+    .ws-diff{
+      font-size:.72rem;border-radius:100px;padding:3px 10px;font-weight:700;
+    }
+    .diff-beginner{background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.2);}
+    .diff-mid{background:rgba(251,146,60,.1);color:var(--orange);border:1px solid rgba(251,146,60,.2);}
+    .diff-advanced{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2);}
+    .ws-time{font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:5px;}
+
+    .ws-header h2{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:8px;}
+    .ws-header p{color:var(--muted);font-size:.9rem;line-height:1.7;}
+
+    .ws-preview{
+      width:220px;flex-shrink:0;
+      border-radius:14px;overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+      min-height:120px;display:flex;align-items:center;justify-content:center;
+    }
+
+    /* LIVE PREVIEW DESIGNS */
+    .preview-card-01{
+      width:100%;height:140px;
+      background:linear-gradient(135deg,#1e293b,#0f172a);
+      display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;
+    }
+    .preview-card-01::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at 60% 40%,rgba(56,189,248,.2),transparent);
+    }
+
+    .ws-body{padding:36px 40px;}
+
+    /* STEPS */
+    .steps-label{
+      font-family:'Orbitron',sans-serif;font-size:.65rem;letter-spacing:3px;
+      color:var(--muted);margin-bottom:20px;
+    }
+    .steps{display:flex;flex-direction:column;gap:16px;margin-bottom:32px;}
+    .step{
+      display:flex;gap:16px;align-items:flex-start;
+      background:rgba(255,255,255,.02);border:1px solid var(--border);
+      border-radius:12px;padding:16px 20px;
+      transition:border-color .25s;
+    }
+    .step:hover{border-color:rgba(167,139,250,.25);}
+    .step-dot{
+      width:30px;height:30px;border-radius:50%;flex-shrink:0;
+      background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--purple);
+    }
+    .step-content h4{font-size:.92rem;font-weight:700;margin-bottom:4px;}
+    .step-content p{font-size:.83rem;color:var(--muted);line-height:1.6;}
+
+    /* CODE */
+    .code-block{border-radius:12px;overflow:hidden;margin:20px 0;border:1px solid rgba(255,255,255,.08);}
+    .code-header{
+      background:#161b22;padding:10px 20px;
+      display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .code-header .lang{font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:2px;color:var(--tw);}
+    .copy-btn{
+      background:none;border:1px solid rgba(255,255,255,.1);border-radius:6px;
+      color:rgba(255,255,255,.4);padding:4px 10px;font-size:.72rem;cursor:pointer;
+      font-family:'Cairo',sans-serif;transition:all .2s;
+    }
+    .copy-btn:hover{border-color:var(--tw);color:var(--tw);}
+    pre{
+      background:var(--code-bg);padding:24px;overflow-x:auto;
+      font-family:'Fira Code',monospace;font-size:.83rem;line-height:1.75;
+    }
+    .k{color:#ff79c6;}.a{color:#50fa7b;}.v{color:#f1fa8c;}.c{color:#6272a4;}
+    .p{color:#8be9fd;}.cls{color:#50fa7b;}.cm{color:#bd93f9;}
+
+    /* SKILLS TAGS */
+    .skills-used{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
+    .skill-tag{
+      font-size:.72rem;border-radius:100px;padding:4px 14px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);
+    }
+
+    /* RESULT PREVIEW (live) */
+    .result-preview{
+      border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;margin:20px 0;
+    }
+    .rp-label{
+      background:#161b22;padding:8px 20px;
+      display:flex;align-items:center;gap:6px;
+      font-size:.65rem;letter-spacing:2px;color:rgba(255,255,255,.3);
+      font-family:'Orbitron',sans-serif;
+    }
+    .rp-dot{width:8px;height:8px;border-radius:50%;}
+    .rp-content{padding:30px;background:#111827;}
+
+    /* info box */
+    .info-box{
+      border-radius:12px;padding:16px 20px;margin:16px 0;
+      display:flex;gap:12px;font-size:.87rem;line-height:1.7;
+    }
+    .info-blue{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);}
+    .info-blue i{color:var(--tw);}
+    .info-green{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);}
+    .info-green i{color:var(--green);}
+    .info-purple{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);}
+    .info-purple i{color:var(--purple);}
+
+    footer{text-align:center;padding:40px;border-top:1px solid var(--border);color:rgba(255,255,255,.2);font-size:.8rem;}
+    footer .logo{font-family:'Orbitron',sans-serif;color:var(--tw);margin-bottom:6px;font-size:.9rem;}
+
+    @media(max-width:768px){
+      .topbar{padding:12px 20px;}.topbar-right{display:none;}
+      .ws-header{padding:24px 20px;}.ws-body{padding:24px 20px;}
+      .ws-preview{display:none;}
+      .workshops-wrap{padding:40px 20px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../menu.html"><i class="fas fa-arrow-right"></i> الدورة</a>
+    <span class="sep">/</span>
+    <span class="current">الورش العملية</span>
+  </div>
+  <div class="topbar-right">
+    <a href="lessons.html" class="nav-pill">الدروس</a>
+    <a href="workshops.html" class="nav-pill active">الورش</a>
+    <a href="revision.html" class="nav-pill">المراجعة</a>
+    <a href="quiz.html" class="nav-pill">الكويز</a>
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="page-badge"><i class="fas fa-hammer"></i> WORKSHOPS</div>
+  <h1>الورش العملية</h1>
+  <p>5 مشاريع حقيقية من الصفر للنهاية — بكل سطر كود مشروح بالعربي</p>
+</div>
+
+<div class="workshops-wrap">
+  <div class="ws-tabs">
+    <div class="ws-tab active">الكل</div>
+    <div class="ws-tab">مبتدئ</div>
+    <div class="ws-tab">متوسط</div>
+    <div class="ws-tab">متقدم</div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       WORKSHOP 1 — Profile Card
+  ══════════════════════════════════════ -->
+  <div class="workshop" id="ws1">
+    <div class="ws-header">
+      <div style="flex:1;min-width:200px;">
+        <div class="ws-meta">
+          <span class="ws-num">WS 01</span>
+          <span class="ws-diff diff-beginner">مبتدئ</span>
+          <span class="ws-time"><i class="fas fa-clock"></i> 20 دقيقة</span>
+        </div>
+        <h2>بطاقة Profile احترافية</h2>
+        <p>هنبني بطاقة profile جميلة بـ avatar وبيانات واجتماعيات. بنستخدم Flexbox والـ Hover effects وColorful gradients.</p>
+        <div class="skills-used" style="margin-top:16px;">
+          <span class="skill-tag">Flexbox</span>
+          <span class="skill-tag">Gradient</span>
+          <span class="skill-tag">Hover Transitions</span>
+          <span class="skill-tag">Rounded</span>
+          <span class="skill-tag">Shadow</span>
+        </div>
+      </div>
+      <div class="ws-preview">
+        <div class="preview-card-01" style="width:220px;height:140px;flex-direction:column;gap:8px;padding:16px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#818cf8);border:2px solid rgba(56,189,248,.5);"></div>
+          <div style="font-size:.7rem;color:#fff;font-weight:700;">Ahmed Developer</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.5);">Full Stack Dev</div>
+          <div style="display:flex;gap:6px;margin-top:4px;">
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.5rem;">G</div>
+            <div style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.5rem;">T</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ws-body">
+      <div class="steps-label">خطوات البناء</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">01</div>
+          <div class="step-content">
+            <h4>هيكل الـ HTML</h4>
+            <p>نبدأ بـ div رئيسي للبطاقة، وجواه: الصورة، الاسم، الوظيفة، الـ social links، وزر Follow.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">02</div>
+          <div class="step-content">
+            <h4>تصميم الـ Card Container</h4>
+            <p>نحط الـ card في وسط الشاشة بـ Flexbox، ونضيف خلفية وـ rounded corners وـ shadow.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">03</div>
+          <div class="step-content">
+            <h4>إضافة الـ Cover وـ Avatar</h4>
+            <p>Cover بـ gradient وـ Avatar بيبقى positioned عليه بـ relative/absolute وـ negative margin.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">04</div>
+          <div class="step-content">
+            <h4>Hover Animations</h4>
+            <p>نضيف transition على البطاقة كلها وـ hover effects على الـ social buttons.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="lang">HTML — البطاقة الكاملة</span><button class="copy-btn" onclick="copyCode(this)">نسخ</button></div>
+        <pre><span class="k">&lt;!DOCTYPE html&gt;</span>
+<span class="k">&lt;html&gt;&lt;head&gt;</span>
+<span class="k">&lt;script</span> <span class="a">src</span>=<span class="v">"https://cdn.tailwindcss.com"</span><span class="k">&gt;&lt;/script&gt;</span>
+<span class="k">&lt;link</span> <span class="a">rel</span>=<span class="v">"stylesheet"</span> <span class="a">href</span>=<span class="v">"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"</span><span class="k">/&gt;</span>
+<span class="k">&lt;/head&gt;</span>
+<span class="k">&lt;body</span> <span class="a">class</span>=<span class="v">"bg-slate-900 min-h-screen flex items-center justify-center p-6"</span><span class="k">&gt;</span>
+
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-80 bg-slate-800 rounded-3xl overflow-hidden
+              shadow-2xl shadow-blue-500/10
+              transition-all duration-500
+              hover:-translate-y-2 hover:shadow-blue-500/25"</span><span class="k">&gt;</span>
+
+    <span class="c">&lt;!-- COVER --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"h-28 bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600
+                relative"</span><span class="k">&gt;</span>
+      <span class="c">&lt;!-- زخرفة --&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"absolute top-3 right-3 w-16 h-16
+                  bg-white/10 rounded-full blur-xl"</span><span class="k">&gt;&lt;/div&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+
+    <span class="c">&lt;!-- AVATAR --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex justify-center -mt-12 mb-4"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500
+                  border-4 border-slate-800
+                  flex items-center justify-center text-4xl
+                  shadow-lg shadow-blue-500/30
+                  transition-transform duration-300 hover:scale-110"</span><span class="k">&gt;</span>
+        👨‍💻
+      <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+
+    <span class="c">&lt;!-- INFO --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"px-8 pb-6 text-center"</span><span class="k">&gt;</span>
+      <span class="k">&lt;h2</span> <span class="a">class</span>=<span class="v">"text-white text-xl font-bold mb-1"</span><span class="k">&gt;</span>Ahmed Elgohary<span class="k">&lt;/h2&gt;</span>
+      <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-cyan-400 text-sm font-medium mb-1"</span><span class="k">&gt;</span>Full Stack Developer<span class="k">&lt;/p&gt;</span>
+      <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-slate-400 text-xs mb-5"</span><span class="k">&gt;</span>PhineX Academy • Cairo, EG<span class="k">&lt;/p&gt;</span>
+
+      <span class="c">&lt;!-- STATS --&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex justify-around mb-5 py-4
+                  border-y border-slate-700"</span><span class="k">&gt;</span>
+        <span class="k">&lt;div&gt;</span>
+          <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white font-bold text-lg"</span><span class="k">&gt;</span>32<span class="k">&lt;/p&gt;</span>
+          <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-slate-400 text-xs"</span><span class="k">&gt;</span>Projects<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+        <span class="k">&lt;div&gt;</span>
+          <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white font-bold text-lg"</span><span class="k">&gt;</span>1.2k<span class="k">&lt;/p&gt;</span>
+          <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-slate-400 text-xs"</span><span class="k">&gt;</span>Followers<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+        <span class="k">&lt;div&gt;</span>
+          <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white font-bold text-lg"</span><span class="k">&gt;</span>98%<span class="k">&lt;/p&gt;</span>
+          <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-slate-400 text-xs"</span><span class="k">&gt;</span>Rating<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+
+      <span class="c">&lt;!-- SOCIAL --&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex justify-center gap-3 mb-5"</span><span class="k">&gt;</span>
+        <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"w-9 h-9 rounded-full bg-slate-700
+                         flex items-center justify-center text-slate-300
+                         hover:bg-blue-500 hover:text-white hover:scale-110
+                         transition-all duration-200"</span><span class="k">&gt;</span>
+          <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fab fa-github text-sm"</span><span class="k">&gt;&lt;/i&gt;</span>
+        <span class="k">&lt;/a&gt;</span>
+        <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"w-9 h-9 rounded-full bg-slate-700
+                         flex items-center justify-center text-slate-300
+                         hover:bg-sky-500 hover:text-white hover:scale-110
+                         transition-all duration-200"</span><span class="k">&gt;</span>
+          <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fab fa-twitter text-sm"</span><span class="k">&gt;&lt;/i&gt;</span>
+        <span class="k">&lt;/a&gt;</span>
+        <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"w-9 h-9 rounded-full bg-slate-700
+                         flex items-center justify-center text-slate-300
+                         hover:bg-blue-700 hover:text-white hover:scale-110
+                         transition-all duration-200"</span><span class="k">&gt;</span>
+          <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fab fa-linkedin text-sm"</span><span class="k">&gt;&lt;/i&gt;</span>
+        <span class="k">&lt;/a&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+
+      <span class="c">&lt;!-- BUTTON --&gt;</span>
+      <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"w-full py-2.5 rounded-xl
+                     bg-gradient-to-r from-cyan-500 to-blue-500
+                     text-white font-semibold text-sm
+                     hover:opacity-90 hover:shadow-lg hover:shadow-blue-500/30
+                     active:scale-95 transition-all duration-200"</span><span class="k">&gt;</span>
+        Follow
+      <span class="k">&lt;/button&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+
+<span class="k">&lt;/body&gt;&lt;/html&gt;</span></pre>
+      </div>
+
+      <div class="info-box info-green">
+        <i class="fas fa-lightbulb"></i>
+        <div><strong>النقطة الأهم:</strong> الـ <code>-mt-12</code> على الـ Avatar container هي اللي بتخليه يطلع فوق الـ Cover. ده negative margin تقنية شائعة جداً في التصاميم الحديثة.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       WORKSHOP 2 — Glassmorphism Card
+  ══════════════════════════════════════ -->
+  <div class="workshop" id="ws2">
+    <div class="ws-header">
+      <div style="flex:1;min-width:200px;">
+        <div class="ws-meta">
+          <span class="ws-num">WS 02</span>
+          <span class="ws-diff diff-beginner">مبتدئ</span>
+          <span class="ws-time"><i class="fas fa-clock"></i> 15 دقيقة</span>
+        </div>
+        <h2>Glassmorphism Card</h2>
+        <p>بطاقة زجاجية شفافة — أشهر trend في التصميم. بنستخدم backdrop-blur وـ bg-white/10 وـ borders شفافة.</p>
+        <div class="skills-used" style="margin-top:16px;">
+          <span class="skill-tag">backdrop-blur</span>
+          <span class="skill-tag">bg-opacity</span>
+          <span class="skill-tag">Ring</span>
+          <span class="skill-tag">Gradient Background</span>
+        </div>
+      </div>
+    </div>
+    <div class="ws-body">
+      <div class="steps">
+        <div class="step"><div class="step-dot">01</div><div class="step-content"><h4>خلفية ملونة</h4><p>نعمل خلفية بـ gradient قوي — ده اللي هيخلي الـ glass effect واضح.</p></div></div>
+        <div class="step"><div class="step-dot">02</div><div class="step-content"><h4>الـ Glass Card</h4><p>نضيف <code>backdrop-blur-lg bg-white/10 border border-white/20</code> على الـ card.</p></div></div>
+        <div class="step"><div class="step-dot">03</div><div class="step-content"><h4>Blur Circles كـ Decoration</h4><p>نضيف circles ملونة بـ absolute position وراء الـ card علشان يبان التأثير أوضح.</p></div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="lang">HTML — Glassmorphism</span><button class="copy-btn" onclick="copyCode(this)">نسخ</button></div>
+        <pre><span class="k">&lt;body</span> <span class="a">class</span>=<span class="v">"min-h-screen flex items-center justify-center
+              bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900"</span><span class="k">&gt;</span>
+
+  <span class="c">&lt;!-- Decorative blobs --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"fixed top-20 right-20 w-72 h-72
+              bg-purple-500 rounded-full filter blur-3xl opacity-30"</span><span class="k">&gt;&lt;/div&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"fixed bottom-20 left-20 w-72 h-72
+              bg-cyan-500 rounded-full filter blur-3xl opacity-30"</span><span class="k">&gt;&lt;/div&gt;</span>
+
+  <span class="c">&lt;!-- Glass Card --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"relative z-10 w-96 p-8 rounded-3xl
+              backdrop-blur-xl bg-white/10
+              border border-white/20
+              shadow-2xl
+              hover:bg-white/15 transition-all duration-300"</span><span class="k">&gt;</span>
+
+    <span class="c">&lt;!-- Icon --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-14 h-14 rounded-2xl
+                bg-gradient-to-br from-cyan-400 to-purple-400
+                flex items-center justify-center text-2xl mb-6
+                shadow-lg"</span><span class="k">&gt;</span>🚀<span class="k">&lt;/div&gt;</span>
+
+    <span class="k">&lt;h2</span> <span class="a">class</span>=<span class="v">"text-white text-2xl font-bold mb-3"</span><span class="k">&gt;</span>
+      بطاقة Glass
+    <span class="k">&lt;/h2&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white/60 text-sm leading-relaxed mb-6"</span><span class="k">&gt;</span>
+      ده مثال على الـ Glassmorphism design. شايف إزاي الخلفية بتظهر من وراء الـ card؟
+      ده بيتعمل بـ backdrop-blur فقط!
+    <span class="k">&lt;/p&gt;</span>
+
+    <span class="c">&lt;!-- Progress Bars --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"space-y-3 mb-6"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex justify-between text-xs text-white/70 mb-1"</span><span class="k">&gt;</span>
+          <span class="k">&lt;span&gt;</span>HTML &amp; CSS<span class="k">&lt;/span&gt;&lt;span&gt;</span>95%<span class="k">&lt;/span&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"h-1.5 bg-white/10 rounded-full"</span><span class="k">&gt;</span>
+          <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"h-full w-[95%] bg-gradient-to-r
+                       from-cyan-400 to-blue-400 rounded-full"</span><span class="k">&gt;&lt;/div&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;div&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex justify-between text-xs text-white/70 mb-1"</span><span class="k">&gt;</span>
+          <span class="k">&lt;span&gt;</span>JavaScript<span class="k">&lt;/span&gt;&lt;span&gt;</span>80%<span class="k">&lt;/span&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"h-1.5 bg-white/10 rounded-full"</span><span class="k">&gt;</span>
+          <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"h-full w-[80%] bg-gradient-to-r
+                       from-yellow-400 to-orange-400 rounded-full"</span><span class="k">&gt;&lt;/div&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+
+    <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"w-full py-3 rounded-xl
+                   border border-white/30 text-white text-sm font-semibold
+                   hover:bg-white/20 transition-all duration-200
+                   active:scale-95"</span><span class="k">&gt;</span>
+      See More →
+    <span class="k">&lt;/button&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+<span class="k">&lt;/body&gt;</span></pre>
+      </div>
+      <div class="info-box info-blue">
+        <i class="fas fa-info-circle"></i>
+        <div>الـ <code>bg-white/10</code> معناها <code>background-color: rgba(255,255,255,0.10)</code>. الرقم بعد الـ / هو الـ opacity من 0 لـ 100. ده اختصار جديد في Tailwind v3 بدل <code>bg-opacity-10</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       WORKSHOP 3 — Responsive Navbar
+  ══════════════════════════════════════ -->
+  <div class="workshop" id="ws3">
+    <div class="ws-header">
+      <div style="flex:1;">
+        <div class="ws-meta">
+          <span class="ws-num">WS 03</span>
+          <span class="ws-diff diff-mid">متوسط</span>
+          <span class="ws-time"><i class="fas fa-clock"></i> 30 دقيقة</span>
+        </div>
+        <h2>Responsive Navbar كاملة</h2>
+        <p>Navbar احترافية بـ mobile hamburger menu وـ dropdown وـ active states. مشروع مهم جداً لأي موقع.</p>
+        <div class="skills-used" style="margin-top:16px;">
+          <span class="skill-tag">Responsive</span>
+          <span class="skill-tag">JavaScript Toggle</span>
+          <span class="skill-tag">Group Hover</span>
+          <span class="skill-tag">Dropdown</span>
+          <span class="skill-tag">Backdrop Blur</span>
+        </div>
+      </div>
+    </div>
+    <div class="ws-body">
+      <div class="steps">
+        <div class="step"><div class="step-dot">01</div><div class="step-content"><h4>Desktop Navbar</h4><p>بنبني الـ navbar بـ flex justify-between — اللوجو على اليسار، الـ links في الوسط، الـ buttons على اليمين.</p></div></div>
+        <div class="step"><div class="step-dot">02</div><div class="step-content"><h4>Mobile Menu Button</h4><p>زرار الـ hamburger بيبان بس على الموبايل بـ <code>block md:hidden</code>، والـ links بتتخبى بـ <code>hidden md:flex</code>.</p></div></div>
+        <div class="step"><div class="step-dot">03</div><div class="step-content"><h4>Mobile Dropdown</h4><p>قائمة بتطلع من تحت الـ navbar على الموبايل — بنتحكم فيها بـ JavaScript وـ class toggle.</p></div></div>
+        <div class="step"><div class="step-dot">04</div><div class="step-content"><h4>Scroll Effect</h4><p>الـ navbar بتتغير لما المستخدم يسكرول — بنضيف backdrop-blur وـ shadow بـ JavaScript.</p></div></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="lang">HTML — Navbar الكاملة</span><button class="copy-btn" onclick="copyCode(this)">نسخ</button></div>
+        <pre><span class="k">&lt;nav</span> <span class="a">id</span>=<span class="v">"navbar"</span>
+     <span class="a">class</span>=<span class="v">"fixed top-0 left-0 right-0 z-50
+             transition-all duration-300
+             py-4 px-6"</span><span class="k">&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"max-w-7xl mx-auto flex items-center justify-between"</span><span class="k">&gt;</span>
+
+    <span class="c">&lt;!-- LOGO --&gt;</span>
+    <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"text-white font-black text-xl tracking-wider
+                       hover:text-cyan-400 transition-colors"</span><span class="k">&gt;</span>
+      PhineX<span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"text-cyan-400"</span><span class="k">&gt;</span>.<span class="k">&lt;/span&gt;</span>
+    <span class="k">&lt;/a&gt;</span>
+
+    <span class="c">&lt;!-- DESKTOP LINKS --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"hidden md:flex items-center gap-8"</span><span class="k">&gt;</span>
+      <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"text-white/70 hover:text-white text-sm
+                       relative after:absolute after:bottom-0 after:left-0
+                       after:w-0 after:h-0.5 after:bg-cyan-400
+                       hover:after:w-full after:transition-all after:duration-300"</span><span class="k">&gt;</span>
+        Home
+      <span class="k">&lt;/a&gt;</span>
+      <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"text-white/70 hover:text-white text-sm
+                       relative after:absolute after:bottom-0 after:left-0
+                       after:w-0 after:h-0.5 after:bg-cyan-400
+                       hover:after:w-full after:transition-all after:duration-300"</span><span class="k">&gt;</span>
+        Courses
+      <span class="k">&lt;/a&gt;</span>
+      <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"text-cyan-400 text-sm font-semibold"</span><span class="k">&gt;</span>
+        Projects
+      <span class="k">&lt;/a&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+
+    <span class="c">&lt;!-- DESKTOP BUTTONS --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"hidden md:flex items-center gap-3"</span><span class="k">&gt;</span>
+      <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"text-white/70 hover:text-white text-sm transition-colors px-4 py-2"</span><span class="k">&gt;</span>
+        Login
+      <span class="k">&lt;/button&gt;</span>
+      <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"bg-cyan-500 hover:bg-cyan-400 text-white text-sm
+                     font-semibold px-5 py-2 rounded-xl
+                     transition-all duration-200 hover:shadow-lg hover:shadow-cyan-500/30
+                     active:scale-95"</span><span class="k">&gt;</span>
+        Join Free
+      <span class="k">&lt;/button&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+
+    <span class="c">&lt;!-- MOBILE HAMBURGER --&gt;</span>
+    <span class="k">&lt;button</span> <span class="a">id</span>=<span class="v">"menu-btn"</span>
+            <span class="a">class</span>=<span class="v">"block md:hidden text-white p-2 rounded-lg
+                         hover:bg-white/10 transition-colors"</span>
+            <span class="a">onclick</span>=<span class="v">"toggleMenu()"</span><span class="k">&gt;</span>
+      <span class="k">&lt;svg</span> <span class="a">class</span>=<span class="v">"w-6 h-6"</span> <span class="a">fill</span>=<span class="v">"none"</span> <span class="a">stroke</span>=<span class="v">"currentColor"</span> <span class="a">viewBox</span>=<span class="v">"0 0 24 24"</span><span class="k">&gt;</span>
+        <span class="k">&lt;path</span> <span class="a">d</span>=<span class="v">"M4 6h16M4 12h16M4 18h16"</span> <span class="a">stroke-width</span>=<span class="v">"2"</span> <span class="a">stroke-linecap</span>=<span class="v">"round"</span><span class="k">/&gt;</span>
+      <span class="k">&lt;/svg&gt;</span>
+    <span class="k">&lt;/button&gt;</span>
+
+  <span class="k">&lt;/div&gt;</span>
+
+  <span class="c">&lt;!-- MOBILE MENU --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">id</span>=<span class="v">"mobile-menu"</span>
+       <span class="a">class</span>=<span class="v">"md:hidden hidden mt-4 py-4 px-2
+               bg-slate-900/95 backdrop-blur-lg rounded-2xl
+               border border-white/10"</span><span class="k">&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex flex-col gap-1"</span><span class="k">&gt;</span>
+      <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"text-white/70 hover:text-white hover:bg-white/5
+                       px-4 py-3 rounded-xl text-sm transition-all"</span><span class="k">&gt;</span>Home<span class="k">&lt;/a&gt;</span>
+      <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"text-white/70 hover:text-white hover:bg-white/5
+                       px-4 py-3 rounded-xl text-sm transition-all"</span><span class="k">&gt;</span>Courses<span class="k">&lt;/a&gt;</span>
+      <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span> <span class="a">class</span>=<span class="v">"text-cyan-400 px-4 py-3 rounded-xl text-sm"</span><span class="k">&gt;</span>Projects<span class="k">&lt;/a&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"border-t border-white/10 mt-2 pt-3 flex gap-2 px-2"</span><span class="k">&gt;</span>
+        <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"flex-1 py-2.5 text-white/70 text-sm border border-white/20 rounded-xl hover:bg-white/10 transition"</span><span class="k">&gt;</span>Login<span class="k">&lt;/button&gt;</span>
+        <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"flex-1 py-2.5 bg-cyan-500 text-white text-sm font-semibold rounded-xl hover:bg-cyan-400 transition"</span><span class="k">&gt;</span>Join Free<span class="k">&lt;/button&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+<span class="k">&lt;/nav&gt;</span>
+
+<span class="k">&lt;script&gt;</span>
+  function toggleMenu() {
+    document.getElementById(<span class="v">'mobile-menu'</span>).classList.toggle(<span class="v">'hidden'</span>);
+  }
+  <span class="c">// Scroll effect</span>
+  window.addEventListener(<span class="v">'scroll'</span>, () => {
+    const nav = document.getElementById(<span class="v">'navbar'</span>);
+    if (window.scrollY > 50) {
+      nav.classList.add(<span class="v">'bg-slate-900/90'</span>, <span class="v">'backdrop-blur-xl'</span>, <span class="v">'shadow-xl'</span>);
+      nav.classList.remove(<span class="v">'py-4'</span>);
+      nav.classList.add(<span class="v">'py-3'</span>);
+    } else {
+      nav.classList.remove(<span class="v">'bg-slate-900/90'</span>, <span class="v">'backdrop-blur-xl'</span>, <span class="v">'shadow-xl'</span>);
+      nav.classList.remove(<span class="v">'py-3'</span>);
+      nav.classList.add(<span class="v">'py-4'</span>);
+    }
+  });
+<span class="k">&lt;/script&gt;</span></pre>
+      </div>
+      <div class="info-box info-purple">
+        <i class="fas fa-magic"></i>
+        <div>التأثير الجميل في الـ links هو underline بيكبر على الـ hover. ده بيتعمل بـ <code>after:</code> pseudo-element في Tailwind — بتضيف class بـ <code>after:</code> وبعدين تتحكم في الـ width. ده variant اسمه <strong>Arbitrary Variants</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       WORKSHOP 4 — Dashboard Stats
+  ══════════════════════════════════════ -->
+  <div class="workshop" id="ws4">
+    <div class="ws-header">
+      <div style="flex:1;">
+        <div class="ws-meta">
+          <span class="ws-num">WS 04</span>
+          <span class="ws-diff diff-mid">متوسط</span>
+          <span class="ws-time"><i class="fas fa-clock"></i> 35 دقيقة</span>
+        </div>
+        <h2>Dashboard Stats Cards</h2>
+        <p>بناء صف من الـ Stat cards زي الـ Dashboards الاحترافية — بـ animated counters وـ trend indicators وـ sparklines.</p>
+        <div class="skills-used" style="margin-top:16px;">
+          <span class="skill-tag">Grid</span>
+          <span class="skill-tag">Responsive</span>
+          <span class="skill-tag">Animation</span>
+          <span class="skill-tag">Conditional Colors</span>
+          <span class="skill-tag">JavaScript Counter</span>
+        </div>
+      </div>
+    </div>
+    <div class="ws-body">
+      <div class="code-block">
+        <div class="code-header"><span class="lang">HTML — Dashboard Cards</span><button class="copy-btn" onclick="copyCode(this)">نسخ</button></div>
+        <pre><span class="k">&lt;body</span> <span class="a">class</span>=<span class="v">"bg-gray-950 min-h-screen p-8"</span><span class="k">&gt;</span>
+<span class="k">&lt;h1</span> <span class="a">class</span>=<span class="v">"text-white text-2xl font-bold mb-6"</span><span class="k">&gt;</span>📊 Dashboard<span class="k">&lt;/h1&gt;</span>
+
+<span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5"</span><span class="k">&gt;</span>
+
+  <span class="c">&lt;!-- CARD 1 --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"bg-gray-900 rounded-2xl p-6 border border-gray-800
+              hover:border-blue-500/50 transition-all duration-300
+              hover:shadow-lg hover:shadow-blue-500/10 group"</span><span class="k">&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex items-center justify-between mb-4"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-10 h-10 rounded-xl bg-blue-500/15
+                  flex items-center justify-center text-blue-400
+                  group-hover:scale-110 transition-transform duration-300"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-users text-lg"</span><span class="k">&gt;&lt;/i&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+      <span class="c">&lt;!-- Trend Up --&gt;</span>
+      <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"flex items-center gap-1 text-green-400 text-xs font-semibold
+                    bg-green-400/10 px-2.5 py-1 rounded-full"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-arrow-up text-xs"</span><span class="k">&gt;&lt;/i&gt;</span> +12%
+      <span class="k">&lt;/span&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-400 text-sm mb-1"</span><span class="k">&gt;</span>Total Users<span class="k">&lt;/p&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white text-3xl font-black counter"</span> <span class="a">data-target</span>=<span class="v">"24819"</span><span class="k">&gt;</span>0<span class="k">&lt;/p&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"mt-4 h-1 bg-gray-800 rounded-full"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"h-full w-3/4 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"</span><span class="k">&gt;&lt;/div&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-500 text-xs mt-2"</span><span class="k">&gt;</span>75% of target<span class="k">&lt;/p&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+
+  <span class="c">&lt;!-- CARD 2 --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"bg-gray-900 rounded-2xl p-6 border border-gray-800
+              hover:border-emerald-500/50 transition-all duration-300
+              hover:shadow-lg hover:shadow-emerald-500/10 group"</span><span class="k">&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex items-center justify-between mb-4"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-10 h-10 rounded-xl bg-emerald-500/15
+                  flex items-center justify-center text-emerald-400
+                  group-hover:scale-110 transition-transform duration-300"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-dollar-sign text-lg"</span><span class="k">&gt;&lt;/i&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"flex items-center gap-1 text-green-400 text-xs font-semibold
+                    bg-green-400/10 px-2.5 py-1 rounded-full"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-arrow-up text-xs"</span><span class="k">&gt;&lt;/i&gt;</span> +8.2%
+      <span class="k">&lt;/span&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-400 text-sm mb-1"</span><span class="k">&gt;</span>Revenue<span class="k">&lt;/p&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white text-3xl font-black"</span><span class="k">&gt;</span>$<span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"counter"</span> <span class="a">data-target</span>=<span class="v">"48290"</span><span class="k">&gt;</span>0<span class="k">&lt;/span&gt;&lt;/p&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"mt-4 h-1 bg-gray-800 rounded-full"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"h-full w-2/3 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"</span><span class="k">&gt;&lt;/div&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-500 text-xs mt-2"</span><span class="k">&gt;</span>66% of target<span class="k">&lt;/p&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+
+  <span class="c">&lt;!-- CARD 3 (Trend Down) --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"bg-gray-900 rounded-2xl p-6 border border-gray-800
+              hover:border-orange-500/50 transition-all duration-300 group"</span><span class="k">&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex items-center justify-between mb-4"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-10 h-10 rounded-xl bg-orange-500/15
+                  flex items-center justify-center text-orange-400
+                  group-hover:scale-110 transition-transform"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-chart-bar text-lg"</span><span class="k">&gt;&lt;/i&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"flex items-center gap-1 text-red-400 text-xs font-semibold
+                    bg-red-400/10 px-2.5 py-1 rounded-full"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-arrow-down text-xs"</span><span class="k">&gt;&lt;/i&gt;</span> -3.1%
+      <span class="k">&lt;/span&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-400 text-sm mb-1"</span><span class="k">&gt;</span>Bounce Rate<span class="k">&lt;/p&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white text-3xl font-black"</span><span class="k">&gt;&lt;span</span> <span class="a">class</span>=<span class="v">"counter"</span> <span class="a">data-target</span>=<span class="v">"42"</span><span class="k">&gt;</span>0<span class="k">&lt;/span&gt;</span>%<span class="k">&lt;/p&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+
+  <span class="c">&lt;!-- CARD 4 --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"bg-gray-900 rounded-2xl p-6 border border-gray-800
+              hover:border-purple-500/50 transition-all duration-300 group"</span><span class="k">&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex items-center justify-between mb-4"</span><span class="k">&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-10 h-10 rounded-xl bg-purple-500/15
+                  flex items-center justify-center text-purple-400
+                  group-hover:scale-110 transition-transform"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-star text-lg"</span><span class="k">&gt;&lt;/i&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"flex items-center gap-1 text-green-400 text-xs font-semibold
+                    bg-green-400/10 px-2.5 py-1 rounded-full"</span><span class="k">&gt;</span>
+        <span class="k">&lt;i</span> <span class="a">class</span>=<span class="v">"fas fa-arrow-up text-xs"</span><span class="k">&gt;&lt;/i&gt;</span> +5.7%
+      <span class="k">&lt;/span&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-400 text-sm mb-1"</span><span class="k">&gt;</span>Reviews<span class="k">&lt;/p&gt;</span>
+    <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white text-3xl font-black"</span><span class="k">&gt;&lt;span</span> <span class="a">class</span>=<span class="v">"counter"</span> <span class="a">data-target</span>=<span class="v">"1327"</span><span class="k">&gt;</span>0<span class="k">&lt;/span&gt;&lt;/p&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+
+<span class="k">&lt;/div&gt;</span>
+
+<span class="k">&lt;script&gt;</span>
+  <span class="c">// Animated Counter</span>
+  const counters = document.querySelectorAll(<span class="v">'.counter'</span>);
+  const animateCounter = (el) => {
+    const target = +el.dataset.target;
+    const duration = 1500;
+    const step = target / (duration / 16);
+    let current = 0;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { el.textContent = target.toLocaleString(); clearInterval(timer); }
+      else el.textContent = Math.floor(current).toLocaleString();
+    }, 16);
+  };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); observer.unobserve(e.target); } });
+  });
+  counters.forEach(c => observer.observe(c));
+<span class="k">&lt;/script&gt;</span>
+<span class="k">&lt;/body&gt;</span></pre>
+      </div>
+      <div class="info-box info-green">
+        <i class="fas fa-code"></i>
+        <div>الـ <strong>group</strong> class ده سر قوي في Tailwind — لما تحط <code>group</code> على الـ parent، تقدر تتحكم في الـ children بـ <code>group-hover:</code> من غير JavaScript. مثلاً <code>group-hover:scale-110</code> على الـ icon بيشتغل لما تـ hover على الـ card كلها مش على الـ icon بس.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       WORKSHOP 5 — 3D Hero Section
+  ══════════════════════════════════════ -->
+  <div class="workshop" id="ws5">
+    <div class="ws-header">
+      <div style="flex:1;">
+        <div class="ws-meta">
+          <span class="ws-num">WS 05</span>
+          <span class="ws-diff diff-advanced">متقدم</span>
+          <span class="ws-time"><i class="fas fa-clock"></i> 45 دقيقة</span>
+        </div>
+        <h2>🌟 Hero Section بـ 3D Floating Cards</h2>
+        <p>أقوى ورشة في الدورة — Hero section كامل بنص gradient وـ animated floating cards بـ 3D tilt effect وـ particle background.</p>
+        <div class="skills-used" style="margin-top:16px;">
+          <span class="skill-tag">3D Transforms</span>
+          <span class="skill-tag">Keyframes</span>
+          <span class="skill-tag">JavaScript Tilt</span>
+          <span class="skill-tag">Canvas Particles</span>
+          <span class="skill-tag">Custom Config</span>
+          <span class="skill-tag">Complex Animations</span>
+        </div>
+      </div>
+    </div>
+    <div class="ws-body">
+      <div class="info-box info-purple">
+        <i class="fas fa-trophy"></i>
+        <div>ده المشروع الأصعب في الدورة. بيجمع كل حاجة اتعلمتها — Tailwind Utilities + Custom CSS Animations + JavaScript للـ 3D interactions + Canvas للـ particles. خد وقتك واتعلم كل سطر.</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="lang">HTML — 3D Hero Section الكامل</span><button class="copy-btn" onclick="copyCode(this)">نسخ</button></div>
+        <pre><span class="k">&lt;script</span> <span class="a">src</span>=<span class="v">"https://cdn.tailwindcss.com"</span><span class="k">&gt;&lt;/script&gt;</span>
+<span class="k">&lt;script&gt;</span>
+  tailwind.config = {
+    theme: {
+      extend: {
+        keyframes: {
+          float1: {
+            <span class="v">'0%,100%'</span>: {transform: <span class="v">'translateY(0px) rotate(0deg)'</span>},
+            <span class="v">'50%'</span>: {transform: <span class="v">'translateY(-20px) rotate(2deg)'}
+          },</span>
+          float2: {
+            <span class="v">'0%,100%'</span>: {transform: <span class="v">'translateY(-10px) rotate(-1deg)'</span>},
+            <span class="v">'50%'</span>: {transform: <span class="v">'translateY(10px) rotate(1deg)'}
+          },</span>
+          shimmer: {
+            <span class="v">'0%'</span>: {backgroundPosition: <span class="v">'-200% center'</span>},
+            <span class="v">'100%'</span>: {backgroundPosition: <span class="v">'200% center'</span>}
+          }
+        },
+        animation: {
+          float1: <span class="v">'float1 4s ease-in-out infinite'</span>,
+          float2: <span class="v">'float2 5s ease-in-out infinite'</span>,
+          shimmer: <span class="v">'shimmer 3s linear infinite'</span>,
+        }
+      }
+    }
+  }
+<span class="k">&lt;/script&gt;</span>
+
+<span class="k">&lt;style&gt;</span>
+  <span class="cls">.tilt-card</span> { <span class="p">transform-style</span>: <span class="v">preserve-3d</span>; <span class="p">transition</span>: <span class="v">transform 0.1s</span>; }
+  <span class="cls">.shimmer-text</span> {
+    <span class="p">background</span>: <span class="v">linear-gradient(90deg,#38bdf8,#818cf8,#f472b6,#38bdf8)</span>;
+    <span class="p">background-size</span>: <span class="v">200% auto</span>;
+    <span class="p">-webkit-background-clip</span>: <span class="v">text</span>;
+    <span class="p">-webkit-text-fill-color</span>: <span class="v">transparent</span>;
+    <span class="p">animation</span>: <span class="v">shimmer 3s linear infinite</span>;
+  }
+<span class="k">&lt;/style&gt;</span>
+
+<span class="k">&lt;body</span> <span class="a">class</span>=<span class="v">"bg-gray-950 min-h-screen overflow-hidden"</span><span class="k">&gt;</span>
+<span class="k">&lt;canvas</span> <span class="a">id</span>=<span class="v">"particles"</span> <span class="a">class</span>=<span class="v">"fixed inset-0 pointer-events-none opacity-30"</span><span class="k">&gt;&lt;/canvas&gt;</span>
+
+<span class="c">&lt;!-- Hero --&gt;</span>
+<span class="k">&lt;section</span> <span class="a">class</span>=<span class="v">"relative min-h-screen flex items-center justify-center px-6"</span><span class="k">&gt;</span>
+
+  <span class="c">&lt;!-- BG Blobs --&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"absolute top-1/4 left-1/4 w-96 h-96
+              bg-blue-600/20 rounded-full filter blur-3xl"</span><span class="k">&gt;&lt;/div&gt;</span>
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"absolute bottom-1/4 right-1/4 w-96 h-96
+              bg-purple-600/20 rounded-full filter blur-3xl"</span><span class="k">&gt;&lt;/div&gt;</span>
+
+  <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"relative z-10 grid lg:grid-cols-2
+              gap-16 items-center max-w-6xl w-full mx-auto"</span><span class="k">&gt;</span>
+
+    <span class="c">&lt;!-- LEFT: TEXT --&gt;</span>
+    <span class="k">&lt;div&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"inline-flex items-center gap-2
+                  border border-blue-500/30 rounded-full
+                  px-4 py-2 mb-6 text-blue-400 text-sm"</span><span class="k">&gt;</span>
+        <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"w-2 h-2 bg-green-400 rounded-full animate-pulse"</span><span class="k">&gt;&lt;/span&gt;</span>
+        PhineX Academy — جديد
+      <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;h1</span> <span class="a">class</span>=<span class="v">"text-5xl lg:text-7xl font-black leading-tight mb-6"</span><span class="k">&gt;</span>
+        <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"text-white"</span><span class="k">&gt;</span>بناء مواقع<span class="k">&lt;/span&gt;&lt;br&gt;</span>
+        <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"shimmer-text"</span><span class="k">&gt;</span>احترافية
+        <span class="k">&lt;/span&gt;</span>
+      <span class="k">&lt;/h1&gt;</span>
+      <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-gray-400 text-lg leading-relaxed mb-8 max-w-lg"</span><span class="k">&gt;</span>
+        تعلّم Tailwind CSS بشرح مصري عميق من الصفر لحد الـ 3D animations والـ custom plugins.
+      <span class="k">&lt;/p&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex gap-4 flex-wrap"</span><span class="k">&gt;</span>
+        <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500
+                       text-white font-bold rounded-2xl
+                       hover:opacity-90 hover:scale-105 hover:-translate-y-1
+                       active:scale-95 transition-all duration-200
+                       shadow-lg shadow-blue-500/25"</span><span class="k">&gt;</span>
+          ابدأ مجاناً ✨
+        <span class="k">&lt;/button&gt;</span>
+        <span class="k">&lt;button</span> <span class="a">class</span>=<span class="v">"px-8 py-4 border border-gray-700
+                       text-white font-bold rounded-2xl
+                       hover:bg-white/5 hover:border-gray-500
+                       transition-all duration-200"</span><span class="k">&gt;</span>
+          شاهد الدروس
+        <span class="k">&lt;/button&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;/div&gt;</span>
+
+    <span class="c">&lt;!-- RIGHT: FLOATING 3D CARDS --&gt;</span>
+    <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"relative h-96 hidden lg:block"</span><span class="k">&gt;</span>
+
+      <span class="c">&lt;!-- CARD 1 --&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"tilt-card absolute top-0 left-8 w-56
+                  bg-gradient-to-br from-blue-600/80 to-purple-700/80
+                  backdrop-blur-xl border border-white/10
+                  rounded-2xl p-5 shadow-2xl animate-float1"</span><span class="k">&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"text-3xl mb-3"</span><span class="k">&gt;</span>🎨<span class="k">&lt;/div&gt;</span>
+        <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white font-bold mb-1"</span><span class="k">&gt;</span>Design System<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-blue-200/60 text-xs"</span><span class="k">&gt;</span>Colors, Fonts, Spacing<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"flex gap-1 mt-3"</span><span class="k">&gt;</span>
+          <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-5 h-5 rounded-full bg-blue-400"</span><span class="k">&gt;&lt;/div&gt;</span>
+          <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-5 h-5 rounded-full bg-purple-400"</span><span class="k">&gt;&lt;/div&gt;</span>
+          <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"w-5 h-5 rounded-full bg-cyan-400"</span><span class="k">&gt;&lt;/div&gt;</span>
+        <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+
+      <span class="c">&lt;!-- CARD 2 --&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"tilt-card absolute bottom-4 right-4 w-52
+                  bg-gradient-to-br from-emerald-600/80 to-teal-700/80
+                  backdrop-blur-xl border border-white/10
+                  rounded-2xl p-5 shadow-2xl animate-float2"</span><span class="k">&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"text-3xl mb-3"</span><span class="k">&gt;</span>⚡<span class="k">&lt;/div&gt;</span>
+        <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white font-bold mb-1"</span><span class="k">&gt;</span>JIT Compiler<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-emerald-200/60 text-xs"</span><span class="k">&gt;</span>Zero unused CSS<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"mt-3 bg-black/20 rounded-lg p-2 font-mono text-xs text-emerald-300"</span><span class="k">&gt;</span>
+          w-[337px]
+        <span class="k">&lt;/div&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+
+      <span class="c">&lt;!-- CARD 3 (center) --&gt;</span>
+      <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"tilt-card absolute top-16 right-0 w-44
+                  bg-gradient-to-br from-orange-600/80 to-pink-700/80
+                  backdrop-blur-xl border border-white/10
+                  rounded-2xl p-4 shadow-2xl"</span>
+           <span class="a">style</span>=<span class="v">"animation: float1 6s ease-in-out infinite reverse"</span><span class="k">&gt;</span>
+        <span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"text-2xl mb-2"</span><span class="k">&gt;</span>📱<span class="k">&lt;/div&gt;</span>
+        <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-white font-bold text-sm mb-1"</span><span class="k">&gt;</span>Responsive<span class="k">&lt;/p&gt;</span>
+        <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"text-orange-200/60 text-xs"</span><span class="k">&gt;</span>sm: md: lg: xl:<span class="k">&lt;/p&gt;</span>
+      <span class="k">&lt;/div&gt;</span>
+
+    <span class="k">&lt;/div&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+<span class="k">&lt;/section&gt;</span>
+
+<span class="k">&lt;script&gt;</span>
+  <span class="c">// 3D Tilt on mouse move</span>
+  document.querySelectorAll(<span class="v">'.tilt-card'</span>).forEach(card => {
+    card.addEventListener(<span class="v">'mousemove'</span>, e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width/2) / (r.width/2);
+      const y = (e.clientY - r.top - r.height/2) / (r.height/2);
+      card.style.transform = `perspective(500px) rotateY(${x*15}deg) rotateX(${-y*15}deg) scale(1.05)`;
+    });
+    card.addEventListener(<span class="v">'mouseleave'</span>, () => {
+      card.style.transform = <span class="v">''</span>;
+    });
+  });
+
+  <span class="c">// Particles</span>
+  const canvas = document.getElementById(<span class="v">'particles'</span>);
+  const ctx = canvas.getContext(<span class="v">'2d'</span>);
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  const pts = Array.from({length: 80}, () => ({
+    x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+    vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5,
+    r: Math.random()*1.5+.5
+  }));
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>canvas.width) p.vx*=-1;
+      if(p.y<0||p.y>canvas.height) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=<span class="v">'rgba(56,189,248,0.6)'</span>; ctx.fill();
+    });
+    pts.forEach((a,i) => pts.slice(i+1).forEach(b => {
+      const d = Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<100){ ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=`rgba(56,189,248,${.15*(1-d/100)})`; ctx.stroke(); }
+    }));
+    requestAnimationFrame(draw);
+  }
+  draw();
+<span class="k">&lt;/script&gt;</span>
+<span class="k">&lt;/body&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /workshops-wrap -->
+
+<footer>
+  <div class="logo">PhineX Academy</div>
+  <p>&copy; 2026 Ahmed Mohamed Elgohary. جميع الحقوق محفوظة.</p>
+</footer>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = '✓ تم النسخ';
+      setTimeout(() => btn.textContent = 'نسخ', 2000);
+    });
+  }
+</script>
+</body>
+</html>

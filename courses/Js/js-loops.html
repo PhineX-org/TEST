@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز التحكم في المنطق | PhineX Academy</title>
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --text: #c9d1d9;
+            --code-bg: #000;
+            --accent: #ff007f;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.7;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .lesson-header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #161b22, #0d1117);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #30363d;
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 { color: var(--primary); font-size: 1.8rem; margin-top: 0; }
+        h3 { color: var(--accent); font-size: 1.3rem; }
+
+        .explanation-box {
+            background: rgba(0, 212, 255, 0.05);
+            border-right: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            border: 1px solid #444;
+            margin: 15px 0;
+        }
+
+        .result-box {
+            background: #21262d;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px dashed var(--accent);
+            margin: 15px 0;
+        }
+
+        .mission-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .quiz-container {
+            background: #1c2128;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+        }
+
+        .question { margin-bottom: 25px; padding: 15px; background: #0d1117; border-radius: 10px; }
+        .options label { display: block; padding: 10px; cursor: pointer; transition: 0.3s; }
+        .options label:hover { background: rgba(255,255,255,0.05); }
+
+        button.check-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lesson-header">
+        <h1>هندسة المنطق والتكرار (Logic & Loops) ⚙️</h1>
+        <p>دليل المبرمج المحترف لاتخاذ القرارات الأوتوماتيكية في جافا سكريبت.</p>
+    </div>
+
+    <div class="lesson-card">
+        <h2>1. اتخاذ القرار (Conditionals - If/Else)</h2>
+        <div class="mission-badge">المهمة: جعل الموقع يختار مساراً مختلفاً بناءً على حالة معينة.</div>
+        
+        <h3>الشرح التفصيلي:</h3>
+        <p>نستخدم <code>if</code> لفحص شرط معين. إذا كان الشرط صحيحاً (True)، ينفذ الكود. إذا كان خطأً، ننتقل لـ <code>else</code>.</p>
+        
+        <div class="explanation-box">
+            - <b>if:</b> "لو" الشرط تحقق.<br>
+            - <b>else if:</b> "لو لم يتحقق الأول، جرب هذا".<br>
+            - <b>else:</b> "في كل الحالات الأخرى".
+        </div>
+
+        <h3>الكود البرمجي:</h3>
+        <div class="code-block">
+let points = 85;<br>
+<br>
+if (points >= 90) {<br>
+&nbsp;&nbsp;console.log("تقدير: ممتاز 🏆");<br>
+} else if (points >= 75) {<br>
+&nbsp;&nbsp;console.log("تقدير: جيد جداً ✨");<br>
+} else {<br>
+&nbsp;&nbsp;console.log("استمر في المحاولة ⚡");<br>
+}
+        </div>
+
+        <h3>النتيجة:</h3>
+        <div class="result-box">
+            بما أن القيمة 85، الكود سيتخطى الشرط الأول ويطبع "تقدير: جيد جداً ✨".
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>2. حلقات التكرار (For Loop)</h2>
+        <div class="mission-badge">المهمة: تكرار كود معين لعدد محدد من المرات دون إعادة كتابته.</div>
+
+        <h3>الشرح التفصيلي:</h3>
+        <p>بدلاً من طباعة 100 سطر، نستخدم <code>for</code>. تتكون الحلقة من ثلاثة أجزاء:</p>
+        <ul>
+            <li><b>البداية:</b> من أين نبدأ؟ <code>let i = 0</code></li>
+            <li><b>الشرط:</b> متى نتوقف؟ <code>i < 5</code></li>
+            <li><b>الخطوة:</b> كم نزيد في كل مرة؟ <code>i++</code></li>
+        </ul>
+        
+        <h3>الكود البرمجي:</h3>
+        <div class="code-block">
+// طباعة "أنا مبرمج" 5 مرات<br>
+for (let i = 1; i <= 5; i++) {<br>
+&nbsp;&nbsp;console.log("رقم الدورة: " + i);<br>
+}
+        </div>
+
+        <h3>النتيجة:</h3>
+        <div class="result-box">
+            سيقوم المتصفح بطباعة الأرقام من 1 إلى 5 في جزء من الثانية.
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>3. دمج المنطق مع التكرار (Advanced Mix)</h2>
+        <div class="mission-badge">المهمة: فحص قائمة من العناصر وتطبيق شرط على كل عنصر.</div>
+
+        <h3>الشرح التفصيلي:</h3>
+        <p>يمكننا استخدام الحلقة للمرور على "مصفوفة" (Array) واستخدام <code>if</code> داخلها لفحص محتوياتها.</p>
+
+        <h3>الكود البرمجي:</h3>
+        <div class="code-block">
+const games = ["Valorant", "Minecraft", "GTA V", "Roblox"];<br>
+<br>
+for (let i = 0; i < games.length; i++) {<br>
+&nbsp;&nbsp;if (games[i] === "Minecraft") {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log("تم العثور على اللعبة المفضلة! 🧩");<br>
+&nbsp;&nbsp;}<br>
+}
+        </div>
+
+        <h3>النتيجة:</h3>
+        <div class="result-box">
+            الكود سيمر على كل الألعاب، وعندما يصل لـ Minecraft سيطبع الرسالة المخصصة.
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <h2>اختبار منطق المبرمجين 🧠</h2>
+        <p>جاوب لتعرف مدى استيعابك للمنطق:</p>
+
+        <div class="question" id="q1">
+            <p><b>س1: ما هو ناتج الكود التالي: <code>if (5 > 10) { console.log('A'); } else { console.log('B'); }</code>؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="wrong"> سيطبع A</label>
+                <label><input type="radio" name="q1" value="correct"> سيطبع B</label>
+                <label><input type="radio" name="q1" value="wrong"> لن يطبع شيئاً</label>
+            </div>
+        </div>
+
+        <div class="question" id="q2">
+            <p><b>س2: أي جزء في الـ For Loop مسؤول عن "زيادة العداد" في كل دورة؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="wrong"> الجزء الأول (Initialization)</label>
+                <label><input type="radio" name="q2" value="wrong"> الجزء الثاني (Condition)</label>
+                <label><input type="radio" name="q2" value="correct"> الجزء الثالث (Increment)</label>
+            </div>
+        </div>
+
+        <button class="check-btn" onclick="checkAnswers()">تحقق من منطقك</button>
+    </div>
+</div>
+
+<script>
+    function checkAnswers() {
+        const answers = { q1: "correct", q2: "correct" };
+        let score = 0;
+
+        for (let key in answers) {
+            const selected = document.querySelector(`input[name="${key}"]:checked`);
+            if (selected && selected.value === answers[key]) {
+                score++;
+                document.getElementById(key).style.borderColor = "var(--primary)";
+            } else {
+                document.getElementById(key).style.borderColor = "var(--accent)";
+            }
+        }
+
+        if (score === 2) {
+            alert("عبقري! المنطق عندك سليم 100%. أنت الآن جاهز لبناء تطبيقات تفاعلية معقدة.");
+            localStorage.setItem('lesson-js-loops', 'completed');
+            window.location.href = 'js-loops-workshop.html';
+        } else {
+            alert("هناك بعض الأخطاء، راجع الأكواد المكتوبة بالأعلى وحاول مجدداً.");
+        }
+    }
+</script>
+
+</body>
+</html>

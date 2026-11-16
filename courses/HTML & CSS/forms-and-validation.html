@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النماذج والتحقق | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--neon:#39ff14;--neon-dim:rgba(57,255,20,0.08);--bg:#080a0d;--card:#0f1219;--card2:#141b24;--border:rgba(255,255,255,0.07);--border-neon:rgba(57,255,20,0.25);--text:#c9d1d9;--muted:#5a6478;--gold:#f7df1e;--blue:#58a6ff;--red:#ff4d4d;--purple:#bb86fc;}
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;line-height:1.85;}
+        .header{background:rgba(8,10,13,.95);border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+        .logo{color:var(--neon);font-weight:800;font-size:1.1rem;}
+        .back-link{color:var(--muted);text-decoration:none;font-size:.85rem;border:1px solid var(--border);padding:5px 14px;border-radius:6px;transition:.3s;}
+        .back-link:hover{border-color:var(--neon);color:var(--neon);}
+        .hero{background:radial-gradient(ellipse at 50% 0%,rgba(57,255,20,.06) 0%,transparent 65%);text-align:center;padding:64px 24px 48px;border-bottom:1px solid var(--border);}
+        .lesson-pill{display:inline-block;background:var(--neon-dim);border:1px solid var(--border-neon);color:var(--neon);padding:4px 16px;border-radius:20px;font-size:.78rem;font-weight:700;letter-spacing:1px;margin-bottom:18px;}
+        .hero h1{font-size:2.1rem;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2;}
+        .hero h1 span{color:var(--neon);}
+        .hero p{color:var(--muted);font-size:1rem;max-width:540px;margin:0 auto;}
+        .container{max-width:860px;margin:0 auto;padding:44px 28px 80px;}
+        .section-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden;}
+        .section-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--neon);border-radius:0 16px 16px 0;}
+        .step-label{font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--neon);margin-bottom:8px;text-transform:uppercase;}
+        .section-card h2{color:#fff;font-size:1.35rem;font-weight:700;margin-bottom:14px;}
+        .section-card h3{color:var(--neon);font-size:1.05rem;font-weight:700;margin:20px 0 10px;}
+        .section-card p{color:var(--text);margin-bottom:12px;}
+        .explain-box{background:var(--card2);border-right:3px solid var(--neon);border-radius:0 10px 10px 0;padding:16px 18px;margin:14px 0;font-size:.93rem;}
+        .explain-box strong{color:var(--neon);}
+        .code-wrap{margin:16px 0;}
+        .code-title{background:var(--card2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:7px 16px;font-family:'Fira Code',monospace;font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+        .dot{width:8px;height:8px;border-radius:50%;}
+        .code-block{background:#0a0d12;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;font-family:'Fira Code',monospace;font-size:.86rem;direction:ltr;overflow-x:auto;}
+        .code-line{display:flex;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.03);}
+        .code-line:last-child{border-bottom:none;}
+        .code-line:hover{background:rgba(57,255,20,.03);}
+        .line-num{min-width:42px;padding:9px 10px;text-align:right;color:var(--muted);font-size:.78rem;user-select:none;border-left:1px solid rgba(255,255,255,.04);flex-shrink:0;}
+        .line-code{padding:9px 16px;flex:1;color:#abb2bf;white-space:pre;}
+        .line-note{padding:9px 16px 9px 0;font-size:.78rem;color:var(--muted);font-family:'Cairo',sans-serif;direction:rtl;min-width:200px;max-width:250px;flex-shrink:0;line-height:1.4;border-right:1px solid rgba(57,255,20,.1);}
+        .line-note.hi{color:var(--neon);}
+        .t{color:#e06c75;}.a{color:#e5c07b;}.v{color:#98c379;}.c{color:#5c6370;font-style:italic;}.tx{color:#abb2bf;}.k{color:#c678dd;}.fn{color:#61afef;}.p{color:#61afef;}.pv{color:#98c379;}
+        .note{border-right:3px solid;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.91rem;}
+        .note.warn{border-color:var(--gold);background:rgba(247,223,30,.06);}
+        .note.info{border-color:var(--blue);background:rgba(88,166,255,.06);}
+        .note.good{border-color:var(--neon);background:var(--neon-dim);}
+        .note.danger{border-color:var(--red);background:rgba(255,77,77,.06);}
+        .demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+        @media(max-width:640px){.demo-wrap{grid-template-columns:1fr;}}
+        .demo-wrap textarea{width:100%;height:320px;background:#0a0d12;color:#abb2bf;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Fira Code',monospace;font-size:.82rem;outline:none;resize:none;direction:ltr;text-align:left;}
+        .demo-wrap textarea:focus{border-color:var(--neon);}
+        .demo-label{font-size:.78rem;color:var(--muted);margin-bottom:6px;font-weight:600;}
+        .demo-wrap iframe{width:100%;height:320px;background:#fff;border:1px solid var(--border);border-radius:8px;}
+        .cmp-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.87rem;}
+        .cmp-table th{background:var(--card2);color:var(--neon);padding:10px 14px;border:1px solid var(--border);text-align:right;}
+        .cmp-table td{padding:9px 14px;border:1px solid var(--border);vertical-align:top;}
+        .cmp-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+        .quiz-section{background:var(--card);border:2px solid var(--border-neon);border-radius:16px;padding:28px 32px;margin-top:40px;}
+        .quiz-section h2{color:var(--neon);font-size:1.3rem;margin-bottom:6px;}
+        .quiz-section>p{color:var(--muted);font-size:.88rem;margin-bottom:24px;}
+        .q-card{background:var(--card2);border-radius:10px;padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
+        .q-card p{font-weight:600;color:#fff;margin-bottom:12px;font-size:.95rem;}
+        .q-card code{background:rgba(57,255,20,.1);color:var(--neon);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem;}
+        .q-options label{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;font-size:.91rem;transition:.2s;}
+        .q-options label:hover{border-color:var(--neon);background:var(--neon-dim);}
+        .q-options input[type=radio]{accent-color:var(--neon);}
+        .btn-quiz{background:var(--neon);color:#000;border:none;padding:13px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+        .btn-quiz:hover{opacity:.85;}
+        #quiz-result{margin-top:14px;padding:14px;border-radius:8px;text-align:center;font-weight:700;display:none;}
+        .btn-finish{display:block;background:var(--neon);color:#000;border:none;padding:15px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;width:100%;margin-top:20px;text-align:center;text-decoration:none;}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-link">← القائمة</a>
+</header>
+
+<section class="hero">
+    <div class="lesson-pill">LESSON 06 · FORMS & VALIDATION</div>
+    <h1>النماذج والتحقق<br><span>بوابة التفاعل الحقيقي مع المستخدم</span></h1>
+    <p>تعلّم بناء نماذج احترافية وتحقق ذكي من البيانات — من أبسط حقل نصي حتى التحقق المتقدم بـ JavaScript.</p>
+</section>
+
+<div class="container">
+
+<!-- ══ 1. Form Structure ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الأول</div>
+    <h2>🏗️ بنية النموذج من الصفر</h2>
+
+    <p>النموذج (<code>&lt;form&gt;</code>) هو <strong>حاوية</strong> تجمع حقول الإدخال. عند الضغط على زر الإرسال، يجمع المتصفح كل البيانات ويرسلها معاً.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> basic-form.html — الهيكل الكامل</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!-- tag form: الحاوية الرئيسية --&gt;</span></div><div class="line-note hi">كل حقول الإدخال داخله</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;form</span></div><div class="line-note">بداية النموذج</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">  <span class="a">action</span>=<span class="v">"/submit"</span></div><div class="line-note hi">action = الرابط الذي ترسل إليه البيانات</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code">  <span class="a">method</span>=<span class="v">"POST"</span></div><div class="line-note">method = طريقة الإرسال (GET أو POST)</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">  <span class="a">id</span>=<span class="v">"registration-form"</span></div><div class="line-note">id للوصول إليه من JS</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">  <span class="a">novalidate</span><span class="t">&gt;</span></div><div class="line-note">novalidate = نعطّل تحقق المتصفح ونتولى نحن</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">  <span class="c">&lt;!-- حقل الاسم --&gt;</span></div><div class="line-note">مجموعة label + input</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="v">"form-group"</span><span class="t">&gt;</span></div><div class="line-note">div يجمع label والـ input معاً</div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">    <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"name"</span><span class="t">&gt;</span><span class="tx">الاسم الكامل *</span><span class="t">&lt;/label&gt;</span></div><div class="line-note hi">for="name" يربط الـ label بـ id="name"</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">    <span class="t">&lt;input</span></div><div class="line-note">بداية حقل الإدخال</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">      <span class="a">type</span>=<span class="v">"text"</span></div><div class="line-note">نوع النص العادي</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">      <span class="a">id</span>=<span class="v">"name"</span></div><div class="line-note hi">يطابق for في label — إلزامي للربط</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">      <span class="a">name</span>=<span class="v">"fullname"</span></div><div class="line-note">المفتاح الذي يصل للسيرفر: fullname=القيمة</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code">      <span class="a">placeholder</span>=<span class="v">"مثال: أحمد محمد"</span></div><div class="line-note">نص رمادي يختفي عند الكتابة</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code">      <span class="a">required</span></div><div class="line-note">حقل إجباري — لا يُرسل فارغاً</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">      <span class="a">autocomplete</span>=<span class="v">"name"</span><span class="t">&gt;</span></div><div class="line-note">يساعد المتصفح في الإكمال التلقائي</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code">    <span class="t">&lt;span</span> <span class="a">class</span>=<span class="v">"error-msg"</span> <span class="a">id</span>=<span class="v">"name-error"</span><span class="t">&gt;&lt;/span&gt;</span></div><div class="line-note">حاوية رسالة الخطأ — تبقى فارغة عادةً</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">  <span class="t">&lt;/div&gt;</span></div><div class="line-note">إغلاق form-group</div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code">  <span class="c">&lt;!-- زر الإرسال --&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">22</div><div class="line-code">  <span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"submit"</span><span class="t">&gt;</span><span class="tx">إرسال</span><span class="t">&lt;/button&gt;</span></div><div class="line-note hi">type="submit" يُرسل النموذج عند الضغط</div></div>
+            <div class="code-line"><div class="line-num">23</div><div class="line-code">  <span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"reset"</span><span class="t">&gt;</span><span class="tx">مسح</span><span class="t">&lt;/button&gt;</span></div><div class="line-note">type="reset" يمسح كل الحقول</div></div>
+            <div class="code-line"><div class="line-num">24</div><div class="line-code">  <span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"button"</span><span class="t">&gt;</span><span class="tx">زر عادي</span><span class="t">&lt;/button&gt;</span></div><div class="line-note">type="button" لا يرسل — للـ JS فقط</div></div>
+            <div class="code-line"><div class="line-num">25</div><div class="line-code"><span class="t">&lt;/form&gt;</span></div><div class="line-note">إغلاق النموذج</div></div>
+        </div>
+    </div>
+
+    <table class="cmp-table">
+        <tr><th>method</th><th>متى تستخدمه</th><th>ملاحظة</th></tr>
+        <tr><td>GET</td><td>بحث، فلترة — بيانات غير حساسة</td><td>البيانات تظهر في URL — مرئية للجميع</td></tr>
+        <tr><td>POST</td><td>تسجيل، دخول، إرسال بيانات حساسة</td><td>البيانات في body الطلب — أكثر أماناً</td></tr>
+    </table>
+
+    <div class="explain-box">
+        <strong>لماذا label مهمة جداً؟</strong><br>
+        1️⃣ النقر على نص الـ label يُفعّل الحقل تلقائياً (تجربة مستخدم أفضل)<br>
+        2️⃣ قارئات الشاشة لذوي الاحتياجات الخاصة تقرأ الـ label عند التركيز على الحقل<br>
+        3️⃣ مهمة لإمكانية الوصول (Accessibility) وهي متطلب قانوني في كثير من الدول
+    </div>
+</div>
+
+<!-- ══ 2. Input Types Complete ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثاني</div>
+    <h2>📋 نموذج تسجيل كامل — كل نوع موضّح</h2>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> complete-form.html</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;form</span> <span class="a">action</span>=<span class="v">"/register"</span> <span class="a">method</span>=<span class="v">"POST"</span><span class="t">&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">  <span class="c">&lt;!── نص عادي ──&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code">  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"user"</span><span class="t">&gt;</span><span class="tx">اسم المستخدم:</span><span class="t">&lt;/label&gt;</span></div><div class="line-note">for يطابق id الحقل</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"text"</span> <span class="a">id</span>=<span class="v">"user"</span> <span class="a">name</span>=<span class="v">"username"</span> <span class="a">minlength</span>=<span class="v">"3"</span> <span class="a">maxlength</span>=<span class="v">"20"</span> <span class="a">required</span><span class="t">&gt;</span></div><div class="line-note hi">minlength + maxlength = قيود الطول</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">  <span class="c">&lt;!── بريد إلكتروني ──&gt;</span></div><div class="line-note">يتحقق من @ تلقائياً</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"email"</span><span class="t">&gt;</span><span class="tx">البريد الإلكتروني:</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"email"</span> <span class="a">id</span>=<span class="v">"email"</span> <span class="a">name</span>=<span class="v">"email"</span> <span class="a">required</span><span class="t">&gt;</span></div><div class="line-note hi">يرفض أي نص بدون @ و domain</div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">  <span class="c">&lt;!── كلمة المرور ──&gt;</span></div><div class="line-note">تُخفى بنقاط</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"pass"</span><span class="t">&gt;</span><span class="tx">كلمة المرور:</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"password"</span> <span class="a">id</span>=<span class="v">"pass"</span> <span class="a">name</span>=<span class="v">"password"</span> <span class="a">minlength</span>=<span class="v">"8"</span> <span class="a">required</span><span class="t">&gt;</span></div><div class="line-note">يُخفي الكتابة ● — minlength=8 لأمان أفضل</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code">  <span class="c">&lt;!── أرقام مقيدة ──&gt;</span></div><div class="line-note">رقم ضمن نطاق</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code">  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"age"</span><span class="t">&gt;</span><span class="tx">العمر:</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">  <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"number"</span> <span class="a">id</span>=<span class="v">"age"</span> <span class="a">name</span>=<span class="v">"age"</span> <span class="a">min</span>=<span class="v">"13"</span> <span class="a">max</span>=<span class="v">"120"</span> <span class="a">step</span>=<span class="v">"1"</span><span class="t">&gt;</span></div><div class="line-note hi">min/max = الحد الأدنى والأقصى، step = الخطوة</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">  <span class="c">&lt;!── القائمة المنسدلة ──&gt;</span></div><div class="line-note">select dropdown</div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code">  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"country"</span><span class="t">&gt;</span><span class="tx">الدولة:</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code">  <span class="t">&lt;select</span> <span class="a">id</span>=<span class="v">"country"</span> <span class="a">name</span>=<span class="v">"country"</span> <span class="a">required</span><span class="t">&gt;</span></div><div class="line-note">select = قائمة منسدلة</div></div>
+            <div class="code-line"><div class="line-num">22</div><div class="line-code">    <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">""</span> <span class="a">disabled</span> <span class="a">selected</span><span class="t">&gt;</span><span class="tx">اختر دولتك</span><span class="t">&lt;/option&gt;</span></div><div class="line-note hi">خيار افتراضي فارغ — disabled يمنع اختياره</div></div>
+            <div class="code-line"><div class="line-num">23</div><div class="line-code">    <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"sa"</span><span class="t">&gt;</span><span class="tx">السعودية</span><span class="t">&lt;/option&gt;</span></div><div class="line-note">value يُرسل للسيرفر، النص يظهر للمستخدم</div></div>
+            <div class="code-line"><div class="line-num">24</div><div class="line-code">    <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"eg"</span><span class="t">&gt;</span><span class="tx">مصر</span><span class="t">&lt;/option&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">25</div><div class="line-code">    <span class="t">&lt;option</span> <span class="a">value</span>=<span class="v">"ae"</span><span class="t">&gt;</span><span class="tx">الإمارات</span><span class="t">&lt;/option&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">26</div><div class="line-code">  <span class="t">&lt;/select&gt;</span></div><div class="line-note">إغلاق select</div></div>
+            <div class="code-line"><div class="line-num">27</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">28</div><div class="line-code">  <span class="c">&lt;!── مربعات الاختيار ──&gt;</span></div><div class="line-note">checkboxes — اختيارات متعددة</div></div>
+            <div class="code-line"><div class="line-num">29</div><div class="line-code">  <span class="t">&lt;fieldset&gt;</span></div><div class="line-note">fieldset يجمع عناصر ذات صلة</div></div>
+            <div class="code-line"><div class="line-num">30</div><div class="line-code">    <span class="t">&lt;legend&gt;</span><span class="tx">اهتماماتك:</span><span class="t">&lt;/legend&gt;</span></div><div class="line-note hi">legend = عنوان الـ fieldset</div></div>
+            <div class="code-line"><div class="line-num">31</div><div class="line-code">    <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"checkbox"</span> <span class="a">id</span>=<span class="v">"html"</span> <span class="a">name</span>=<span class="v">"interests"</span> <span class="a">value</span>=<span class="v">"html"</span><span class="t">&gt;</span></div><div class="line-note">name متشابه = مجموعة واحدة</div></div>
+            <div class="code-line"><div class="line-num">32</div><div class="line-code">    <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"html"</span><span class="t">&gt;</span><span class="tx">HTML</span><span class="t">&lt;/label&gt;</span></div><div class="line-note">النقر على النص يختار الـ checkbox</div></div>
+            <div class="code-line"><div class="line-num">33</div><div class="line-code">    <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"checkbox"</span> <span class="a">id</span>=<span class="v">"css"</span> <span class="a">name</span>=<span class="v">"interests"</span> <span class="a">value</span>=<span class="v">"css"</span><span class="t">&gt;</span></div><div class="line-note">يمكن اختيار أكثر من واحد</div></div>
+            <div class="code-line"><div class="line-num">34</div><div class="line-code">    <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"css"</span><span class="t">&gt;</span><span class="tx">CSS</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">35</div><div class="line-code">  <span class="t">&lt;/fieldset&gt;</span></div><div class="line-note">إغلاق fieldset</div></div>
+            <div class="code-line"><div class="line-num">36</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">37</div><div class="line-code">  <span class="c">&lt;!── أزرار الاختيار الوحيد ──&gt;</span></div><div class="line-note">radio — اختيار واحد فقط</div></div>
+            <div class="code-line"><div class="line-num">38</div><div class="line-code">  <span class="t">&lt;fieldset&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">39</div><div class="line-code">    <span class="t">&lt;legend&gt;</span><span class="tx">الجنس:</span><span class="t">&lt;/legend&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">40</div><div class="line-code">    <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"radio"</span> <span class="a">id</span>=<span class="v">"male"</span> <span class="a">name</span>=<span class="v">"gender"</span> <span class="a">value</span>=<span class="v">"male"</span><span class="t">&gt;</span></div><div class="line-note hi">name متشابه = مجموعة radio — اختيار واحد فقط</div></div>
+            <div class="code-line"><div class="line-num">41</div><div class="line-code">    <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"male"</span><span class="t">&gt;</span><span class="tx">ذكر</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">42</div><div class="line-code">    <span class="t">&lt;input</span> <span class="a">type</span>=<span class="v">"radio"</span> <span class="a">id</span>=<span class="v">"female"</span> <span class="a">name</span>=<span class="v">"gender"</span> <span class="a">value</span>=<span class="v">"female"</span><span class="t">&gt;</span></div><div class="line-note">نفس الـ name = نفس المجموعة</div></div>
+            <div class="code-line"><div class="line-num">43</div><div class="line-code">    <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"female"</span><span class="t">&gt;</span><span class="tx">أنثى</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">44</div><div class="line-code">  <span class="t">&lt;/fieldset&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">45</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">46</div><div class="line-code">  <span class="c">&lt;!── منطقة نصية ──&gt;</span></div><div class="line-note">textarea للنصوص الطويلة</div></div>
+            <div class="code-line"><div class="line-num">47</div><div class="line-code">  <span class="t">&lt;label</span> <span class="a">for</span>=<span class="v">"bio"</span><span class="t">&gt;</span><span class="tx">نبذة عنك:</span><span class="t">&lt;/label&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">48</div><div class="line-code">  <span class="t">&lt;textarea</span> <span class="a">id</span>=<span class="v">"bio"</span> <span class="a">name</span>=<span class="v">"bio"</span> <span class="a">rows</span>=<span class="v">"4"</span> <span class="a">cols</span>=<span class="v">"40"</span> <span class="a">maxlength</span>=<span class="v">"500"</span><span class="t">&gt;&lt;/textarea&gt;</span></div><div class="line-note hi">textarea ≠ input — له tag إغلاق. rows/cols للحجم</div></div>
+            <div class="code-line"><div class="line-num">49</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">50</div><div class="line-code">  <span class="t">&lt;button</span> <span class="a">type</span>=<span class="v">"submit"</span><span class="t">&gt;</span><span class="tx">تسجيل الحساب</span><span class="t">&lt;/button&gt;</span></div><div class="line-note">يُرسل النموذج</div></div>
+            <div class="code-line"><div class="line-num">51</div><div class="line-code"><span class="t">&lt;/form&gt;</span></div><div class="line-note"></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ 3. JS Validation ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثالث</div>
+    <h2>⚡ التحقق بـ JavaScript — المستوى الاحترافي</h2>
+
+    <p>التحقق المدمج في HTML جيد للبداية، لكن JavaScript يمنحك تحكماً كاملاً في رسائل الخطأ وتوقيتها وشكلها.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> validation.js — التحقق الكامل سطراً سطراً</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">// 1. الحصول على النموذج من الصفحة</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="k">const</span> <span class="tx">form = document.</span><span class="fn">querySelector</span><span class="tx">(</span><span class="v">'#registration-form'</span><span class="tx">);</span></div><div class="line-note hi">نأخذ النموذج بالـ id الخاص به</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="c">// 2. الاستماع لحدث الإرسال (submit event)</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="tx">form.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="v">'submit'</span><span class="tx">, (</span><span class="k">event</span><span class="tx">) </span><span class="k">=></span><span class="tx"> {</span></div><div class="line-note hi">'submit' يُطلق عند الضغط على زر الإرسال</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">  <span class="c">// 3. إيقاف إرسال النموذج مؤقتاً</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">  <span class="k">event</span>.<span class="fn">preventDefault</span><span class="tx">();</span></div><div class="line-note hi">يمنع الإرسال الفوري حتى نتحقق من البيانات</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">  <span class="c">// 4. قراءة قيم الحقول</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">  <span class="k">const</span> <span class="tx">name  = document.</span><span class="fn">getElementById</span><span class="tx">(</span><span class="v">'name'</span><span class="tx">).value.</span><span class="fn">trim</span><span class="tx">();</span></div><div class="line-note hi">.value يأخذ ما كتبه المستخدم، .trim() يحذف المسافات</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">  <span class="k">const</span> <span class="tx">email = document.</span><span class="fn">getElementById</span><span class="tx">(</span><span class="v">'email'</span><span class="tx">).value.</span><span class="fn">trim</span><span class="tx">();</span></div><div class="line-note">نفس الطريقة للإيميل</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">  <span class="k">const</span> <span class="tx">pass  = document.</span><span class="fn">getElementById</span><span class="tx">(</span><span class="v">'pass'</span><span class="tx">).value;</span></div><div class="line-note">كلمة المرور بدون trim (المسافات قد تكون مقصودة)</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code">  <span class="c">// 5. متغير لتتبع صحة النموذج</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code">  <span class="k">let</span> <span class="tx">isValid = </span><span class="k">true</span><span class="tx">;</span></div><div class="line-note hi">نبدأ بافتراض أن كل شيء صحيح</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code">  <span class="c">// 6. التحقق من الاسم</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">  <span class="k">if</span> <span class="tx">(name.</span><span class="fn">length</span> <span class="tx">< </span><span class="pv">3</span><span class="tx">) {</span></div><div class="line-note">إذا كان الاسم أقل من 3 أحرف</div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code">    <span class="fn">showError</span><span class="tx">(</span><span class="v">'name-error'</span><span class="tx">, </span><span class="v">'الاسم يجب أن يكون 3 أحرف على الأقل'</span><span class="tx">);</span></div><div class="line-note">اعرض رسالة خطأ مخصصة</div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code">    <span class="tx">isValid = </span><span class="k">false</span><span class="tx">;</span></div><div class="line-note">النموذج غير صحيح</div></div>
+            <div class="code-line"><div class="line-num">22</div><div class="line-code">  <span class="tx">} </span><span class="k">else</span><span class="tx"> {</span></div><div class="line-note">الاسم صحيح</div></div>
+            <div class="code-line"><div class="line-num">23</div><div class="line-code">    <span class="fn">clearError</span><span class="tx">(</span><span class="v">'name-error'</span><span class="tx">);</span></div><div class="line-note">امسح رسالة الخطأ السابقة</div></div>
+            <div class="code-line"><div class="line-num">24</div><div class="line-code">  <span class="tx">}</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">25</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">26</div><div class="line-code">  <span class="c">// 7. التحقق من الإيميل بـ RegEx</span></div><div class="line-note">نمط التحقق من الإيميل</div></div>
+            <div class="code-line"><div class="line-num">27</div><div class="line-code">  <span class="k">const</span> <span class="tx">emailPattern = </span><span class="v">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span><span class="tx">;</span></div><div class="line-note hi">RegEx: لا مسافات، @ إلزامية، نقطة ونطاق بعدها</div></div>
+            <div class="code-line"><div class="line-num">28</div><div class="line-code">  <span class="k">if</span> <span class="tx">(!</span><span class="tx">emailPattern.</span><span class="fn">test</span><span class="tx">(email)) {</span></div><div class="line-note">.test() يُرجع true/false</div></div>
+            <div class="code-line"><div class="line-num">29</div><div class="line-code">    <span class="fn">showError</span><span class="tx">(</span><span class="v">'email-error'</span><span class="tx">, </span><span class="v">'يرجى إدخال بريد إلكتروني صحيح'</span><span class="tx">);</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">30</div><div class="line-code">    <span class="tx">isValid = </span><span class="k">false</span><span class="tx">;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">31</div><div class="line-code">  <span class="tx">}</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">32</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">33</div><div class="line-code">  <span class="c">// 8. التحقق من كلمة المرور</span></div><div class="line-note">متطلبات الأمان</div></div>
+            <div class="code-line"><div class="line-num">34</div><div class="line-code">  <span class="k">const</span> <span class="tx">passPattern = </span><span class="v">/^(?=.*[A-Z])(?=.*\d).{8,}$/</span><span class="tx">;</span></div><div class="line-note hi">8+ أحرف، حرف كبير واحد على الأقل، رقم واحد</div></div>
+            <div class="code-line"><div class="line-num">35</div><div class="line-code">  <span class="k">if</span> <span class="tx">(!</span><span class="tx">passPattern.</span><span class="fn">test</span><span class="tx">(pass)) {</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">36</div><div class="line-code">    <span class="fn">showError</span><span class="tx">(</span><span class="v">'pass-error'</span><span class="tx">, </span><span class="v">'8 أحرف + حرف كبير + رقم'</span><span class="tx">);</span></div><div class="line-note">رسالة توضح المتطلبات</div></div>
+            <div class="code-line"><div class="line-num">37</div><div class="line-code">    <span class="tx">isValid = </span><span class="k">false</span><span class="tx">;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">38</div><div class="line-code">  <span class="tx">}</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">39</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">40</div><div class="line-code">  <span class="c">// 9. إرسال النموذج إذا كل شيء صحيح</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">41</div><div class="line-code">  <span class="k">if</span> <span class="tx">(isValid) {</span></div><div class="line-note hi">فقط إذا لم يكن هناك أخطاء</div></div>
+            <div class="code-line"><div class="line-num">42</div><div class="line-code">    <span class="fn">console</span><span class="tx">.</span><span class="fn">log</span><span class="tx">(</span><span class="v">'كل شيء صحيح — إرسال البيانات...'</span><span class="tx">);</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">43</div><div class="line-code">    <span class="tx">form.</span><span class="fn">submit</span><span class="tx">();</span></div><div class="line-note">الإرسال البرمجي</div></div>
+            <div class="code-line"><div class="line-num">44</div><div class="line-code">  <span class="tx">}</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">45</div><div class="line-code"><span class="tx">});</span></div><div class="line-note">نهاية الـ addEventListener</div></div>
+            <div class="code-line"><div class="line-num">46</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">47</div><div class="line-code"><span class="c">// دوال مساعدة</span></div><div class="line-note">helper functions</div></div>
+            <div class="code-line"><div class="line-num">48</div><div class="line-code"><span class="k">function</span> <span class="fn">showError</span><span class="tx">(id, msg) {</span></div><div class="line-note hi">تظهر رسالة الخطأ في العنصر المحدد</div></div>
+            <div class="code-line"><div class="line-num">49</div><div class="line-code">  <span class="tx">document.</span><span class="fn">getElementById</span><span class="tx">(id).textContent = msg;</span></div><div class="line-note">يكتب الرسالة داخل span الخطأ</div></div>
+            <div class="code-line"><div class="line-num">50</div><div class="line-code"><span class="tx">}</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">51</div><div class="line-code"><span class="k">function</span> <span class="fn">clearError</span><span class="tx">(id) {</span></div><div class="line-note">تمسح رسالة الخطأ</div></div>
+            <div class="code-line"><div class="line-num">52</div><div class="line-code">  <span class="tx">document.</span><span class="fn">getElementById</span><span class="tx">(id).textContent = </span><span class="v">''</span><span class="tx">;</span></div><div class="line-note">رسالة فارغة = لا يوجد خطأ</div></div>
+            <div class="code-line"><div class="line-num">53</div><div class="line-code"><span class="tx">}</span></div><div class="line-note"></div></div>
+        </div>
+    </div>
+
+    <div class="explain-box">
+        <strong>فهم RegEx المستخدمة:</strong><br>
+        <code>/^[^\s@]+@[^\s@]+\.[^\s@]+$/</code> لتحقق الإيميل:<br>
+        <code>^</code> = بداية النص | <code>[^\s@]+</code> = أحرف بدون مسافة أو @ | <code>@</code> = علامة @ إلزامية | <code>\.</code> = نقطة | <code>$</code> = نهاية النص<br><br>
+        <code>/^(?=.*[A-Z])(?=.*\d).{8,}$/</code> لكلمة المرور:<br>
+        <code>(?=.*[A-Z])</code> = يجب أن يحتوي حرفاً كبيراً | <code>(?=.*\d)</code> = يجب أن يحتوي رقماً | <code>.{8,}</code> = 8 أحرف على الأقل
+    </div>
+
+    <h3>🛠️ نموذج تفاعلي كامل:</h3>
+    <div class="demo-wrap">
+        <div><div class="demo-label">الكود الكامل:</div>
+        <textarea id="ed1" oninput="run('ed1','pv1')"><style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:sans-serif;background:#0f1219;color:#c9d1d9;padding:20px;direction:rtl;}
+.form-group{margin-bottom:16px;}
+label{display:block;margin-bottom:5px;font-size:.9rem;color:#abb2bf;}
+input,select,textarea{width:100%;padding:10px 12px;background:#080a0d;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#c9d1d9;font-family:inherit;font-size:.9rem;outline:none;}
+input:focus{border-color:#39ff14;}
+.error{color:#ff4d4d;font-size:.8rem;margin-top:4px;display:block;}
+button{background:#39ff14;color:#000;border:none;padding:12px 24px;border-radius:8px;font-weight:700;cursor:pointer;width:100%;}
+h2{color:#39ff14;margin-bottom:20px;}
+</style>
+<h2>نموذج التسجيل</h2>
+<form onsubmit="validate(event)">
+  <div class="form-group">
+    <label>الاسم الكامل</label>
+    <input type="text" id="n" placeholder="أدخل اسمك...">
+    <span class="error" id="ne"></span>
+  </div>
+  <div class="form-group">
+    <label>البريد الإلكتروني</label>
+    <input type="email" id="e" placeholder="you@email.com">
+    <span class="error" id="ee"></span>
+  </div>
+  <div class="form-group">
+    <label>كلمة المرور</label>
+    <input type="password" id="p" placeholder="8 أحرف على الأقل">
+    <span class="error" id="pe"></span>
+  </div>
+  <button type="submit">إنشاء الحساب</button>
+</form>
+<script>
+function validate(ev){
+  ev.preventDefault();
+  let ok=true;
+  const n=document.getElementById('n').value.trim();
+  const e=document.getElementById('e').value.trim();
+  const p=document.getElementById('p').value;
+  if(n.length<3){document.getElementById('ne').textContent='الاسم 3 أحرف على الأقل';ok=false;}
+  else document.getElementById('ne').textContent='';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById('ee').textContent='بريد غير صحيح';ok=false;}
+  else document.getElementById('ee').textContent='';
+  if(p.length<8){document.getElementById('pe').textContent='8 أحرف على الأقل';ok=false;}
+  else document.getElementById('pe').textContent='';
+  if(ok)alert('تم التسجيل بنجاح! 🎉');
+}
+</script></textarea></div>
+        <div><div class="demo-label">النتيجة:</div><iframe id="pv1"></iframe></div>
+    </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="quiz-section">
+    <h2>🧠 اختبار النماذج</h2>
+    <p>5 أسئلة تغطي كل ما تعلمته عن النماذج</p>
+
+    <div class="q-card">
+        <p>س1: ما وظيفة <code>event.preventDefault()</code> عند التحقق من النماذج؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q1" value="w"> تحذف بيانات النموذج</label>
+            <label><input type="radio" name="q1" value="c"> تمنع إرسال النموذج وتحديث الصفحة حتى نتحقق من البيانات أولاً</label>
+            <label><input type="radio" name="q1" value="w"> تُرسل البيانات بشكل أسرع</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س2: ما الفرق بين <code>type="checkbox"</code> و <code>type="radio"</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q2" value="w"> لا فرق</label>
+            <label><input type="radio" name="q2" value="c"> checkbox يسمح بتعدد الاختيار، radio يسمح باختيار واحد فقط من المجموعة</label>
+            <label><input type="radio" name="q2" value="w"> radio أجمل شكلاً</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س3: لماذا يجب أن يتطابق <code>for</code> في label مع <code>id</code> في input؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q3" value="w"> لتغيير لون الحقل</label>
+            <label><input type="radio" name="q3" value="c"> لربطهما — حتى النقر على النص يُفعّل الحقل (مهم لإمكانية الوصول)</label>
+            <label><input type="radio" name="q3" value="w"> لأسباب تنسيق CSS</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س4: ما الفرق بين <code>method="GET"</code> و <code>method="POST"</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q4" value="c"> GET تُظهر البيانات في URL (للبحث)، POST تُخفيها في body الطلب (للبيانات الحساسة)</label>
+            <label><input type="radio" name="q4" value="w"> GET أسرع دائماً</label>
+            <label><input type="radio" name="q4" value="w"> لا فرق بينهما</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س5: ما وظيفة <code>.trim()</code> عند قراءة قيمة الحقل؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q5" value="w"> يحذف القيمة كلها</label>
+            <label><input type="radio" name="q5" value="c"> يحذف المسافات الزائدة من بداية ونهاية النص</label>
+            <label><input type="radio" name="q5" value="w"> يقص النص إلى 10 أحرف</label>
+        </div>
+    </div>
+
+    <button class="btn-quiz" onclick="checkQuiz()">تحقق من إجاباتي ✅</button>
+    <div id="quiz-result"></div>
+    <a href="menu.html" class="btn-finish" id="finish-btn" style="display:none" onclick="saveProgress()">✅ إنهاء الدرس والعودة للقائمة</a>
+</div>
+
+</div>
+
+<script>
+function run(id,pv){document.getElementById(pv).srcdoc=document.getElementById(id).value;}
+window.addEventListener('load',()=>run('ed1','pv1'));
+function checkQuiz(){
+    const ans={q1:'c',q2:'c',q3:'c',q4:'c',q5:'c'};
+    let sc=0;
+    for(const[q,a] of Object.entries(ans)){if(document.querySelector(`input[name="${q}"]:checked`)?.value===a)sc++;}
+    const total=Object.keys(ans).length,el=document.getElementById('quiz-result');
+    el.style.display='block';
+    if(sc===total){el.style.cssText='display:block;background:rgba(57,255,20,.1);color:#39ff14;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent='🏆 ممتاز! أنت الآن خبير في النماذج!';document.getElementById('finish-btn').style.display='block';}
+    else{el.style.cssText='display:block;background:rgba(255,77,77,.1);color:#ff4d4d;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent=`${sc} من ${total} — راجع الأقسام الخاطئة.`;}
+}
+function saveProgress(){localStorage.setItem('lesson-forms','completed');}
+</script>
+</body>
+</html>

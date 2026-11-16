@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML مع JavaScript | PhineX Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{--neon:#39ff14;--neon-dim:rgba(57,255,20,0.08);--bg:#080a0d;--card:#0f1219;--card2:#141b24;--border:rgba(255,255,255,0.07);--border-neon:rgba(57,255,20,0.25);--text:#c9d1d9;--muted:#5a6478;--gold:#f7df1e;--blue:#58a6ff;--red:#ff4d4d;--purple:#bb86fc;}
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;line-height:1.85;}
+        .header{background:rgba(8,10,13,.95);border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+        .logo{color:var(--neon);font-weight:800;font-size:1.1rem;}
+        .back-link{color:var(--muted);text-decoration:none;font-size:.85rem;border:1px solid var(--border);padding:5px 14px;border-radius:6px;transition:.3s;}
+        .back-link:hover{border-color:var(--neon);color:var(--neon);}
+        .hero{background:radial-gradient(ellipse at 50% 0%,rgba(57,255,20,.06) 0%,transparent 65%);text-align:center;padding:64px 24px 48px;border-bottom:1px solid var(--border);}
+        .lesson-pill{display:inline-block;background:var(--neon-dim);border:1px solid var(--border-neon);color:var(--neon);padding:4px 16px;border-radius:20px;font-size:.78rem;font-weight:700;letter-spacing:1px;margin-bottom:18px;}
+        .hero h1{font-size:2.1rem;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2;}
+        .hero h1 span{color:var(--neon);}
+        .hero p{color:var(--muted);font-size:1rem;max-width:540px;margin:0 auto;}
+        .container{max-width:860px;margin:0 auto;padding:44px 28px 80px;}
+        .section-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden;}
+        .section-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--neon);}
+        .step-label{font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--neon);margin-bottom:8px;text-transform:uppercase;}
+        .section-card h2{color:#fff;font-size:1.35rem;font-weight:700;margin-bottom:14px;}
+        .section-card h3{color:var(--neon);font-size:1.05rem;font-weight:700;margin:20px 0 10px;}
+        .section-card p{color:var(--text);margin-bottom:12px;}
+        .explain-box{background:var(--card2);border-right:3px solid var(--neon);border-radius:0 10px 10px 0;padding:16px 18px;margin:14px 0;font-size:.93rem;}
+        .explain-box strong{color:var(--neon);}
+        .code-wrap{margin:16px 0;}
+        .code-title{background:var(--card2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:7px 16px;font-family:'Fira Code',monospace;font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+        .dot{width:8px;height:8px;border-radius:50%;}
+        .code-block{background:#0a0d12;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;font-family:'Fira Code',monospace;font-size:.86rem;direction:ltr;overflow-x:auto;}
+        .code-line{display:flex;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.03);}
+        .code-line:last-child{border-bottom:none;}
+        .code-line:hover{background:rgba(57,255,20,.03);}
+        .line-num{min-width:42px;padding:9px 10px;text-align:right;color:var(--muted);font-size:.78rem;user-select:none;border-left:1px solid rgba(255,255,255,.04);flex-shrink:0;}
+        .line-code{padding:9px 16px;flex:1;color:#abb2bf;white-space:pre;}
+        .line-note{padding:9px 16px 9px 0;font-size:.78rem;color:var(--muted);font-family:'Cairo',sans-serif;direction:rtl;min-width:200px;max-width:250px;flex-shrink:0;line-height:1.4;border-right:1px solid rgba(57,255,20,.1);}
+        .line-note.hi{color:var(--neon);}
+        .t{color:#e06c75;}.a{color:#e5c07b;}.v{color:#98c379;}.c{color:#5c6370;font-style:italic;}.tx{color:#abb2bf;}.k{color:#c678dd;}.fn{color:#61afef;}.st{color:#98c379;}
+        .note{border-right:3px solid;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.91rem;}
+        .note.warn{border-color:var(--gold);background:rgba(247,223,30,.06);}
+        .note.info{border-color:var(--blue);background:rgba(88,166,255,.06);}
+        .note.good{border-color:var(--neon);background:var(--neon-dim);}
+        .note.danger{border-color:var(--red);background:rgba(255,77,77,.06);}
+        .demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
+        @media(max-width:640px){.demo-wrap{grid-template-columns:1fr;}}
+        .demo-wrap textarea{width:100%;height:320px;background:#0a0d12;color:#abb2bf;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Fira Code',monospace;font-size:.82rem;outline:none;resize:none;direction:ltr;text-align:left;}
+        .demo-wrap textarea:focus{border-color:var(--neon);}
+        .demo-label{font-size:.78rem;color:var(--muted);margin-bottom:6px;font-weight:600;}
+        .demo-wrap iframe{width:100%;height:320px;background:#fff;border:1px solid var(--border);border-radius:8px;}
+        .cmp-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.87rem;}
+        .cmp-table th{background:var(--card2);color:var(--neon);padding:10px 14px;border:1px solid var(--border);text-align:right;}
+        .cmp-table td{padding:9px 14px;border:1px solid var(--border);vertical-align:top;}
+        .cmp-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+        .quiz-section{background:var(--card);border:2px solid var(--border-neon);border-radius:16px;padding:28px 32px;margin-top:40px;}
+        .quiz-section h2{color:var(--neon);font-size:1.3rem;margin-bottom:6px;}
+        .quiz-section>p{color:var(--muted);font-size:.88rem;margin-bottom:24px;}
+        .q-card{background:var(--card2);border-radius:10px;padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
+        .q-card p{font-weight:600;color:#fff;margin-bottom:12px;font-size:.95rem;}
+        .q-card code{background:rgba(57,255,20,.1);color:var(--neon);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem;}
+        .q-code{background:#0a0d12;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:'Fira Code',monospace;font-size:.82rem;direction:ltr;text-align:left;color:#abb2bf;margin:10px 0;}
+        .q-options label{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;font-size:.91rem;transition:.2s;}
+        .q-options label:hover{border-color:var(--neon);background:var(--neon-dim);}
+        .q-options input[type=radio]{accent-color:var(--neon);}
+        .btn-quiz{background:var(--neon);color:#000;border:none;padding:13px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+        #quiz-result{margin-top:14px;padding:14px;border-radius:8px;text-align:center;font-weight:700;display:none;}
+        .btn-finish{display:block;background:var(--neon);color:#000;padding:15px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;width:100%;margin-top:20px;text-align:center;text-decoration:none;}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">PhineX Academy</div>
+    <a href="menu.html" class="back-link">← القائمة</a>
+</header>
+
+<section class="hero">
+    <div class="lesson-pill">LESSON 08 · HTML WITH JAVASCRIPT</div>
+    <h1>HTML مع JavaScript<br><span>أضف الحياة لصفحاتك</span></h1>
+    <p>تعلّم كيف يتواصل JavaScript مع HTML — كل سطر ماذا يفعل، ولماذا، ومتى تستخدمه.</p>
+</section>
+
+<div class="container">
+
+<!-- ══ 1. كيف يتصل JS بـ HTML؟ ══ -->
+<div class="section-card">
+    <div class="step-label">المفهوم الأساسي</div>
+    <h2>🔌 كيف يتصل JavaScript بصفحة HTML؟</h2>
+
+    <p>JavaScript لغة برمجة تعمل في المتصفح. هي تقرأ وتعدّل HTML في الوقت الفعلي دون الحاجة لتحديث الصفحة. هذا ما يجعل المواقع "حية".</p>
+
+    <div class="explain-box">
+        <strong>3 طرق لإضافة JavaScript:</strong><br>
+        1️⃣ <strong>Inline:</strong> <code>onclick="doSomething()"</code> مباشرة في الـ tag — للاستخدام السريع فقط<br>
+        2️⃣ <strong>Internal:</strong> <code>&lt;script&gt;...&lt;/script&gt;</code> داخل HTML — للصفحات البسيطة<br>
+        3️⃣ <strong>External:</strong> <code>&lt;script src="app.js"&gt;</code> — الأفضل دائماً للمشاريع الحقيقية
+    </div>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> adding-js.html — الطرق الثلاث</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;!DOCTYPE html&gt;</span></div><div class="line-note">الهيكل الأساسي</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;html</span> <span class="a">lang</span>=<span class="v">"ar"</span> <span class="a">dir</span>=<span class="v">"rtl"</span><span class="t">&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="t">&lt;head&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code">  <span class="t">&lt;meta</span> <span class="a">charset</span>=<span class="v">"UTF-8"</span><span class="t">&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">  <span class="t">&lt;title&gt;</span><span class="tx">HTML + JS</span><span class="t">&lt;/title&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">  <span class="c">&lt;!── الطريقة 3: ملف خارجي — يجب أن يكون قبل &lt;/head&gt; ──&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">  <span class="t">&lt;script</span> <span class="a">src</span>=<span class="v">"app.js"</span> <span class="a">defer</span><span class="t">&gt;&lt;/script&gt;</span></div><div class="line-note hi">defer: ينفّذ بعد تحميل HTML كاملاً</div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="t">&lt;/head&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code"><span class="t">&lt;body&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code">  <span class="c">&lt;!── الطريقة 1: Inline — مباشرة في الـ tag ──&gt;</span></div><div class="line-note">سريعة لكن صعبة الصيانة</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">  <span class="t">&lt;button</span> <span class="a">onclick</span>=<span class="v">"alert('مرحباً!')"</span><span class="t">&gt;</span><span class="tx">اضغط هنا</span><span class="t">&lt;/button&gt;</span></div><div class="line-note hi">onclick ينفّذ JS لحظة الضغط</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code">  <span class="c">&lt;!── الطريقة 2: Internal — tag script ──&gt;</span></div><div class="line-note">في آخر body أو في head مع defer</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code">  <span class="t">&lt;script&gt;</span></div><div class="line-note">كل ما داخله JavaScript</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code">    <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">"الصفحة محمّلة!"</span>);</div><div class="line-note">يطبع في Developer Tools</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code">  <span class="t">&lt;/script&gt;</span></div><div class="line-note">إغلاق tag الـ script</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code"><span class="t">&lt;/body&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code"><span class="t">&lt;/html&gt;</span></div><div class="line-note"></div></div>
+        </div>
+    </div>
+
+    <div class="note warn">
+        <strong>⚠️ لماذا JS في آخر body أو مع defer؟</strong> عندما يصل المتصفح لـ <code>&lt;script&gt;</code> يتوقف عن تحميل HTML ويُنفّذ JS أولاً. لو JS يحاول الوصول لعنصر لم يُحمَّل بعد → خطأ! الحل: <code>defer</code> أو وضع الـ script قبل <code>&lt;/body&gt;</code>.
+    </div>
+</div>
+
+<!-- ══ 2. DOM — الوصول للعناصر ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الأول</div>
+    <h2>🎯 الوصول لعناصر HTML من JavaScript</h2>
+
+    <p>الـ <strong>DOM</strong> (Document Object Model) هو تمثيل HTML كشجرة من الكائنات التي يمكن لـ JavaScript قراءتها وتعديلها.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> dom-access.html + dom-access.js</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!── HTML: عناصر ستُعدَّل ──&gt;</span></div><div class="line-note">في ملف HTML</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;h1</span> <span class="a">id</span>=<span class="v">"page-title"</span><span class="t">&gt;</span><span class="tx">العنوان الأصلي</span><span class="t">&lt;/h1&gt;</span></div><div class="line-note hi">id يُستخدم للوصول السريع المباشر</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="t">&lt;p</span> <span class="a">class</span>=<span class="v">"info"</span><span class="t">&gt;</span><span class="tx">نص أول</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">class يُستخدم لتحديد مجموعة</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="t">&lt;p</span> <span class="a">class</span>=<span class="v">"info"</span><span class="t">&gt;</span><span class="tx">نص ثانٍ</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">نفس الـ class</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="t">&lt;button</span> <span class="a">id</span>=<span class="v">"myBtn"</span><span class="t">&gt;</span><span class="tx">اضغط</span><span class="t">&lt;/button&gt;</span></div><div class="line-note">زر للتفاعل</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code"><span class="t">&lt;div</span> <span class="a">data-product</span>=<span class="v">"laptop"</span><span class="t">&gt;</span><span class="tx">لاب توب</span><span class="t">&lt;/div&gt;</span></div><div class="line-note">data-* للبيانات المخصصة</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="c">// JavaScript: طرق الوصول للعناصر</span></div><div class="line-note">في ملف JS أو script tag</div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code"><span class="c">// 1. getElementById — الأسرع (بالـ id)</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code"><span class="k">const</span> <span class="tx">title = document.</span><span class="fn">getElementById</span><span class="tx">(</span><span class="st">'page-title'</span><span class="tx">);</span></div><div class="line-note hi">يُرجع عنصراً واحداً أو null</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code"><span class="c">// 2. querySelector — الأكثر مرونة (CSS selector)</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code"><span class="k">const</span> <span class="tx">btn  = document.</span><span class="fn">querySelector</span><span class="tx">(</span><span class="st">'#myBtn'</span><span class="tx">);</span></div><div class="line-note">بالـ id مع #</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code"><span class="k">const</span> <span class="tx">first = document.</span><span class="fn">querySelector</span><span class="tx">(</span><span class="st">'.info'</span><span class="tx">);</span></div><div class="line-note">أول .info فقط</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code"><span class="k">const</span> <span class="tx">h2   = document.</span><span class="fn">querySelector</span><span class="tx">(</span><span class="st">'h2'</span><span class="tx">);</span></div><div class="line-note">أول h2 في الصفحة</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code"><span class="k">const</span> <span class="tx">prod = document.</span><span class="fn">querySelector</span><span class="tx">(</span><span class="st">'[data-product="laptop"]'</span><span class="tx">);</span></div><div class="line-note hi">بقيمة data attribute — قوي جداً</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code"><span class="c">// 3. querySelectorAll — يُرجع كل المطابقين</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code"><span class="k">const</span> <span class="tx">all = document.</span><span class="fn">querySelectorAll</span><span class="tx">(</span><span class="st">'.info'</span><span class="tx">);</span></div><div class="line-note hi">NodeList — تحتاج forEach للمرور عليها</div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code"><span class="tx">all.</span><span class="fn">forEach</span><span class="tx">(el </span><span class="k">=></span><span class="tx"> </span><span class="fn">console</span>.<span class="fn">log</span><span class="tx">(el.textContent));</span></div><div class="line-note">el.textContent يقرأ النص داخل العنصر</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ 3. تعديل العناصر ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثاني</div>
+    <h2>✏️ تعديل العناصر برمجياً</h2>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> modify-dom.js — كل أنواع التعديل</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="k">const</span> <span class="tx">el = document.</span><span class="fn">getElementById</span><span class="tx">(</span><span class="st">'myElement'</span><span class="tx">);</span></div><div class="line-note">احصل على العنصر أولاً</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="c">// ─── تعديل المحتوى ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="tx">el.textContent = </span><span class="st">"نص جديد آمن"</span><span class="tx">;</span></div><div class="line-note hi">textContent: نص فقط — لا يُشغّل HTML — آمن</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="tx">el.innerHTML  = </span><span class="st">"&lt;strong&gt;نص غامق&lt;/strong&gt;"</span><span class="tx">;</span></div><div class="line-note warn">innerHTML: يُشغّل HTML — خطر XSS إذا من مستخدم</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code"><span class="tx">el.innerText  = </span><span class="st">"نص مرئي"</span><span class="tx">;</span></div><div class="line-note">innerText: يأخذ CSS بالحسبان (يتجاهل hidden)</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code"><span class="c">// ─── تعديل الـ CSS ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code"><span class="tx">el.style.color           = </span><span class="st">"#39ff14"</span><span class="tx">;</span></div><div class="line-note">خاصية CSS واحدة مباشرة</div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code"><span class="tx">el.style.backgroundColor = </span><span class="st">"#0f1219"</span><span class="tx">;</span></div><div class="line-note hi">background-color → backgroundColor (camelCase في JS)</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code"><span class="tx">el.style.display         = </span><span class="st">"none"</span><span class="tx">;</span></div><div class="line-note">يُخفي العنصر تماماً</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code"><span class="tx">el.style.display         = </span><span class="st">"block"</span><span class="tx">;</span></div><div class="line-note">يُظهره مجدداً</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code"><span class="c">// ─── classList: الطريقة الأفضل للـ CSS ───</span></div><div class="line-note">بدل style مباشرة</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code"><span class="tx">el.classList.</span><span class="fn">add</span><span class="tx">(</span><span class="st">'active'</span><span class="tx">);</span></div><div class="line-note hi">يُضيف class — لا يحذف الكلاسات الأخرى</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code"><span class="tx">el.classList.</span><span class="fn">remove</span><span class="tx">(</span><span class="st">'hidden'</span><span class="tx">);</span></div><div class="line-note">يحذف class</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code"><span class="tx">el.classList.</span><span class="fn">toggle</span><span class="tx">(</span><span class="st">'dark-mode'</span><span class="tx">);</span></div><div class="line-note">إذا موجود يحذفه، إذا لا يُضيفه</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code"><span class="tx">el.classList.</span><span class="fn">contains</span><span class="tx">(</span><span class="st">'active'</span><span class="tx">);</span></div><div class="line-note">يُرجع true/false — للتحقق</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code"><span class="c">// ─── تعديل الـ Attributes ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code"><span class="tx">el.</span><span class="fn">setAttribute</span><span class="tx">(</span><span class="st">'href'</span><span class="tx">, </span><span class="st">'https://new-url.com'</span><span class="tx">);</span></div><div class="line-note">يُعيّن قيمة أي attribute</div></div>
+            <div class="code-line"><div class="line-num">22</div><div class="line-code"><span class="tx">el.</span><span class="fn">getAttribute</span><span class="tx">(</span><span class="st">'href'</span><span class="tx">);</span></div><div class="line-note">يقرأ قيمة attribute</div></div>
+            <div class="code-line"><div class="line-num">23</div><div class="line-code"><span class="tx">el.</span><span class="fn">removeAttribute</span><span class="tx">(</span><span class="st">'disabled'</span><span class="tx">);</span></div><div class="line-note hi">يحذف attribute — مثالي لتفعيل الأزرار</div></div>
+            <div class="code-line"><div class="line-num">24</div><div class="line-code"><span class="tx">el.dataset.userId;</span></div><div class="line-note">يقرأ data-user-id بسهولة</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ 4. Events ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الثالث</div>
+    <h2>🎧 الأحداث (Events) — قلب التفاعل</h2>
+
+    <p>الـ Event هو أي شيء يحدث في الصفحة: ضغطة، تحرك ماوس، كتابة، تحميل. JavaScript يستمع لهذه الأحداث ويستجيب لها.</p>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> events.js — كل أنواع الأحداث</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="k">const</span> <span class="tx">btn = document.</span><span class="fn">querySelector</span><span class="tx">(</span><span class="st">'#myBtn'</span><span class="tx">);</span></div><div class="line-note">احصل على الزر</div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="c">// ─── addEventListener — الطريقة الصحيحة ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="tx">btn.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'click'</span><span class="tx">, (</span><span class="k">event</span><span class="tx">) </span><span class="k">=></span><span class="tx"> {</span></div><div class="line-note hi">'click' = نوع الحدث. event = معلومات الحدث</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code">  <span class="fn">console</span>.<span class="fn">log</span><span class="tx">(</span><span class="st">'تم الضغط!'</span><span class="tx">);</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">  <span class="fn">console</span>.<span class="fn">log</span><span class="tx">(event.target);</span></div><div class="line-note hi">event.target = العنصر الذي أطلق الحدث</div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code"><span class="tx">});</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code"><span class="c">// ─── أشهر الأحداث ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code"><span class="tx">btn.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'click'</span><span class="tx">, fn);</span></div><div class="line-note">نقرة واحدة</div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code"><span class="tx">btn.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'dblclick'</span><span class="tx">, fn);</span></div><div class="line-note">نقرتان متتاليتان</div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code"><span class="tx">el.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'mouseover'</span><span class="tx">, fn);</span></div><div class="line-note">الماوس يدخل العنصر</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code"><span class="tx">el.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'mouseout'</span><span class="tx">, fn);</span></div><div class="line-note">الماوس يخرج من العنصر</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code"><span class="tx">input.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'input'</span><span class="tx">, fn);</span></div><div class="line-note hi">عند كل حرف يُكتب في الحقل — مثالي للبحث الفوري</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code"><span class="tx">input.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'change'</span><span class="tx">, fn);</span></div><div class="line-note">بعد مغادرة الحقل (blur) والقيمة تغيرت</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code"><span class="tx">input.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'focus'</span><span class="tx">, fn);</span></div><div class="line-note">عند النقر على الحقل (يصبح نشطاً)</div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code"><span class="tx">input.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'blur'</span><span class="tx">, fn);</span></div><div class="line-note">عند مغادرة الحقل</div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code"><span class="tx">document.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'keydown'</span><span class="tx">, fn);</span></div><div class="line-note">ضغط مفتاح في لوحة المفاتيح</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code"><span class="tx">window.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'scroll'</span><span class="tx">, fn);</span></div><div class="line-note">تمرير الصفحة</div></div>
+            <div class="code-line"><div class="line-num">20</div><div class="line-code"><span class="tx">window.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'load'</span><span class="tx">, fn);</span></div><div class="line-note">الصفحة وكل مواردها محمّلة</div></div>
+            <div class="code-line"><div class="line-num">21</div><div class="line-code"><span class="tx">document.</span><span class="fn">addEventListener</span><span class="tx">(</span><span class="st">'DOMContentLoaded'</span><span class="tx">, fn);</span></div><div class="line-note hi">HTML محمّل (بدون انتظار الصور) — أسرع من load</div></div>
+        </div>
+    </div>
+
+    <h3>🛠️ مثال تطبيقي: زر تغيير المظهر</h3>
+    <div class="demo-wrap">
+        <div><div class="demo-label">اكتب الكود:</div>
+        <textarea id="ed1" oninput="run('ed1','pv1')"><style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: sans-serif;
+  background: #0f1219;
+  color: #c9d1d9;
+  padding: 20px;
+  direction: rtl;
+  transition: background 0.3s, color 0.3s;
+}
+body.light {
+  background: #f5f5f5;
+  color: #333;
+}
+.card {
+  background: #141b24;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: background 0.3s;
+}
+body.light .card { background: #fff; border-color: #ddd; }
+
+h2 { color: #39ff14; margin-bottom: 10px; }
+body.light h2 { color: #00a000; }
+
+button {
+  background: #39ff14;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+#counter-display {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #39ff14;
+  margin: 10px 0;
+}
+body.light #counter-display { color: #00a000; }
+.count-btns { display: flex; gap: 8px; }
+.count-btns button { flex: 1; }
+</style>
+
+<button onclick="toggleTheme()">🌙 تبديل المظهر</button>
+
+<div class="card">
+  <h2>عداد تفاعلي</h2>
+  <div id="counter-display">0</div>
+  <div class="count-btns">
+    <button onclick="changeCount(-1)">➖</button>
+    <button onclick="changeCount(1)">➕</button>
+    <button onclick="resetCount()">🔄 إعادة</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>بحث فوري</h2>
+  <input type="text" id="search" placeholder="ابحث..." oninput="filterList()"
+    style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#0a0d12;color:#c9d1d9;margin-bottom:8px;">
+  <ul id="fruit-list" style="list-style:none;padding:0;">
+    <li>🍎 تفاح</li><li>🍊 برتقال</li>
+    <li>🍌 موز</li><li>🍇 عنب</li><li>🍓 فراولة</li>
+  </ul>
+</div>
+
+<script>
+let count = 0;
+
+function toggleTheme() {
+  document.body.classList.toggle('light');
+}
+
+function changeCount(n) {
+  count += n;
+  document.getElementById('counter-display').textContent = count;
+}
+
+function resetCount() {
+  count = 0;
+  document.getElementById('counter-display').textContent = 0;
+}
+
+function filterList() {
+  const term = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('#fruit-list li').forEach(li => {
+    li.style.display = li.textContent.includes(term) ? '' : 'none';
+  });
+}
+</script></textarea></div>
+        <div><div class="demo-label">النتيجة المباشرة:</div><iframe id="pv1"></iframe></div>
+    </div>
+</div>
+
+<!-- ══ 5. إنشاء وحذف العناصر ══ -->
+<div class="section-card">
+    <div class="step-label">القسم الرابع</div>
+    <h2>🏗️ إنشاء وحذف عناصر HTML برمجياً</h2>
+
+    <div class="code-wrap">
+        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> create-remove.js</div>
+        <div class="code-block">
+            <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">// ─── إنشاء عنصر جديد ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="k">const</span> <span class="tx">card = document.</span><span class="fn">createElement</span><span class="tx">(</span><span class="st">'div'</span><span class="tx">);</span></div><div class="line-note hi">ينشئ div في الذاكرة — لم يُضَف للصفحة بعد</div></div>
+            <div class="code-line"><div class="line-num">3</div><div class="line-code"><span class="tx">card.className    = </span><span class="st">'product-card'</span><span class="tx">;</span></div><div class="line-note">يضيف class</div></div>
+            <div class="code-line"><div class="line-num">4</div><div class="line-code"><span class="tx">card.id           = </span><span class="st">'card-1'</span><span class="tx">;</span></div><div class="line-note">يضيف id</div></div>
+            <div class="code-line"><div class="line-num">5</div><div class="line-code"><span class="tx">card.innerHTML    = </span><span class="st">`</span></div><div class="line-note">template literal للمحتوى المتعدد الأسطر</div></div>
+            <div class="code-line"><div class="line-num">6</div><div class="line-code">  <span class="st">  &lt;h3&gt;اسم المنتج&lt;/h3&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">7</div><div class="line-code">  <span class="st">  &lt;p&gt;الوصف هنا&lt;/p&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">8</div><div class="line-code">  <span class="st">  &lt;button&gt;شراء&lt;/button&gt;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">9</div><div class="line-code"><span class="st">`</span><span class="tx">;</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">10</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">11</div><div class="line-code"><span class="c">// ─── إضافة العنصر للصفحة ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">12</div><div class="line-code"><span class="k">const</span> <span class="tx">container = document.</span><span class="fn">getElementById</span><span class="tx">(</span><span class="st">'products'</span><span class="tx">);</span></div><div class="line-note">الأب الذي سيحتوي البطاقة</div></div>
+            <div class="code-line"><div class="line-num">13</div><div class="line-code"><span class="tx">container.</span><span class="fn">appendChild</span><span class="tx">(card);</span></div><div class="line-note hi">يُضيف العنصر كآخر ابن في container</div></div>
+            <div class="code-line"><div class="line-num">14</div><div class="line-code"><span class="tx">container.</span><span class="fn">prepend</span><span class="tx">(card);</span></div><div class="line-note">يُضيف كأول ابن</div></div>
+            <div class="code-line"><div class="line-num">15</div><div class="line-code"><span class="tx">container.</span><span class="fn">insertAdjacentHTML</span><span class="tx">(</span><span class="st">'beforeend'</span><span class="tx">, </span><span class="st">'&lt;p&gt;جديد&lt;/p&gt;'</span><span class="tx">);</span></div><div class="line-note">الأسرع لإضافة HTML مباشرة</div></div>
+            <div class="code-line"><div class="line-num">16</div><div class="line-code">&nbsp;</div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">17</div><div class="line-code"><span class="c">// ─── حذف عنصر ───</span></div><div class="line-note"></div></div>
+            <div class="code-line"><div class="line-num">18</div><div class="line-code"><span class="tx">card.</span><span class="fn">remove</span><span class="tx">();</span></div><div class="line-note hi">يحذف العنصر من الصفحة مباشرة</div></div>
+            <div class="code-line"><div class="line-num">19</div><div class="line-code"><span class="tx">container.innerHTML = </span><span class="st">''</span><span class="tx">;</span></div><div class="line-note">يحذف كل الأبناء دفعة واحدة</div></div>
+        </div>
+    </div>
+
+    <h3>📋 مثال كامل: قائمة مهام ديناميكية</h3>
+    <div class="demo-wrap">
+        <div><div class="demo-label">التطبيق الكامل:</div>
+        <textarea id="ed2" oninput="run('ed2','pv2')"><style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:sans-serif;background:#080a0d;color:#c9d1d9;padding:20px;direction:rtl;}
+h2{color:#39ff14;margin-bottom:14px;}
+.input-row{display:flex;gap:8px;margin-bottom:16px;}
+input{flex:1;padding:10px;background:#0f1219;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#c9d1d9;font-family:inherit;}
+input:focus{outline:none;border-color:#39ff14;}
+button{background:#39ff14;color:#000;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:700;}
+#todo-list{list-style:none;padding:0;}
+#todo-list li{display:flex;align-items:center;justify-content:space-between;background:#0f1219;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 14px;margin-bottom:8px;}
+#todo-list li.done{opacity:.5;text-decoration:line-through;}
+.del-btn{background:none;border:none;color:#ff4d4d;cursor:pointer;font-size:1.1rem;padding:0 4px;}
+#count{color:#5a6478;font-size:.85rem;margin-top:10px;}
+</style>
+
+<h2>📝 قائمة المهام</h2>
+<div class="input-row">
+  <input type="text" id="task-input" placeholder="مهمة جديدة...">
+  <button onclick="addTask()">إضافة ➕</button>
+</div>
+<ul id="todo-list"></ul>
+<div id="count"></div>
+
+<script>
+let tasks = [];
+
+function addTask() {
+  const input = document.getElementById('task-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  tasks.push({ id: Date.now(), text, done: false });
+  input.value = '';
+  renderTasks();
+}
+
+function toggleTask(id) {
+  tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+  renderTasks();
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  renderTasks();
+}
+
+function renderTasks() {
+  const list = document.getElementById('todo-list');
+  list.innerHTML = tasks.map(t => `
+    <li class="${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})">
+      <span>${t.text}</span>
+      <button class="del-btn" onclick="event.stopPropagation();deleteTask(${t.id})">🗑️</button>
+    </li>
+  `).join('');
+
+  const done = tasks.filter(t => t.done).length;
+  document.getElementById('count').textContent =
+    `${done} من ${tasks.length} مهمة مكتملة`;
+}
+
+// إضافة بالضغط Enter
+document.getElementById('task-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTask();
+});
+</script></textarea></div>
+        <div><div class="demo-label">النتيجة:</div><iframe id="pv2"></iframe></div>
+    </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="quiz-section">
+    <h2>🧠 اختبار HTML مع JavaScript</h2>
+    <p>5 أسئلة تختبر فهمك للربط بين HTML وJS</p>
+
+    <div class="q-card">
+        <p>س1: ما الفرق بين <code>textContent</code> و <code>innerHTML</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q1" value="w"> لا فرق بينهما</label>
+            <label><input type="radio" name="q1" value="c"> textContent يضع نصاً آمناً، innerHTML يُشغّل HTML — خطر إذا المحتوى من مستخدم</label>
+            <label><input type="radio" name="q1" value="w"> innerHTML أسرع دائماً</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س2: ما وظيفة <code>classList.toggle('dark')</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q2" value="w"> يحذف كل الكلاسات</label>
+            <label><input type="radio" name="q2" value="c"> إذا كان 'dark' موجوداً يحذفه، وإذا لم يكن موجوداً يضيفه</label>
+            <label><input type="radio" name="q2" value="w"> يُعيّن 'dark' كـ id</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س3: ما الفرق بين <code>querySelector</code> و <code>querySelectorAll</code>؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q3" value="c"> querySelector يُرجع أول مطابق فقط، querySelectorAll يُرجع NodeList بكل المطابقين</label>
+            <label><input type="radio" name="q3" value="w"> querySelectorAll أبطأ لذلك لا يُستخدم</label>
+            <label><input type="radio" name="q3" value="w"> لا فرق — كلاهما يُرجع نفس النتيجة</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س4: لماذا نضع <code>defer</code> في tag الـ script؟</p>
+        <div class="q-options">
+            <label><input type="radio" name="q4" value="w"> لتحميل الملف بشكل مشفر</label>
+            <label><input type="radio" name="q4" value="c"> لتأجيل تنفيذ JS حتى يكتمل تحميل HTML — يمنع الأخطاء ويُسرّع الصفحة</label>
+            <label><input type="radio" name="q4" value="w"> لمنع تحميل الملف أصلاً</label>
+        </div>
+    </div>
+    <div class="q-card">
+        <p>س5: ما الكود الصحيح للاستماع لحدث الكتابة في حقل بحث؟</p>
+        <div class="q-code">const searchInput = document.querySelector('#search');</div>
+        <div class="q-options">
+            <label><input type="radio" name="q5" value="w"> <code>searchInput.ontype = () => {...}</code></label>
+            <label><input type="radio" name="q5" value="c"> <code>searchInput.addEventListener('input', () => {...})</code></label>
+            <label><input type="radio" name="q5" value="w"> <code>searchInput.listen('change', () => {...})</code></label>
+        </div>
+    </div>
+
+    <button class="btn-quiz" onclick="checkQuiz()">تحقق من إجاباتي ✅</button>
+    <div id="quiz-result"></div>
+    <a href="menu.html" class="btn-finish" id="finish-btn" style="display:none" onclick="saveProgress()">✅ إنهاء الدرس والعودة للقائمة</a>
+</div>
+
+</div>
+
+<script>
+function run(id,pv){document.getElementById(pv).srcdoc=document.getElementById(id).value;}
+window.addEventListener('load',()=>{run('ed1','pv1');run('ed2','pv2');});
+function checkQuiz(){
+    const ans={q1:'c',q2:'c',q3:'c',q4:'c',q5:'c'};
+    let sc=0;
+    for(const[q,a] of Object.entries(ans)){if(document.querySelector(`input[name="${q}"]:checked`)?.value===a)sc++;}
+    const total=Object.keys(ans).length,el=document.getElementById('quiz-result');
+    el.style.display='block';
+    if(sc===total){el.style.cssText='display:block;background:rgba(57,255,20,.1);color:#39ff14;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent='🏆 ممتاز! أنت مستعد لبناء تطبيقات ويب حقيقية!';document.getElementById('finish-btn').style.display='block';}
+    else{el.style.cssText='display:block;background:rgba(255,77,77,.1);color:#ff4d4d;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';el.textContent=`${sc} من ${total} — راجع الأقسام الخاطئة.`;}
+}
+function saveProgress(){localStorage.setItem('lesson-html-js','completed');}
+</script>
+</body>
+</html>

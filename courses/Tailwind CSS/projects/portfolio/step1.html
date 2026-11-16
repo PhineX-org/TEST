@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX Lab | Portfolio Step 1</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#39ff14;--neon-dim:rgba(57,255,20,.1);
+  --void:#05070a;--surface:#0b0e14;--editor:#080b10;
+  --card:#0d1017;--border:rgba(255,255,255,.07);
+  --border2:rgba(57,255,20,.2);--text:#c9d1d9;--muted:#4e5566;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);
+  height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);
+  padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;
+  color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}
+.ws-title{font-size:13px;font-weight:600;color:var(--text);}
+.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:5px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;background:var(--border);
+  border:1px solid var(--muted);transition:all .3s;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;}
+.ws-body{display:grid;grid-template-columns:300px 1fr 1fr;flex:1;overflow:hidden;}
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);
+  overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(57,255,20,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;
+  background:var(--neon-dim);border:1px solid var(--border2);
+  border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;
+  color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;
+  color:var(--accent,var(--neon));line-height:1.3;}
+.ins-intro{font-size:13px;color:var(--text);line-height:1.75;}
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);
+  border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;
+  background:var(--neon-dim);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);
+  padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.hint{background:rgba(130,170,255,.05);border:1px solid rgba(130,170,255,.15);
+  border-radius:8px;padding:11px 13px;font-size:12px;color:#82aaff;line-height:1.65;}
+.hint strong{color:#c3e88d;}
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;
+  border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);
+  display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  background:transparent;border:none;border-bottom:2px solid transparent;
+  cursor:pointer;transition:all .15s;white-space:nowrap;}
+.file-tab:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.file-tab.active{color:var(--text);border-bottom-color:var(--neon);background:var(--editor);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+.tab-html{background:#f78c6c;}.tab-css{background:#82aaff;}.tab-js{background:#f7df1e;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);
+  font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;
+  overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#c9d1d9;font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;
+  direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;display:none;}
+.code-ed.active{display:block;}
+.code-ed::selection{background:rgba(57,255,20,.12);}
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);
+  height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}
+.pdot{width:10px;height:10px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;
+  padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+  flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:white;}
+.ws-footer{background:var(--card);border-top:1px solid var(--border);
+  padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;
+  font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);
+  background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(:disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav:disabled{opacity:.3;cursor:not-allowed;}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;
+  font-size:13px;font-weight:700;cursor:pointer;border:none;background:rgba(57,255,20,.1);
+  color:var(--neon);border:1px solid var(--border2);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;
+  font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;
+  transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.45);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;
+  max-width:420px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.5;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:#ff5874;color:#ff5874;}
+
+:root { --accent: #c3e88d; }
+</style>
+</head>
+<body>
+<header class="ws-header">
+  <a href="../../projects.html" class="ws-logo">PhineX</a>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">Portfolio · هيكل الـ HTML</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track"><div class="prog-dot" data-s="1"></div>
+    <div class="prog-dot" data-s="2"></div>
+    <div class="prog-dot" data-s="3"></div>
+    <div class="prog-dot" data-s="4"></div>
+    <div class="prog-dot" data-s="5"></div>
+    <div class="prog-dot" data-s="6"></div>
+    <div class="prog-dot" data-s="7"></div>
+    <div class="prog-dot" data-s="8"></div></div>
+  <span class="ws-step-label">1/8</span>
+</header>
+<div class="ws-body">
+  <aside class="ws-instructions"><div class="ins-badge">الخطوة ١</div>
+<div class="ins-title">هيكل الـ HTML الكامل</div>
+<div class="ins-intro">
+  في هذه الخطوة ستتعرّف على هيكل موقع Portfolio احترافي كامل.
+  لا يوجد CSS بعد — فقط استكشف الـ HTML في تاب <code>index.html</code>.
+</div>
+<div class="task-list">
+  <div class="task-list-title">المهام</div>
+  <div class="task-item"><div class="task-num">١</div>
+    <div>في <code>index.html</code>، تحقق من وجود <code>&lt;nav class="navbar"&gt;</code></div></div>
+  <div class="task-item"><div class="task-num">٢</div>
+    <div>تأكد من وجود <code>&lt;section id="hero"&gt;</code> مع عناصر <code>.hero-title</code> و <code>.hero-visual</code></div></div>
+  <div class="task-item"><div class="task-num">٣</div>
+    <div>تأكد من وجود الأقسام: <code>about</code>، <code>skills</code>، <code>projects</code>، <code>contact</code></div></div>
+  <div class="task-item"><div class="task-num">٤</div>
+    <div>غيّر اسم <code>AMG</code> في <code>&lt;h1 class="hero-title"&gt;</code> إلى اسمك</div></div>
+    <div class="task-item"><div class="task-num">٥</div>
+    <div>يوجد بعض الأخطاء الكتابية في الكود دور عليها وصحح الكود عشان تشتغل كويس</div></div>
+</div>
+ 
+<div class="hint"><strong>💡 المشروع النهائي:</strong> ستحصل بنهاية الـ 8 خطوات على موقع Portfolio احترافي كامل بأنيميشن وتأثيرات متقدمة.</div></aside>
+  <section class="ws-editor">
+    <div class="editor-tabs">
+      <button class="file-tab active" id="tab-html" onclick="switchTab('html')"><span class="tab-dot tab-html"></span>index.html</button>
+      <button class="file-tab" id="tab-css"  onclick="switchTab('css')"><span class="tab-dot tab-css"></span>style.css</button>
+      <button class="file-tab" id="tab-js"   onclick="switchTab('js')"><span class="tab-dot tab-js"></span>script.js</button>
+      <div class="editor-action"><button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button></div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed active" id="htmlEd" spellcheck="false"></textarea>
+      <textarea class="code-ed"        id="cssEd"  spellcheck="false"></textarea>
+      <textarea class="code-ed"        id="jsEd"   spellcheck="false"></textarea>
+    </div>
+  </section>
+  <section class="ws-preview">
+    <div class="preview-bar">
+      <div class="preview-dots"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div></div>
+      <div class="preview-url">alexmorgan.dev / portfolio</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </section>
+</div>
+<footer class="ws-footer">
+  <button class="btn-nav" disabled>◀ السابق</button>
+  <button class="btn-run" onclick="runPreview()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" onclick="checkStep()">تحقق من الكود ✓</button>
+  <a href="step2.html" id="nextBtn" class="btn-nav">التالي ▶</a>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+const editors = {html:null,css:null,js:null};  // alias for validate fns
+
+const STEP_NUM = 1;
+const KEY = `phinex_portfolio_${STEP_NUM}`;
+const TOTAL = 8;
+
+const eds = {
+  html: document.getElementById('htmlEd'),
+  css:  document.getElementById('cssEd'),
+  js:   document.getElementById('jsEd')
+};
+const lnDiv = document.getElementById('lineNums');
+let curTab = 'html';
+
+const STARTER = {
+  html: `<!DOCTYPE html>
+<html lang="en">
+<heading>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | AMG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</heading>
+<body>
+
+  <navigator class="navigator" id="navbar">
+    <a href="#" class="nav-logo">AM</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Hire Me</a>
+  </navigator>
+
+  <sec id="header">
+    <div class="hero-content">
+      <p class="hero-greeting">Hello, World! 👋</p>
+      <h1 class="hero-title">Alex Morgan</h1>
+      <p class="hero-subtitle">I'm a <span id="typed-text">Full-Stack Developer</span><span class="cursor">|</span></p>
+      <p class="hero-desc">I craft beautiful, performant web experiences that users love. Turning ideas into reality, one line of code at a time.</p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn-primary">View My Work ↓</a>
+        <a href="#contact" class="btn-secondary">Let's Talk</a>
+      </div>
+      <div class="hero-social">
+        <a href="#" class="social-link">GitHub</a>
+        <a href="#" class="social-link">LinkedIn</a>
+        <a href="#" class="social-link">Email</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="avatar-ring"><div class="avatar">👨‍💻</div></div>
+      <div class="floating-badge b1">React</div>
+      <div class="floating-badge b2">Node.js</div>
+      <div class="floating-badge b3">CSS Magic</div>
+    </div>
+  </sec>
+
+  // <section id="about">
+  //   <div class="section-header reveal">
+  //     <span class="section-tag">About</span>
+  //     <h2>Turning Coffee into Code ☕</h2>
+  //     <p>Passionate developer with a love for clean code and beautiful interfaces</p>
+  //   </div>
+  //   <div class="about-grid">
+  //     <div class="about-card reveal">
+  //       <div class="about-avatar">👨‍💻</div>
+  //       <h3>Alex Morgan</h3>
+  //       <p class="about-role">Full-Stack Developer</p>
+  //       <div class="about-stats">
+  //         <div class="stat"><span class="stat-num">3+</span><span>Years</span></div>
+  //         <div class="stat"><span class="stat-num">50+</span><span>Projects</span></div>
+  //         <div class="stat"><span class="stat-num">20+</span><span>Clients</span></div>
+  //       </div>
+  //     </div>
+  //     <div class="about-text reveal">
+  //       <p>I'm a passionate full-stack developer who loves building clean, efficient, and user-friendly web applications. I specialize in the JavaScript ecosystem and have experience working with both startups and established companies.</p>
+  //       <div class="about-info">
+  //         <div class="info-item"><span>📍</span><span>Cairo, Egypt</span></div>
+  //         <div class="info-item"><span>🎓</span><span>CS Graduate, Cairo University</span></div>
+  //         <div class="info-item"><span>💼</span><span>Open to Opportunities</span></div>
+  //         <div class="info-item"><span>🌐</span><span>English &amp; Arabic</span></div>
+  //       </div>
+  //       <a href="#" class="btn-primary" style="margin-top:24px;display:inline-flex;">Download CV ↓</a>
+  //     </div>
+  //   </div>
+  // </section>
+
+  <section id="skills">
+    <div class="section-header reveal">
+      <span class="section-tag">Skills</span>
+      <h2>My Tech Stack</h2>
+      <p>Technologies I work with every day</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-category reveal">
+        <h3>Frontend</h3>
+        <div class="skill-item"><div class="skill-info"><span>HTML5 / CSS3</span><span class="skill-pct">90%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:90%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span>JavaScript</span><span class="skill-pct">80%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span>React.js</span><span class="skill-pct">75%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:75%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span>CSS / Tailwind</span><span class="skill-pct">85%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:85%"></div></div></div>
+      </div>
+      <div class="skill-category reveal">
+        <h3>Backend &amp; Tools</h3>
+        <div class="skill-item"><div class="skill-info"><span>Node.js</span><span class="skill-pct">70%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:70%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span>Python</span><span class="skill-pct">65%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:65%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span>MongoDB</span><span class="skill-pct">60%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:60%"></div></div></div>
+        <div class="skill-item"><div class="skill-info"><span>Git / GitHub</span><span class="skill-pct">85%</span></div><div class="skill-bar"><div class="skill-fill" style="--pct:85%"></div></div></div>
+      </div>
+
+    <div class="section-header reveal">
+      <span class="section-tag">Projects</span>
+      <h2>Featured Work</h2>
+      <p>A selection of projects I'm proud of</p>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card reveal"><div class="project-img" style="background:linear-gradient(135deg,rgba(57,255,20,.08),rgba(139,92,246,.08))">🛍️</div><div class="project-body"><h3>E-Commerce Platform</h3><p>Full-stack shopping app with cart, auth, and payment integration</p><div class="project-tags"><span>React</span><span>Node.js</span><span>MongoDB</span></div><div class="project-links"><a href="#">Live Demo →</a><a href="#">GitHub</a></div></div></div>
+      <div class="project-card reveal"><div class="project-img" style="background:linear-gradient(135deg,rgba(244,114,182,.08),rgba(139,92,246,.08))">🌤️</div><div class="project-body"><h3>Weather Dashboard</h3><p>Real-time weather app using OpenWeather API with beautiful charts</p><div class="project-tags"><span>JavaScript</span><span>API</span><span>Chart.js</span></div><div class="project-links"><a href="#">Live Demo →</a><a href="#">GitHub</a></div></div></div>
+      <div class="project-card reveal"><div class="project-img" style="background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(57,255,20,.08))">✅</div><div class="project-body"><h3>Task Manager Pro</h3><p>Productivity app with drag-and-drop, labels, and localStorage</p><div class="project-tags"><span>Vanilla JS</span><span>CSS</span><span>LocalStorage</span></div><div class="project-links"><a href="#">Live Demo →</a><a href="#">GitHub</a></div></div></div>
+      <div class="project-card reveal"><div class="project-img" style="background:linear-gradient(135deg,rgba(0,210,255,.08),rgba(57,255,20,.06))">💬</div><div class="project-body"><h3>Real-Time Chat App</h3><p>Socket.io powered chat with rooms and typing indicators</p><div class="project-tags"><span>Socket.io</span><span>Node.js</span><span>React</span></div><div class="project-links"><a href="#">Live Demo →</a><a href="#">GitHub</a></div></div></div>
+      <div class="project-card reveal"><div class="project-img" style="background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(236,72,153,.08))">🎮</div><div class="project-body"><h3>Games Price Library</h3><p>Interactive games catalog with search, filter, and dynamic data</p><div class="project-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><div class="project-links"><a href="#">Live Demo →</a><a href="#">GitHub</a></div></div></div>
+      <div class="project-card reveal"><div class="project-img" style="background:linear-gradient(135deg,rgba(251,146,60,.08),rgba(239,68,68,.08))">📊</div><div class="project-body"><h3>Analytics Dashboard</h3><p>Data visualization dashboard with charts, filters, and export</p><div class="project-tags"><span>React</span><span>D3.js</span><span>REST API</span></div><div class="project-links"><a href="#">Live Demo →</a><a href="#">GitHub</a></div></div></div>
+  </section>
+
+  <section id="contact">
+    <div class="section-header reveal">
+      <span class="section-tag">Contact</span>
+      <h2>Let's Build Something Great</h2>
+      <p>Have a project in mind? Let's talk about it</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <h3>Get In Touch</h3>
+        <p>I'm currently open to freelance work and full-time positions. If you have a project that needs my skills, feel free to reach out!</p>
+        <div class="contact-items">
+          <div class="contact-item"><span class="ci-icon">📧</span><span>alex@example.com</span></div>
+          <div class="contact-item"><span class="ci-icon">📱</span><span>+20 100 000 0000</span></div>
+          <div class="contact-item"><span class="ci-icon">💼</span><span>linkedin.com/in/alexmorgan</span></div>
+          <div class="contact-item"><span class="ci-icon">🐙</span><span>github.com/alexmorgan</span></div>
+        </div>
+      </div>
+      <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+        <div class="form-group"><label>Your Name</label><input type="text" placeholder="John Doe" required></div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="john@example.com" required></div>
+        <div class="form-group"><label>Subject</label><input type="text" placeholder="Project Inquiry"></div>
+        <div class="form-group"><label>Message</label><textarea placeholder="Tell me about your project..." required></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Send Message →</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">AMG</div>
+      <par>&copy; 2026 AMG. Crafted with ❤️ &amp; lots of ☕</par>
+      <div class="footer-links">
+        <a href="#header">Top ↑</a>
+        <a href="#aboutus">About</a>
+        <a href="#project">Work</a>
+        <a href="#contacting">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>`,
+  css:  `/* الخطوة 1: اكتشاف الـ HTML — لا يوجد CSS بعد
+   انظر في تاب index.html وتعرّف على الهيكل */`,
+  js:   `// لا يوجد JavaScript في هذه الخطوة`
+};
+
+function init() {
+  for (const t in eds) {
+    eds[t].value = localStorage.getItem(`${KEY}_${t}`) || STARTER[t];
+    eds[t].addEventListener('input', () => { updateLN(); saveCode(); scheduleRun(); });
+    eds[t].addEventListener('scroll', syncScroll);
+    eds[t].addEventListener('keydown', handleTab);
+  }
+  updateProgress(); updateLN(); buildPreview();
+}
+
+function switchTab(t) {
+  curTab = t;
+  for (const k in eds) {
+    eds[k].classList.toggle('active', k === t);
+    document.getElementById(`tab-${k}`).classList.toggle('active', k === t);
+  }
+  updateLN(); eds[t].focus();
+}
+
+function updateLN() {
+  const n = eds[curTab].value.split('\n').length;
+  lnDiv.innerHTML = Array.from({length:n},(_,i)=>i+1).join('<br>');
+}
+function syncScroll() { lnDiv.scrollTop = eds[curTab].scrollTop; }
+
+function handleTab(e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  const ta = e.target, s = ta.selectionStart, en = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s) + '  ' + ta.value.slice(en);
+  ta.selectionStart = ta.selectionEnd = s + 2;
+  updateLN(); saveCode();
+}
+
+let saveT;
+function saveCode() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    for (const t in eds) localStorage.setItem(`${KEY}_${t}`, eds[t].value);
+  }, 400);
+}
+
+function resetCode() {
+  if (!confirm('إعادة ضبط الكود للنسخة الأصلية؟')) return;
+  for (const t in eds) { eds[t].value = STARTER[t]; localStorage.removeItem(`${KEY}_${t}`); }
+  updateLN(); buildPreview();
+}
+
+function buildPreview() {
+  let html = eds.html.value;
+  const css = eds.css.value;
+  const js  = eds.js.value;
+  if (html.includes('</head>'))
+    html = html.replace('</head>', `\n<style>\n${css}\n</style>\n</head>`);
+  else html = `<style>${css}</style>${html}`;
+  if (html.includes('</body>'))
+    html = html.replace('</body>', `\n<script>\n${js}\n<\/script>\n</body>`);
+  else html += `\n<script>${js}<\/script>`;
+  const fr = document.getElementById('previewFrame');
+  const d = fr.contentDocument || fr.contentWindow.document;
+  d.open(); d.write(html); d.close();
+}
+
+let runT;
+function scheduleRun() { clearTimeout(runT); runT = setTimeout(buildPreview, 700); }
+function runPreview() { buildPreview(); }
+
+function updateProgress() {
+  document.querySelectorAll('.prog-dot').forEach((dot, i) => {
+    const n = i + 1;
+    dot.classList.remove('done','current');
+    if (localStorage.getItem(`phinex_portfolio_${n}`) === 'complete') dot.classList.add('done');
+    else if (n === STEP_NUM) dot.classList.add('current');
+  });
+}
+
+function markComplete() {
+  localStorage.setItem(KEY, 'complete');
+  updateProgress();
+  const nb = document.getElementById('nextBtn');
+  if (nb) nb.classList.add('visible');
+}
+
+function toast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3800);
+}
+
+function checkStep() { buildPreview(); setTimeout(validate, 250); }
+
+init();
+
+/* override eds alias */
+Object.assign(editors, eds);
+function validate() {
+  const fr = document.getElementById('previewFrame');
+  const doc = fr.contentDocument || fr.contentWindow.document;
+  const nav = doc.querySelector('.navbar');
+  const hero = doc.getElementById('hero');
+  const about = doc.getElementById('about');
+  const skills = doc.getElementById('skills');
+  const h1 = doc.querySelector('.hero-title');
+  if (nav && hero && about && skills && h1 && h1.textContent.trim().length > 2) {
+    markComplete();
+    toast('ممتاز! الهيكل الكامل موجود 🏗️\nابدأ الخطوة 2 لإضافة التصميم', 'ok');
+  } else {
+    let e = [];
+    if (!nav)    e.push('• أضف <nav class="navbar">');
+    if (!hero)   e.push('• أضف <section id="hero">');
+    if (!about)  e.push('• أضف <section id="about">');
+    if (!skills) e.push('• أضف <section id="skills">');
+    if (!h1 || h1.textContent.trim().length <= 2) e.push('• غير اسم AMG في <h1 class="hero-title"> إلى اسمك');
+    if (e.length === 0) e.push('تحقق من الهيكل العام للموقع');
+    if (e.length > 5) e = ['تحقق من وجود العناصر الأساسية في الكود'];
+    if (!doc.getElementById('contact')) e.push('• أضف <section id="contact">');
+    if (!doc.querySelector('.hero-visual')) e.push('• أضف عنصر بصري في قسم الهيرو (مثلاً <div class="hero-visual">)');
+    toast('تحقق من:\n'+e.join('\n'), 'err');
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX Lab | الخطوة 6</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#39ff14;--neon-dim:rgba(57,255,20,.1);
+  --void:#05070a;--surface:#0b0e14;--editor:#080b10;
+  --card:#0d1017;--border:rgba(255,255,255,.07);
+  --border2:rgba(57,255,20,.2);--text:#c9d1d9;--muted:#4e5566;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);
+  height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+
+/* HEADER */
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);
+  padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;
+  color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}
+.ws-title{font-size:13px;font-weight:600;color:var(--text);}
+.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:5px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;background:var(--border);
+  border:1px solid var(--muted);transition:all .3s;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);
+  box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--muted);margin-right:8px;}
+
+/* LAYOUT */
+.ws-body{display:grid;grid-template-columns:300px 1fr 1fr;flex:1;overflow:hidden;}
+
+/* INSTRUCTIONS */
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);
+  overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(57,255,20,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;
+  background:var(--neon-dim);border:1px solid var(--border2);
+  border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;
+  color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;
+  color:var(--accent, var(--neon));line-height:1.3;}
+.ins-intro{font-size:13px;color:var(--text);line-height:1.75;}
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);
+  border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;
+  background:var(--neon-dim);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+.task-check{min-width:20px;height:20px;border-radius:50%;
+  background:rgba(57,255,20,.2);border:1px solid var(--neon);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--neon);flex-shrink:0;margin-top:2px;}
+code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);
+  padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.hint{background:rgba(130,170,255,.05);border:1px solid rgba(130,170,255,.15);
+  border-radius:8px;padding:11px 13px;font-size:12px;color:#82aaff;line-height:1.65;}
+.hint strong{color:#c3e88d;}
+
+/* EDITOR */
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;
+  border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);
+  display:flex;align-items:stretch;height:38px;flex-shrink:0;gap:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  background:transparent;border:none;border-bottom:2px solid transparent;
+  cursor:pointer;transition:all .15s;white-space:nowrap;}
+.file-tab:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.file-tab.active{color:var(--text);border-bottom-color:var(--neon);background:var(--editor);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+.tab-html{background:#f78c6c;}.tab-css{background:#82aaff;}.tab-js{background:#f7df1e;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);
+  font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;
+  font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;position:relative;}
+.line-nums{background:var(--editor);color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;
+  padding:16px 8px 16px 10px;min-width:42px;text-align:right;
+  overflow:hidden;user-select:none;flex-shrink:0;
+  border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#c9d1d9;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;
+  padding:16px;border:none;outline:none;resize:none;
+  direction:ltr!important;text-align:left!important;
+  white-space:pre;overflow:auto;tab-size:2;display:none;}
+.code-ed.active{display:block;}
+.code-ed::selection{background:rgba(57,255,20,.12);}
+
+/* PREVIEW */
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);
+  height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}
+.pdot{width:10px;height:10px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:white;}
+
+/* FOOTER */
+.ws-footer{background:var(--card);border-top:1px solid var(--border);
+  padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;
+  border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;
+  text-decoration:none;border:1px solid var(--border);background:transparent;
+  color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(:disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav:disabled{opacity:.3;cursor:not-allowed;}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;
+  border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;
+  background:rgba(57,255,20,.1);color:var(--neon);
+  border:1px solid var(--border2);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;
+  border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;
+  background:var(--neon);color:#050508;transition:all .2s;
+  font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.45);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);
+  border-color:var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+
+/* TOAST */
+.toast{position:fixed;bottom:68px;left:50%;
+  transform:translateX(-50%) translateY(14px);
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:11px 20px;font-size:13px;
+  opacity:0;transition:all .3s;z-index:999;
+  max-width:420px;min-width:200px;text-align:center;
+  white-space:pre-line;pointer-events:none;line-height:1.5;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:#ff5874;color:#ff5874;}
+
+:root { --accent: #f78c6c; }
+</style>
+</head>
+<body>
+
+<header class="ws-header">
+  <a href="../projects.html" class="ws-logo">PhineX</a>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">الإضافة الديناميكية</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track">
+    <div class="prog-dot" data-s="1"></div>
+    <div class="prog-dot" data-s="2"></div>
+    <div class="prog-dot" data-s="3"></div>
+    <div class="prog-dot" data-s="4"></div>
+    <div class="prog-dot" data-s="5"></div>
+    <div class="prog-dot" data-s="6"></div>
+    <div class="prog-dot" data-s="7"></div>
+    <div class="prog-dot" data-s="8"></div>
+  </div>
+  <span class="ws-step-label">6/8</span>
+</header>
+
+<div class="ws-body">
+
+  <!-- INSTRUCTIONS -->
+  <aside class="ws-instructions">
+    
+<div class="ins-badge">الخطوة ٦</div>
+<div class="ins-title">إضافة ألعاب ديناميكية</div>
+<div class="ins-intro">
+  سنجعل المستخدم قادراً على <strong>إضافة ألعاب جديدة</strong>
+  للجدول دون تعديل الكود — هذا هو جوهر تطبيقات الويب!
+</div>
+<div class="task-list">
+  <div class="task-list-title">المهام</div>
+  <div class="task-item"><div class="task-num">١</div>
+    <div>أضف في HTML وسم <code>&lt;form id="addForm"&gt;</code> يحتوي على:
+    <code>&lt;input id="nameIn" placeholder="Game Name"&gt;</code> و
+    <code>&lt;input id="priceIn" placeholder="Price"&gt;</code> وزر
+    <code>&lt;button type="button" onclick="addNewGame()"&gt;Add Game&lt;/button&gt;</code></div></div>
+  <div class="task-item"><div class="task-num">٢</div>
+    <div>في CSS: <code>#addForm &#123; display: flex; gap: 10px; margin-bottom: 12px; &#125;</code></div></div>
+  <div class="task-item"><div class="task-num">٣</div>
+    <div>في JS: أكمل وظيفة <code>addNewGame()</code> باستخدام <code>insertRow(-1)</code> لإضافة صف جديد</div></div>
+</div>
+<div class="hint"><strong>💡 insertRow:</strong><br>
+<code>let row = table.insertRow(-1);<br>
+row.innerHTML = `&lt;td&gt;${name}&lt;/td&gt;&lt;td&gt;${price}&lt;/td&gt;`;</code></div>
+
+  </aside>
+
+  <!-- EDITOR -->
+  <section class="ws-editor">
+    <div class="editor-tabs">
+      <button class="file-tab active" id="tab-html" onclick="switchTab('html')">
+        <span class="tab-dot tab-html"></span>index.html
+      </button>
+      <button class="file-tab" id="tab-css" onclick="switchTab('css')">
+        <span class="tab-dot tab-css"></span>style.css
+      </button>
+      <button class="file-tab" id="tab-js" onclick="switchTab('js')">
+        <span class="tab-dot tab-js"></span>script.js
+      </button>
+      <div class="editor-action">
+        <button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed active" id="htmlEd" spellcheck="false"></textarea>
+      <textarea class="code-ed"        id="cssEd"  spellcheck="false"></textarea>
+      <textarea class="code-ed"        id="jsEd"   spellcheck="false"></textarea>
+    </div>
+  </section>
+
+  <!-- PREVIEW -->
+  <section class="ws-preview">
+    <div class="preview-bar">
+      <div class="preview-dots">
+        <div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div>
+      </div>
+      <div class="preview-url">localhost / index.html</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </section>
+
+</div>
+
+<footer class="ws-footer">
+  <a href="step5.html" class="btn-nav">◀ السابق</a>
+  <button class="btn-run" onclick="runPreview()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" onclick="checkStep()">تحقق من الكود ✓</button>
+  <a href="step7.html" id="nextBtn" class="btn-nav">التالي ▶</a>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+const STEP_NUM = 6;
+const TOTAL   = 8;
+const KEY     = `phinex_step_${STEP_NUM}`;
+
+const eds = {
+  html: document.getElementById('htmlEd'),
+  css:  document.getElementById('cssEd'),
+  js:   document.getElementById('jsEd')
+};
+const lnDiv = document.getElementById('lineNums');
+let curTab = 'html';
+
+/* ── STARTER CODE ── */
+const STARTER = {
+  html: `<!DOCTYPE html>
+<html>
+  <head>
+    <title>Games Price Library</title>
+  </head>
+  <body>
+    <h1>Games Price Library</h1>
+
+    <input id="gameSearch" placeholder="ابحث عن لعبة...">
+
+    <!-- 1. أضف form بـ id="addForm" هنا -->
+    <!-- يحتوي على: input للاسم، input للسعر، وزر "Add Game" -->
+
+    <table id="gamesTable">
+      <tr><th>Game</th><th>Price</th><th>Action</th></tr>
+      <tr><td>Minecraft</td><td>$29.99</td><td><button class="buy-btn">Buy Now</button></td></tr>
+      <tr><td>Valorant</td><td>Free</td><td><button class="buy-btn">Buy Now</button></td></tr>
+    </table>
+  </body>
+</html>`,
+  css:  `body { font-family: sans-serif; padding: 20px; background: #fff; }
+table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+th { background: #333; color: white; }
+tr:nth-child(even) { background: #f2f2f2; }
+.buy-btn { background: #2ecc71; border: none; padding: 8px 16px; color: white; cursor: pointer; border-radius: 4px; }
+#gameSearch { width: 100%; padding: 10px; margin-bottom: 12px; }
+
+/* 2. نسّق #addForm بـ display:flex و gap:10px */
+#addForm {
+
+}`,
+  js:   `// 3. اكتب وظيفة addNewGame()
+// تلميح: استخدم insertRow(-1) و insertCell()
+function addNewGame() {
+  const table = document.getElementById('gamesTable');
+  const name  = document.getElementById('nameIn').value;
+  const price = document.getElementById('priceIn').value;
+
+  if (name && price) {
+    // أضف صفاً جديداً هنا
+
+    
+    document.getElementById('addForm').reset();
+  }
+}
+
+// منطق البحث
+document.getElementById('gameSearch').addEventListener('keyup', function() {
+  const val = this.value.toLowerCase();
+  document.querySelectorAll('#gamesTable tr:not(:first-child)').forEach(row => {
+    row.style.display = row.cells[0].textContent.toLowerCase().includes(val) ? '' : 'none';
+  });
+});`
+};
+
+/* ── INIT ── */
+function init() {
+  for (const t in eds) {
+    eds[t].value = localStorage.getItem(`${KEY}_${t}`) || STARTER[t];
+    eds[t].addEventListener('input', () => { updateLN(); saveCode(); scheduleRun(); });
+    eds[t].addEventListener('scroll', syncScroll);
+    eds[t].addEventListener('keydown', handleTab);
+  }
+  updateProgress();
+  updateLN();
+  buildPreview();
+}
+
+/* ── TAB SWITCH ── */
+function switchTab(t) {
+  curTab = t;
+  for (const k in eds) {
+    eds[k].classList.toggle('active', k === t);
+    document.getElementById(`tab-${k}`).classList.toggle('active', k === t);
+  }
+  updateLN();
+  eds[t].focus();
+}
+
+/* ── LINE NUMBERS ── */
+function updateLN() {
+  const n = eds[curTab].value.split('\n').length;
+  lnDiv.innerHTML = Array.from({length:n},(_,i)=>i+1).join('<br>');
+}
+function syncScroll() { lnDiv.scrollTop = eds[curTab].scrollTop; }
+
+/* ── TAB KEY ── */
+function handleTab(e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  const ta = e.target, s = ta.selectionStart, en = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s) + '  ' + ta.value.slice(en);
+  ta.selectionStart = ta.selectionEnd = s + 2;
+  updateLN(); saveCode();
+}
+
+/* ── SAVE ── */
+let saveT;
+function saveCode() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    for (const t in eds) localStorage.setItem(`${KEY}_${t}`, eds[t].value);
+  }, 400);
+}
+
+/* ── RESET ── */
+function resetCode() {
+  if (!confirm('هل تريد إعادة ضبط الكود للنسخة الأصلية؟')) return;
+  for (const t in eds) { eds[t].value = STARTER[t]; localStorage.removeItem(`${KEY}_${t}`); }
+  updateLN(); buildPreview();
+}
+
+/* ── BUILD PREVIEW ── */
+function buildPreview() {
+  let html = eds.html.value;
+  const css  = eds.css.value;
+  const js   = eds.js.value;
+  if (html.includes('</head>'))
+    html = html.replace('</head>', `\n<style>\n${css}\n</style>\n</head>`);
+  else html = `<style>${css}</style>${html}`;
+  if (html.includes('</body>'))
+    html = html.replace('</body>', `\n<script>\n${js}\n<\/script>\n</body>`);
+  else html += `\n<script>${js}<\/script>`;
+  const fr = document.getElementById('previewFrame');
+  const d  = fr.contentDocument || fr.contentWindow.document;
+  d.open(); d.write(html); d.close();
+}
+
+let runT;
+function scheduleRun() { clearTimeout(runT); runT = setTimeout(buildPreview, 700); }
+function runPreview() { buildPreview(); }
+
+/* ── PROGRESS DOTS ── */
+function updateProgress() {
+  document.querySelectorAll('.prog-dot').forEach((dot, i) => {
+    const n = i + 1;
+    dot.classList.remove('done','current');
+    if (localStorage.getItem(`phinex_step_${n}`) === 'complete') dot.classList.add('done');
+    else if (n === STEP_NUM) dot.classList.add('current');
+  });
+}
+
+/* ── MARK COMPLETE ── */
+function markComplete() {
+  localStorage.setItem(KEY, 'complete');
+  updateProgress();
+  const nb = document.getElementById('nextBtn');
+  if (nb) nb.classList.add('visible');
+}
+
+/* ── TOAST ── */
+function toast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3800);
+}
+
+/* ── CHECK ── */
+function checkStep() { buildPreview(); setTimeout(validate, 250); }
+
+init();
+
+
+/* ── STEP-SPECIFIC VALIDATE ── */
+
+function validate() {
+  const fr  = document.getElementById('previewFrame');
+  const doc = fr.contentDocument || fr.contentWindow.document;
+  const form = doc.getElementById('addForm');
+  if (!form) { toast('لم يتم العثور على form بـ id="addForm"', 'err'); return; }
+  const st    = window.getComputedStyle(form);
+  const isFlex = st.display === 'flex';
+  const jsCode = document.getElementById('jsEd').value;
+  const hasInsert = jsCode.includes('insertRow') || jsCode.includes('innerHTML');
+  const nameIn  = doc.getElementById('nameIn');
+  const priceIn = doc.getElementById('priceIn');
+  if (isFlex && hasInsert && nameIn && priceIn) {
+    markComplete(); toast('عبقري! الآن يمكنك إضافة أي لعبة من المعاينة 🌟', 'ok');
+  } else {
+    let e = [];
+    if (!isFlex)     e.push('• display:flex لـ #addForm في CSS');
+    if (!nameIn)     e.push('• أضف input بـ id="nameIn"');
+    if (!priceIn)    e.push('• أضف input بـ id="priceIn"');
+    if (!hasInsert)  e.push('• استخدم insertRow في الوظيفة');
+    toast('تحقق من:\n'+e.join('\n'), 'err');
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدرس الأول: البداية مع React | PhineX Academy</title>
+<meta name="description" content="ابدأ رحلتك في React من الصفر: JSX، المكونات، Props، الحالة (State)، الأحداث، والقوائم — بشرح عميق للمبتدئين خطوة بخطوة، مع تنفيذ React حقيقي فوري على كل مفهوم.">
+<link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#61dafb; --neon-dim:rgba(97,218,251,.1);
+  --void:#080b10; --surface:#0b0e14; --editor:#0a0d12; --card:#111827;
+  --border:rgba(255,255,255,.08); --border2:rgba(97,218,251,.28);
+  --text:#cdd6f4; --muted:#6b7a99; --accent:#a78bfa;
+  --blue:#61dafb; --pink:#ff5874; --purple:#a78bfa;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:3px;}
+
+/* LOADING OVERLAY */
+.load-overlay{position:fixed;inset:0;background:#050508;z-index:5000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;transition:opacity .4s;}
+.load-overlay.hide{opacity:0;pointer-events:none;}
+.load-atom{font-size:52px;animation:spin 2.4s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.load-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;}
+.load-sub{font-size:12.5px;color:var(--muted);max-width:320px;text-align:center;line-height:1.8;}
+
+/* HEADER */
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}
+.ws-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;flex-shrink:0;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(97,218,251,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;flex-shrink:0;}
+
+/* BODY LAYOUT */
+.ws-body{display:grid;grid-template-columns:400px 1fr 340px;flex:1;overflow:hidden;}
+.ws-body.wide-mode{grid-template-columns:1fr;}
+.ws-body.wide-mode .ws-editor,.ws-body.wide-mode .ws-preview{display:none;}
+
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:22px 22px 40px;display:flex;flex-direction:column;gap:14px;}
+.ws-body.wide-mode .ws-instructions{max-width:760px;margin:0 auto;width:100%;border-left:none;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(97,218,251,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#fff;line-height:1.35;}
+
+.ins-body{font-size:13.5px;line-height:1.9;color:var(--text);display:flex;flex-direction:column;gap:12px;}
+.ins-body h4{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:#c4b5fd;margin-top:4px;}
+.ins-body p{margin:0;}
+.ins-body ul{padding-right:20px;display:flex;flex-direction:column;gap:5px;}
+.ins-body strong{color:#fff;}
+.ins-body code{background:rgba(97,218,251,.1);border:1px solid rgba(97,218,251,.22);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#a6e6ff;direction:ltr;display:inline-block;unicode-bidi:isolate;}
+.ins-body pre{background:#05070a;border:1px solid var(--border);border-radius:9px;padding:13px 15px;overflow-x:auto;direction:ltr;text-align:left;position:relative;}
+.ins-body pre::before{content:'مثال';position:absolute;top:-8px;right:12px;background:var(--card);border:1px solid var(--border);color:var(--muted);font-family:'Cairo',sans-serif;font-size:9px;padding:1px 8px;border-radius:8px;letter-spacing:.5px;}
+.ins-body pre code{background:none;border:none;padding:0;color:#c9a4ff;font-size:12.5px;line-height:1.7;white-space:pre;display:block;}
+.note{background:rgba(97,218,251,.07);border:1px solid rgba(97,218,251,.22);border-radius:9px;padding:12px 14px;font-size:12.5px;color:#a9dcf5;line-height:1.75;}
+.note strong{color:var(--blue);}
+.gotcha{background:rgba(255,88,116,.06);border:1px solid rgba(255,88,116,.22);border-radius:9px;padding:12px 14px;font-size:12.5px;color:#ffb3c0;line-height:1.75;}
+.gotcha strong{color:var(--pink);}
+
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list:empty{display:none;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+.hint{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:11px 13px;font-size:12px;color:#c4b5fd;line-height:1.65;display:none;}
+.hint strong{color:#fff;}
+
+/* QUIZ */
+.quiz-container{display:none;flex-direction:column;gap:16px;}
+.ws-body.wide-mode .quiz-container{display:flex;}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color .25s;}
+.quiz-q.correct{border-color:rgba(97,218,251,.5);background:rgba(97,218,251,.06);}
+.quiz-q.wrong{border-color:rgba(255,88,116,.5);background:rgba(255,88,116,.04);}
+.quiz-q-title{font-weight:700;font-size:13.5px;margin-bottom:12px;line-height:1.6;}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid transparent;transition:background .2s;}
+.quiz-opt:hover{background:rgba(255,255,255,.03);}
+.quiz-opt input{accent-color:var(--neon);width:15px;height:15px;flex-shrink:0;}
+
+/* EDITOR */
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--neon);}
+.tab-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#d6deeb;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;}
+.code-ed::selection{background:rgba(97,218,251,.15);}
+.code-ed:disabled{opacity:.5;}
+
+/* PREVIEW */
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}
+.pdot{width:9px;height:9px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewOuter{flex:1;background:#fff;overflow:auto;padding:16px;}
+.px-render-error{color:#c0392b;font-family:'JetBrains Mono',monospace;font-size:12.5px;background:#fdecea;border:1px solid #f5c6cb;border-radius:8px;padding:12px 14px;white-space:pre-wrap;direction:ltr;text-align:left;}
+
+/* FOOTER */
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(:disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav:disabled{opacity:.3;cursor:not-allowed;}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(97,218,251,.1);color:#a6e6ff;border:1px solid rgba(97,218,251,.3);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover:not(:disabled){background:rgba(97,218,251,.18);}
+.btn-run:disabled{opacity:.4;cursor:not-allowed;}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(97,218,251,.25);}
+.btn-check:hover:not(:disabled){box-shadow:0 0 24px rgba(97,218,251,.5);transform:translateY(-1px);}
+.btn-check:disabled{opacity:.4;cursor:not-allowed;}
+#nextBtn{display:none;background:rgba(97,218,251,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:440px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.6;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--blue);color:#a6e6ff;}
+.toast.err{border-color:var(--pink);color:var(--pink);}
+</style>
+</head>
+<body>
+
+<div class="load-overlay" id="loadOverlay">
+  <div class="load-atom">⚛️</div>
+  <div class="load-title">بنجهّز بيئة React حقيقية...</div>
+  <div class="load-sub">بنحمّل React وBabel عشان كودك يتحول ويشتغل فعلياً جوا المتصفح.</div>
+</div>
+
+<header class="ws-header">
+  <a href="menu.html" class="ws-logo">PhineX</a>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">React · البداية من الصفر</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track" id="progressTrack"></div>
+  <span class="ws-step-label" id="stepLabel">1/8</span>
+</header>
+
+<div class="ws-body" id="wsBody">
+  <aside class="ws-instructions">
+    <div class="ins-badge" id="insBadge"></div>
+    <div class="ins-title" id="insTitle"></div>
+    <div class="ins-body" id="insBody"></div>
+    <div class="task-list" id="taskList"></div>
+    <div class="hint" id="hintBox"></div>
+    <div class="quiz-container" id="quizContainer"></div>
+  </aside>
+
+  <div class="ws-editor" id="wsEditor">
+    <div class="editor-tabs">
+      <div class="file-tab"><span class="tab-dot"></span>App.jsx</div>
+      <div class="editor-action"><button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button></div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed" id="codeEditor" spellcheck="false" disabled></textarea>
+    </div>
+  </div>
+
+  <aside class="ws-preview" id="wsPreview">
+    <div class="preview-bar">
+      <div class="preview-dots"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div></div>
+      <div class="preview-url">localhost:3000</div>
+    </div>
+    <div id="previewOuter"><div id="previewInner"></div></div>
+  </aside>
+</div>
+
+<footer class="ws-footer">
+  <button class="btn-nav" id="prevBtn" onclick="goPrev()">← السابق</button>
+  <button class="btn-run" id="runBtn" onclick="runCode()" disabled>▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" id="checkBtn" onclick="checkStep()" disabled>✓ تحقق من الخطوة</button>
+  <button class="btn-nav" id="nextBtn" onclick="goNext()">التالي ←</button>
+</footer>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ THEORY TEMPLATES ══════════════ -->
+
+<template id="tpl-s1">
+<p><strong>React</strong> مكتبة JavaScript لبناء واجهات المستخدم، عن طريق تقسيمها لـ <strong>مكونات (Components)</strong> صغيرة قابلة لإعادة الاستخدام — بيتها Facebook (Meta) وبتستخدمه Instagram وNetflix وAirbnb وآلاف الشركات.</p>
+<h4>إيه هي JSX؟</h4>
+<p>JSX صيغة بتخليك تكتب حاجة شكلها HTML جوا كود JavaScript. لكن انتبه: <strong>دي مش HTML حقيقي</strong> — بتتحول ورا الكواليس (بأداة اسمها Babel) لكود JavaScript عادي.</p>
+<pre><code>// اللي إنت بتكتبه:
+&lt;h1&gt;أهلاً بيك&lt;/h1&gt;
+
+// اللي React بتشوفه فعلياً:
+React.createElement('h1', null, 'أهلاً بيك')</code></pre>
+<h4>المكوّن (Component)</h4>
+<p>المكوّن هو مجرد <strong>دالة JavaScript عادية</strong> بترجع JSX يوصف شكل جزء من الواجهة:</p>
+<pre><code>function Welcome() {
+  return &lt;h1&gt;أهلاً بيك!&lt;/h1&gt;;
+}</code></pre>
+<div class="gotcha"><strong>⚠️ قاعدة مهمة جداً:</strong> اسم المكوّن <strong>لازم</strong> يبدأ بحرف كبير (PascalCase) — <code>Welcome</code> مش <code>welcome</code>. لو بدأته بحرف صغير، React هتفتكره وسم HTML عادي مش مكوّن، وهتفشل!</div>
+</template>
+
+<template id="tpl-s2">
+<p>أقوى حاجة في React إنك تقدر تستخدم مكوّن جوا مكوّن تاني — ده اسمه <strong>Composition (التركيب)</strong>. كده بتقسم الواجهة الكبيرة لقطع صغيرة، كل قطعة مسؤولة عن حاجة واحدة.</p>
+<pre><code>function Header() {
+  return &lt;h1&gt;اسم الموقع&lt;/h1&gt;;
+}
+
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;Header /&gt;
+      &lt;p&gt;محتوى الصفحة&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+<div class="note"><strong>لاحظ:</strong> <code>&lt;Header /&gt;</code> بيتكتب زي أي HTML tag عادي، بس بحرف كبير في الأول — ده اللي بيميّزه كـ مكوّن React مش عنصر HTML.</div>
+</template>
+
+<template id="tpl-s3">
+<p><strong>Props</strong> (اختصار Properties) هي إزاي تمرر بيانات <em>لجوا</em> المكوّن — تماماً زي ما تمرر arguments لدالة عادية.</p>
+<pre><code>function Greeting(props) {
+  return &lt;h2&gt;أهلاً يا {props.name}&lt;/h2&gt;;
+}
+
+// بتمررها زي attribute في الـ JSX:
+&lt;Greeting name="أحمد" /&gt;</code></pre>
+<p>لاحظ استخدام <code>{ }</code> جوا الـ JSX — ده بيخليك تحط أي تعبير JavaScript (متغير، عملية حسابية، أي حاجة) جوا الـ HTML اللي بتكتبه.</p>
+<div class="note"><strong>تلميح احترافي:</strong> كتير من المبرمجين بيفكّوا الـ props مباشرة: <code>function Greeting({ name })</code> بدل <code>function Greeting(props)</code> ثم <code>props.name</code> — نفس النتيجة، أقصر.</p></div>
+</template>
+
+<template id="tpl-s4">
+<p>لحد دلوقتي المكونات بتاعتنا "ثابتة" — مفيهاش حاجة بتتغيّر. الـ <strong>useState</strong> هو اللي بيدّي المكوّن "ذاكرة" بتتغيّر بمرور الوقت.</p>
+<pre><code>const [count, setCount] = useState(0);
+//     ↑        ↑              ↑
+//   القيمة   دالة تغييرها   القيمة الابتدائية</code></pre>
+<p>وعشان نخلي حاجة تحصل لما المستخدم يدوس، بنستخدم <code>onClick</code>:</p>
+<pre><code>&lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+  زوّد
+&lt;/button&gt;</code></pre>
+<div class="gotcha"><strong>⚠️ أخطر فخ في React:</strong> <code>onClick={handleClick}</code> صح (بتمرر "إشارة" للدالة). لكن <code>onClick={handleClick()}</code> غلط — ده بينفذ الدالة <strong>فوراً</strong> وقت الرسم، مش وقت الدوسة! ولاحظ كمان: <code>onClick</code> بحرف C كبير، مش <code>onclick</code> زي HTML العادي.</div>
+</template>
+
+<template id="tpl-s5">
+<p>عايز تعرض حاجة بس لو شرط معيّن اتحقق؟ استخدم <code>&&</code> جوا الـ JSX:</p>
+<pre><code>{isVisible && &lt;p&gt;أنا ظاهر!&lt;/p&gt;}</code></pre>
+<p>لو <code>isVisible</code> يساوي <code>true</code>، الـ <code>&lt;p&gt;</code> بيتعرض. لو <code>false</code>، React مابيعرضش حاجة خالص.</p>
+<p>ولو عايز تختار بين حاجتين، استخدم <strong>Ternary</strong> (زي الشرط المختصر في JS):</p>
+<pre><code>{isReady ? &lt;p&gt;جاهز!&lt;/p&gt; : &lt;p&gt;لسه لأ...&lt;/p&gt;}</code></pre>
+</template>
+
+<template id="tpl-s6">
+<p>عندك array من البيانات وعايز تعرض كل عنصر فيها كـ JSX؟ استخدم <code>.map()</code>:</p>
+<pre><code>const games = ["FIFA", "Fortnite"];
+
+&lt;ul&gt;
+  {games.map((game, i) =&gt;
+    &lt;li key={i}&gt;{game}&lt;/li&gt;
+  )}
+&lt;/ul&gt;</code></pre>
+<div class="gotcha"><strong>⚠️ الـ key إجباري!</strong> كل عنصر جوا <code>.map()</code> لازم يكون له <code>key</code> فريد. من غيره React هتديك تحذير في الـ Console، ومش هتقدر تتابع التغييرات في القائمة بكفاءة. الأفضل: استخدم id حقيقي لو موجود، أو الـ index كحل أخير.</div>
+</template>
+
+<template id="tpl-s7">
+<p>في الكود اللي في المحرر <strong>3 أخطاء شائعة جداً في React</strong> بيقع فيها كل مبرمج مبتدئ. اتنين منهم مش هيوقفوا الكود بـ Error — هيفشلوا بصمت!</p>
+<p>المطلوب: بعد الإصلاح، <code>#level-badge</code> يعرض "Level 5"، <code>#count-display</code> يعرض "Count: 0"، وبعد الضغط على الزرار يتحول لـ "Count: 1".</p>
+<div class="note"><strong>إزاي تصطاد الأخطاء زي المحترفين:</strong> افتح Console المتصفح (F12) وأنت شغّال — React بتطبع تحذيرات دقيقة جداً بتقولك بالظبط إيه الغلط وإزاي تصلحه.</div>
+</template>
+
+<template id="tpl-s8">
+<p>وصلت لآخر خطوة في الدرس! جاوب على الأسئلة الـ 5 دي، ولازم تجاوب صح على الكل عشان تنهي الدرس.</p>
+</template>
+
+<script>
+/* ══════════════ محتوى الخطوات ══════════════ */
+var ARABIC_NUM = ['', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨'];
+
+var STEPS = [
+  {
+    id: 's1', badge: 'الخطوة ١', title: 'أول مكوّن React و JSX ⚛️', type: 'code',
+    tasks: ['اكتب return هنا يرجّع h1 فيه أي رسالة ترحيبية', 'اضغط ▶ تشغيل عشان تشوفه يظهر في المعاينة'],
+    hint: 'return <h1>اكتب هنا أي كلام</h1>;',
+    starter: 'function Welcome() {\n  // اكتب return هنا يرجّع h1\n\n}\n\nrender(<Welcome />);\n',
+    check: function (result) {
+      if (result.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + result.error };
+      var h1 = result.container.querySelector('h1');
+      if (!h1 || !h1.textContent.trim()) return { ok: false, msg: 'خلي Welcome ترجّع h1 فيه نص.' };
+      return { ok: true };
+    },
+    success: '🎉 مبروك! ده أول مكوّن React حقيقي بتبنيه — نفّذه المتصفح فعلياً.'
+  },
+  {
+    id: 's2', badge: 'الخطوة ٢', title: 'المكونات والتركيب (Composition)', type: 'code',
+    tasks: ['اعمل Footer يرجّع p فيها أي نص', 'استخدم Footer جوا App بجانب Header'],
+    hint: '<Footer /> — زي أي HTML tag، بس بحرف كبير في الأول.',
+    starter: 'function Header() {\n  return <h1>اسم موقعي</h1>;\n}\n\nfunction Footer() {\n  // اكتب p فيها أي نص هنا\n\n}\n\nfunction App() {\n  return (\n    <div>\n      <Header />\n      {/* استخدم Footer هنا */}\n\n    </div>\n  );\n}\n\nrender(<App />);\n',
+    check: function (result) {
+      if (result.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + result.error };
+      var h1 = result.container.querySelector('h1');
+      var p = result.container.querySelector('p');
+      if (!h1 || !h1.textContent.trim()) return { ok: false, msg: 'Header لازم يفضل يرجّع h1.' };
+      if (!p || !p.textContent.trim()) return { ok: false, msg: 'Footer لازم يرجّع p فيها نص، ومستخدمة جوا App.' };
+      return { ok: true };
+    },
+    success: 'ممتاز! دلوقتي تعرف تقسّم أي واجهة كبيرة لمكونات صغيرة قابلة لإعادة الاستخدام.'
+  },
+  {
+    id: 's3', badge: 'الخطوة ٣', title: 'Props — تمرير البيانات', type: 'code',
+    tasks: ['استخدم props.name جوا h2 في Greeting'],
+    hint: '<h2>أهلاً يا {props.name}</h2>',
+    starter: 'function Greeting(props) {\n  // استخدم props.name هنا جوا h2\n\n}\n\nrender(<Greeting name="زيرو" />);\n',
+    check: function (result) {
+      if (result.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + result.error };
+      var h2 = result.container.querySelector('h2');
+      if (!h2 || h2.textContent.indexOf('زيرو') === -1) return { ok: false, msg: 'h2 لازم تحتوي على قيمة props.name ("زيرو").' };
+      return { ok: true };
+    },
+    success: 'رائع! Props هي إزاي بتخلي نفس المكوّن يتعمل منه آلاف النسخ المختلفة.'
+  },
+  {
+    id: 's4', badge: 'الخطوة ٤', title: 'الحالة (State) والأحداث — أول تفاعل حقيقي', type: 'code',
+    tasks: ['اعمل button بـ onClick يزوّد count بواحد باستخدام setCount'],
+    hint: '<button onClick={() => setCount(count + 1)}>زوّد</button>',
+    starter: 'function Counter() {\n  const [count, setCount] = useState(0);\n  return (\n    <div>\n      <p id="count-display">العدد: {count}</p>\n      {/* اعمل زرار هنا بـ onClick يزوّد count بواحد */}\n\n    </div>\n  );\n}\n\nrender(<Counter />);\n',
+    check: async function (result) {
+      if (result.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + result.error };
+      var p = result.container.querySelector('#count-display');
+      if (!p || p.textContent.indexOf('0') === -1) return { ok: false, msg: 'محتاج p بـ id="count-display" يعرض العدد الابتدائي (0).' };
+      var btn = result.container.querySelector('button');
+      if (!btn) return { ok: false, msg: 'محتاج تضيف button يزوّد العدد.' };
+      btn.dispatchEvent(new Event('click', { bubbles: true }));
+      await new Promise(function (r) { setTimeout(r, 90); });
+      var p2 = result.container.querySelector('#count-display');
+      if (!p2 || p2.textContent.indexOf('1') === -1) return { ok: false, msg: 'بعد الضغط على الزرار، العدد المفروض يزيد لـ 1. تأكد إنك بتستخدم setCount(count + 1).' };
+      return { ok: true };
+    },
+    success: '🚀 دي أول مرة تشوف فيها React "تتفاعل" — الـ state هو قلب أي تطبيق React حقيقي.'
+  },
+  {
+    id: 's5', badge: 'الخطوة ٥', title: 'العرض الشرطي (Conditional Rendering)', type: 'code',
+    tasks: ['اعرض p بـ id="msg" فيها أي نص، بس لو visible === true (استخدم &&)'],
+    hint: '{visible && <p id="msg">أنا ظاهر!</p>}',
+    starter: 'function Toggle() {\n  const [visible, setVisible] = useState(false);\n  return (\n    <div>\n      <button onClick={() => setVisible(!visible)}>إظهار/إخفاء</button>\n      {/* اعرض p بـ id="msg" هنا بس لو visible true */}\n\n    </div>\n  );\n}\n\nrender(<Toggle />);\n',
+    check: async function (result) {
+      if (result.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + result.error };
+      var before = result.container.querySelector('#msg');
+      if (before) return { ok: false, msg: 'في البداية visible لازم يكون false، يعني الرسالة متظهرش لسه.' };
+      var btn = result.container.querySelector('button');
+      if (!btn) return { ok: false, msg: 'زرار الإظهار/الإخفاء مش موجود.' };
+      btn.dispatchEvent(new Event('click', { bubbles: true }));
+      await new Promise(function (r) { setTimeout(r, 90); });
+      var after = result.container.querySelector('#msg');
+      if (!after || !after.textContent.trim()) return { ok: false, msg: 'بعد الضغط على الزرار، لازم تظهر p بـ id="msg".' };
+      return { ok: true };
+    },
+    success: 'تمام! العرض الشرطي هتستخدمه في كل واجهة تقريباً — إظهار/إخفاء، تحميل، أخطاء.'
+  },
+  {
+    id: 's6', badge: 'الخطوة ٦', title: 'عرض القوائم (Lists) والـ key', type: 'code',
+    tasks: ['استخدم games.map() لعرض كل لعبة كـ li، ومتنساش key فريد لكل عنصر'],
+    hint: '{games.map((game, i) => <li key={i}>{game}</li>)}',
+    starter: 'const games = ["FIFA", "Fortnite", "Minecraft"];\n\nfunction GameList() {\n  return (\n    <ul>\n      {/* استخدم games.map() هنا */}\n\n    </ul>\n  );\n}\n\nrender(<GameList />);\n',
+    check: function (result) {
+      if (result.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + result.error };
+      var lis = result.container.querySelectorAll('li');
+      if (lis.length !== 3) return { ok: false, msg: 'المفروض يظهر 3 عناصر li (واحد لكل لعبة).' };
+      var text = result.container.querySelector('ul').textContent;
+      if (text.indexOf('FIFA') === -1 || text.indexOf('Fortnite') === -1 || text.indexOf('Minecraft') === -1) {
+        return { ok: false, msg: 'تأكد إن الثلاث ألعاب كلها ظاهرة.' };
+      }
+      return { ok: true };
+    },
+    success: 'ممتاز! .map() هتستخدمها في كل مرة عايز تعرض بيانات متكررة — من قوائم لجداول كاملة.'
+  },
+  {
+    id: 's7', badge: 'الخطوة ٧', title: 'تحدي: دور على الأخطاء وصلّحها 🐛', type: 'code',
+    tasks: ['حوّل اسم المكوّن levelBadge لحرف كبير في الأول (وفي مكان استخدامه)', 'ضيف {} حوالين count في #count-display', 'صلّح onclick لـ onClick'],
+    hint: 'الأخطاء: اسم مكوّن مش PascalCase، متغير مكتوب كنص عادي بدل {متغير}، وonclick بحرف c صغير.',
+    starter:
+      'function levelBadge() {\n' +
+      '  return <span id="level-badge">Level 5</span>;\n' +
+      '}\n\n' +
+      'function App() {\n' +
+      '  const [count, setCount] = useState(0);\n' +
+      '  return (\n' +
+      '    <div>\n' +
+      '      <p id="count-display">Count: count</p>\n' +
+      '      <button onclick={() => setCount(count + 1)}>Add</button>\n' +
+      '      <levelBadge />\n' +
+      '    </div>\n' +
+      '  );\n' +
+      '}\n\n' +
+      'render(<App />);\n',
+    check: async function (result) {
+      if (result.error) return { ok: false, msg: 'فيه خطأ بيوقف الكود:\n' + result.error };
+      var badge = result.container.querySelector('#level-badge');
+      if (!badge || badge.textContent.indexOf('Level 5') === -1) {
+        return { ok: false, msg: 'حوّل levelBadge لـ LevelBadge (حرف كبير) — في التعريف وفي <LevelBadge />.' };
+      }
+      var cd = result.container.querySelector('#count-display');
+      if (!cd || cd.textContent.indexOf('Count: 0') === -1) {
+        return { ok: false, msg: 'محتاج {count} جوا #count-display، مش كلمة count كنص عادي.' };
+      }
+      var btn = result.container.querySelector('button');
+      if (!btn) return { ok: false, msg: 'الزرار مش موجود.' };
+      btn.dispatchEvent(new Event('click', { bubbles: true }));
+      await new Promise(function (r) { setTimeout(r, 90); });
+      var cd2 = result.container.querySelector('#count-display');
+      if (!cd2 || cd2.textContent.indexOf('Count: 1') === -1) {
+        return { ok: false, msg: 'بعد الضغط، العدد لازم يزيد. تأكد إنك صلّحت onclick لـ onClick.' };
+      }
+      return { ok: true };
+    },
+    success: 'محترف! لقيت التلات أخطاء — اتنين منهم كانوا بيفشلوا بصمت من غير أي Error ظاهر.'
+  },
+  {
+    id: 's8', badge: 'الخطوة ٨', title: 'اختبار الدرس النهائي 🏁', type: 'quiz',
+    tasks: [], hint: '',
+    questions: [
+      { q: 'اسم مكوّن React لازم يبدأ بـ؟', options: ['حرف صغير', 'حرف كبير (PascalCase)', 'رقم', 'شرطة سفلية _'], correct: 1 },
+      { q: 'إزاي تمرر بيانات لمكوّن؟', options: ['عن طريق useState', 'عن طريق Props', 'عن طريق import', 'مش ممكن'], correct: 1 },
+      { q: 'أنهي كود صح لتنفيذ دالة عند الضغط على زرار؟', options: ['onClick={handleClick()}', 'onclick={handleClick}', 'onClick={handleClick}', 'onPress={handleClick}'], correct: 2 },
+      { q: 'ليه لازم نحط key لعناصر .map()؟', options: ['شكلية بس', 'عشان React يتابع كل عنصر بكفاءة لما القائمة تتغير', 'إجباري في HTML', 'مالهوش فايدة حقيقية'], correct: 1 },
+      { q: '{isVisible && <p>...</p>} بيعمل إيه؟', options: ['بيعرض الـ p دايماً', 'بيعرض الـ p بس لو isVisible صح', 'بيمسح الـ p', 'Syntax Error'], correct: 1 }
+    ]
+  }
+];
+
+/* ══════════════ REACT ENGINE: تنفيذ JSX حقيقي عبر Babel ══════════════ */
+var reactReady = false;
+
+function PxErrorBoundary(props) { /* placeholder, replaced after React loads */ }
+
+function initReactEngine() {
+  PxErrorBoundary = class extends React.Component {
+    constructor(p) { super(p); this.state = { error: null }; }
+    static getDerivedStateFromError(error) { return { error: error }; }
+    componentDidCatch() {}
+    render() {
+      if (this.state.error) return React.createElement('div', { className: 'px-render-error' }, '⛔ ' + this.state.error.message);
+      return this.props.children;
+    }
+  };
+  reactReady = true;
+  document.getElementById('loadOverlay').classList.add('hide');
+  document.getElementById('codeEditor').disabled = false;
+  document.getElementById('runBtn').disabled = false;
+  document.getElementById('checkBtn').disabled = false;
+  renderStep(currentIndex);
+}
+
+function freshContainer() {
+  var wrap = document.getElementById('previewInner');
+  wrap.innerHTML = '';
+  var div = document.createElement('div');
+  wrap.appendChild(div);
+  return div;
+}
+
+function runJSX(code) {
+  return new Promise(function (resolve) {
+    var container = freshContainer();
+    var syncError = null;
+    try {
+      var transformed = Babel.transform(code, { presets: ['react'] }).code;
+      function render(el) {
+        var root = ReactDOM.createRoot(container);
+        root.render(React.createElement(PxErrorBoundary, null, el));
+      }
+      var fn = new Function('React', 'useState', 'useEffect', 'render', transformed);
+      fn(React, React.useState, React.useEffect, render);
+    } catch (e) {
+      syncError = e.message;
+    }
+    setTimeout(function () {
+      var errEl = container.querySelector('.px-render-error');
+      var err = syncError || (errEl ? errEl.textContent.replace('⛔ ', '') : null);
+      resolve({ error: err, container: container });
+    }, 90);
+  });
+}
+
+/* ══════════════ محرّك الخطوات (State + Render) ══════════════ */
+var currentIndex = 0;
+var editor = document.getElementById('codeEditor');
+var lnDiv = document.getElementById('lineNums');
+var wsBody = document.getElementById('wsBody');
+var quizAnswers = {};
+
+function doneKey(id) { return 'px_react_gs_done_' + id; }
+function codeKey(id) { return 'px_react_gs_code_' + id; }
+function isDone(id) { return localStorage.getItem(doneKey(id)) === '1'; }
+function setDone(id) { localStorage.setItem(doneKey(id), '1'); }
+
+function updateDots() {
+  var track = document.getElementById('progressTrack');
+  track.innerHTML = '';
+  STEPS.forEach(function (step, i) {
+    var dot = document.createElement('div');
+    dot.className = 'prog-dot' + (isDone(step.id) ? ' done' : '') + (i === currentIndex ? ' current' : '');
+    track.appendChild(dot);
+  });
+}
+
+function updateLN() {
+  var n = editor.value.split('\n').length;
+  var out = '';
+  for (var i = 1; i <= n; i++) out += i + '<br>';
+  lnDiv.innerHTML = out;
+}
+
+function saveCode() {
+  var step = STEPS[currentIndex];
+  if (step.type === 'code') localStorage.setItem(codeKey(step.id), editor.value);
+}
+
+function resetCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return;
+  if (!confirm('إعادة ضبط الكود للنسخة الأصلية؟')) return;
+  editor.value = step.starter;
+  localStorage.removeItem(codeKey(step.id));
+  updateLN();
+  runCode();
+}
+
+async function runCode() {
+  if (!reactReady) return null;
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return null;
+  return await runJSX(editor.value);
+}
+
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || 'ok') + ' show';
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.classList.remove('show'); }, 4200);
+}
+
+async function checkStep() {
+  if (!reactReady) return;
+  var step = STEPS[currentIndex];
+  if (step.type === 'quiz') { gradeQuiz(step); return; }
+  var checkBtn = document.getElementById('checkBtn');
+  checkBtn.disabled = true;
+  var result = await runCode();
+  var verdict = await step.check(result, editor.value);
+  checkBtn.disabled = false;
+  if (verdict.ok) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast(step.success || 'تمام! كمّل للي بعده 👍', 'ok');
+  } else {
+    toast(verdict.msg || 'حاول تاني، راجع التعليمات.', 'err');
+  }
+}
+
+function renderTaskList(tasks) {
+  var el = document.getElementById('taskList');
+  if (!tasks || !tasks.length) { el.innerHTML = ''; return; }
+  var html = '<div class="task-list-title">المطلوب في الخطوة دي</div>';
+  tasks.forEach(function (t, i) {
+    html += '<div class="task-item"><div class="task-num">' + (ARABIC_NUM[i + 1] || (i + 1)) + '</div><div>' + t + '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+function renderQuiz(step) {
+  var wrap = document.getElementById('quizContainer');
+  var html = '';
+  step.questions.forEach(function (q, qi) {
+    html += '<div class="quiz-q" id="quizQ' + qi + '">';
+    html += '<div class="quiz-q-title">' + (ARABIC_NUM[qi + 1] || (qi + 1)) + '. ' + q.q + '</div>';
+    q.options.forEach(function (opt, oi) {
+      html += '<label class="quiz-opt"><input type="radio" name="qz' + qi + '" value="' + oi + '" onchange="quizAnswers[' + qi + ']=' + oi + '"> <span>' + opt + '</span></label>';
+    });
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function gradeQuiz(step) {
+  var score = 0;
+  step.questions.forEach(function (q, qi) {
+    var qEl = document.getElementById('quizQ' + qi);
+    qEl.classList.remove('correct', 'wrong');
+    if (quizAnswers[qi] === q.correct) { qEl.classList.add('correct'); score++; }
+    else if (quizAnswers[qi] !== undefined) { qEl.classList.add('wrong'); }
+  });
+  if (score === step.questions.length) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast('🏆 ' + score + '/' + step.questions.length + ' — ممتاز! الدرس خلص.', 'ok');
+  } else {
+    toast('حصلت على ' + score + '/' + step.questions.length + ' — راجع الأسئلة المعلّمة باللون الوردي وحاول تاني.', 'err');
+  }
+}
+
+function finishLesson() {
+  localStorage.setItem('px-react-getting-started', 'done');
+  window.location.href = 'menu.html';
+}
+
+function renderStep(i) {
+  currentIndex = i;
+  var step = STEPS[i];
+  document.getElementById('stepLabel').textContent = (i + 1) + '/' + STEPS.length;
+  updateDots();
+  document.getElementById('insBadge').textContent = step.badge;
+  document.getElementById('insTitle').textContent = step.title;
+  var body = document.getElementById('insBody');
+  body.innerHTML = '';
+  body.appendChild(document.getElementById('tpl-' + step.id).content.cloneNode(true));
+  renderTaskList(step.tasks);
+  var hintEl = document.getElementById('hintBox');
+  if (step.hint) { hintEl.style.display = 'block'; hintEl.innerHTML = '<strong>تلميح:</strong> ' + step.hint; }
+  else { hintEl.style.display = 'none'; }
+
+  var runBtn = document.getElementById('runBtn');
+  var checkBtn = document.getElementById('checkBtn');
+
+  if (step.type === 'quiz') {
+    wsBody.classList.add('wide-mode');
+    quizAnswers = {};
+    renderQuiz(step);
+    runBtn.style.display = 'none';
+    checkBtn.textContent = '✓ تحقق من الإجابات';
+  } else {
+    wsBody.classList.remove('wide-mode');
+    runBtn.style.display = 'inline-flex';
+    checkBtn.textContent = '✓ تحقق من الخطوة';
+    var saved = localStorage.getItem(codeKey(step.id));
+    editor.value = (saved !== null) ? saved : step.starter;
+    updateLN();
+    if (reactReady) runCode();
+  }
+
+  document.getElementById('prevBtn').disabled = (i === 0);
+  var nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.toggle('visible', isDone(step.id));
+  nextBtn.textContent = (i === STEPS.length - 1) ? 'إنهاء الدرس 🚀' : 'التالي ←';
+}
+
+function goPrev() { if (currentIndex > 0) renderStep(currentIndex - 1); }
+function goNext() {
+  if (currentIndex === STEPS.length - 1) { finishLesson(); return; }
+  if (currentIndex < STEPS.length - 1) renderStep(currentIndex + 1);
+}
+
+/* ══════════════ الإعداد الأولي ══════════════ */
+var runTimer;
+editor.addEventListener('input', function () {
+  updateLN(); saveCode();
+  clearTimeout(runTimer);
+  runTimer = setTimeout(runCode, 700);
+});
+editor.addEventListener('scroll', function () { lnDiv.scrollTop = editor.scrollTop; });
+editor.addEventListener('keydown', function (e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  var s = editor.selectionStart, en = editor.selectionEnd;
+  editor.value = editor.value.slice(0, s) + '  ' + editor.value.slice(en);
+  editor.selectionStart = editor.selectionEnd = s + 2;
+  updateLN(); saveCode();
+});
+
+(function init() {
+  var start = 0;
+  for (var i = 0; i < STEPS.length; i++) { if (!isDone(STEPS[i].id)) { start = i; break; } if (i === STEPS.length - 1) start = i; }
+  currentIndex = start;
+  document.getElementById('insBadge').textContent = STEPS[start].badge;
+  document.getElementById('insTitle').textContent = STEPS[start].title;
+  document.getElementById('insBody').appendChild(document.getElementById('tpl-' + STEPS[start].id).content.cloneNode(true));
+  renderTaskList(STEPS[start].tasks);
+
+  function boot() {
+    if (typeof React === 'undefined' || typeof ReactDOM === 'undefined' || typeof Babel === 'undefined') {
+      setTimeout(boot, 50);
+      return;
+    }
+    initReactEngine();
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

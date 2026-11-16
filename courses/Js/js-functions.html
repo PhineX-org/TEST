@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هندسة الدوال | PhineX Academy</title>
+    <style>
+        :root {
+            --primary: #c3e88d;
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --text: #c9d1d9;
+            --code-bg: #000;
+            --accent: #82aaff;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.7;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .lesson-header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #161b22, #0d1117);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #30363d;
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid #30363d;
+        }
+
+        h2 { color: var(--primary); font-size: 1.8rem; }
+        h3 { color: var(--accent); }
+
+        .explanation-box {
+            background: rgba(195, 232, 141, 0.05);
+            border-right: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            direction: ltr;
+            text-align: left;
+            font-family: 'Consolas', monospace;
+            border: 1px solid #444;
+            margin: 15px 0;
+        }
+
+        .mission-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .quiz-container {
+            background: #1c2128;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+        }
+
+        .question { margin-bottom: 25px; padding: 15px; background: #0d1117; border-radius: 10px; }
+
+        button.check-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lesson-header">
+        <h1>مصنع الأكواد: الدوال (Functions) 🏭</h1>
+        <p>تعلم كيف تحول كودك إلى "آلة" قابلة لإعادة الاستخدام في أي وقت.</p>
+    </div>
+
+    <div class="lesson-card">
+        <h2>1. ما هي الدالة؟ (The Concept)</h2>
+        <div class="mission-badge">المهمة: كتابة الكود مرة واحدة وتشغيله ألف مرة.</div>
+        
+        <h3>الشرح التفصيلي:</h3>
+        <p>بدلاً من كتابة كود حساب الخصم لكل لعبة يدوياً، نصنع "دالة" تأخذ السعر وتعطينا النتيجة. الدالة تتكون من:</p>
+        <ul>
+            <li><b>الأمر <code>function</code>:</b> لتعريف الآلة.</li>
+            <li><b>الاسم:</b> لكي نستدعيها به.</li>
+            <li><b>المدخلات (Parameters):</b> الأشياء التي تحتاجها الآلة لتعمل.</li>
+        </ul>
+        
+        <div class="explanation-box">
+            تخيل الدالة كخلاط فواكه: تعطيه (برتقال) كمدخل، يقوم بـ (الخلط) كعملية، ويعطيك (عصير) كمخرج.
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>2. هيكل الدالة (Structure)</h2>
+        <div class="mission-badge">المهمة: إتقان كتابة الـ Syntax الصحيح.</div>
+
+        <h3>الكود البرمجي:</h3>
+        <div class="code-block">
+// 1. تعريف الدالة<br>
+function sayHello(name) {<br>
+&nbsp;&nbsp;console.log("أهلاً يا " + name);<br>
+}<br><br>
+// 2. استدعاء الدالة (Calling)<br>
+sayHello("محمد"); //سيطبع: أهلاً يا محمد<br>
+sayHello("أحمد"); // سيطبع: أهلاً يا أحمد
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>3. الكلمة السحرية: Return</h2>
+        <div class="mission-badge">المهمة: جعل الدالة تعيد قيمة لنستخدمها لاحقاً.</div>
+
+        <h3>الشرح التفصيلي:</h3>
+        <p>أحياناً لا نريد طباعة النتيجة فوراً، بل نريد "حفظها" في متغير. هنا نستخدم <code>return</code>.</p>
+
+        <h3>الكود البرمجي:</h3>
+        <div class="code-block">
+function calculateTotal(price, tax) {<br>
+&nbsp;&nbsp;return price + tax;<br>
+}<br><br>
+let total = calculateTotal(100, 15);<br>
+console.log(total); // 115
+        </div>
+        <div class="explanation-box">
+            ملحوظة هامة: بمجرد وصول الدالة لكلمة <code>return</code>، تتوقف عن العمل تماماً وتخرج النتيجة.
+        </div>
+    </div>
+    <!-- الفصل الثالث عشر: المراجع والذاكرة (Pass by Value vs Reference) -->
+    <div class="lesson-card">
+        <h2>13. لغز الذاكرة (Pass by Value vs Reference)</h2>
+        <p>هل تساءلت يوماً لماذا عندما تغير قيمة في مصفوفة جديدة، تتغير في المصفوفة الأصلية أيضاً؟ هذا لأن جافا سكريبت لا ينسخ المصفوفات، بل ينسخ "مكانها في الذاكرة" (Pointer).</p>
+        
+        <div class="explanation-box">
+            - <b>القيم البسيطة (Primitive):</b> مثل الأرقام والنصوص، يتم نسخ القيمة نفسها.<br>
+            - <b>القيم المعقدة (Objects/Arrays):</b> يتم نسخ "العنوان"، أي أن كلا المتغيرين يشيران لنفس المكان.
+        </div>
+        
+        
+
+        <div class="code-block">
+let arr1 = [1, 2];<br>
+let arr2 = arr1; // هنا نسخت العنوان فقط!<br>
+arr2.push(3);<br>
+console.log(arr1); // ستجدها [1, 2, 3] أيضاً!
+        </div>
+    </div>
+
+    <!-- الفصل الرابع عشر: التخاطب بين النوافذ (PostMessage API) -->
+    <div class="lesson-card">
+        <h2>14. التحدث بين النوافذ (Cross-Window Communication)</h2>
+        <p>كيف يمكن لصفحة أن تتحدث مع صفحة أخرى مفتوحة في تبويب مختلف أو داخل <code>iframe</code>؟ نستخدم الـ <code>postMessage</code> لتبادل البيانات بأمان.</p>
+        
+        <div class="badge">مهم جداً لحماية المواقع من الهجمات</div>
+
+        <div class="code-block">
+// إرسال رسالة لتبويب آخر<br>
+otherWindow.postMessage("Hello from PhineX!", "https://target-site.com");<br><br>
+// استقبال الرسالة<br>
+window.addEventListener("message", (event) => {<br>
+&nbsp;&nbsp;if (event.origin !== "https://trusted-site.com") return;<br>
+&nbsp;&nbsp;console.log(event.data);<br>
+});
+        </div>
+    </div>
+
+    <!-- الفصل الخامس عشر: البرمجة الوظيفية (Pure Functions & Immutability) -->
+    <div class="lesson-card">
+        <h2>15. البرمجة الوظيفية (Functional Programming)</h2>
+        <p>هذه الفلسفة تعتمد على كتابة دوال "نقية" لا تغير أي شيء خارج حدودها، مما يقلل الأخطاء بنسبة 90%.</p>
+        
+        <div class="explanation-box">
+            <b>الدالة النقية (Pure Function):</b> هي دالة إذا أعطيتها نفس المدخلات، تعطيك نفس المخرجات دائماً، ولا تغير أي متغير خارجي.
+        </div>
+
+        <div class="code-block">
+// دالة غير نقية (تغير متغير خارجي - خطر!)<br>
+let total = 0;<br>
+const add = (n) => total += n;<br><br>
+// دالة نقية (آمنة تماماً)<br>
+const addPure = (a, b) => a + b;
+        </div>
+    </div>
+
+    <!-- الفصل السادس عشر: الرقابة على الكائنات (Proxy API) -->
+    <div class="lesson-card">
+        <h2>16. المراقب الذكي (JavaScript Proxy)</h2>
+        <p>هل تريد تنفيذ كود معين بمجرد أن يحاول شخص "قراءة" أو "تعديل" قيمة داخل Object؟ الـ Proxy يعمل كـ "حارس أمن" للكائنات.</p>
+        
+        <div class="code-block">
+const user = { name: "Ahmed" };<br><br>
+const proxyUser = new Proxy(user, {<br>
+&nbsp;&nbsp;get(target, prop) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log(`يتم الآن قراءة الخاصية: ${prop}`);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return target[prop];<br>
+&nbsp;&nbsp;}<br>
+});<br><br>
+console.log(proxyUser.name); // سيطبع في الكونسول رسالة الرقابة أولاً
+        </div>
+    </div>
+       
+    <div class="quiz-container">
+        <h2>اختبار مهندس الدوال 🧠</h2>
+        
+        <div class="question" id="q1">
+            <p><b>س1: كيف نقوم بـ "استدعاء" دالة اسمها <code>startApp</code>؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="wrong"> function startApp</label><br>
+                <label><input type="radio" name="q1" value="correct"> startApp();</label><br>
+                <label><input type="radio" name="q1" value="wrong"> call startApp</label>
+            </div>
+        </div>
+
+        <div class="question" id="q2">
+            <p><b>س2: ما هي الكلمة التي تجعل الدالة "تعيد" قيمة للخارج؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="wrong"> give</label><br>
+                <label><input type="radio" name="q2" value="wrong"> send</label><br>
+                <label><input type="radio" name="q2" value="correct"> return</label>
+            </div>
+        </div>
+
+        <button class="check-btn" onclick="checkAnswers()">تأكد من إجابتي</button>
+    </div>
+</div>
+
+<script>
+    function checkAnswers() {
+        const q1 = document.querySelector('input[name="q1"]:checked');
+        const q2 = document.querySelector('input[name="q2"]:checked');
+
+        if (q1?.value === "correct" && q2?.value === "correct") {
+            alert("إجابة مثالية! أنت الآن جاهز لتحويل مكتبة الألعاب إلى نظام يعتمد على الدوال الاحترافية.");
+            localStorage.setItem('lesson-js-functions', 'completed');
+            window.location.href = 'js-projects.html';
+        } else {
+            alert("راجع الدرس مرة أخرى، الدوال هي أهم جزء في البرمجة!");
+        }
+    }
+</script>
+
+</body>
+</html>

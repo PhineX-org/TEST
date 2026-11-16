@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موسوعة الاحتراف | جافا سكريبت المتقدمة</title>
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg: #0b0e14;
+            --card-bg: #151921;
+            --text: #e0e0e0;
+            --accent: #ff007f;
+            --code-bg: #011627;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .lesson-header {
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);
+            border-radius: 25px;
+            margin-bottom: 40px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 50px;
+            border: 1px solid #2d333b;
+        }
+
+        h2 { color: var(--primary); font-size: 2rem; margin-top: 0; border-bottom: 2px solid var(--primary); display: inline-block; }
+        h3 { color: var(--accent); margin-top: 30px; }
+
+        .explanation-box {
+            background: rgba(0, 255, 204, 0.05);
+            border-right: 5px solid var(--primary);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #d6deeb;
+            padding: 25px;
+            border-radius: 12px;
+            direction: ltr;
+            text-align: left;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            border: 1px solid #30363d;
+            margin: 20px 0;
+        }
+
+        .quiz-container {
+            background: #1c2128;
+            padding: 40px;
+            border-radius: 30px;
+            border: 3px solid var(--primary);
+        }
+
+        .question { margin-bottom: 30px; padding: 20px; background: #0d1117; border-radius: 15px; }
+
+        button.check-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 20px 60px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lesson-header">
+        <h1>هندسة جافا سكريبت المتقدمة 🚀</h1>
+        <p>من الأساسيات إلى الاحتراف المعياري (Standard JS)</p>
+    </div>
+
+    <div class="lesson-card">
+        <h2>1. كيف تكتب دالة احترافية؟ (The Perfect Function)</h2>
+        <p>الدالة ليست مجرد كود ينفذ مهمة، بل هي "عقد" بينك وبين البرنامج. المبرمج المحترف يراعي ثلاثة أشياء:</p>
+        
+        <h3>أ. الوسائط الافتراضية (Default Parameters)</h3>
+        <p>تمنع انهيار البرنامج إذا نسي المستخدم إدخال قيمة.</p>
+        <div class="code-block">
+function greetUser(name = "ضيفنا العزيز") {<br>
+&nbsp;&nbsp;return `أهلاً بك، ${name}`;<br>
+}
+        </div>
+
+        <h3>ب. الدوال السهمية (Arrow Functions)</h3>
+        <p>طريقة مختصرة وحديثة، وهي الأساس في أطر العمل مثل React. تتميز بأنها لا تملك <code>this</code> خاص بها.</p>
+        <div class="code-block">
+const calculateTotal = (price, tax) => price + tax;
+        </div>
+
+        <h3>ج. الدوال المجهولة (Anonymous Functions)</h3>
+        <p>تستخدم كـ "عمال مؤقتين" داخل دوال أخرى (Callbacks).</p>
+        
+    </div>
+
+    <div class="lesson-card">
+        <h2>2. أين يعيش المتغير؟ (Scope & Closures)</h2>
+        <div class="explanation-box">
+            <b>الـ Scope:</b> هو الحدود التي يعيش فيها المتغير. إذا عرفت متغير داخل دالة، لا يمكنك رؤيته من الخارج.
+        </div>
+
+        <h3>مفهوم الـ Closure (الإغلاق):</h3>
+        <p>هو قدرة الدالة "الداخلية" على تذكر متغيرات الدالة "الخارجية" حتى بعد أن تنتهي الدالة الخارجية من العمل. هذا هو سر حماية البيانات في JS.</p>
+        
+        <div class="code-block">
+function createCounter() {<br>
+&nbsp;&nbsp;let count = 0; // متغير محمي<br>
+&nbsp;&nbsp;return function() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;count++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return count;<br>
+&nbsp;&nbsp;};<br>
+}<br>
+const counter = createCounter();<br>
+console.log(counter()); // 1
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>3. البرمجة كائنية التوجه (Classes & OOP)</h2>
+        <p>هذا المفهوم يسمح لك بصناعة "قوالب" منظمة بدلاً من كتابة كود عشوائي (Spaghetti Code).</p>
+        
+        <div class="explanation-box">
+            تخيل الـ **Class** كأنه "رسم هندسي" لسيارة، والـ **Object** هو "السيارة الحقيقية" التي خرجت من المصنع بناءً على الرسم.
+        </div>
+        
+        <ul>
+            <li><b>Constructor:</b> الدالة التي تعمل تلقائياً عند إنشاء كائن جديد.</li>
+            <li><b>this:</b> تشير إلى الكائن الحالي الذي نعمل عليه الآن.</li>
+        </ul>
+        
+    </div>
+
+    <div class="lesson-card">
+        <h2>4. فن الدفاع عن الكود (Try...Catch)</h2>
+        <p>المبرمج العظيم يتوقع الخطأ قبل وقوعه. نستخدم <code>try</code> لتجربة كود قد يفشل، و <code>catch</code> للإمساك بالخطأ ومعالجته دون أن يتوقف الموقع.</p>
+        <div class="code-block">
+try {<br>
+&nbsp;&nbsp;fetchDataFromServer();<br>
+} catch (error) {<br>
+&nbsp;&nbsp;console.error("حدث خطأ في الاتصال بالسيرفر: " + error.message);<br>
+}
+        </div>
+    </div>
+    <div class="lesson-card">
+        <h2>5. فن التفكيك (Destructuring & Spread)</h2>
+        <p>بدلاً من استخراج البيانات من المصفوفات أو الكائنات يدوياً في أسطر كثيرة، نستخدم "التفكيك" للحصول عليها في سطر واحد.</p>
+        
+        <div class="badge">الميزة: كود أنظف وأقل عرضة للأخطاء</div>
+        
+        <div class="code-block">
+const game = { title: "War Tycoon", price: 0, platform: "Roblox" };<br><br>
+// الطريقة القديمة:<br>
+// let title = game.title;<br><br>
+// الطريقة الاحترافية (Destructuring):<br>
+const { title, price } = game;<br>
+console.log(title); // War Tycoon
+        </div>
+
+        <h3>معامل الانتشار (Spread Operator `...`):</h3>
+        <p>يستخدم لنسخ المصفوفات أو دمجها بسهولة تامة دون التأثير على الأصل.</p>
+        <div class="code-block">
+const oldGames = ["Minecraft", "Roblox"];<br>
+const allGames = [...oldGames, "FIFA 26"]; // دمج ونسخ في خطوة واحدة
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>6. هندسة الوحدات (ES6 Modules)</h2>
+        <p>في المشاريع الحقيقية، لا نضع 1000 سطر في ملف واحد. نقوم بتقسيم الكود إلى ملفات صغيرة (Modules).</p>
+        
+        <div class="explanation-box">
+            - <b>Export:</b> تستخدمها في الملف الذي "يحتوي" على الدالة لكي تسمح للآخرين باستخدامها.<br>
+            - <b>Import:</b> تستخدمها في الملف الذي "يريد" استخدام تلك الدالة.
+        </div>
+        
+        
+
+        <div class="code-block">
+// في ملف math.js<br>
+export const add = (a, b) => a + b;<br><br>
+// في ملف main.js<br>
+import { add } from './math.js';
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>7. الذاكرة المحلية (LocalStorage & SessionStorage)</h2>
+        <p>كيف تجعل المتصفح "يتذكر" خيارات المستخدم حتى بعد إغلاق الصفحة؟</p>
+        
+        <div class="explanation-box">
+            - <b>LocalStorage:</b> تخزين دائم لا يُمسح إلا يدوياً (مثالي لحفظ الـ High Score أو الـ Theme).<br>
+            - <b>SessionStorage:</b> تخزين مؤقت يُمسح بمجرد إغلاق التبويب (Tab).
+        </div>
+
+        <div class="code-block">
+// حفظ بيانات<br>
+localStorage.setItem('username', 'AMG');<br><br>
+// جلب بيانات<br>
+const user = localStorage.getItem('username');
+        </div>
+        <p><small>ملاحظة: الـ LocalStorage يحفظ النصوص فقط، لذا نستخدم <code>JSON.stringify</code> لحفظ المصفوفات.</small></p>
+    </div>
+
+    <div class="lesson-card">
+        <h2>8. التحكم في الزمن (SetTimeout & SetInterval)</h2>
+        <p>أحياناً نريد تنفيذ كود بعد وقت معين، أو تكراره كل ثانية (مثل ساعة الموقع أو مؤقت اللعبة).</p>
+        
+        <div class="code-block">
+// تنفيذ مرة واحدة بعد 3 ثوانٍ<br>
+setTimeout(() => {<br>
+&nbsp;&nbsp;console.log("انتهى الوقت!");<br>
+}, 3000);<br><br>
+// تكرار كل ثانية<br>
+setInterval(() => {<br>
+&nbsp;&nbsp;console.log("ثانية مرت...");<br>
+}, 1000);
+        </div>
+    </div>
+    <!-- الفصل التاسع: معالجة النصوص المتقدمة (Regex) -->
+    <div class="lesson-card">
+        <h2>9. التعبيرات النمطية (Regular Expressions - Regex)</h2>
+        <p>تعتبر الـ Regex هي "لغة البحث داخل النصوص". تستخدم للتأكد من أن البيانات المدخلة (مثل الإيميل أو رقم الهاتف) تتبع نمطاً صحيحاً قبل إرسالها للسيرفر.</p>
+        
+        <div class="explanation-box">
+            <b>لماذا نستخدمها؟</b><br>
+            - التأكد من قوة كلمة المرور.<br>
+            - البحث عن كلمات معينة واستبدالها في نصوص ضخمة.<br>
+            - استخراج أرقام الهواتف من بين آلاف السطور.
+        </div>
+        
+        
+
+        <div class="code-block">
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;<br>
+const myEmail = "AMG@phinex.com";<br><br>
+console.log(emailPattern.test(myEmail)); // true (الإيميل صحيح)
+        </div>
+    </div>
+
+    <!-- الفصل العاشر: الأداء وتوفير الموارد (Debounce & Throttle) -->
+    <div class="lesson-card">
+        <h2>10. هندسة الأداء (Debounce & Throttle)</h2>
+        <p>تخيل أنك تبني نظام بحث؛ لو قمت بإرسال طلب للسيرفر مع كل حرف يكتبه المستخدم، ستنهار قاعدة البيانات! هنا نستخدم تقنيات "التهدئة".</p>
+        
+        <div class="explanation-box">
+            - <b>Debounce:</b> انتظر حتى يتوقف المستخدم عن الكتابة تماماً لمدة (مثلاً 500ms) ثم نفذ الأمر.<br>
+            - <b>Throttle:</b> نفذ الأمر مرة واحدة فقط كل (مثلاً ثانية) مهما حاول المستخدم الضغط على الزر بسرعة.
+        </div>
+        
+        
+
+        <h3>مثال الـ Debounce (احترافي):</h3>
+        <div class="code-block">
+let timer;<br>
+input.addEventListener('keyup', () => {<br>
+&nbsp;&nbsp;clearTimeout(timer);<br>
+&nbsp;&nbsp;timer = setTimeout(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log("تم إرسال طلب البحث للسيرفر...");<br>
+&nbsp;&nbsp;}, 500);<br>
+});
+        </div>
+    </div>
+
+    <!-- الفصل الحادي عشر: الرموز المتقدمة (Symbols & Generators) -->
+    <div class="lesson-card">
+        <h2>11. الأدوات السرية (Symbols & Generators)</h2>
+        <p>هذه الأدوات تُستخدم لبناء مكتبات (Libraries) أو أنظمة معقدة تحتاج لخصوصية عالية أو تحكم في تدفق البيانات.</p>
+        
+        <ul>
+            <li><b>Symbols:</b> لإنشاء مفاتيح "فريدة ومخفية" داخل الكائنات لا يمكن لأي كود آخر الوصول إليها بالصدفة.</li>
+            <li><b>Generators:</b> دوال يمكن "إيقافها" مؤقتاً ثم استكمالها لاحقاً (تستخدم الكلمة المفتاحية <code>yield</code>).</li>
+        </ul>
+
+        <div class="code-block">
+function* numberGenerator() {<br>
+&nbsp;&nbsp;yield 1;<br>
+&nbsp;&nbsp;yield 2;<br>
+&nbsp;&nbsp;return 3;<br>
+}<br>
+const gen = numberGenerator();<br>
+console.log(gen.next().value); // 1
+        </div>
+    </div>
+
+    <!-- الفصل الثاني عشر: الكود النظيف (Clean Code & Solid Principles) -->
+    <div class="lesson-card">
+        <h2>12. فلسفة الكود النظيف (Clean Code)</h2>
+        <p>في PhineX، لا نكتب كوداً يعمل فحسب، بل نكتب كوداً يستطيع الآخرون قراءته وتطويره بعدنا.</p>
+        
+        <div class="explanation-box">
+            <b>قواعد ذهبية:</b><br>
+            1. <b>تجنب الأرقام السحرية:</b> لا تكتب <code>if(x === 86400)</code> بل عرف متغيراً <code>const SECONDS_IN_DAY = 86400</code>.<br>
+            2. <b>وظيفة واحدة لكل دالة:</b> الدالة التي تحسب السعر يجب ألا تقوم بتغيير لون الزر!<br>
+            3. <b>الأسماء الوصفية:</b> استخدم <code>gamePrice</code> بدلاً من <code>gp</code>.
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <h2>اختبار المحترف 🧠</h2>
+        
+        <div class="question" id="q1">
+            <p><b>س1: ماذا يحدث للمتغير المرفق بـ <code>let</code> داخل دالة عند استدعائه من خارجها؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="wrong"> يعمل بشكل طبيعي.</label><br>
+                <label><input type="radio" name="q1" value="correct"> يعطي خطأ (ReferenceError) لأنه محمي داخل الـ Scope.</label><br>
+                <label><input type="radio" name="q1" value="wrong"> تتغير قيمته تلقائياً.</label>
+            </div>
+        </div>
+
+        <div class="question" id="q2">
+            <p><b>س2: ما هي فائدة الـ <code>constructor</code> داخل الـ Class؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="wrong"> تستخدم لحذف الكائن.</label><br>
+                <label><input type="radio" name="q2" value="correct"> تستخدم لتعيين القيم الأولية للكائن عند إنشائه.</label><br>
+                <label><input type="radio" name="q2" value="wrong"> تستخدم لربط الصفحة بالـ CSS.</label>
+            </div>
+        </div>
+
+        <div class="question" id="q3">
+            <p><b>س3: في الـ Arrow Function، هل يمكننا استخدام الكلمة المفتاحية <code>function</code>؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q3" value="wrong"> نعم، اختيارياً.</label><br>
+                <label><input type="radio" name="q3" value="correct"> لا، نستخدم السهم <code>=></code> مباشرة بعد القوسين.</label><br>
+                <label><input type="radio" name="q3" value="wrong"> نعم، إذا كانت الدالة طويلة.</label>
+            </div>
+        </div>
+        <div class="question" id="q4">
+            <p><b>س4: ماذا يفعل الـ Spread Operator `...` عند استخدامه مع مصفوفة؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q4" value="correct"> يقوم بفك عناصر المصفوفة ونشرها (نسخها).</label><br>
+                <label><input type="radio" name="q4" value="wrong"> يقوم بحذف المصفوفة من الذاكرة.</label><br>
+                <label><input type="radio" name="q4" value="wrong"> يحول المصفوفة إلى نص (String).</label>
+            </div>
+        </div>
+
+        <div class="question" id="q5">
+            <p><b>س5: أي من التالي يُمسح تلقائياً عند إغلاق المتصفح؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q5" value="wrong"> LocalStorage</label><br>
+                <label><input type="radio" name="q5" value="correct"> SessionStorage</label><br>
+                <label><input type="radio" name="q5" value="wrong"> JSON Data</label>
+            </div>
+        </div>
+
+        <button class="check-btn" onclick="checkMastery()">إرسال الإجابات والتقييم 🎓</button>
+    </div>
+</div>
+
+<script>
+    function checkMastery() {
+        const answers = { q1: "correct", q2: "correct", q3: "correct" };
+        let score = 0;
+
+        for (let key in answers) {
+            const selected = document.querySelector(`input[name="${key}"]:checked`);
+            if (selected && selected.value === answers[key]) {
+                score++;
+                document.getElementById(key).style.borderColor = "var(--primary)";
+            } else {
+                document.getElementById(key).style.borderColor = "var(--accent)";
+            }
+        }
+
+        if (score === 3) {
+            alert("عبقري! لقد اجتزت الجانب النظري المتقدم بامتياز. أنت الآن تملك العقلية الهندسية الصحيحة.");
+            localStorage.setItem('lesson-js-advanced', 'completed');
+            window.location.href = 'js-database.html';
+        } else {
+            alert(`درجتك ${score}/3. راجع المفاهيم الملونة بالأحمر لتقوية أساسك.`);
+        }
+    }
+</script>
+
+</body>
+</html>

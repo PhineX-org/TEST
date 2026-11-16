@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>البداية من الصفر | PhineX Academy</title>
+<meta name="description" content="ابدأ رحلتك في HTML من الصفر: إزاي يشتغل الويب، الهيكل الأساسي، الوسوم، وأول صفحة حقيقية بإيدك — بشرح عميق للمبتدئين خطوة بخطوة مع تطبيق فوري على كل مفهوم.">
+<link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --neon:#39ff14; --neon-dim:rgba(57,255,20,.1);
+  --void:#080b10; --surface:#0b0e14; --editor:#0a0d12; --card:#111827;
+  --border:rgba(255,255,255,.08); --border2:rgba(57,255,20,.25);
+  --text:#cdd6f4; --muted:#6b7a99; --accent:#c3e88d;
+  --blue:#82aaff; --pink:#ff5874; --gold:#f7df1e;
+}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:3px;}
+
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.ws-sep{color:var(--muted);font-size:18px;}
+.ws-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;flex-shrink:0;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;flex-shrink:0;}
+
+.ws-body{display:grid;grid-template-columns:420px 1fr 340px;flex:1;overflow:hidden;}
+.ws-body.wide-mode{grid-template-columns:1fr;}
+.ws-body.wide-mode .ws-editor,.ws-body.wide-mode .ws-preview{display:none;}
+
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:22px 22px 40px;display:flex;flex-direction:column;gap:14px;}
+.ws-body.wide-mode .ws-instructions{max-width:760px;margin:0 auto;width:100%;border-left:none;}
+.ws-instructions::-webkit-scrollbar-thumb{background:rgba(57,255,20,.3);}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#fff;line-height:1.35;}
+
+.ins-body{font-size:13.5px;line-height:1.85;color:var(--text);display:flex;flex-direction:column;gap:12px;}
+.ins-body h4{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--accent);margin-top:4px;}
+.ins-body p{margin:0;}
+.ins-body ul{padding-right:20px;display:flex;flex-direction:column;gap:5px;}
+.ins-body strong{color:#fff;}
+.ins-body code{background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.18);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#9dffb0;direction:ltr;display:inline-block;unicode-bidi:isolate;}
+
+.note{border-right:3px solid;padding:11px 14px;border-radius:0 8px 8px 0;font-size:12.5px;line-height:1.75;}
+.note.warn{border-color:var(--gold);background:rgba(247,223,30,.06);color:#f5e6a3;}
+.note.info{border-color:var(--blue);background:rgba(130,170,255,.06);color:#a9c4ff;}
+.note.good{border-color:var(--neon);background:var(--neon-dim);color:#b8f5a8;}
+.note strong{color:inherit;}
+
+.analogy{background:rgba(130,170,255,.06);border:1px solid rgba(130,170,255,.18);border-radius:10px;padding:13px 16px;font-size:12.5px;line-height:1.8;color:#a9c4ff;}
+.analogy strong{color:var(--blue);}
+
+.sv-list{display:flex;flex-direction:column;gap:8px;}
+.sv-step{display:flex;align-items:flex-start;gap:11px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:9px;padding:10px 13px;}
+.sv-num{min-width:24px;height:24px;border-radius:7px;background:var(--neon-dim);border:1px solid var(--border2);color:var(--neon);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sv-content h5{color:#fff;font-size:12.5px;margin-bottom:2px;}
+.sv-content p{color:var(--muted);font-size:11.5px;margin:0;line-height:1.6;}
+
+.ann-code{background:#05070a;border:1px solid var(--border);border-radius:9px;overflow:hidden;font-family:'JetBrains Mono',monospace;direction:ltr;text-align:left;}
+.ann-line{display:flex;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.03);}
+.ann-line:last-child{border-bottom:none;}
+.ann-num{min-width:26px;padding:6px 6px;text-align:right;color:var(--muted);font-size:10.5px;border-left:1px solid rgba(255,255,255,.04);flex-shrink:0;}
+.ann-code-txt{padding:6px 10px;flex:1;color:#abb2bf;white-space:pre;font-size:11.5px;}
+.ann-note{padding:6px 8px 6px 0;font-size:10.5px;color:var(--muted);font-family:'Cairo',sans-serif;direction:rtl;min-width:130px;max-width:150px;flex-shrink:0;line-height:1.5;border-right:1px solid rgba(57,255,20,.1);}
+.ann-note.hl{color:var(--neon);}
+.tag{color:#e06c75;} .attr{color:#e5c07b;} .val{color:#98c379;} .cm{color:#5c6370;font-style:italic;} .plain{color:#abb2bf;}
+
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list:empty{display:none;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+.hint{background:rgba(195,232,141,.05);border:1px solid rgba(195,232,141,.18);border-radius:8px;padding:11px 13px;font-size:12px;color:var(--accent);line-height:1.65;display:none;}
+.hint strong{color:#fff;}
+
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);border-bottom:2px solid var(--neon);}
+.tab-dot{width:6px;height:6px;border-radius:50%;background:#f78c6c;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#d6deeb;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;}
+.code-ed::selection{background:rgba(57,255,20,.15);}
+
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}
+.pdot{width:9px;height:9px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:white;}
+
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover:not(:disabled){border-color:var(--muted);color:var(--text);}
+.btn-nav:disabled{opacity:.3;cursor:not-allowed;}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(57,255,20,.1);color:var(--neon);border:1px solid var(--border2);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.25);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.5);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:440px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.6;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:var(--pink);color:var(--pink);}
+
+.quiz-container{display:none;flex-direction:column;gap:16px;}
+.ws-body.wide-mode .quiz-container{display:flex;}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color .25s;}
+.quiz-q.correct{border-color:rgba(195,232,141,.5);background:rgba(195,232,141,.04);}
+.quiz-q.wrong{border-color:rgba(255,88,116,.5);background:rgba(255,88,116,.04);}
+.quiz-q-title{font-weight:700;font-size:13.5px;margin-bottom:12px;line-height:1.6;}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid transparent;transition:background .2s;}
+.quiz-opt:hover{background:rgba(255,255,255,.03);}
+.quiz-opt input{accent-color:var(--neon);width:15px;height:15px;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<header class="ws-header">
+  <a href="menu.html" class="ws-logo">PhineX</a>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">HTML · البداية من الصفر</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track" id="progressTrack"></div>
+  <span class="ws-step-label" id="stepLabel">1/7</span>
+</header>
+
+<div class="ws-body" id="wsBody">
+  <aside class="ws-instructions">
+    <div class="ins-badge" id="insBadge"></div>
+    <div class="ins-title" id="insTitle"></div>
+    <div class="ins-body" id="insBody"></div>
+    <div class="task-list" id="taskList"></div>
+    <div class="hint" id="hintBox"></div>
+    <div class="quiz-container" id="quizContainer"></div>
+  </aside>
+
+  <div class="ws-editor" id="wsEditor">
+    <div class="editor-tabs">
+      <div class="file-tab"><span class="tab-dot"></span>index.html</div>
+      <div class="editor-action"><button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button></div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed" id="codeEditor" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <aside class="ws-preview" id="wsPreview">
+    <div class="preview-bar">
+      <div class="preview-dots"><div class="pdot r"></div><div class="pdot y"></div><div class="pdot g"></div></div>
+      <div class="preview-url">index.html</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </aside>
+</div>
+
+<footer class="ws-footer">
+  <button class="btn-nav" id="prevBtn" onclick="goPrev()">← السابق</button>
+  <button class="btn-run" id="runBtn" onclick="runCode()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" id="checkBtn" onclick="checkStep()">✓ تحقق من الخطوة</button>
+  <button class="btn-nav" id="nextBtn" onclick="goNext()">التالي ←</button>
+</footer>
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ THEORY TEMPLATES ══════════════ -->
+
+<template id="tpl-s1">
+<p>عندما تكتب <strong>google.com</strong> في المتصفح وتضغط Enter، بيحصل 4 حاجات ورا بعض في أجزاء من الثانية:</p>
+<div class="sv-list">
+  <div class="sv-step"><div class="sv-num">١</div><div class="sv-content"><h5>طلبك (Request)</h5><p>متصفحك (Chrome أو Firefox) بيبعت "طلب" عبر الإنترنت يقول: "ابعتلي صفحة google.com"</p></div></div>
+  <div class="sv-step"><div class="sv-num">٢</div><div class="sv-content"><h5>السيرفر بيرد (Response)</h5><p>جهاز كمبيوتر ضخم في مكان ما في العالم (اسمه السيرفر) بيستلم طلبك وبيبعتلك ملفات.</p></div></div>
+  <div class="sv-step"><div class="sv-num">٣</div><div class="sv-content"><h5>المتصفح بيجمّع الصفحة</h5><p>المتصفح بيستلم 3 أنواع ملفات: <code>HTML</code> (الهيكل) + <code>CSS</code> (التنسيق) + <code>JavaScript</code> (التفاعل)</p></div></div>
+  <div class="sv-step"><div class="sv-num">٤</div><div class="sv-content"><h5>بتشوف الصفحة على شاشتك</h5><p>المتصفح بيقرا الملفات دي ويحوّلها لِلي بتشوفه — نصوص، صور، أزرار، كل حاجة.</p></div></div>
+</div>
+<div class="analogy">🏠 <strong>تشبيه البيت:</strong> فكّر في بناء موقع زي بناء بيت.<br>
+<strong>HTML</strong> = الحيطان والأعمدة والسقف (الهيكل الأساسي)<br>
+<strong>CSS</strong> = الدهانات والديكور والإضاءة (الشكل والجمال)<br>
+<strong>JavaScript</strong> = الكهربا والسباكة والأسانسير (التفاعل والحركة)</div>
+<p>إحنا هنبدأ بـ HTML — الهيكل. وأحسن طريقة تفهمه بيها إنك تكتب سطر وتشوفه بنفسك فوراً. جرّب دلوقتي 👉</p>
+</template>
+
+<template id="tpl-s2">
+<p><strong>HTML</strong> اختصار لـ <strong>HyperText Markup Language</strong> — مش لغة برمجة بالمعنى الحقيقي، دي <strong>لغة وصفية</strong>: إنت بتوصف للمتصفح إيه اللي المفروض يعرضه.</p>
+<div class="note info"><strong>HyperText</strong> = نصوص فيها روابط بتنقلك بين صفحات تانية<br><strong>Markup</strong> = "تعليم" النص بعلامات خاصة (Tags) عشان تحدد معناه<br><strong>Language</strong> = لغة ليها قواعد لازم تتبعها</div>
+<h4>الـ Tags إيه بالظبط؟</h4>
+<p>الـ Tag كلمة متغلفة بين علامتي أصغر من وأكبر من. وأي محتوى في HTML بيتحط <strong>بين tag فتح وtag قفل</strong>:</p>
+<pre style="background:#05070a;border:1px solid var(--border);border-radius:9px;padding:12px 14px;direction:ltr;text-align:left;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c3e88d;">&lt;h1&gt;مرحباً بالعالم&lt;/h1&gt;
+     ↑ فتح      ↑ محتوى      ↑ قفل (لاحظ /)</pre>
+<h4>وسوم مش محتاجة قفل (Self-Closing)</h4>
+<p>بعض العناصر مالهاش محتوى جواها — زي الصور وفواصل الأسطر. دي مش محتاجة tag قفل:</p>
+<ul>
+  <li><code>&lt;br&gt;</code> — بينزل سطر جديد</li>
+  <li><code>&lt;img src="صورة.jpg"&gt;</code> — بيعرض صورة</li>
+  <li><code>&lt;hr&gt;</code> — بيرسم خط أفقي فاصل</li>
+</ul>
+</template>
+
+<template id="tpl-s3">
+<p>كل صفحة HTML في الدنيا بتبدأ بنفس الهيكل الأساسي. خليك تعرف كل سطر فيه ليه موجود:</p>
+<div class="ann-code">
+  <div class="ann-line"><div class="ann-num">1</div><div class="ann-code-txt"><span class="cm">&lt;!DOCTYPE html&gt;</span></div><div class="ann-note hl">إعلان: "ده ملف HTML5" — أول سطر في كل صفحة</div></div>
+  <div class="ann-line"><div class="ann-num">2</div><div class="ann-code-txt"><span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="val">"ar"</span> <span class="attr">dir</span>=<span class="val">"rtl"</span><span class="tag">&gt;</span></div><div class="ann-note">بداية الصفحة كلها. lang للغة، dir=rtl للكتابة من اليمين</div></div>
+  <div class="ann-line"><div class="ann-num">3</div><div class="ann-code-txt"><span class="tag">&lt;head&gt;</span></div><div class="ann-note">قسم المعلومات السرية — مش بيظهر للزائر</div></div>
+  <div class="ann-line"><div class="ann-num">4</div><div class="ann-code-txt"> <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span class="tag">&gt;</span></div><div class="ann-note">بيدعم الحروف العربية — ضروري دايماً</div></div>
+  <div class="ann-line"><div class="ann-num">5</div><div class="ann-code-txt"> <span class="tag">&lt;title&gt;</span><span class="plain">اسم صفحتي</span><span class="tag">&lt;/title&gt;</span></div><div class="ann-note">بيظهر في تبويب المتصفح فوق</div></div>
+  <div class="ann-line"><div class="ann-num">6</div><div class="ann-code-txt"><span class="tag">&lt;/head&gt;</span></div><div class="ann-note">قفل قسم المعلومات</div></div>
+  <div class="ann-line"><div class="ann-num">7</div><div class="ann-code-txt"><span class="tag">&lt;body&gt;</span></div><div class="ann-note hl">قسم المحتوى — كل ما تكتبه هنا يظهر على الشاشة</div></div>
+  <div class="ann-line"><div class="ann-num">8</div><div class="ann-code-txt"> <span class="tag">&lt;h1&gt;</span><span class="plain">أهلاً!</span><span class="tag">&lt;/h1&gt;</span></div><div class="ann-note">محتوى الصفحة الفعلي</div></div>
+  <div class="ann-line"><div class="ann-num">9</div><div class="ann-code-txt"><span class="tag">&lt;/body&gt;</span></div><div class="ann-note">قفل قسم المحتوى</div></div>
+  <div class="ann-line"><div class="ann-num">10</div><div class="ann-code-txt"><span class="tag">&lt;/html&gt;</span></div><div class="ann-note">قفل الصفحة كلها — آخر سطر دايماً</div></div>
+</div>
+<p><strong>UTF-8</strong> معيار ترميز بيدعم كل حروف العالم. من غيره الحروف العربية هتظهر كرموز غريبة زي <code>ط±ط¨ظˆط·</code>. و<code>lang="ar"</code> بتقول لمحركات البحث إن لغة صفحتك عربي.</p>
+</template>
+
+<template id="tpl-s4">
+<p>مش محتاج غير حاجتين: <strong>محرر كود</strong> و<strong>متصفح</strong>. خلاص كده.</p>
+<div class="sv-list">
+  <div class="sv-step"><div class="sv-num">١</div><div class="sv-content"><h5>حمّل VS Code (مجاني)</h5><p>روح <code>code.visualstudio.com</code> وحمّل النسخة المناسبة لجهازك، وثبته عادي.</p></div></div>
+  <div class="sv-step"><div class="sv-num">٢</div><div class="sv-content"><h5>اعمل مجلد للمشروع</h5><p>اعمل مجلد في أي مكان اسمه <code>my-website</code>. التنظيم مهم — كل ملفات مشروع في مجلد واحد.</p></div></div>
+  <div class="sv-step"><div class="sv-num">٣</div><div class="sv-content"><h5>افتح المجلد في VS Code</h5><p>افتح VS Code ← دوس <code>Open Folder</code> ← اختار المجلد اللي عملته.</p></div></div>
+  <div class="sv-step"><div class="sv-num">٤</div><div class="sv-content"><h5>اعمل ملف HTML</h5><p>من الشريط الجانبي دوس "New File" ← سمّيه <code>index.html</code>. اسم index هو الافتراضي لأي موقع.</p></div></div>
+  <div class="sv-step"><div class="sv-num">٥</div><div class="sv-content"><h5>الحيلة السحرية: Emmet</h5><p>في الملف الفاضي اكتب <code>!</code> بس (علامة تعجب) وادوس <code>Tab</code>. VS Code هيكتب الهيكل كله تلقائي!</p></div></div>
+  <div class="sv-step"><div class="sv-num">٦</div><div class="sv-content"><h5>افتح الصفحة في المتصفح</h5><p>دوس بالزرار الأيمن على اسم الملف ← <code>Open with Live Server</code>.</p></div></div>
+</div>
+<div class="note warn"><strong>⚠️ ثبّت Live Server:</strong> عشان تاخد معاينة مباشرة بتتحدث تلقائي، ثبّت إضافة "Live Server" من متجر VS Code Extensions.</div>
+<div class="note good"><strong>✅ اختصارات VS Code الأساسية:</strong><br><code>Ctrl + S</code> — حفظ الملف<br><code>Ctrl + /</code> — تحويل السطر لتعليق<br><code>Alt + Shift + F</code> — تنسيق الكود تلقائي</div>
+</template>
+
+<template id="tpl-s5">
+<p>خلينا نبني صفحة تعريف شخصية حقيقية — بنفس الطريقة اللي هتستخدمها في أي بورتفوليو أو سيرة ذاتية أونلاين.</p>
+<h4>العناصر اللي هتحتاجها</h4>
+<ul>
+  <li><code>&lt;h1&gt;</code> — عنوان رئيسي كبير، واحد بس في كل صفحة (لازم يكون فريد)</li>
+  <li><code>&lt;h2&gt;</code> — عنوان ثانوي، أصغر من h1، ينفع منه أكتر من واحد</li>
+  <li><code>&lt;p&gt;</code> — فقرة نصية عادية، أغلب كلامك هيتكتب هنا</li>
+  <li><code>&lt;a href="..."&gt;</code> — رابط. الـ <code>href</code> بيحدد الوجهة، والنص بينهم هو اللي بيتشاف ويتداس عليه</li>
+</ul>
+<div class="note info">المتصفح بيضيف تنسيق افتراضي تلقائي — h1 كبير وغامق، h2 أصغر، الروابط لونها أزرق. في درس CSS هتتعلم تتحكم في كل التفاصيل دي بنفسك.</div>
+</template>
+
+<template id="tpl-s6">
+<p>في الكود اللي في المحرر <strong>3 أخطاء شائعة جداً</strong> بيقع فيها كل مبرمج مبتدئ (وأحياناً المحترفين كمان!). كلها أخطاء إملائية بسيطة، بس بتمنع الصفحة من الشغل صح.</p>
+<p>مهمتك تكتشفهم وتصلحهم. الصفحة المفروض في الآخر يبقى فيها:</p>
+<ul>
+  <li>عنوان <code>h1</code> واحد بس (حوّل التاني لـ <code>h2</code>)</li>
+  <li>صورة بخاصية <code>src</code> صح</li>
+  <li>رابط بخاصية <code>href</code> صح</li>
+</ul>
+<div class="note warn"><strong>إزاي تصطاد الأخطاء زي المحترفين:</strong> راجع اسم كل خاصية حرف حرف. أخطاء زي <code>scr</code> بدل <code>src</code>، أو <code>herf</code> بدل <code>href</code> هي أكتر أخطاء المبتدئين شيوعاً في الدنيا كلها — وميظهرش عليها أي تحذير في المتصفح!</div>
+</template>
+
+<template id="tpl-s7">
+<p>وصلت لآخر خطوة في الدرس! جاوب على الأسئلة الـ 5 دي، ولازم تجاوب صح على الكل عشان تفتح الدرس الجاي.</p>
+</template>
+
+<script>
+/* ══════════════ RENDER + PROBE: كتابة الكود في iframe حقيقي وفحص الـ DOM ══════════════ */
+function renderAndProbe(html) {
+  const fr = document.getElementById('previewFrame');
+  const doc = fr.contentDocument || fr.contentWindow.document;
+  doc.open(); doc.write(html); doc.close();
+  return doc;
+}
+
+var ARABIC_NUM = ['', '١', '٢', '٣', '٤', '٥', '٦', '٧'];
+
+var STEPS = [
+  {
+    id: 's1', badge: 'الخطوة ١', title: 'إزاي يشتغل الويب؟ 🌐', type: 'code',
+    tasks: ['المحرر جنبك فيه هيكل صفحة جاهز، فاضي بس', 'ضيف وسم <code>&lt;h1&gt;</code> جوا الـ body وحط فيه أي كلام', 'اضغط ▶ تشغيل عشان تشوفه يظهر في المعاينة فوراً'],
+    hint: 'الشكل: &lt;h1&gt;اكتب هنا أي كلام&lt;/h1&gt; — حطها جوا &lt;body&gt;...&lt;/body&gt;',
+    starter: '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <title>صفحتي</title>\n</head>\n<body>\n\n  <!-- اكتب h1 هنا 👇 -->\n\n</body>\n</html>\n',
+    check: function (doc) {
+      var h1 = doc.querySelector('h1');
+      if (!h1 || !h1.textContent.trim()) return { ok: false, msg: 'ضيف وسم h1 وحط فيه أي نص جوا الـ body.' };
+      return { ok: true };
+    },
+    success: '🎉 مبروك! أول عنصر HTML بتكتبه بنفسك، وشفت نتيجته فوراً على الشاشة. كده بدأت رسمياً.'
+  },
+  {
+    id: 's2', badge: 'الخطوة ٢', title: 'الوسوم (Tags) وأنواعها', type: 'code',
+    tasks: ['ضيف وسم <code>&lt;p&gt;</code> فيه أي جملة نصية', 'ضيف وسم Self-Closing زي <code>&lt;hr&gt;</code> أو <code>&lt;br&gt;</code>'],
+    hint: '&lt;p&gt;أي جملة هنا&lt;/p&gt; ... وتحتها &lt;hr&gt; (من غير قفل)',
+    starter: '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <title>صفحتي</title>\n</head>\n<body>\n  <h1>أهلاً!</h1>\n\n  <!-- 1) ضيف p هنا -->\n\n  <!-- 2) ضيف hr أو br هنا -->\n\n</body>\n</html>\n',
+    check: function (doc) {
+      var p = doc.querySelector('p');
+      if (!p || !p.textContent.trim()) return { ok: false, msg: 'ضيف وسم p فيه نص حقيقي.' };
+      var hasSelfClose = doc.querySelector('hr') || doc.querySelector('br');
+      if (!hasSelfClose) return { ok: false, msg: 'ضيف كمان وسم self-closing زي hr أو br.' };
+      return { ok: true };
+    },
+    success: 'تمام! بقيت تفرّق بين الوسوم اللي محتاجة قفل واللي مش محتاجة.'
+  },
+  {
+    id: 's3', badge: 'الخطوة ٣', title: 'الهيكل الأساسي الكامل', type: 'code',
+    tasks: ['ضيف <code>&lt;!DOCTYPE html&gt;</code> في أول سطر', 'ضيف <code>&lt;meta charset="UTF-8"&gt;</code> جوا head', 'خلّي عنوان الصفحة (title) بالظبط: <code>أول صفحة ليا</code>'],
+    hint: 'الترتيب: DOCTYPE فوق كل حاجة، بعدين html، بعدين head فيها meta وtitle، بعدين body.',
+    starter: '<!-- 1) ضيف DOCTYPE هنا فوق -->\n<html lang="ar" dir="rtl">\n<head>\n  <!-- 2) ضيف meta charset هنا -->\n\n  <!-- 3) ضيف title بالنص بالظبط: أول صفحة ليا -->\n\n</head>\n<body>\n  <h1>أهلاً بيكم</h1>\n</body>\n</html>\n',
+    check: function (doc, rawHtml) {
+      if (!doc.doctype) return { ok: false, msg: 'مفيش DOCTYPE! لازم يكون أول سطر في الصفحة: <!DOCTYPE html>' };
+      if (!doc.querySelector('meta[charset]')) return { ok: false, msg: 'مفيش meta charset. ضيف: <meta charset="UTF-8"> جوا head.' };
+      var title = (doc.title || '').trim();
+      if (title !== 'أول صفحة ليا') return { ok: false, msg: 'عنوان الصفحة لازم يكون بالظبط: أول صفحة ليا' };
+      return { ok: true };
+    },
+    success: 'ممتاز! دلوقتي تقدر تبني هيكل أي صفحة HTML من الصفر بمفردك.'
+  },
+  {
+    id: 's4', badge: 'الخطوة ٤', title: 'إعداد بيئة العمل 🛠️', type: 'info',
+    tasks: [], hint: ''
+  },
+  {
+    id: 's5', badge: 'الخطوة ٥', title: 'أول صفحة تعريف شخصية حقيقية', type: 'code',
+    tasks: ['ضيف <code>h1</code> فيه اسمك', 'ضيف <code>h2</code> فيه لقبك أو تخصصك', 'ضيف <code>p</code> فيه جملة بسيطة عن نفسك', 'ضيف <code>a</code> برابط حقيقي (href يبدأ بـ https://)'],
+    hint: '&lt;a href="https://phinex-academy.com"&gt;زوروا PhineX&lt;/a&gt;',
+    starter: '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <title>صفحتي الشخصية</title>\n</head>\n<body>\n\n  <!-- ابنِ صفحتك هنا: h1, h2, p, a -->\n\n\n\n</body>\n</html>\n',
+    check: function (doc) {
+      var h1 = doc.querySelector('h1'), h2 = doc.querySelector('h2'), p = doc.querySelector('p'), a = doc.querySelector('a');
+      if (!h1 || !h1.textContent.trim()) return { ok: false, msg: 'ضيف h1 فيه اسمك.' };
+      if (!h2 || !h2.textContent.trim()) return { ok: false, msg: 'ضيف h2 فيه لقبك أو تخصصك.' };
+      if (!p || !p.textContent.trim()) return { ok: false, msg: 'ضيف p فيها جملة عن نفسك.' };
+      if (!a || !(a.getAttribute('href') || '').trim()) return { ok: false, msg: 'ضيف a برابط حقيقي في خاصية href.' };
+      return { ok: true };
+    },
+    success: '🎉 دي أول صفحة ويب حقيقية بتبنيها من الصفر بنفسك — رسمياً بقيت مطوّر HTML!'
+  },
+  {
+    id: 's6', badge: 'الخطوة ٦', title: 'تحدي: دور على الأخطاء 🐛', type: 'code',
+    tasks: ['راجع كل خاصية (attribute) حرف حرف', 'حوّل الـ h1 التاني لـ h2', 'صلّح اسمين الخاصيتين الغلط'],
+    hint: 'الأخطاء الثلاثة: h1 مكرر، وscr بدل src، وherf بدل href.',
+    starter: '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="UTF-8">\n  <title>صفحة زيرو</title>\n</head>\n<body>\n  <h1>زيرو للألعاب</h1>\n  <h1>أقوى متجر ألعاب</h1>\n  <img scr="logo.png" alt="شعار الموقع">\n  <a herf="https://example.com">من نحن</a>\n</body>\n</html>\n',
+    check: function (doc) {
+      var h1s = doc.querySelectorAll('h1');
+      if (h1s.length !== 1) return { ok: false, msg: 'لازم يكون عندك h1 واحد بس في الصفحة (حوّل التاني لـ h2).' };
+      var img = doc.querySelector('img');
+      if (!img || !img.getAttribute('src')) return { ok: false, msg: 'خاصية الصورة اسمها src مش scr — راجعها.' };
+      var a = doc.querySelector('a');
+      if (!a || !a.getAttribute('href')) return { ok: false, msg: 'خاصية الرابط اسمها href مش herf — راجعها.' };
+      return { ok: true };
+    },
+    success: 'محترف! الأخطاء دي حقيقية وبتقع مع كل المبرمجين — المهم إنك تعرف تصطادها.'
+  },
+  {
+    id: 's7', badge: 'الخطوة ٧', title: 'اختبار الدرس النهائي 🏁', type: 'quiz',
+    tasks: [], hint: '',
+    questions: [
+      { q: 'إيه هو أول سطر لازم يتكتب في كل ملف HTML؟', options: ['<html>', '<!DOCTYPE html>', '<head>', '<body>'], correct: 1 },
+      { q: 'فين بتتكتب العناوين والنصوص والصور اللي عايز الزائر يشوفها؟', options: ['جوا <head>', 'جوا <body>', 'جوا <html> مباشرة', 'مش مهم فين'], correct: 1 },
+      { q: 'وظيفة <meta charset="UTF-8"> إيه؟', options: ['تجميل شكل الصفحة', 'تحديد عنوان الصفحة', 'دعم الحروف العربية ومنع ظهور رموز غريبة', 'إضافة صورة'], correct: 2 },
+      { q: 'اختصار Emmet في VS Code لكتابة هيكل HTML كامل؟', options: ['اكتب html ثم Enter', 'اكتب ! ثم Tab', 'اكتب # ثم Space', 'اكتب start ثم Tab'], correct: 1 },
+      { q: 'كام h1 المفروض يكون في الصفحة الواحدة؟', options: ['واحد بس', 'اتنين', 'بلا حدود', 'صفر'], correct: 0 }
+    ]
+  }
+];
+
+/* ══════════════ محرّك الخطوات ══════════════ */
+var currentIndex = 0;
+var editor = document.getElementById('codeEditor');
+var lnDiv = document.getElementById('lineNums');
+var wsBody = document.getElementById('wsBody');
+var quizAnswers = {};
+
+function doneKey(id) { return 'px_html_gs_done_' + id; }
+function codeKey(id) { return 'px_html_gs_code_' + id; }
+function isDone(id) { return localStorage.getItem(doneKey(id)) === '1'; }
+function setDone(id) { localStorage.setItem(doneKey(id), '1'); }
+
+function updateDots() {
+  var track = document.getElementById('progressTrack');
+  track.innerHTML = '';
+  STEPS.forEach(function (step, i) {
+    var dot = document.createElement('div');
+    dot.className = 'prog-dot' + (isDone(step.id) ? ' done' : '') + (i === currentIndex ? ' current' : '');
+    track.appendChild(dot);
+  });
+}
+
+function updateLN() {
+  var n = editor.value.split('\n').length;
+  var out = '';
+  for (var i = 1; i <= n; i++) out += i + '<br>';
+  lnDiv.innerHTML = out;
+}
+
+function saveCode() {
+  var step = STEPS[currentIndex];
+  if (step.type === 'code') localStorage.setItem(codeKey(step.id), editor.value);
+}
+
+function resetCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return;
+  if (!confirm('إعادة ضبط الكود للنسخة الأصلية؟')) return;
+  editor.value = step.starter;
+  localStorage.removeItem(codeKey(step.id));
+  updateLN();
+  runCode();
+}
+
+function runCode() {
+  var step = STEPS[currentIndex];
+  if (step.type !== 'code') return null;
+  var doc = renderAndProbe(editor.value);
+  return doc;
+}
+
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || 'ok') + ' show';
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.classList.remove('show'); }, 4200);
+}
+
+function checkStep() {
+  var step = STEPS[currentIndex];
+  if (step.type === 'quiz') { gradeQuiz(step); return; }
+  if (step.type === 'info') { markInfoDone(step); return; }
+  var doc = runCode();
+  var verdict = step.check(doc, editor.value);
+  if (verdict.ok) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast(step.success || 'تمام! كمّل للي بعده 👍', 'ok');
+  } else {
+    toast(verdict.msg || 'حاول تاني، راجع التعليمات.', 'err');
+  }
+}
+
+function markInfoDone(step) {
+  setDone(step.id);
+  document.getElementById('nextBtn').classList.add('visible');
+  updateDots();
+  toast('تمام، يلا نكمل 👍', 'ok');
+}
+
+function renderTaskList(tasks) {
+  var el = document.getElementById('taskList');
+  if (!tasks || !tasks.length) { el.innerHTML = ''; return; }
+  var html = '<div class="task-list-title">المطلوب في الخطوة دي</div>';
+  tasks.forEach(function (t, i) {
+    html += '<div class="task-item"><div class="task-num">' + (ARABIC_NUM[i + 1] || (i + 1)) + '</div><div>' + t + '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+function renderQuiz(step) {
+  var wrap = document.getElementById('quizContainer');
+  var html = '';
+  step.questions.forEach(function (q, qi) {
+    html += '<div class="quiz-q" id="quizQ' + qi + '">';
+    html += '<div class="quiz-q-title">' + (ARABIC_NUM[qi + 1] || (qi + 1)) + '. ' + q.q + '</div>';
+    q.options.forEach(function (opt, oi) {
+      html += '<label class="quiz-opt"><input type="radio" name="qz' + qi + '" value="' + oi + '" onchange="quizAnswers[' + qi + ']=' + oi + '"> <span>' + opt + '</span></label>';
+    });
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function gradeQuiz(step) {
+  var score = 0;
+  step.questions.forEach(function (q, qi) {
+    var qEl = document.getElementById('quizQ' + qi);
+    qEl.classList.remove('correct', 'wrong');
+    if (quizAnswers[qi] === q.correct) { qEl.classList.add('correct'); score++; }
+    else if (quizAnswers[qi] !== undefined) { qEl.classList.add('wrong'); }
+  });
+  if (score === step.questions.length) {
+    setDone(step.id);
+    document.getElementById('nextBtn').classList.add('visible');
+    updateDots();
+    toast('🏆 ' + score + '/' + step.questions.length + ' — ممتاز! الدرس خلص.', 'ok');
+  } else {
+    toast('حصلت على ' + score + '/' + step.questions.length + ' — راجع الأسئلة المعلّمة باللون الوردي.', 'err');
+  }
+}
+
+function finishLesson() {
+  localStorage.setItem('getting-started', 'completed');
+  window.location.href = 'menu.html';
+}
+
+function renderStep(i) {
+  currentIndex = i;
+  var step = STEPS[i];
+  document.getElementById('stepLabel').textContent = (i + 1) + '/' + STEPS.length;
+  updateDots();
+  document.getElementById('insBadge').textContent = step.badge;
+  document.getElementById('insTitle').textContent = step.title;
+  var body = document.getElementById('insBody');
+  body.innerHTML = '';
+  body.appendChild(document.getElementById('tpl-' + step.id).content.cloneNode(true));
+  renderTaskList(step.tasks);
+  var hintEl = document.getElementById('hintBox');
+  if (step.hint) { hintEl.style.display = 'block'; hintEl.innerHTML = '<strong>تلميح:</strong> ' + step.hint; }
+  else { hintEl.style.display = 'none'; }
+
+  var runBtn = document.getElementById('runBtn');
+  var checkBtn = document.getElementById('checkBtn');
+
+  if (step.type === 'quiz') {
+    wsBody.classList.add('wide-mode');
+    quizAnswers = {};
+    renderQuiz(step);
+    runBtn.style.display = 'none';
+    checkBtn.style.display = 'inline-flex';
+    checkBtn.textContent = '✓ تحقق من الإجابات';
+  } else if (step.type === 'info') {
+    wsBody.classList.add('wide-mode');
+    runBtn.style.display = 'none';
+    checkBtn.style.display = 'inline-flex';
+    checkBtn.textContent = 'فهمت، التالي ←';
+  } else {
+    wsBody.classList.remove('wide-mode');
+    runBtn.style.display = 'inline-flex';
+    checkBtn.style.display = 'inline-flex';
+    checkBtn.textContent = '✓ تحقق من الخطوة';
+    var saved = localStorage.getItem(codeKey(step.id));
+    editor.value = (saved !== null) ? saved : step.starter;
+    updateLN();
+    runCode();
+  }
+
+  document.getElementById('prevBtn').disabled = (i === 0);
+  var nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.toggle('visible', isDone(step.id));
+  nextBtn.textContent = (i === STEPS.length - 1) ? 'إنهاء الدرس 🚀' : 'التالي ←';
+}
+
+function goPrev() { if (currentIndex > 0) renderStep(currentIndex - 1); }
+function goNext() {
+  if (currentIndex === STEPS.length - 1) { finishLesson(); return; }
+  if (currentIndex < STEPS.length - 1) renderStep(currentIndex + 1);
+}
+
+/* ══════════════ الإعداد الأولي ══════════════ */
+var runTimer;
+editor.addEventListener('input', function () {
+  updateLN(); saveCode();
+  clearTimeout(runTimer);
+  runTimer = setTimeout(runCode, 700);
+});
+editor.addEventListener('scroll', function () { lnDiv.scrollTop = editor.scrollTop; });
+editor.addEventListener('keydown', function (e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  var s = editor.selectionStart, en = editor.selectionEnd;
+  editor.value = editor.value.slice(0, s) + '  ' + editor.value.slice(en);
+  editor.selectionStart = editor.selectionEnd = s + 2;
+  updateLN(); saveCode();
+});
+
+(function init() {
+  var start = 0;
+  for (var i = 0; i < STEPS.length; i++) { if (!isDone(STEPS[i].id)) { start = i; break; } if (i === STEPS.length - 1) start = i; }
+  renderStep(start);
+})();
+</script>
+</body>
+</html>

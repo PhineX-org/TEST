@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Course | PhineX Academy</title>
+    <meta name="description" content="تعلّم HTML من الصفر حتى الاحتراف مع PhineX Academy. اكتشف أساسيات بناء صفحات الويب، العناصر، السمات، الهيكلية، والتكامل مع CSS وJavaScript في دورة شاملة ومفصلة.">
+    <link href="../../PhineX_Courses.png" rel="icon" type="image/png">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --neon: #39ff14;
+            --bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --text: #ffffff;
+            --muted: #888;
+            --transition: all 0.3s ease;
+            --red : #ff4d4d;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .course-container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Header & Progress */
+        .course-header {
+            margin-bottom: 30px;
+        }
+
+        .course-heading {
+            color: var(--red);
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background: #333;
+            height: 8px;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            background: var(--neon);
+            width: 0%;
+            height: 100%;
+            transition: var(--transition);
+            box-shadow: 0 0 10px var(--neon);
+        }
+
+        /* Search Input */
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: var(--neon);
+        }
+
+        /* Menu List */
+        .course-menu {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .course-menu-item {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .course-menu-item:hover {
+            border-color: var(--neon);
+            transform: translateX(5px);
+        }
+
+        .course-menu-item a {
+            text-decoration: none;
+            color: var(--text);
+            flex-grow: 1;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-menu-item i.check-icon {
+            color: #333;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .course-menu-item.completed i.check-icon {
+            color: var(--neon);
+        }
+
+        .course-menu-item.completed a {
+            color: var(--muted);
+            text-decoration: line-through;
+        }
+
+        .lang-ar {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        .home-btn:hover{
+      color:rgb(255, 255, 255)!important;font-size:.9rem;
+      text-decoration:underline;margin-left: 10px; transition: all 0.3s ease;
+    }
+    
+    nav ul li{
+      display:flex;align-items:center;gap:6px;
+    }
+    </style>
+</head>
+<body>
+<nav style="position:relative;z-index:10; padding:0 20px 20px;">
+  <ul>
+    <li><a href="../menu.html" style="color:rgba(255, 255, 255, 0.413); text-decoration:none; font-size:.9rem;" class="home-btn">Back to Home</a><i class="fas fa-arrow-left"></i></li>
+  </ul>
+</nav>
+<div class="course-container">
+    <div class="course-header">
+        <h3 class="course-heading"><i class="fab fa-html5"></i> HTML Course</h3>
+        <p>Complete the curriculum to master web structure.</p>
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <input type="text" id="searchInput" class="search-box" placeholder="Search lessons... بحث عن درس">
+
+    <ul class="course-menu" id="courseMenu">
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="getting-started.html">Getting started <span class="lang-ar">| البدء</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="html-basics.html">HTML Basics <span class="lang-ar">| أساسيات HTML</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="all-html-elements.html">All HTML Elements <span class="lang-ar">| جميع عناصر HTML</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="html-attributes.html">HTML Attributes <span class="lang-ar">| سمات HTML</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="html-with-css.html">HTML with CSS <span class="lang-ar">| HTML مع CSS</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="forms-and-validation.html">Forms & Validation <span class="lang-ar">| النماذج والتحقق</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="seo-for-html.html">SEO for HTML <span class="lang-ar">| تحسين محركات البحث</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="html-with-javascript.html">HTML with JavaScript <span class="lang-ar">| HTML مع JavaScript</span></a>
+        </li>
+        <li class="course-menu-item">
+            <i class="fas fa-check-circle check-icon"></i>
+            <a href="projects.html">Projects <span class="lang-ar">| مشاريع</span></a>
+        </li>
+    </ul>
+</div>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const menuItems = document.querySelectorAll('.course-menu-item');
+    const progressBar = document.getElementById('progress-bar');
+    const checkIcons = document.querySelectorAll('.check-icon');
+
+    // Storage key for each lesson, in the same order as the list above.
+    // Lessons set their own key to 'completed' when finished (see getting-started.html, html-with-css.html).
+    const LESSON_KEYS = [
+        'getting-started', 'html-basics', 'all-html-elements', 'html-attributes',
+        'html-with-css', 'forms-and-validation', 'seo-for-html', 'html-with-javascript', 'projects'
+    ];
+
+    // 1. Search Functionality
+    searchInput.addEventListener('keyup', (e) => {
+        const term = e.target.value.toLowerCase();
+        menuItems.forEach(item => {
+            const text = item.innerText.toLowerCase();
+            item.style.display = text.includes(term) ? 'flex' : 'none';
+        });
+    });
+
+    // 2. Progress Tracking
+    function updateProgress() {
+        const total = menuItems.length;
+        const completed = document.querySelectorAll('.course-menu-item.completed').length;
+        const percentage = (completed / total) * 100;
+        progressBar.style.width = percentage + '%';
+    }
+
+    function saveProgress(index, isCompleted) {
+        const key = LESSON_KEYS[index];
+        if (!key) return;
+        if (isCompleted) localStorage.setItem(key, 'completed');
+        else localStorage.removeItem(key);
+    }
+
+    // 3. Toggle Completion (manual override by the learner)
+    checkIcons.forEach((icon, index) => {
+        icon.addEventListener('click', () => {
+            const parent = icon.parentElement;
+            parent.classList.toggle('completed');
+            updateProgress();
+            saveProgress(index, parent.classList.contains('completed'));
+        });
+    });
+
+    // Restore completion state for every lesson from storage (not just the first)
+    menuItems.forEach((item, index) => {
+        if (localStorage.getItem(LESSON_KEYS[index]) === 'completed') {
+            item.classList.add('completed');
+        }
+    });
+    updateProgress();
+</script>
+
+</body>
+</html>

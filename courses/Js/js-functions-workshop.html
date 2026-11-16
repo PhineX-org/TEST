@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhineX | The Ultimate JS Workshop</title>
+    <style>
+        :root {
+            --editor-bg: #011627;
+            --sidebar-bg: #0b0e14;
+            --accent-green: #c3e88d;
+            --accent-blue: #82aaff;
+            --text-silver: #d6deeb;
+            --header-dark: #1a1a2e;
+        }
+
+        body {
+            background-color: var(--sidebar-bg);
+            color: var(--text-silver);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .lab-header {
+            background: var(--header-dark);
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d2d44;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 420px 1fr 1fr;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .instructions-panel {
+            background: var(--sidebar-bg);
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #2d2d44;
+            line-height: 1.6;
+        }
+
+        .editor-container { background: var(--editor-bg); position: relative; }
+
+        #codeEditor {
+            width: 100%; height: 100%;
+            background: transparent;
+            color: #d6deeb;
+            font-family: 'Consolas', monospace;
+            font-size: 15px;
+            padding: 20px;
+            border: none;
+            outline: none;
+            direction: ltr !important;
+            text-align: left !important;
+            resize: none;
+        }
+
+        .preview-panel { background: #010c15; color: var(--accent-green); padding: 20px; font-family: 'Consolas', monospace; overflow-y: auto; }
+        
+        .mission-card {
+            background: #1e1e3f;
+            padding: 15px;
+            border-radius: 8px;
+            border-right: 4px solid var(--accent-blue);
+            margin-bottom: 20px;
+        }
+
+        .btn-run {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 50px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<header class="lab-header">
+    <div style="font-weight: bold; color: var(--accent-green);">PhineX Masterclass</div>
+    <div style="color: var(--accent-blue);">The Ultimate Logic Workshop</div>
+</header>
+
+<div class="main-layout">
+    <aside class="instructions-panel">
+        <h2>تحدي المهندس الشامل 🛠️</h2>
+        <p>سنبني نظاماً يقوم بحساب السعر النهائي بعد الخصم لعدة ألعاب ويخبرنا إذا كان بإمكاننا شراءها.</p>
+        
+        <div class="mission-card">
+            <strong>المتطلبات البرمجية:</strong>
+            <ol>
+                <li>عرف مصفوفة أرقام باسم <code>gamePrices</code>.</li>
+                <li>عرف دالة باسم <code>applyDiscount</code> تأخذ (السعر) وتعيد السعر بعد خصم 20% (اضرب في 0.8).</li>
+                <li>عرف متغير <code>myWallet</code> بقيمة 100.</li>
+                <li>استخدم <code>for loop</code> للمرور على المصفوفة.</li>
+                <li>داخل اللوب:
+                    <ul>
+                        <li>استدعِ دالة الخصم لكل سعر.</li>
+                        <li>استخدم <code>if</code>: لو السعر بعد الخصم أقل من المحفظة، اطبع "Buy"، غير ذلك اطبع "Save Money".</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </aside>
+
+    <section class="editor-container">
+        <textarea id="codeEditor" spellcheck="false">
+/* --- ابدأ التحدي الشامل هنا --- */
+
+// 1. عرف المصفوفة والمحفظة
+const gamePrices = [50, 120, 200, 80];
+const myWallet = 100;
+
+// 2. ابدأ بناء "آلة" الخصم (Function)
+function applyDiscount(price) {
+    return price * 0.8;
+}
+
+// 3. استخدم الحلقة والمنطق للطباعة
+const log = (msg) => document.getElementById('output').innerHTML += msg + "<br>";
+document.getElementById('output').innerHTML = "Running System...<br>";
+
+for (let i = 0; i < gamePrices.length; i++) {
+    let finalPrice = applyDiscount(gamePrices[i]);
+    
+    // أكمل كود الـ if هنا للتحقق من السعر مقابل المحفظة
+    
+}</textarea>
+    </section>
+
+    <section class="preview-panel" id="output">
+        // بانتظار تشغيل المحرك...
+    </section>
+</div>
+
+<footer class="lab-footer">
+    <button class="btn-run" onclick="executeSystem()">تشغيل النظام وتدقيق الكود 🏁</button>
+</footer>
+
+<script>
+    function executeSystem() {
+        const code = document.getElementById('codeEditor').value;
+        const output = document.getElementById('output');
+        output.innerHTML = "";
+        
+        try {
+            eval(code);
+            validateAll(code);
+        } catch (e) {
+            output.innerHTML = "<span style='color:red'>[System Error]: " + e.message + "</span>";
+        }
+    }
+
+    function validateAll(code) {
+        const hasFunc = code.includes('function') && code.includes('return');
+        const hasLoop = code.includes('for') && code.includes('.length');
+        const hasIf = code.includes('if') && code.includes('else');
+
+        if (hasFunc && hasLoop && hasIf) {
+            alert("إنجاز عظيم! لقد دمجت كل دروس الجافا سكريبت في محرك واحد يعمل بذكاء. أنت الآن جاهز لبناء تطبيقات ويب حقيقية ومتحركة!");
+            localStorage.setItem('lesson-js-functions-workshop', 'completed');
+            window.location.href = 'js-dom-manipulation.html';
+        } else {
+            alert("تأكد من استخدام الدالة، الحلقة، والشرط معاً كما هو مطلوب.");
+        }
+    }
+</script>
+
+</body>
+</html>

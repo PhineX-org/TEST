@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الاختبار | Tailwind CSS | PhineX Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{
+      --bg:#050508;--bg2:#0d0d1a;--bg3:#14142a;
+      --tw:#38bdf8;--green:#34d399;--red:#f87171;
+      --purple:#a78bfa;--orange:#fb923c;--yellow:#fbbf24;
+      --border:rgba(255,255,255,.08);--muted:rgba(255,255,255,.4);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:#fff;font-family:'Cairo',sans-serif;min-height:100vh;}
+
+    /* TOPBAR */
+    .topbar{
+      position:sticky;top:0;z-index:100;
+      background:rgba(5,5,8,.95);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;padding:14px 32px;
+    }
+    .topbar-left{display:flex;align-items:center;gap:10px;}
+    .topbar a{color:var(--muted);text-decoration:none;font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s;}
+    .topbar a:hover{color:var(--tw);}
+    .topbar .sep{color:rgba(255,255,255,.1);}
+    .topbar .cur{color:var(--orange);}
+    .nav-pills{display:flex;gap:6px;}
+    .pill{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:.78rem;color:var(--muted);text-decoration:none;transition:all .2s;}
+    .pill:hover{border-color:var(--tw);color:var(--tw);}
+    .pill.active{background:rgba(251,146,60,.1);border-color:var(--orange);color:var(--orange);}
+
+    /* ─── INTRO SCREEN ─── */
+    #intro-screen{
+      min-height:calc(100vh - 57px);display:flex;flex-direction:column;
+      align-items:center;justify-content:center;padding:40px 20px;text-align:center;
+    }
+    .quiz-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'Orbitron',sans-serif;font-size:.65rem;letter-spacing:3px;
+      color:var(--orange);border:1px solid rgba(251,146,60,.3);
+      border-radius:100px;padding:6px 20px;margin-bottom:24px;
+      animation:pulse-o 2s ease infinite;
+    }
+    @keyframes pulse-o{0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,.4);}50%{box-shadow:0 0 0 10px rgba(251,146,60,0);}}
+
+    .intro-title{
+      font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;
+      background:linear-gradient(135deg,var(--orange),var(--yellow));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-bottom:16px;
+    }
+    .intro-sub{color:var(--muted);font-size:1rem;max-width:500px;margin:0 auto 40px;}
+
+    .intro-stats{
+      display:flex;gap:32px;flex-wrap:wrap;justify-content:center;
+      margin-bottom:40px;
+    }
+    .i-stat{
+      background:rgba(255,255,255,.04);border:1px solid var(--border);
+      border-radius:16px;padding:20px 28px;text-align:center;min-width:100px;
+    }
+    .i-stat-num{font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:700;color:var(--orange);}
+    .i-stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;}
+
+    .diff-selector{
+      display:flex;gap:12px;margin-bottom:40px;flex-wrap:wrap;justify-content:center;
+    }
+    .diff-btn{
+      background:rgba(255,255,255,.04);border:2px solid var(--border);
+      border-radius:12px;padding:14px 24px;cursor:pointer;transition:all .25s;text-align:center;min-width:120px;
+    }
+    .diff-btn:hover{background:rgba(255,255,255,.07);}
+    .diff-btn.selected-diff{border-color:var(--orange);background:rgba(251,146,60,.1);}
+    .diff-btn .d-icon{font-size:1.4rem;margin-bottom:6px;}
+    .diff-btn .d-name{font-weight:700;font-size:.9rem;}
+    .diff-btn .d-q{font-size:.75rem;color:var(--muted);margin-top:2px;}
+
+    .start-btn{
+      font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;
+      background:linear-gradient(135deg,var(--orange),var(--yellow));
+      color:#000;border:none;border-radius:16px;padding:18px 48px;
+      cursor:pointer;transition:all .3s;
+      box-shadow:0 10px 30px rgba(251,146,60,.3);
+    }
+    .start-btn:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(251,146,60,.4);}
+    .start-btn:active{transform:scale(.97);}
+
+    /* ─── QUIZ SCREEN ─── */
+    #quiz-screen{display:none;min-height:calc(100vh - 57px);padding:40px 20px;}
+    .quiz-wrap{max-width:720px;margin:0 auto;}
+
+    /* progress + timer bar */
+    .quiz-meta{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:32px;gap:16px;flex-wrap:wrap;
+    }
+    .q-progress{flex:1;min-width:200px;}
+    .q-prog-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:8px;}
+    .q-prog-bar{height:6px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;}
+    .q-prog-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow));border-radius:100px;transition:width .4s ease;}
+
+    .timer-box{
+      display:flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.05);border:1px solid var(--border);
+      border-radius:100px;padding:8px 18px;font-family:'Orbitron',sans-serif;font-size:.85rem;
+    }
+    .timer-box.warning{border-color:rgba(248,113,113,.5);color:var(--red);animation:pulse-r .5s ease infinite;}
+    @keyframes pulse-r{0%,100%{background:rgba(248,113,113,.05);}50%{background:rgba(248,113,113,.15);}}
+
+    /* question card */
+    .q-card{
+      background:var(--bg2);border:1px solid var(--border);border-radius:24px;
+      padding:40px;margin-bottom:24px;
+      animation:slideIn .4s ease both;
+    }
+    @keyframes slideIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+
+    .q-category{
+      font-size:.65rem;letter-spacing:3px;color:var(--orange);
+      font-family:'Orbitron',sans-serif;margin-bottom:16px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .q-category::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--orange);}
+
+    .q-num{font-size:.75rem;color:var(--muted);margin-bottom:8px;}
+    .q-text{font-size:1.15rem;font-weight:700;line-height:1.6;margin-bottom:8px;}
+    .q-code{
+      background:#0d1117;border:1px solid rgba(255,255,255,.08);border-radius:10px;
+      padding:16px 20px;font-family:'Fira Code',monospace;font-size:.85rem;
+      color:#e2e8f0;margin-bottom:24px;overflow-x:auto;line-height:1.6;
+    }
+    .q-code .k{color:#ff79c6;}.q-code .a{color:#50fa7b;}.q-code .v{color:#f1fa8c;}.q-code .c{color:#6272a4;}
+
+    /* options */
+    .options{display:flex;flex-direction:column;gap:10px;}
+    .option{
+      background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.07);
+      border-radius:14px;padding:16px 20px;cursor:pointer;
+      display:flex;align-items:center;gap:14px;
+      transition:all .2s;font-size:.95rem;
+      position:relative;overflow:hidden;
+    }
+    .option:hover:not(.answered){border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.05);}
+    .option-letter{
+      width:32px;height:32px;border-radius:8px;flex-shrink:0;
+      border:1px solid rgba(255,255,255,.1);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--muted);
+      transition:all .2s;
+    }
+    .option.correct{border-color:var(--green);background:rgba(52,211,153,.08);}
+    .option.correct .option-letter{background:var(--green);border-color:var(--green);color:#000;}
+    .option.wrong{border-color:var(--red);background:rgba(248,113,113,.08);}
+    .option.wrong .option-letter{background:var(--red);border-color:var(--red);color:#fff;}
+    .option.skipped-correct{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.04);}
+    .option.answered{cursor:default;}
+
+    /* explanation */
+    .explanation-box{
+      display:none;
+      background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;padding:20px 24px;margin-top:16px;
+      animation:slideIn .3s ease both;
+    }
+    .explanation-box.show{display:block;}
+    .expl-title{
+      display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:10px;font-size:.9rem;
+    }
+    .expl-title.correct-title{color:var(--green);}
+    .expl-title.wrong-title{color:var(--red);}
+    .expl-text{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.8;}
+    .expl-code{
+      background:#0d1117;border-radius:8px;padding:12px 16px;margin-top:10px;
+      font-family:'Fira Code',monospace;font-size:.82rem;color:#50fa7b;
+    }
+
+    /* nav buttons */
+    .q-nav{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;}
+    .nav-btn{
+      font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;
+      border-radius:12px;padding:12px 28px;cursor:pointer;transition:all .2s;border:none;
+    }
+    .btn-skip{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);}
+    .btn-skip:hover{background:rgba(255,255,255,.1);color:#fff;}
+    .btn-next{background:linear-gradient(135deg,var(--orange),var(--yellow));color:#000;}
+    .btn-next:hover{opacity:.9;transform:translateY(-1px);}
+    .btn-next:disabled{opacity:.3;cursor:default;transform:none;}
+
+    /* ─── RESULTS SCREEN ─── */
+    #results-screen{display:none;min-height:calc(100vh - 57px);padding:40px 20px;}
+    .results-wrap{max-width:720px;margin:0 auto;}
+
+    .score-circle{
+      width:180px;height:180px;border-radius:50%;
+      border:6px solid;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      margin:0 auto 32px;position:relative;
+    }
+    .score-pct{font-family:'Orbitron',sans-serif;font-size:2.5rem;font-weight:900;}
+    .score-label{font-size:.75rem;color:var(--muted);margin-top:4px;}
+
+    .result-grade{
+      text-align:center;margin-bottom:40px;
+    }
+    .grade-title{font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:900;margin-bottom:8px;}
+    .grade-sub{color:var(--muted);font-size:.9rem;}
+
+    .result-stats{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      gap:14px;margin-bottom:40px;
+    }
+    .r-stat{
+      background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+      padding:20px;text-align:center;
+    }
+    .r-stat-num{font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:700;}
+    .r-stat-label{font-size:.75rem;color:var(--muted);margin-top:4px;}
+
+    .result-breakdown{margin-bottom:40px;}
+    .rb-title{font-family:'Orbitron',sans-serif;font-size:.8rem;letter-spacing:2px;color:var(--muted);margin-bottom:16px;}
+    .rb-item{
+      display:flex;align-items:center;gap:12px;
+      padding:14px 16px;border-radius:12px;margin-bottom:8px;
+      background:rgba(255,255,255,.03);border:1px solid var(--border);
+      font-size:.88rem;
+    }
+    .rb-q{color:rgba(255,255,255,.7);flex:1;}
+    .rb-status{font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:100px;flex-shrink:0;}
+    .rb-correct{background:rgba(52,211,153,.15);color:var(--green);}
+    .rb-wrong{background:rgba(248,113,113,.15);color:var(--red);}
+    .rb-skipped{background:rgba(255,255,255,.08);color:var(--muted);}
+
+    .result-actions{display:flex;gap:12px;flex-wrap:wrap;}
+    .ra-btn{
+      flex:1;min-width:150px;padding:15px;border-radius:14px;cursor:pointer;
+      font-family:'Cairo',sans-serif;font-weight:700;font-size:.95rem;border:none;
+      transition:all .2s;
+    }
+    .ra-retry{background:linear-gradient(135deg,var(--orange),var(--yellow));color:#000;}
+    .ra-retry:hover{transform:translateY(-2px);opacity:.9;}
+    .ra-lessons{background:rgba(255,255,255,.06);border:1px solid var(--border);color:#fff;}
+    .ra-lessons:hover{background:rgba(255,255,255,.1);}
+    .ra-menu{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:var(--tw);}
+    .ra-menu:hover{background:rgba(56,189,248,.2);}
+
+    @media(max-width:768px){
+      .topbar{padding:12px 16px;}.nav-pills{display:none;}
+      .q-card{padding:24px 20px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../menu.html"><i class="fas fa-arrow-right"></i> الدورة</a>
+    <span class="sep">/</span>
+    <span class="cur">الكويز</span>
+  </div>
+  <div class="nav-pills">
+    <a href="lessons.html" class="pill">الدروس</a>
+    <a href="workshops.html" class="pill">الورش</a>
+    <a href="revision.html" class="pill">المراجعة</a>
+    <a href="quiz.html" class="pill active">الكويز</a>
+  </div>
+</div>
+
+<!-- ═══ INTRO ═══ -->
+<div id="intro-screen">
+  <div class="quiz-badge"><i class="fas fa-brain"></i> QUIZ TIME</div>
+  <h1 class="intro-title">اختبر معرفتك</h1>
+  <p class="intro-sub">25 سؤال متنوع في Tailwind CSS — من الأساسيات لحد الـ 3D Animations. كل سؤال فيه شرح للإجابة الصح.</p>
+
+  <div class="intro-stats">
+    <div class="i-stat"><div class="i-stat-num">25</div><div class="i-stat-label">سؤال</div></div>
+    <div class="i-stat"><div class="i-stat-num">30</div><div class="i-stat-label">ثانية / سؤال</div></div>
+    <div class="i-stat"><div class="i-stat-num">3</div><div class="i-stat-label">مستويات</div></div>
+    <div class="i-stat"><div class="i-stat-num">∞</div><div class="i-stat-label">محاولات</div></div>
+  </div>
+
+  <div class="diff-selector">
+    <div class="diff-btn selected-diff" data-diff="all" onclick="selectDiff(this)">
+      <div class="d-icon">🎯</div>
+      <div class="d-name">الكل</div>
+      <div class="d-q">25 سؤال</div>
+    </div>
+    <div class="diff-btn" data-diff="beginner" onclick="selectDiff(this)">
+      <div class="d-icon">🌱</div>
+      <div class="d-name">مبتدئ</div>
+      <div class="d-q">10 أسئلة</div>
+    </div>
+    <div class="diff-btn" data-diff="mid" onclick="selectDiff(this)">
+      <div class="d-icon">⚡</div>
+      <div class="d-name">متوسط</div>
+      <div class="d-q">10 أسئلة</div>
+    </div>
+    <div class="diff-btn" data-diff="advanced" onclick="selectDiff(this)">
+      <div class="d-icon">🔥</div>
+      <div class="d-name">متقدم</div>
+      <div class="d-q">5 أسئلة</div>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startQuiz()">
+    <i class="fas fa-play"></i> ابدأ الكويز
+  </button>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="quiz-screen">
+  <div class="quiz-wrap">
+
+    <div class="quiz-meta">
+      <div class="q-progress">
+        <div class="q-prog-label">
+          <span id="q-label">سؤال 1 من 25</span>
+          <span id="q-cat-label"></span>
+        </div>
+        <div class="q-prog-bar"><div class="q-prog-fill" id="q-fill" style="width:4%"></div></div>
+      </div>
+      <div class="timer-box" id="timer-box">
+        <i class="fas fa-clock"></i>
+        <span id="timer-display">30</span>s
+      </div>
+    </div>
+
+    <div class="q-card" id="q-card">
+      <div class="q-category" id="q-cat"></div>
+      <div class="q-num" id="q-num"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-code" id="q-code" style="display:none"></div>
+      <div class="options" id="options"></div>
+      <div class="explanation-box" id="expl-box">
+        <div class="expl-title" id="expl-title"></div>
+        <div class="expl-text" id="expl-text"></div>
+        <div class="expl-code" id="expl-code" style="display:none"></div>
+      </div>
+    </div>
+
+    <div class="q-nav">
+      <button class="nav-btn btn-skip" id="btn-skip" onclick="skipQuestion()">تخطي ←</button>
+      <button class="nav-btn btn-next" id="btn-next" onclick="nextQuestion()" disabled>التالي ←</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ RESULTS ═══ -->
+<div id="results-screen">
+  <div class="results-wrap">
+    <div class="score-circle" id="score-circle">
+      <div class="score-pct" id="score-pct">0%</div>
+      <div class="score-label">النتيجة</div>
+    </div>
+
+    <div class="result-grade">
+      <div class="grade-title" id="grade-title"></div>
+      <div class="grade-sub" id="grade-sub"></div>
+    </div>
+
+    <div class="result-stats">
+      <div class="r-stat">
+        <div class="r-stat-num" id="r-correct" style="color:var(--green)">0</div>
+        <div class="r-stat-label">إجابات صح</div>
+      </div>
+      <div class="r-stat">
+        <div class="r-stat-num" id="r-wrong" style="color:var(--red)">0</div>
+        <div class="r-stat-label">إجابات غلط</div>
+      </div>
+      <div class="r-stat">
+        <div class="r-stat-num" id="r-skipped" style="color:var(--muted)">0</div>
+        <div class="r-stat-label">تخطي</div>
+      </div>
+      <div class="r-stat">
+        <div class="r-stat-num" id="r-time" style="color:var(--orange)">0s</div>
+        <div class="r-stat-label">الوقت المستغرق</div>
+      </div>
+    </div>
+
+    <div class="result-breakdown">
+      <div class="rb-title">تفاصيل الإجابات</div>
+      <div id="rb-list"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="ra-btn ra-retry" onclick="retryQuiz()"><i class="fas fa-redo"></i> حاول مرة تانية</button>
+      <button class="ra-btn ra-lessons" onclick="window.location.href='lessons.html'"><i class="fas fa-book"></i> ارجع للدروس</button>
+      <button class="ra-btn ra-menu" onclick="window.location.href='menu.html'"><i class="fas fa-home"></i> الصفحة الرئيسية</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  QUESTIONS DATABASE
+// ═══════════════════════════════════════════════
+const QUESTIONS = [
+  // ── BEGINNER ──
+  {
+    diff:'beginner', cat:'الأساسيات',
+    text:'إيه الـ class اللي بتخلي عنصر display:flex في Tailwind؟',
+    options:['display','flex','flexbox','d-flex'],
+    correct:1,
+    expl:'في Tailwind، بتكتب اسم الـ property مباشرة. <code>flex</code> = <code>display: flex</code>، بدون أي prefix زي Bootstrap.',
+    expl_code:'<div class="flex items-center gap-4">...</div>'
+  },
+  {
+    diff:'beginner', cat:'الـ Spacing',
+    text:'إيه قيمة الـ padding لما بتكتب <code>p-4</code>؟',
+    options:['4px','8px','16px','1rem فقط بدون px'],
+    correct:2,
+    expl:'في Tailwind، الـ spacing scale بيشتغل: الرقم × 4 = عدد الـ pixels. يعني p-4 = 4×4 = 16px، وده = 1rem.',
+    expl_code:'p-1 → 4px | p-2 → 8px | p-4 → 16px | p-8 → 32px'
+  },
+  {
+    diff:'beginner', cat:'Typography',
+    text:'إيه الـ class اللي بتخلي النص يتحط في النص بالظبط؟',
+    options:['text-middle','text-center','center-text','align-center'],
+    correct:1,
+    expl:'الـ text alignment في Tailwind: <code>text-left</code>، <code>text-center</code>، <code>text-right</code>. بيقابل الـ CSS: <code>text-align: center</code>.',
+    expl_code:'<p class="text-center text-xl font-bold">العنوان</p>'
+  },
+  {
+    diff:'beginner', cat:'الألوان',
+    text:'إيه الـ class الصح لخلفية زرقاء بـ Tailwind؟',
+    options:['color-blue','blue-background','bg-blue-500','background-blue'],
+    correct:2,
+    expl:'الخلفيات في Tailwind بتبدأ بـ <code>bg-</code> وبعدين اسم اللون والدرجة. الدرجات من 50 (فاتح) لـ 950 (غامق).',
+    expl_code:'bg-blue-100 → فاتح جداً\nbg-blue-500 → متوسط\nbg-blue-900 → غامق'
+  },
+  {
+    diff:'beginner', cat:'الأحجام',
+    text:'إيه الـ class اللي بيخلي العنصر عرضه 100%؟',
+    options:['w-screen','width-full','w-100','w-full'],
+    correct:3,
+    expl:'<code>w-full</code> = <code>width: 100%</code>. أما <code>w-screen</code> = <code>width: 100vw</code> وده بيأخد عرض الشاشة مش الـ parent.',
+    expl_code:'<div class="w-full"> → عرض الـ parent\n<div class="w-screen"> → عرض الشاشة'
+  },
+  {
+    diff:'beginner', cat:'Flexbox',
+    text:'عايز تحط عناصر في وسط الشاشة أفقياً وعمودياً. إيه الـ classes؟',
+    code:'<div class="??? h-screen">\n  <p>وسط الشاشة</p>\n</div>',
+    options:[
+      'center-all justify-center',
+      'flex items-center justify-center',
+      'display-flex align-center',
+      'flex middle'
+    ],
+    correct:1,
+    expl:'التوسيط الكامل بـ Flexbox يحتاج 3 classes: <code>flex</code> لتفعيل Flexbox، <code>items-center</code> للمحاذاة العمودية، <code>justify-center</code> للأفقية.',
+    expl_code:'<div class="flex items-center justify-center h-screen">\n  <p>أنا في النص!</p>\n</div>'
+  },
+  {
+    diff:'beginner', cat:'Hover',
+    text:'إيه الطريقة الصح لتغيير لون الخلفية عند الـ hover في Tailwind؟',
+    code:'<button class="bg-blue-500 ???">زر</button>',
+    options:[
+      ':hover bg-blue-700',
+      'on-hover:bg-blue-700',
+      'hover:bg-blue-700',
+      'hover-bg-blue-700'
+    ],
+    correct:2,
+    expl:'الـ State Variants في Tailwind بتستخدم نقطتين (:) بعد اسم الـ state. <code>hover:</code> بيطبق الـ class لما الماوس يبقى فوق العنصر.',
+    expl_code:'<button class="bg-blue-500 hover:bg-blue-700 transition-colors duration-300">\n  زر\n</button>'
+  },
+  {
+    diff:'beginner', cat:'Typography',
+    text:'إيه الـ class اللي بيخلي الخط وزنه 700 (Bold)؟',
+    options:['font-700','text-bold','font-bold','bold'],
+    correct:2,
+    expl:'الـ font weight في Tailwind: <code>font-thin</code>(100)، <code>font-normal</code>(400)، <code>font-semibold</code>(600)، <code>font-bold</code>(700)، <code>font-black</code>(900).',
+    expl_code:'<h1 class="font-black text-4xl">العنوان الأقوى</h1>'
+  },
+  {
+    diff:'beginner', cat:'Grid',
+    text:'عايز Grid بـ 3 أعمدة بـ Tailwind — إيه الـ class؟',
+    options:['grid-3','cols-3','grid-cols-3','grid-template-3'],
+    correct:2,
+    expl:'الـ CSS Grid في Tailwind بيستخدم <code>grid</code> على الـ parent و<code>grid-cols-N</code> لتحديد عدد الأعمدة.',
+    expl_code:'<div class="grid grid-cols-3 gap-6">\n  <div>1</div>\n  <div>2</div>\n  <div>3</div>\n</div>'
+  },
+  {
+    diff:'beginner', cat:'Responsive',
+    text:'في Tailwind، الـ responsive design بيشتغل بـ Mobile-First. إيه معنى كده؟',
+    options:[
+      'بتكتب styles للديسكتوب الأول وبعدين للموبايل',
+      'بتكتب styles للموبايل الأول وبعدين للشاشات الأكبر',
+      'بتكتب styles للتابلت الأول',
+      'مش بيهمك ترتيب الكتابة'
+    ],
+    correct:1,
+    expl:'Mobile-First يعني: الـ styles اللي بكتبها من غير prefix بتتطبق على الموبايل. لما تضيف prefix زي <code>md:</code> بيتطبق من 768px فأكبر.',
+    expl_code:'<p class="text-sm md:text-base lg:text-lg">\n  موبايل: صغير | تابلت: عادي | لاب: كبير\n</p>'
+  },
+  // ── INTERMEDIATE ──
+  {
+    diff:'mid', cat:'Transitions',
+    text:'إيه الـ classes المطلوبة عشان تعمل hover animation سلسة على زر؟',
+    code:'<button class="bg-blue-500 hover:bg-blue-700 ???">زر</button>',
+    options:[
+      'animate smooth',
+      'transition duration-300',
+      'css-transition',
+      'change-speed-300'
+    ],
+    correct:1,
+    expl:'عشان التغيير يبقى سلس محتاج: 1. <code>transition</code> أو <code>transition-all</code>، 2. <code>duration-N</code> لتحديد وقت التغيير. بدون <code>transition</code> التغيير بيحصل فجأة.',
+    expl_code:'<button class="bg-blue-500 hover:bg-blue-700\n               transition-colors duration-300 ease-in-out">\n  زر جميل\n</button>'
+  },
+  {
+    diff:'mid', cat:'Group',
+    text:'إيه الـ class اللي بيخليك تأثر في child element من hover على الـ parent؟',
+    code:'<div class="??? p-4">\n  <h3 class="???:text-blue-400">العنوان</h3>\n</div>',
+    options:['parent / parent-hover:','group / group-hover:','container / container-hover:','wrapper / wrapper-hover:'],
+    correct:1,
+    expl:'الـ <code>group</code> variant: تحط <code>group</code> على الـ parent، وبعدين على أي child تحط <code>group-hover:</code>. بيشتغل من غير JavaScript.',
+    expl_code:'<div class="group cursor-pointer">\n  <img class="group-hover:scale-110 transition-transform">\n  <h3 class="group-hover:text-blue-400">العنوان</h3>\n</div>'
+  },
+  {
+    diff:'mid', cat:'Glassmorphism',
+    text:'إيه الـ classes اللي بتعمل Glass effect (خلفية زجاجية شفافة)؟',
+    options:[
+      'glass opacity-50',
+      'blur-lg transparent',
+      'backdrop-blur-lg bg-white/10 border border-white/20',
+      'filter-glass bg-transparent'
+    ],
+    correct:2,
+    expl:'الـ Glassmorphism بيتكون من 3 حاجات: 1. <code>backdrop-blur-lg</code> لتشويش الخلفية، 2. <code>bg-white/10</code> لخلفية شفافة، 3. <code>border border-white/20</code> لحد شفاف.',
+    expl_code:'<div class="backdrop-blur-xl bg-white/10\n             border border-white/20 rounded-2xl p-6">\n  Glass Card!\n</div>'
+  },
+  {
+    diff:'mid', cat:'Dark Mode',
+    text:'إيه الـ class الصح عشان تعمل خلفية بيضاء في Light Mode وداكنة في Dark Mode؟',
+    code:'<div class="???">المحتوى</div>',
+    options:[
+      'bg-white dark-bg-gray-900',
+      'light:bg-white dark:bg-gray-900',
+      'bg-white dark:bg-gray-900',
+      'theme-white dark-theme-gray'
+    ],
+    correct:2,
+    expl:'الـ dark mode في Tailwind بسيط — تضيف <code>dark:</code> قبل الـ class. لما تشغّل الـ dark mode (بإضافة class <code>dark</code> على الـ html)، بيتطبق.',
+    expl_code:'<div class="bg-white dark:bg-gray-900\n             text-gray-800 dark:text-gray-100">\n  مدعوم للنمطين!\n</div>'
+  },
+  {
+    diff:'mid', cat:'Arbitrary Values',
+    text:'عندك عنصر عايز تديه عرض 337px بالظبط. إيه الطريقة الصح في Tailwind؟',
+    options:['w-337','width-337px','w-[337px]','w-custom-337'],
+    correct:2,
+    expl:'الـ Arbitrary Values في Tailwind بتستخدم square brackets: []. أي قيمة CSS ممكن تحطها هناك. الـ JIT Mode بيولد الـ class دي أوتوماتيك.',
+    expl_code:'<div class="w-[337px] h-[200px] bg-[#39ff14]">\n  أي قيمة ممكنة!\n</div>'
+  },
+  {
+    diff:'mid', cat:'Grid',
+    text:'عندك Grid بـ 4 أعمدة وعايز عنصر واحد يأخد عمودين. إيه الـ class؟',
+    code:'<div class="grid grid-cols-4">\n  <div class="???">بياخد عمودين</div>\n  <div>واحد</div>\n  <div>واحد</div>\n</div>',
+    options:['width-2','grid-span-2','col-span-2','column-2'],
+    correct:2,
+    expl:'<code>col-span-N</code> بيخلي العنصر يأخد N أعمدة. مقابله <code>row-span-N</code> للصفوف. تقدر تجمع: <code>col-span-2 row-span-2</code>.',
+    expl_code:'<div class="grid grid-cols-4 gap-4">\n  <div class="col-span-2">يأخد نصف الشبكة</div>\n  <div>ربع</div>\n  <div>ربع</div>\n</div>'
+  },
+  {
+    diff:'mid', cat:'Borders',
+    text:'إيه الـ class اللي بيعمل ring (حد خارجي بـ box-shadow) بلون أزرق؟',
+    options:[
+      'border-ring-blue-500',
+      'outer-border-blue',
+      'ring-2 ring-blue-500',
+      'shadow-border-blue'
+    ],
+    correct:2,
+    expl:'الـ <code>ring</code> في Tailwind بيعمل حد بـ box-shadow مش border فعلي. ميزته إنه ما بيأثرش على الـ layout وبيستخدم كتير في الـ focus states.',
+    expl_code:'<input class="focus:ring-2 focus:ring-blue-500 focus:ring-offset-2\n               border border-gray-300 rounded-lg p-2"/>'
+  },
+  {
+    diff:'mid', cat:'Scale',
+    text:'عايز زرار يتصغر شوية لما يتضغط. إيه الـ class؟',
+    options:['press:scale-90','click:shrink','active:scale-95','onClick:small'],
+    correct:2,
+    expl:'الـ <code>active:</code> variant بيشتغل لما العنصر يكون متضغط. <code>scale-95</code> بيعمل تصغير 5% اللي بيدي إحساس إن الزرار اتضغط فعلاً.',
+    expl_code:'<button class="transition-transform duration-100 active:scale-95">\n  زر حقيقي\n</button>'
+  },
+  {
+    diff:'mid', cat:'Shadows',
+    text:'عايز shadow ملون بالأزرق. إيه الـ class في Tailwind v3؟',
+    options:[
+      'shadow-blue',
+      'shadow-color-blue-500',
+      'shadow-lg shadow-blue-500/30',
+      'box-shadow-blue'
+    ],
+    correct:2,
+    expl:'الـ Colored Shadows في Tailwind v3 بتستخدم <code>shadow-{color}/{opacity}</code>. الـ /30 معناها 30% opacity للظل. ده بيدي Glow effect جميل.',
+    expl_code:'<div class="shadow-xl shadow-blue-500/50 hover:shadow-blue-500/70\n             transition-shadow duration-300">\n  Glow Effect!\n</div>'
+  },
+  {
+    diff:'mid', cat:'Transforms',
+    text:'إيه الـ class اللي بيرفع العنصر لأعلى بـ 8px عند الـ hover؟',
+    code:'<div class="transition hover:???">Card</div>',
+    options:['hover:up-2','hover:move-up','hover:-translate-y-2','hover:top-minus-2'],
+    correct:2,
+    expl:'الـ translate في Tailwind بيستخدم نفس الـ spacing scale. <code>-translate-y-2</code> = <code>translateY(-0.5rem)</code> = رفع 8px. اللي بدون - بينزل.',
+    expl_code:'/* hover effect للـ cards */\n<div class="transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">'
+  },
+  // ── ADVANCED ──
+  {
+    diff:'advanced', cat:'3D Transforms',
+    text:'عشان تعمل Card Flip effect بـ 3D، إيه الـ CSS property المطلوبة على الـ card inner؟',
+    options:[
+      'transform: flip(180deg)',
+      'transform-style: preserve-3d',
+      'perspective: 3d',
+      'backface: visible-3d'
+    ],
+    correct:1,
+    expl:'الـ Card Flip يحتاج 3 حاجات: 1. <code>transform-style: preserve-3d</code> على الـ inner container، 2. <code>backface-visibility: hidden</code> على الـ faces، 3. <code>perspective</code> على الـ wrapper.',
+    expl_code:'.flip-inner {\n  transform-style: preserve-3d;\n  transition: transform 0.8s;\n}\n.flip-card:hover .flip-inner {\n  transform: rotateY(180deg);\n}\n.flip-back {\n  transform: rotateY(180deg);\n  backface-visibility: hidden;\n}'
+  },
+  {
+    diff:'advanced', cat:'Custom Config',
+    text:'عايز تضيف animation اسمها "float" في tailwind.config.js. فين بتحطها؟',
+    code:'module.exports = {\n  theme: {\n    extend: {\n      ???\n    }\n  }\n}',
+    options:[
+      'animations: { float: "..." }',
+      'keyframes:{float:{...}}, animation:{float:"..."}',
+      'css: { @keyframes float: {} }',
+      'transitions: { float: "..." }'
+    ],
+    correct:1,
+    expl:'في الـ config لازم تعمل 2: أولاً <code>keyframes</code> اللي بيحدد حركة الـ animation، وبعدين <code>animation</code> اللي بيربط الـ keyframe بـ name وـ duration.',
+    expl_code:'extend: {\n  keyframes: {\n    float: {\n      "0%,100%": { transform: "translateY(0)" },\n      "50%": { transform: "translateY(-20px)" }\n    }\n  },\n  animation: {\n    float: "float 3s ease-in-out infinite"\n  }\n}'
+  },
+  {
+    diff:'advanced', cat:'JIT Mode',
+    text:'إيه الميزة الرئيسية لـ JIT (Just-In-Time) mode في Tailwind؟',
+    options:[
+      'بيولد CSS أسرع للـ browser',
+      'بيخليك تستخدم Arbitrary Values وبيولد بس الـ classes المستخدمة',
+      'بيضغط الـ HTML',
+      'بيضيف dark mode تلقائي'
+    ],
+    correct:1,
+    expl:'الـ JIT بيعمل حاجتين مهمين: 1. بيولد CSS للـ classes المستخدمة فقط (مش كل الـ classes الممكنة) = ملف صغير جداً، 2. بيتيح الـ Arbitrary Values <code>w-[337px]</code>.',
+    expl_code:'/* بدون JIT: 3MB+ CSS file */\n/* مع JIT: 10KB CSS file (بس اللي استخدمته) */\n/* + تقدر تكتب */\nclass="w-[337px] bg-[#ff6b35] top-[117px]"'
+  },
+  {
+    diff:'advanced', cat:'Animation',
+    text:'شايف الكود ده. إيه الـ animation effect اللي بيعمله؟',
+    code:'@keyframes shimmer {\n  0%   { background-position: -200% center; }\n  100% { background-position:  200% center; }\n}\n.shimmer {\n  background: linear-gradient(90deg, #blue, #purple, #pink, #blue);\n  background-size: 200% auto;\n  animation: shimmer 3s linear infinite;\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}',
+    options:[
+      'النص بيتضوّي ويخفّ',
+      'النص بيتحرك من اليمين لليسار',
+      'Gradient بيمشي على النص بشكل متحرك (Shimmer text)',
+      'النص بيتكبر ويتصغر'
+    ],
+    correct:2,
+    expl:'الـ Shimmer text effect بيشتغل: 1. gradient بـ background-size كبير (200%)، 2. animation بتحرك الـ background-position من -200% لـ 200%، 3. bg-clip:text = الـ gradient بيظهر على النص.',
+    expl_code:'/* الاستخدام في Tailwind Custom Config */\n/* keyframes + animation في config */\n<h1 class="shimmer-text animate-shimmer text-5xl font-black">\n  PhineX\n</h1>'
+  },
+  {
+    diff:'advanced', cat:'Performance',
+    text:'إيه الطريقة الأفضل لتقليل حجم الـ CSS file في مشروع Tailwind production؟',
+    options:[
+      'تشيل الـ classes اللي مش بتستخدمها يدوياً',
+      'تضيف content paths صح في tailwind.config لـ purge الـ unused classes',
+      'تستخدم CDN بس',
+      'تكتب CSS يدوي بدل Tailwind'
+    ],
+    correct:1,
+    expl:'الـ Purge/Content في Tailwind config بيبلغ Tailwind فين هيلاقي classes مستخدمة. أي class مش في الـ files دي بتتحذف من الـ final CSS. ده اللي بيخلي الـ file 10KB بدل 3MB.',
+    expl_code:'// tailwind.config.js\nmodule.exports = {\n  content: [\n    "./src/**/*.{html,js,jsx,ts,tsx}",\n    "./pages/**/*.{js,ts,jsx,tsx}",\n    "./components/**/*.{js,ts,jsx,tsx}"\n  ],\n  // ...باقي الـ config\n}'
+  }
+];
+
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let questions = [];
+let current = 0;
+let score = 0;
+let answers = []; // 'correct' | 'wrong' | 'skipped'
+let timerInterval = null;
+let timeLeft = 30;
+let totalTime = 0;
+let totalTimer = null;
+let selectedDiff = 'all';
+
+// ─── diff selector ───
+function selectDiff(el) {
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected-diff'));
+  el.classList.add('selected-diff');
+  selectedDiff = el.dataset.diff;
+}
+
+// ─── start ───
+function startQuiz() {
+  if (selectedDiff === 'all') {
+    questions = [...QUESTIONS].sort(() => Math.random() - 0.5);
+  } else {
+    questions = QUESTIONS.filter(q => q.diff === selectedDiff).sort(() => Math.random() - 0.5);
+  }
+  current = 0; score = 0; answers = []; totalTime = 0;
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  totalTimer = setInterval(() => totalTime++, 1000);
+  showQuestion();
+}
+
+// ─── show question ───
+function showQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+
+  // meta
+  document.getElementById('q-label').textContent = `سؤال ${current+1} من ${total}`;
+  document.getElementById('q-cat-label').textContent = q.cat;
+  document.getElementById('q-fill').style.width = `${((current+1)/total)*100}%`;
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-num').textContent = `السؤال ${current+1}`;
+  document.getElementById('q-text').innerHTML = q.text;
+
+  // code block
+  const codeEl = document.getElementById('q-code');
+  if (q.code) { codeEl.style.display = 'block'; codeEl.textContent = q.code; }
+  else { codeEl.style.display = 'none'; }
+
+  // options
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<div class="option-letter">${letters[i]}</div><span>${opt}</span>`;
+    div.addEventListener('click', () => selectAnswer(i));
+    opts.appendChild(div);
+  });
+
+  // reset explanation
+  const explBox = document.getElementById('expl-box');
+  explBox.classList.remove('show');
+
+  // reset buttons
+  document.getElementById('btn-next').disabled = true;
+  document.getElementById('btn-skip').disabled = false;
+
+  // animate card
+  const card = document.getElementById('q-card');
+  card.style.animation = 'none';
+  card.offsetHeight; // reflow
+  card.style.animation = 'slideIn .4s ease both';
+
+  // timer
+  startTimer();
+}
+
+// ─── timer ───
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 30;
+  const display = document.getElementById('timer-display');
+  const box = document.getElementById('timer-box');
+  display.textContent = timeLeft;
+  box.classList.remove('warning');
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    display.textContent = timeLeft;
+    if (timeLeft <= 10) box.classList.add('warning');
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      autoSkip();
+    }
+  }, 1000);
+}
+
+function autoSkip() {
+  answers.push('skipped');
+  document.querySelectorAll('.option').forEach(o => o.classList.add('answered'));
+  showExplanation(false, true);
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('btn-skip').disabled = true;
+  // highlight correct
+  const q = questions[current];
+  document.querySelectorAll('.option')[q.correct].classList.add('skipped-correct');
+}
+
+// ─── select answer ───
+function selectAnswer(index) {
+  if (document.querySelector('.option.correct, .option.wrong')) return;
+  clearInterval(timerInterval);
+  const q = questions[current];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.classList.add('answered'));
+  if (index === q.correct) {
+    opts[index].classList.add('correct');
+    answers.push('correct');
+    score++;
+    showExplanation(true, false);
+  } else {
+    opts[index].classList.add('wrong');
+    opts[q.correct].classList.add('correct');
+    answers.push('wrong');
+    showExplanation(false, false);
+  }
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('btn-skip').disabled = true;
+}
+
+// ─── explanation ───
+function showExplanation(isCorrect, isSkipped) {
+  const q = questions[current];
+  const box = document.getElementById('expl-box');
+  const title = document.getElementById('expl-title');
+  const text = document.getElementById('expl-text');
+  const code = document.getElementById('expl-code');
+  if (isSkipped) {
+    title.innerHTML = '<i class="fas fa-clock"></i> انتهى الوقت!';
+    title.className = 'expl-title wrong-title';
+  } else if (isCorrect) {
+    title.innerHTML = '<i class="fas fa-check-circle"></i> إجابة صح! 🎉';
+    title.className = 'expl-title correct-title';
+  } else {
+    title.innerHTML = '<i class="fas fa-times-circle"></i> إجابة غلط — اتعلم الصح';
+    title.className = 'expl-title wrong-title';
+  }
+  text.innerHTML = q.expl;
+  if (q.expl_code) {
+    code.style.display = 'block';
+    code.textContent = q.expl_code;
+  } else { code.style.display = 'none'; }
+  box.classList.add('show');
+}
+
+// ─── skip ───
+function skipQuestion() {
+  clearInterval(timerInterval);
+  answers.push('skipped');
+  const q = questions[current];
+  document.querySelectorAll('.option').forEach(o => o.classList.add('answered'));
+  document.querySelectorAll('.option')[q.correct].classList.add('skipped-correct');
+  showExplanation(false, true);
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('btn-skip').disabled = true;
+}
+
+// ─── next ───
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) { endQuiz(); return; }
+  showQuestion();
+}
+
+// ─── end ───
+function endQuiz() {
+  clearInterval(timerInterval);
+  clearInterval(totalTimer);
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('results-screen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const correct = answers.filter(a => a === 'correct').length;
+  const wrong = answers.filter(a => a === 'wrong').length;
+  const skipped = answers.filter(a => a === 'skipped').length;
+
+  // score circle
+  const circle = document.getElementById('score-circle');
+  let circleColor = '#f87171';
+  if (pct >= 80) circleColor = '#34d399';
+  else if (pct >= 60) circleColor = '#fb923c';
+  circle.style.borderColor = circleColor;
+  document.getElementById('score-pct').style.color = circleColor;
+
+  // animate score
+  let n = 0;
+  const pctEl = document.getElementById('score-pct');
+  const ani = setInterval(() => {
+    n = Math.min(n + 2, pct);
+    pctEl.textContent = n + '%';
+    if (n >= pct) clearInterval(ani);
+  }, 20);
+
+  // grade
+  const gradeTitle = document.getElementById('grade-title');
+  const gradeSub = document.getElementById('grade-sub');
+  gradeTitle.style.color = circleColor;
+  if (pct === 100) { gradeTitle.textContent = '🏆 مثالي تماماً!'; gradeSub.textContent = 'أنت محترف Tailwind بالكامل — إنت فخرنا!'; }
+  else if (pct >= 80) { gradeTitle.textContent = '⭐ ممتاز!'; gradeSub.textContent = 'إنت عارف Tailwind كويس جداً. خطوتين كمان وهتبقى expert.'; }
+  else if (pct >= 60) { gradeTitle.textContent = '💪 كويس!'; gradeSub.textContent = 'مستواك كويس — راجع الدروس اللي اتغلطت فيها وجرب تاني.'; }
+  else if (pct >= 40) { gradeTitle.textContent = '📚 تحتاج مراجعة'; gradeSub.textContent = 'ارجع للـ Lessons وخصوصاً الجزء اللي اتعبك. أنت قادر!'; }
+  else { gradeTitle.textContent = '🌱 ابدأ من الأول'; gradeSub.textContent = 'لا بأس — ارجع للدرس الأول وخطوة خطوة هتوصل.'; }
+
+  // stats
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-skipped').textContent = skipped;
+  document.getElementById('r-time').textContent = totalTime + 's';
+
+  // breakdown
+  const list = document.getElementById('rb-list');
+  list.innerHTML = '';
+  questions.forEach((q, i) => {
+    const status = answers[i] || 'skipped';
+    const div = document.createElement('div');
+    div.className = 'rb-item';
+    let badge = '';
+    if (status === 'correct') badge = '<span class="rb-status rb-correct">✓ صح</span>';
+    else if (status === 'wrong') badge = '<span class="rb-status rb-wrong">✗ غلط</span>';
+    else badge = '<span class="rb-status rb-skipped">⟶ تخطي</span>';
+    div.innerHTML = `<div class="rb-q">س${i+1}: ${q.text.replace(/<[^>]*>/g,'').substring(0,60)}...</div>${badge}`;
+    list.appendChild(div);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+// ─── retry ───
+function retryQuiz() {
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('intro-screen').style.display = 'flex';
+}
+</script>
+</body>
+</html>

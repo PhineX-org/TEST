@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX PHP | درس 15: قاعدة البيانات — تحسين وأمان</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.08);--void:#05070a;--surface:#09090f;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.18);--text:#e2e8f0;--muted:#64748b;--radius:14px;--accent:#a78bfa;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--neon);border-radius:3px;}
+.topbar{position:sticky;top:0;z-index:200;background:rgba(5,5,10,.85);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 20px;gap:14px;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--neon);text-decoration:none;letter-spacing:-.5px;}
+.topbar-sep{color:var(--muted);}.topbar-title{font-size:13px;font-weight:600;}
+.topbar-right{margin-right:auto;display:flex;align-items:center;gap:10px;}
+.menu-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Cairo',sans-serif;transition:all .2s;}.menu-btn:hover{border-color:var(--neon);color:var(--neon);}
+.progress-pill{background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--neon);font-family:'JetBrains Mono',monospace;}
+.page-wrap{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:280px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;height:calc(100vh - 56px);position:sticky;top:56px;}.sidebar.open{transform:none!important;}
+.sidebar-header{padding:16px 18px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.lesson-link{display:flex;align-items:center;gap:10px;padding:10px 18px;text-decoration:none;color:var(--muted);transition:all .2s;border-right:3px solid transparent;font-size:13px;}.lesson-link:hover{background:rgba(255,255,255,.03);color:var(--text);}.lesson-link.active{color:var(--neon);background:var(--neon-dim);border-right-color:var(--neon);}.lesson-link.done{color:var(--text);}
+.ll-icon{font-size:16px;flex-shrink:0;}.ll-info{flex:1;min-width:0;}.ll-title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.ll-num{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}.ll-badge{flex-shrink:0;font-size:10px;padding:2px 7px;border-radius:100px;}.ll-badge.done{background:rgba(57,255,20,.12);color:var(--neon);border:1px solid rgba(57,255,20,.25);}.ll-badge.locked{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border);}
+.main{flex:1;overflow-y:auto;padding:0 0 80px;}
+.lesson-hero{padding:48px 60px 36px;border-bottom:1px solid var(--border);background:linear-gradient(to bottom,rgba(167,139,250,.03),transparent);}
+.lesson-num-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:#a78bfa;letter-spacing:.6px;margin-bottom:16px;}
+.lesson-title{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;line-height:1.1;}
+.lesson-sub{font-size:1rem;color:var(--muted);margin-bottom:20px;}
+.lesson-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.meta-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:5px 12px;}
+.content-area{padding:40px 60px;max-width:900px;}
+.section-block{margin-bottom:44px;}
+.section-block h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-block h2::before{content:'';display:block;width:4px;height:20px;background:var(--accent);border-radius:2px;flex-shrink:0;}
+.section-body{font-size:15px;line-height:1.85;}
+.section-body ul,.section-body ol{padding-right:20px;margin:10px 0;}.section-body li{margin-bottom:8px;}
+.section-body strong{font-weight:700;}.section-body em{color:var(--neon);font-style:normal;}
+.section-body code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.code-block{margin:20px 0;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,.06);}
+.code-header{background:#0a0d14;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);}
+.code-lang{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#a78bfa;letter-spacing:1px;}
+.code-dots{display:flex;gap:5px;}.cd{width:10px;height:10px;border-radius:50%;}.cd.r{background:#ff5f57;}.cd.y{background:#febc2e;}.cd.g{background:var(--neon);}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;}.copy-btn:hover{border-color:var(--neon);color:var(--neon);}
+pre.code-pre{background:#080b10;padding:20px;margin:0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;direction:ltr;text-align:left;tab-size:4;}
+.code-output{background:rgba(0,0,0,.4);border-top:1px solid rgba(255,255,255,.05);padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#c3e88d;direction:ltr;text-align:left;white-space:pre-wrap;}
+.output-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'Cairo',sans-serif;direction:rtl;text-align:right;}
+.kw{color:#c792ea;}.fn{color:#82aaff;}.str{color:#c3e88d;}.num{color:#f78c6c;}.cmt{color:#546e7a;font-style:italic;}.var{color:#eeffff;}.tag{color:#89ddff;}.sql-kw{color:#f59e0b;font-weight:bold;}
+.info-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;}
+.info-table th{background:rgba(167,139,250,.1);color:#a78bfa;padding:8px 12px;text-align:right;border:1px solid rgba(167,139,250,.2);}
+.info-table td{padding:8px 12px;border:1px solid var(--border);}
+.info-table tr:hover td{background:rgba(255,255,255,.02);}
+.info-table td:first-child{font-family:'JetBrains Mono',monospace;color:#c3e88d;font-size:12px;direction:ltr;}
+.quiz-section{margin:0 60px 60px;max-width:900px;}
+.quiz-header{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius) var(--radius) 0 0;padding:20px 24px;display:flex;align-items:center;gap:12px;}
+.quiz-header h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;}
+.quiz-badge{background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--neon);}
+.quiz-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:0 24px 24px;}
+.question-block{padding:20px 0;border-bottom:1px solid var(--border);}.question-block:last-of-type{border-bottom:none;}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--neon);background:var(--neon-dim);padding:2px 8px;border-radius:5px;display:inline-block;margin-bottom:8px;}
+.q-text{font-size:15px;font-weight:600;margin-bottom:14px;line-height:1.6;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all .2s;font-size:14px;background:rgba(255,255,255,.02);}
+.option:hover{border-color:rgba(57,255,20,.3);background:rgba(57,255,20,.04);}
+.option input[type=radio]{accent-color:var(--neon);width:16px;height:16px;flex-shrink:0;}
+.option.correct{border-color:var(--neon);background:rgba(57,255,20,.08);color:var(--neon);}
+.option.wrong{border-color:#ff5874;background:rgba(255,88,116,.08);color:#ff5874;}
+.quiz-footer{margin-top:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.btn-submit{background:var(--neon);color:#050508;padding:10px 28px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;box-shadow:0 0 16px rgba(57,255,20,.2);}
+.btn-submit:hover{box-shadow:0 0 28px rgba(57,255,20,.45);}
+.btn-retry{background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px 20px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.score-display{display:none;align-items:center;gap:10px;padding:12px 20px;border-radius:10px;font-size:15px;font-weight:700;border:1px solid;}
+.score-display.pass{background:rgba(57,255,20,.08);border-color:var(--neon);color:var(--neon);}
+.score-display.fail{background:rgba(255,88,116,.08);border-color:#ff5874;color:#ff5874;}
+.lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 60px;border-top:1px solid var(--border);background:rgba(0,0,0,.15);gap:14px;flex-wrap:wrap;}
+.btn-nav{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover{border-color:var(--muted);color:var(--text);}
+.btn-next-lesson{background:var(--neon);color:#050508;border-color:var(--neon);box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-next-lesson:hover{box-shadow:0 0 24px rgba(57,255,20,.45);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card);border-radius:14px;padding:14px 24px;font-size:14px;opacity:0;transition:all .35s;z-index:999;min-width:240px;text-align:center;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}.toast.ok{border:1px solid var(--neon);color:var(--neon);}.toast.err{border:1px solid #ff5874;color:#ff5874;}
+.note-box{background:rgba(130,170,255,.06);border:1px solid rgba(130,170,255,.25);border-radius:12px;padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.8;}
+.note-box.warn{background:rgba(247,140,108,.06);border-color:rgba(247,140,108,.3);}
+.note-box.success{background:rgba(57,255,20,.06);border-color:rgba(57,255,20,.25);}
+.note-title{font-weight:700;margin-bottom:6px;font-size:13px;letter-spacing:.3px;display:block;}
+.note-box.warn .note-title{color:#f78c6c;}.note-box .note-title{color:#82aaff;}.note-box.success .note-title{color:var(--neon);}
+@media(max-width:900px){.sidebar{position:fixed;top:56px;left:0;right:0;height:auto;max-height:60vh;z-index:150;transform:translateY(-110%);border:none;border-bottom:1px solid var(--border);}.sidebar.open{transform:translateY(0);}.lesson-hero,.content-area,.quiz-section,.lesson-nav{padding-left:20px;padding-right:20px;}.lesson-title{font-size:1.7rem;}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="index.html" class="logo">PhineX</a><span class="topbar-sep">/</span>
+  <span class="topbar-title">دورة PHP الشاملة</span>
+  <div class="topbar-right">
+    <span class="progress-pill" id="progressPill">0/17 مكتملة</span>
+    <button class="menu-btn" id="menuBtn">☰ الدروس</button>
+  </div>
+</header>
+<div class="page-wrap">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">دورة PHP الشاملة — 17 درساً</div>
+<a href="lesson-00-setup.html" class="lesson-link" data-lid="setup"><span class="ll-icon">🔧</span><span class="ll-info"><span class="ll-title">إعداد بيئة العمل</span><span class="ll-num">الدرس 00</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-01-intro.html" class="lesson-link" data-lid="intro"><span class="ll-icon">🐘</span><span class="ll-info"><span class="ll-title">مقدمة إلى PHP</span><span class="ll-num">الدرس 01</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-02-variables.html" class="lesson-link" data-lid="variables"><span class="ll-icon">📦</span><span class="ll-info"><span class="ll-title">المتغيرات وأنواع البيانات</span><span class="ll-num">الدرس 02</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-03-operators.html" class="lesson-link" data-lid="operators"><span class="ll-icon">➗</span><span class="ll-info"><span class="ll-title">العمليات والمشغلات</span><span class="ll-num">الدرس 03</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-04-conditionals.html" class="lesson-link" data-lid="conditionals"><span class="ll-icon">🔀</span><span class="ll-info"><span class="ll-title">الجمل الشرطية</span><span class="ll-num">الدرس 04</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-05-loops.html" class="lesson-link" data-lid="loops"><span class="ll-icon">🔁</span><span class="ll-info"><span class="ll-title">الحلقات التكرارية</span><span class="ll-num">الدرس 05</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-06-functions.html" class="lesson-link" data-lid="functions"><span class="ll-icon">⚙️</span><span class="ll-info"><span class="ll-title">الدوال (Functions)</span><span class="ll-num">الدرس 06</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-07-arrays.html" class="lesson-link" data-lid="arrays"><span class="ll-icon">📚</span><span class="ll-info"><span class="ll-title">المصفوفات (Arrays)</span><span class="ll-num">الدرس 07</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-08-strings.html" class="lesson-link" data-lid="strings"><span class="ll-icon">✍️</span><span class="ll-info"><span class="ll-title">السلاسل النصية (Strings)</span><span class="ll-num">الدرس 08</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-09-oop.html" class="lesson-link" data-lid="oop"><span class="ll-icon">🏗️</span><span class="ll-info"><span class="ll-title">البرمجة كائنية التوجه</span><span class="ll-num">الدرس 09</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-10-forms.html" class="lesson-link" data-lid="forms"><span class="ll-icon">📝</span><span class="ll-info"><span class="ll-title">النماذج ومدخلات المستخدم</span><span class="ll-num">الدرس 10</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-11-superglobals.html" class="lesson-link" data-lid="superglobals"><span class="ll-icon">🌐</span><span class="ll-info"><span class="ll-title">المتغيرات العامة Superglobals</span><span class="ll-num">الدرس 11</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-12-weather.html" class="lesson-link" data-lid="weather"><span class="ll-icon">🌤️</span><span class="ll-info"><span class="ll-title">مشروع: تطبيق الطقس</span><span class="ll-num">الدرس 12</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-13-database-intro.html" class="lesson-link" data-lid="db-intro"><span class="ll-icon">🗄️</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — المقدمة</span><span class="ll-num">الدرس 13</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-14-database-crud.html" class="lesson-link" data-lid="db-crud"><span class="ll-icon">💾</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — CRUD</span><span class="ll-num">الدرس 14</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-15-database-advanced.html" class="lesson-link active" data-lid="db-advanced"><span class="ll-icon">⚡</span><span class="ll-info"><span class="ll-title">قاعدة البيانات — تحسين وأمان</span><span class="ll-num">الدرس 15</span></span><span class="ll-badge locked">○</span></a>
+<a href="lesson-16-final.html" class="lesson-link" data-lid="final"><span class="ll-icon">🏆</span><span class="ll-info"><span class="ll-title">مراجعة شاملة واختبار نهائي</span><span class="ll-num">الدرس 16</span></span><span class="ll-badge locked">○</span></a>
+</aside>
+<main class="main">
+<div class="lesson-hero">
+  <div class="lesson-num-badge">درس 15 من 17</div>
+  <h1 class="lesson-title">قاعدة البيانات — تحسين وأمان</h1>
+  <p class="lesson-sub">Indexes · SQL Injection · Normalization · Query Optimization · Migrations</p>
+  <div class="lesson-meta">
+    <span class="meta-tag">🕐 70 دقيقة</span>
+    <span class="meta-tag">⚡ تحسين الأداء</span>
+    <span class="meta-tag">🔒 الأمان</span>
+    <span class="meta-tag">📝 6 أسئلة</span>
+  </div>
+</div>
+<div class="content-area">
+
+<div class="section-block">
+  <h2>SQL Injection — أخطر ثغرة في قواعد البيانات</h2>
+  <div class="section-body">
+SQL Injection هجوم يُدخل فيه المهاجم كود SQL عبر مدخلات المستخدم لتنفيذ استعلامات ضارة.
+  </div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — SQL Injection ❌ vs Prepared Statements ✅</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+// ─── ❌ كود خطير — عُرضة لـ SQL Injection ─────────────────
+$username = $_POST['username']; // يمكن أن يكون: ' OR '1'='1
+$password = $_POST['password'];
+
+// إذا أدخل المهاجم:  username = ' OR '1'='1' --
+// الاستعلام يصبح:
+// SELECT * FROM users WHERE username = '' OR '1'='1' -- AND password = 'x'
+// ويُعيد كل المستخدمين!
+$sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+$result = $pdo->query($sql); // خطر!
+
+// ─── ✅ الطريقة الصحيحة — Prepared Statements ─────────────
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+$stmt->execute([$username, $password]);
+$user = $stmt->fetch();
+// مهما كان المدخل، سيُعامَل كنص عادي وليس كود SQL
+
+// ─── ✅ Named Parameters (أوضح) ────────────────────────────
+$stmt = $pdo->prepare("
+    SELECT id, username, email
+    FROM users
+    WHERE email = :email
+    AND is_active = :active
+    LIMIT 1
+");
+$stmt->execute([
+    ':email'  => filter_var($email, FILTER_SANITIZE_EMAIL),
+    ':active' => 1,
+]);
+$user = $stmt->fetch();
+
+// ─── ✅ Dynamic ORDER BY آمن (لا يمكن parameterize) ────────
+$allowed_cols  = ['name', 'price', 'created_at', 'stock'];
+$allowed_dirs  = ['ASC', 'DESC'];
+$sort_col = in_array($_GET['sort'] ?? '', $allowed_cols) ? $_GET['sort'] : 'created_at';
+$sort_dir = in_array(strtoupper($_GET['dir'] ?? ''), $allowed_dirs) ? strtoupper($_GET['dir']) : 'DESC';
+
+// الآن آمن للاستخدام في الاستعلام
+$sql = "SELECT * FROM products ORDER BY $sort_col $sort_dir";
+?></code></pre>
+  </div>
+  <div class="note-box warn">
+    <span class="note-title">⚠️ القاعدة الذهبية</span>
+    أي قيمة تأتي من المستخدم (GET, POST, COOKIE, حتى DB) لا تُضمّنها في SQL مباشرةً. استخدم Prepared Statements دائماً.
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>Indexes — تسريع الاستعلامات بشكل هائل</h2>
+  <div class="section-body">
+الـ Index هو هيكل بيانات يجعل البحث في الجدول أسرع. بدون Index، MySQL تفحص كل صف (Full Table Scan). مع Index، تقفز مباشرةً للصف المطلوب.
+  </div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">SQL — Indexes المتقدمة</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>-- ─── أنواع الـ Indexes ───────────────────────────────────────
+
+-- 1. PRIMARY KEY — معرّف فريد (ينشأ تلقائياً)
+ALTER TABLE users ADD PRIMARY KEY (id);
+
+-- 2. UNIQUE INDEX — لا تكرار (مثل البريد الإلكتروني)
+CREATE UNIQUE INDEX idx_email ON users(email);
+CREATE UNIQUE INDEX idx_username ON users(username);
+
+-- 3. Regular INDEX — تسريع البحث والفلترة
+CREATE INDEX idx_category ON products(category);
+CREATE INDEX idx_status   ON orders(status);
+CREATE INDEX idx_role     ON users(role);
+
+-- 4. Composite INDEX — لعدة أعمدة معاً (ترتيب مهم!)
+-- مثالي للاستعلامات: WHERE status='active' AND role='admin'
+CREATE INDEX idx_status_role ON users(is_active, role);
+
+-- 5. FULLTEXT INDEX — للبحث النصي الكامل
+CREATE FULLTEXT INDEX ft_products ON products(name, description);
+
+-- البحث بـ FULLTEXT
+SELECT * FROM products
+WHERE MATCH(name, description) AGAINST('PHP برمجة' IN BOOLEAN MODE);
+
+-- ─── EXPLAIN — لفهم كيف MySQL تنفذ الاستعلام ────────────────
+EXPLAIN SELECT * FROM users WHERE email = 'ahmed@example.com';
+-- type=ref (يستخدم index) = سريع ✅
+-- type=ALL (full scan)   = بطيء ❌
+
+-- ─── متى تضيف Index؟ ────────────────────────────────────────
+-- ✅ أعمدة WHERE المتكررة
+-- ✅ أعمدة ORDER BY
+-- ✅ أعمدة JOIN ... ON
+-- ✅ أعمدة UNIQUE (email, username)
+-- ❌ أعمدة نادراً ما تُفلتر (تُبطئ INSERT/UPDATE)
+-- ❌ جداول صغيرة جداً (< 1000 صف) — لا فرق ملحوظ
+
+-- ─── فحص الـ Indexes الموجودة ────────────────────────────────
+SHOW INDEX FROM users;
+SHOW INDEX FROM products;
+
+-- حذف Index غير ضروري
+DROP INDEX idx_old ON users;</code></pre>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>Database Normalization — تنظيم قاعدة البيانات</h2>
+  <div class="section-body">
+الـ Normalization هو مبدأ تصميم قواعد البيانات لتقليل التكرار وضمان سلامة البيانات.
+<br><br>
+<table class="info-table">
+  <tr><th>المستوى</th><th>القاعدة</th><th>المشكلة التي يحلها</th></tr>
+  <tr><td>1NF</td><td>كل عمود يحتوي قيمة واحدة فقط، لا مصفوفات</td><td>تخزين "كتب,برمجة" في خلية واحدة</td></tr>
+  <tr><td>2NF</td><td>كل عمود يعتمد على المفتاح الأساسي كاملاً</td><td>تكرار بيانات المستخدم في كل طلب</td></tr>
+  <tr><td>3NF</td><td>لا عمود يعتمد على عمود غير المفتاح</td><td>تخزين اسم الفئة مع ID الفئة</td></tr>
+  <tr><td>BCNF</td><td>نسخة أقوى من 3NF</td><td>حالات خاصة نادرة</td></tr>
+</table>
+  </div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">SQL — مثال Normalization</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>-- ─── ❌ تصميم سيء — تكرار وبيانات مختلطة ─────────────────
+CREATE TABLE orders_bad (
+  id           INT PRIMARY KEY,
+  user_name    VARCHAR(100),  -- تكرار! لو غيّر المستخدم اسمه؟
+  user_email   VARCHAR(100),  -- تكرار!
+  product_name VARCHAR(200),  -- تكرار!
+  product_price DECIMAL(10,2), -- تكرار!
+  quantity     INT,
+  categories   VARCHAR(500)   -- '1,2,3' في خلية واحدة = ❌ 1NF
+);
+
+-- ─── ✅ تصميم صحيح — Normalized ────────────────────────────
+-- جدول المستخدمين (بيانات واحدة لكل مستخدم)
+CREATE TABLE users (
+  id       INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50)  NOT NULL UNIQUE,
+  email    VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- جدول الفئات (مستقل)
+CREATE TABLE categories (
+  id   INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  slug VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- جدول المنتجات (Foreign Key للفئة)
+CREATE TABLE products (
+  id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  category_id INT UNSIGNED NOT NULL,
+  name        VARCHAR(200) NOT NULL,
+  price       DECIMAL(10,2) NOT NULL,
+  stock       INT UNSIGNED DEFAULT 0,
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+-- جدول الطلبات (Foreign Key للمستخدم)
+CREATE TABLE orders (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT UNSIGNED NOT NULL,
+  status     ENUM('pending','paid','shipped','delivered') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- جدول تفاصيل الطلب (Many-to-Many بين orders وproducts)
+CREATE TABLE order_items (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  order_id   INT UNSIGNED NOT NULL,
+  product_id INT UNSIGNED NOT NULL,
+  quantity   INT UNSIGNED NOT NULL DEFAULT 1,
+  unit_price DECIMAL(10,2) NOT NULL,  -- السعر وقت الشراء
+  FOREIGN KEY (order_id)   REFERENCES orders(id)   ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- ─── الاستعلام الكامل مع JOIN ─────────────────────────────
+SELECT
+    o.id           AS order_id,
+    u.username,
+    u.email,
+    p.name         AS product_name,
+    c.name         AS category,
+    oi.quantity,
+    oi.unit_price,
+    (oi.quantity * oi.unit_price) AS subtotal
+FROM orders o
+JOIN users       u  ON o.user_id    = u.id
+JOIN order_items oi ON o.id         = oi.order_id
+JOIN products    p  ON oi.product_id = p.id
+JOIN categories  c  ON p.category_id = c.id
+WHERE o.status = 'paid'
+ORDER BY o.created_at DESC;</code></pre>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>Query Optimization — كتابة استعلامات فعّالة</h2>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">SQL + PHP — تحسين الأداء</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>-- ─── ❌ أخطاء شائعة تُبطئ الاستعلامات ─────────────────────
+
+-- 1. SELECT * بدل الأعمدة المطلوبة
+SELECT * FROM users;               -- ❌
+SELECT id, username, email FROM users; -- ✅
+
+-- 2. استخدام دالة على عمود مفهرس (يُعطّل الـ Index)
+SELECT * FROM users WHERE YEAR(created_at) = 2024; -- ❌
+SELECT * FROM users
+  WHERE created_at >= '2024-01-01'
+    AND created_at <  '2025-01-01'; -- ✅
+
+-- 3. LIKE يبدأ بـ % (يُعطّل الـ Index)
+SELECT * FROM products WHERE name LIKE '%كتاب%'; -- ❌ Full Scan
+SELECT * FROM products WHERE name LIKE 'كتاب%';  -- ✅ يستخدم Index
+
+-- 4. N+1 Problem — استعلام لكل صف!
+-- ❌ المشكلة: استعلام للطلبات ثم استعلام لكل مستخدم
+$orders = $pdo->query("SELECT * FROM orders")->fetchAll();
+foreach ($orders as $order) {
+    $user = $pdo->query("SELECT * FROM users WHERE id = " . $order['user_id'])->fetch(); // N استعلام!
+    echo $user['username'];
+}
+
+-- ✅ الحل: JOIN واحد
+$orders = $pdo->query("
+    SELECT o.*, u.username, u.email
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
+")->fetchAll();
+foreach ($orders as $order) {
+    echo $order['username']; // لا استعلامات إضافية!
+}
+
+-- ─── Caching — تخزين نتائج الاستعلامات الثقيلة ──────────
+&lt;?php
+function getCachedProducts(PDO $pdo): array {
+    $cache_file = sys_get_temp_dir() . '/products_cache.json';
+    $cache_ttl  = 300; // 5 دقائق
+
+    // هل الـ Cache موجود وحديث؟
+    if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_ttl) {
+        return json_decode(file_get_contents($cache_file), true);
+    }
+
+    // تنفيذ الاستعلام الثقيل
+    $products = $pdo->query("
+        SELECT p.*, c.name as category_name, COUNT(oi.id) as orders_count
+        FROM products p
+        LEFT JOIN categories c ON p.category_id = c.id
+        LEFT JOIN order_items oi ON p.id = oi.product_id
+        GROUP BY p.id
+        ORDER BY orders_count DESC
+        LIMIT 50
+    ")->fetchAll();
+
+    // حفظ في الـ Cache
+    file_put_contents($cache_file, json_encode($products));
+
+    return $products;
+}
+?&gt;</code></pre>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>Database Migrations — إدارة تغييرات الـ Schema</h2>
+  <div class="section-body">
+الـ Migrations هي ملفات PHP تُطبّق تغييرات على قاعدة البيانات بشكل منظم وقابل للتتبع والتراجع.
+  </div>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP — نظام Migrations بسيط</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+// ─── migrations/001_create_users_table.php ────────────────
+return [
+    'up' => "
+        CREATE TABLE IF NOT EXISTS users (
+          id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          username   VARCHAR(50)  NOT NULL UNIQUE,
+          email      VARCHAR(100) NOT NULL UNIQUE,
+          password   VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ",
+    'down' => "DROP TABLE IF EXISTS users",
+];
+
+// ─── migrations/002_add_role_to_users.php ─────────────────
+return [
+    'up'   => "ALTER TABLE users ADD COLUMN role ENUM('user','admin') DEFAULT 'user' AFTER password",
+    'down' => "ALTER TABLE users DROP COLUMN role",
+];
+
+// ─── migrations/003_create_products_table.php ─────────────
+return [
+    'up' => "
+        CREATE TABLE IF NOT EXISTS products (
+          id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          name        VARCHAR(200) NOT NULL,
+          price       DECIMAL(10,2) NOT NULL DEFAULT 0,
+          stock       INT UNSIGNED DEFAULT 0,
+          category_id INT UNSIGNED NULL,
+          created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          INDEX idx_category (category_id)
+        ) ENGINE=InnoDB
+    ",
+    'down' => "DROP TABLE IF EXISTS products",
+];
+
+// ─── migrate.php — تشغيل الـ Migrations ──────────────────
+require_once 'db.php';
+
+// جدول لتتبع الـ Migrations المُطبّقة
+$pdo->exec("
+    CREATE TABLE IF NOT EXISTS migrations (
+        id         INT AUTO_INCREMENT PRIMARY KEY,
+        filename   VARCHAR(255) NOT NULL UNIQUE,
+        applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+");
+
+$applied = $pdo->query("SELECT filename FROM migrations")->fetchAll(PDO::FETCH_COLUMN);
+$files   = glob('migrations/*.php');
+sort($files);
+
+foreach ($files as $file) {
+    $name = basename($file);
+
+    if (in_array($name, $applied)) {
+        echo "⏩ تجاوز: $name (مُطبَّق مسبقاً)\n";
+        continue;
+    }
+
+    $migration = require $file;
+    try {
+        $pdo->beginTransaction();
+        $pdo->exec($migration['up']);
+        $pdo->prepare("INSERT INTO migrations (filename) VALUES (?)")->execute([$name]);
+        $pdo->commit();
+        echo "✅ تطبيق: $name\n";
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo "❌ فشل: $name — " . $e->getMessage() . "\n";
+        break;
+    }
+}
+echo "اكتملت الـ Migrations!\n";
+?&gt;</code></pre>
+    <div class="code-output"><div class="output-label">ناتج migrate.php</div>✅ تطبيق: 001_create_users_table.php
+✅ تطبيق: 002_add_role_to_users.php
+✅ تطبيق: 003_create_products_table.php
+اكتملت الـ Migrations!</div>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>Database Backup وـ Restore</h2>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">PHP + Shell — Backup تلقائي</span><div class="code-dots"><div class="cd r"></div><div class="cd y"></div><div class="cd g"></div></div><button class="copy-btn">نسخ</button></div>
+    <pre class="code-pre"><code>&lt;?php
+// ─── backup.php — نسخ احتياطي لـ MySQL ───────────────────
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'php_course_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('MYSQLDUMP_PATH', 'C:\\xampp\\mysql\\bin\\mysqldump.exe'); // Windows
+// define('MYSQLDUMP_PATH', '/usr/bin/mysqldump'); // Linux/Mac
+
+$backup_dir  = __DIR__ . '/backups/';
+$backup_file = $backup_dir . DB_NAME . '_' . date('Y-m-d_H-i-s') . '.sql';
+
+// إنشاء مجلد الـ Backup
+if (!is_dir($backup_dir)) mkdir($backup_dir, 0755, true);
+
+// أمر الـ dump
+$command = sprintf(
+    '"%s" --host=%s --user=%s --password=%s %s > "%s" 2>&1',
+    MYSQLDUMP_PATH,
+    DB_HOST,
+    DB_USER,
+    DB_PASS,
+    DB_NAME,
+    $backup_file
+);
+
+exec($command, $output, $return_code);
+
+if ($return_code === 0) {
+    $size = round(filesize($backup_file) / 1024, 2);
+    echo "✅ تم الـ Backup بنجاح!\n";
+    echo "الملف: $backup_file\n";
+    echo "الحجم: {$size} KB\n";
+
+    // حذف النسخ القديمة (أكثر من 7 أيام)
+    foreach (glob($backup_dir . '*.sql') as $old_file) {
+        if (time() - filemtime($old_file) > 7 * 24 * 3600) {
+            unlink($old_file);
+            echo "🗑️ حُذف: " . basename($old_file) . "\n";
+        }
+    }
+} else {
+    echo "❌ فشل الـ Backup!\n";
+    echo implode("\n", $output);
+}
+
+// ─── Restore من ملف SQL ───────────────────────────────────
+function restoreBackup(string $sql_file): bool {
+    if (!file_exists($sql_file)) return false;
+
+    $command = sprintf(
+        '"%s" --host=%s --user=%s --password=%s %s < "%s" 2>&1',
+        'C:\\xampp\\mysql\\bin\\mysql.exe',
+        DB_HOST, DB_USER, DB_PASS, DB_NAME,
+        $sql_file
+    );
+
+    exec($command, $output, $code);
+    return $code === 0;
+}
+?&gt;</code></pre>
+  </div>
+</div>
+
+<div class="section-block">
+  <h2>ملخص — أفضل ممارسات قاعدة البيانات</h2>
+  <div class="section-body">
+<table class="info-table">
+  <tr><th>المجال</th><th>الممارسة الموصى بها</th></tr>
+  <tr><td>الأمان</td><td>Prepared Statements دائماً، لا تُضمّن قيم المستخدم في SQL مباشرةً</td></tr>
+  <tr><td>كلمات المرور</td><td>password_hash() مع PASSWORD_BCRYPT، لا MD5 ولا SHA1</td></tr>
+  <tr><td>Indexes</td><td>أضف Index على كل عمود في WHERE وJOIN وORDER BY</td></tr>
+  <tr><td>أنواع البيانات</td><td>DECIMAL للمال، TINYINT للـ boolean، VARCHAR للنصوص القصيرة</td></tr>
+  <tr><td>Encoding</td><td>utf8mb4 دائماً لدعم العربية والـ Emojis</td></tr>
+  <tr><td>Foreign Keys</td><td>استخدمها دائماً لضمان سلامة البيانات</td></tr>
+  <tr><td>Transactions</td><td>لأي عمليات مترابطة (يجب أن تنجح معاً أو تفشل معاً)</td></tr>
+  <tr><td>Backup</td><td>نسخ احتياطية يومية تلقائية مع الاحتفاظ بـ 7 أيام</td></tr>
+  <tr><td>Naming</td><td>snake_case للجداول والأعمدة، جمع للجداول (users لا user)</td></tr>
+  <tr><td>Normalization</td><td>3NF كحد أدنى، تجنب التكرار</td></tr>
+</table>
+  </div>
+</div>
+
+</div>
+
+<div class="quiz-section">
+  <div class="quiz-header"><h3>🧪 اختبر فهمك — تحسين قاعدة البيانات</h3><span class="quiz-badge">6 أسئلة</span></div>
+  <div class="quiz-body">
+    <div class="question-block"><div class="q-num">سؤال 1</div>
+    <div class="q-text">ما الأمر الذي يُظهر كيف MySQL تنفّذ استعلاماً وهل يستخدم Index؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q1" data-correct="false"> أ) SHOW QUERY</label>
+      <label class="option"><input type="radio" name="q1" data-correct="true"> ب) EXPLAIN SELECT ...</label>
+      <label class="option"><input type="radio" name="q1" data-correct="false"> ج) ANALYZE SELECT ...</label>
+      <label class="option"><input type="radio" name="q1" data-correct="false"> د) DEBUG QUERY</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 2</div>
+    <div class="q-text">لماذا يُفضَّل LIKE 'كتاب%' على LIKE '%كتاب%' في MySQL؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q2" data-correct="false"> أ) لأن الثانية تُعيد نتائج خاطئة</label>
+      <label class="option"><input type="radio" name="q2" data-correct="true"> ب) LIKE 'x%' يستخدم الـ Index لأن البحث من البداية، LIKE '%x%' يُجبر MySQL على فحص كل صف</label>
+      <label class="option"><input type="radio" name="q2" data-correct="false"> ج) الأولى أسرع بثانية واحدة فقط</label>
+      <label class="option"><input type="radio" name="q2" data-correct="false"> د) لا فرق في الأداء</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 3</div>
+    <div class="q-text">ما هي مشكلة N+1 في قواعد البيانات؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q3" data-correct="false"> أ) خطأ في عدد الصفوف المُعادة</label>
+      <label class="option"><input type="radio" name="q3" data-correct="true"> ب) تنفيذ استعلام لكل صف من نتيجة استعلام رئيسي، بدل استعلام JOIN واحد</label>
+      <label class="option"><input type="radio" name="q3" data-correct="false"> ج) وجود N عمود إضافي في الجدول</label>
+      <label class="option"><input type="radio" name="q3" data-correct="false"> د) خطأ في عدد المعاملات</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 4</div>
+    <div class="q-text">ما هدف الـ Database Normalization؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q4" data-correct="false"> أ) تسريع الاستعلامات فقط</label>
+      <label class="option"><input type="radio" name="q4" data-correct="true"> ب) تقليل تكرار البيانات وضمان سلامتها عبر تنظيم الجداول والعلاقات</label>
+      <label class="option"><input type="radio" name="q4" data-correct="false"> ج) تقليل عدد الجداول</label>
+      <label class="option"><input type="radio" name="q4" data-correct="false"> د) تشفير البيانات</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 5</div>
+    <div class="q-text">ما نوع الـ Index المناسب للبحث في محتوى مقالات نصية طويلة؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q5" data-correct="false"> أ) UNIQUE INDEX</label>
+      <label class="option"><input type="radio" name="q5" data-correct="false"> ب) Composite INDEX</label>
+      <label class="option"><input type="radio" name="q5" data-correct="true"> ج) FULLTEXT INDEX</label>
+      <label class="option"><input type="radio" name="q5" data-correct="false"> د) PRIMARY KEY</label>
+    </div></div>
+
+    <div class="question-block"><div class="q-num">سؤال 6</div>
+    <div class="q-text">ما فائدة الـ Database Migrations؟</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q6" data-correct="false"> أ) نسخ البيانات تلقائياً</label>
+      <label class="option"><input type="radio" name="q6" data-correct="true"> ب) تتبع وتطبيق تغييرات الـ Schema بشكل منظم وقابل للتراجع والتشارك بين الفريق</label>
+      <label class="option"><input type="radio" name="q6" data-correct="false"> ج) تسريع الاستعلامات</label>
+      <label class="option"><input type="radio" name="q6" data-correct="false"> د) تشفير الاتصال بقاعدة البيانات</label>
+    </div></div>
+
+    <div class="quiz-footer">
+      <button class="btn-submit" onclick="submitQuiz()">تحقق من الإجابات</button>
+      <button class="btn-retry" onclick="retryQuiz()">إعادة</button>
+      <div class="score-display" id="scoreDisplay"></div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson-nav">
+  <a href="lesson-14-database-crud.html" class="btn-nav">◀ CRUD</a>
+  <a href="index.html" class="btn-nav" style="opacity:.7">🏠 الفهرس</a>
+  <a href="lesson-16-final.html" class="btn-nav btn-next-lesson locked" id="nextLessonBtn" style="display:none">الاختبار النهائي ▶</a>
+</div>
+</main></div>
+<div class="toast" id="toast"></div>
+<script>
+const LESSON_ID='db-advanced';
+function isCompleted(id){return localStorage.getItem('lesson-'+id)==='completed';}
+function markCompleted(id){localStorage.setItem('lesson-'+id,'completed');}
+function showNextButton(){const nb=document.getElementById('nextLessonBtn');if(nb){nb.style.display='inline-flex';nb.classList.remove('locked');}}
+function updateSidebar(){document.querySelectorAll('.lesson-link[data-lid]').forEach(a=>{const lid=a.getAttribute('data-lid'),badge=a.querySelector('.ll-badge');if(isCompleted(lid)){a.classList.add('done');if(badge){badge.textContent='✓';badge.className='ll-badge done';}}});}
+function updateProgressPill(){const all=document.querySelectorAll('.lesson-link[data-lid]');const done=[...all].filter(a=>isCompleted(a.getAttribute('data-lid'))).length;const pill=document.getElementById('progressPill');if(pill)pill.textContent=done+'/'+all.length+' مكتملة';}
+function highlight(code){let h=code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');h=h.replace(/(\/\/[^\n]*)/g,'<span class="cmt">$1</span>');h=h.replace(/(\/\*[\s\S]*?\*\/)/g,'<span class="cmt">$1</span>');h=h.replace(/(--[^\n]*)/g,'<span class="cmt">$1</span>');h=h.replace(/(&lt;\?php|&lt;\?=|\?&gt;)/g,'<span class="tag">$1</span>');h=h.replace(/"([^"<]*)"/g,'<span class="str">"$1"</span>');h=h.replace(/'([^'<]*)'/g,"<span class='str'>'$1'</span>");const sqlkws='SELECT|FROM|WHERE|INSERT|INTO|UPDATE|SET|DELETE|CREATE|TABLE|DATABASE|DROP|ALTER|ADD|INDEX|JOIN|LEFT|RIGHT|INNER|ON|GROUP|BY|ORDER|LIMIT|OFFSET|EXPLAIN|SHOW|UNIQUE|PRIMARY|KEY|FOREIGN|REFERENCES|ENGINE|CHARSET|FULLTEXT|MATCH|AGAINST|LIKE|IN|AND|OR|NOT|NULL|AUTO_INCREMENT|CASCADE|DEFAULT|ENUM|BOOLEAN|TINYINT|INT|VARCHAR|DECIMAL|TIMESTAMP|COLUMN|IF|EXISTS|BEGIN|COMMIT|ROLLBACK';h=h.replace(new RegExp('\\b('+sqlkws+')\\b','g'),'<span class="sql-kw">$1</span>');const kws='echo|if|else|foreach|return|function|class|new|static|private|public|try|catch|throw|die|null|true|false|require_once|empty|isset|in_array|break|continue|match';h=h.replace(new RegExp('\\b('+kws+')\\b','g'),'<span class="kw">$1</span>');h=h.replace(/(\$[a-zA-Z_]\w*)/g,'<span class="var">$1</span>');h=h.replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');const fns='require_once|error_log|sprintf|json_encode|json_decode|file_get_contents|file_put_contents|file_exists|filemtime|filesize|glob|sort|is_dir|mkdir|unlink|basename|exec|time|date|round|implode|in_array|strtoupper|sys_get_temp_dir|filter_var|fetchAll|fetch|fetchColumn|execute|prepare|query|lastInsertId|rowCount|beginTransaction|commit|rollBack|password_hash|password_verify|htmlspecialchars';h=h.replace(new RegExp('\\b('+fns+')(?=\\()','g'),'<span class="fn">$1</span>');return h;}
+function submitQuiz(){const questions=document.querySelectorAll('.question-block');let correct=0,answered=0;questions.forEach(q=>{const sel=q.querySelector('input[type=radio]:checked');if(!sel)return;answered++;const isCorrect=sel.dataset.correct==='true';q.querySelectorAll('.option').forEach(opt=>{opt.querySelector('input').disabled=true;if(opt.querySelector('input').dataset.correct==='true')opt.classList.add('correct');});if(isCorrect){correct++;sel.closest('.option').classList.add('correct');}else{sel.closest('.option').classList.add('wrong');}});if(answered<questions.length){showToast('أجب على كل الأسئلة!','err');return;}const scoreEl=document.getElementById('scoreDisplay');const pct=Math.round(correct/questions.length*100);scoreEl.style.display='flex';if(pct>=60){scoreEl.className='score-display pass';scoreEl.textContent='🎉 ممتاز! '+correct+'/'+questions.length+' صحيح ('+pct+'%)';markCompleted(LESSON_ID);updateSidebar();updateProgressPill();showNextButton();showToast('الدرس مكتمل ✓','ok');}else{scoreEl.className='score-display fail';scoreEl.textContent='💪 '+correct+'/'+questions.length+' — راجع وحاول مجدداً';}}
+function retryQuiz(){document.querySelectorAll('.option').forEach(o=>{o.classList.remove('correct','wrong');o.querySelector('input').disabled=false;o.querySelector('input').checked=false;});document.getElementById('scoreDisplay').style.display='none';}
+function showToast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),4000);}
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('pre.code-pre code').forEach(el=>{el.innerHTML=highlight(el.textContent);});document.querySelectorAll('.copy-btn').forEach(btn=>{btn.addEventListener('click',()=>{const code=btn.closest('.code-block').querySelector('pre.code-pre code');navigator.clipboard.writeText(code.textContent).then(()=>{btn.textContent='تم! ✓';setTimeout(()=>btn.textContent='نسخ',1800);});});});const menuBtn=document.getElementById('menuBtn');const sidebar=document.getElementById('sidebar');if(menuBtn)menuBtn.addEventListener('click',()=>sidebar.classList.toggle('open'));updateSidebar();updateProgressPill();if(isCompleted(LESSON_ID))showNextButton();});
+</script>
+</body></html>

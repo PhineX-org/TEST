@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhineX Lab | PHP Login · Step 4</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cairo:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--neon:#39ff14;--neon-dim:rgba(57,255,20,.1);--void:#05070a;--surface:#0b0e14;--editor:#080b10;--card:#0d1017;--border:rgba(255,255,255,.07);--border2:rgba(57,255,20,.2);--text:#c9d1d9;--muted:#4e5566;--accent:#c3e88d;}
+body{font-family:'Cairo',sans-serif;background:var(--void);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+.ws-header{background:var(--card);border-bottom:1px solid var(--border);padding:0 18px;height:50px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ws-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--neon);}
+.ws-sep{color:var(--muted);font-size:18px;}.ws-title{font-size:13px;font-weight:600;color:var(--text);}.ws-spacer{flex:1;}
+.progress-track{display:flex;align-items:center;gap:5px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;background:var(--border);border:1px solid var(--muted);transition:all .3s;}
+.prog-dot.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 6px rgba(57,255,20,.5);}
+.prog-dot.current{background:transparent;border:2px solid var(--neon);}
+.ws-step-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-right:8px;}
+.ws-body{display:grid;grid-template-columns:300px 1fr 1fr;flex:1;overflow:hidden;}
+.ws-instructions{background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:14px;}
+.ins-badge{display:inline-flex;align-items:center;gap:6px;background:var(--neon-dim);border:1px solid var(--border2);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;width:fit-content;}
+.ins-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--accent);line-height:1.3;}
+.ins-intro{font-size:13px;color:var(--text);line-height:1.75;}
+.task-list{background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.task-list-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.task-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.65;}
+.task-num{min-width:20px;height:20px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--neon);flex-shrink:0;margin-top:2px;}
+code{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.15);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#c3e88d;direction:ltr;display:inline-block;}
+.hint{background:rgba(130,170,255,.05);border:1px solid rgba(130,170,255,.15);border-radius:8px;padding:11px 13px;font-size:12px;color:#82aaff;line-height:1.65;}
+.hint strong{color:#c3e88d;}
+.step-info{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.12);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--text);line-height:1.75;}
+.step-info .label{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--neon);display:block;margin-bottom:4px;}
+.ws-editor{background:var(--editor);display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);overflow:hidden;}
+.editor-tabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:38px;flex-shrink:0;}
+.file-tab{display:inline-flex;align-items:center;gap:6px;padding:0 15px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.file-tab:hover{color:var(--text);background:rgba(255,255,255,.02);}
+.file-tab.active{color:var(--text);border-bottom-color:var(--neon);background:var(--editor);}
+.tab-dot{width:6px;height:6px;border-radius:50%;}
+.editor-action{margin-right:auto;display:flex;align-items:center;padding-left:10px;}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .2s;}
+.btn-reset:hover{border-color:var(--muted);color:var(--text);}
+.editor-body{flex:1;display:flex;overflow:hidden;}
+.line-nums{background:var(--editor);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px 8px 16px 10px;min-width:42px;text-align:right;overflow:hidden;user-select:none;flex-shrink:0;border-left:1px solid rgba(255,255,255,.03);}
+.code-ed{flex:1;background:transparent;color:#c9d1d9;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;padding:16px;border:none;outline:none;resize:none;direction:ltr!important;text-align:left!important;white-space:pre;overflow:auto;tab-size:2;display:none;}
+.code-ed.active{display:block;}.code-ed::selection{background:rgba(57,255,20,.12);}
+.ws-preview{display:flex;flex-direction:column;overflow:hidden;}
+.preview-bar{background:var(--card);border-bottom:1px solid var(--border);height:38px;padding:0 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.preview-dots{display:flex;gap:5px;}.pdot{width:10px;height:10px;border-radius:50%;}
+.pdot.r{background:#ff5f57;}.pdot.y{background:#febc2e;}.pdot.g{background:var(--neon);}
+.preview-url{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);flex:1;text-align:center;direction:ltr;}
+#previewFrame{flex:1;border:none;background:#1a1a2e;}
+.ws-footer{background:var(--card);border-top:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.btn-nav{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-nav:hover{border-color:var(--muted);color:var(--text);}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:rgba(57,255,20,.1);color:var(--neon);transition:all .2s;font-family:'Cairo',sans-serif;}
+.btn-run:hover{background:rgba(57,255,20,.18);}
+.f-spacer{flex:1;}
+.btn-check{display:inline-flex;align-items:center;gap:7px;padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:var(--neon);color:#050508;transition:all .2s;font-family:'Cairo',sans-serif;box-shadow:0 0 14px rgba(57,255,20,.2);}
+.btn-check:hover{box-shadow:0 0 24px rgba(57,255,20,.45);transform:translateY(-1px);}
+#nextBtn{display:none;background:rgba(57,255,20,.12);color:var(--neon);border:1px solid var(--border2);}
+#nextBtn.visible{display:inline-flex;}
+.toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:999;max-width:440px;min-width:200px;text-align:center;white-space:pre-line;pointer-events:none;line-height:1.5;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:var(--neon);color:var(--neon);}
+.toast.err{border-color:#ff5874;color:#ff5874;}
+</style>
+</head>
+<body>
+<header class="ws-header">
+  <span class="ws-logo">PhineX</span>
+  <span class="ws-sep">/</span>
+  <span class="ws-title">PHP Login Project · إنشاء قاعدة البيانات</span>
+  <div class="ws-spacer"></div>
+  <div class="progress-track">
+    <div class="prog-dot" data-s="1"></div><div class="prog-dot" data-s="2"></div>
+    <div class="prog-dot" data-s="3"></div><div class="prog-dot" data-s="4"></div>
+    <div class="prog-dot" data-s="5"></div><div class="prog-dot" data-s="6"></div>
+    <div class="prog-dot" data-s="7"></div><div class="prog-dot" data-s="8"></div>
+  </div>
+  <span class="ws-step-label">4/8</span>
+</header>
+
+<div class="ws-body">
+  <aside class="ws-instructions">
+    <div class="ins-badge">🗄️ الخطوة ٤</div>
+    <div class="ins-title">إنشاء قاعدة البيانات MySQL</div>
+    <div class="ins-intro">
+      هنستخدم <strong>phpMyAdmin</strong> (جوا XAMPP) عشان نعمل database وجدول <code>users</code> يخزّن بيانات المستخدمين.
+    </div>
+
+    <div class="task-list">
+      <div class="task-list-title">📋 خطوات phpMyAdmin</div>
+      <div class="task-item"><div class="task-num">١</div>
+        <div>افتح المتصفح وروح على <code>localhost/phpmyadmin</code></div></div>
+      <div class="task-item"><div class="task-num">٢</div>
+        <div>اضغط <strong>New</strong> في الشريط الجانبي لإنشاء database جديدة</div></div>
+      <div class="task-item"><div class="task-num">٣</div>
+        <div>سمّيها <code>php_login_db</code> واختر <code>utf8mb4_unicode_ci</code></div></div>
+      <div class="task-item"><div class="task-num">٤</div>
+        <div>اضغط <strong>SQL</strong> في القائمة العليا والصق الكود من التاب <code>schema.sql</code></div></div>
+      <div class="task-item"><div class="task-num">٥</div>
+        <div>اضغط <strong>Go</strong> لتنفيذ الأوامر — هيتعمل جدول <code>users</code> أوتوماتيك</div></div>
+      <div class="task-item"><div class="task-num">٦</div>
+        <div>اكتب اسم الـ database في تاب <code>db_name.txt</code> للتحقق</div></div>
+    </div>
+
+    <div class="hint">
+      <strong>أعمدة جدول users:</strong><br>
+      <code>id</code> — INT AUTO_INCREMENT PRIMARY KEY<br>
+      <code>username</code> — VARCHAR(50) UNIQUE<br>
+      <code>email</code> — VARCHAR(100) UNIQUE<br>
+      <code>password</code> — VARCHAR(255) (مشفّر)<br>
+      <code>created_at</code> — TIMESTAMP
+    </div>
+
+    <div class="step-info">
+      <span class="label">🔐 أمان مهم</span>
+      الـ password يتخزّن <strong>مشفّراً</strong> باستخدام <code>password_hash()</code> في PHP — مش plain text أبداً!
+    </div>
+  </aside>
+
+  <!-- EDITOR -->
+  <div class="ws-editor">
+    <div class="editor-tabs">
+      <button class="file-tab active" id="tab-sql" onclick="switchTab('sql')">
+        <span class="tab-dot" style="background:#f59e0b"></span>schema.sql
+      </button>
+      <button class="file-tab" id="tab-txt" onclick="switchTab('txt')">
+        <span class="tab-dot" style="background:#64748b"></span>db_name.txt
+      </button>
+      <div class="editor-action">
+        <button class="btn-reset" onclick="resetCode()">↺ إعادة ضبط</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="line-nums" id="lineNums">1</div>
+      <textarea class="code-ed active" id="ed-sql" spellcheck="false"></textarea>
+      <textarea class="code-ed" id="ed-txt" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="ws-preview">
+    <div class="preview-bar">
+      <div class="preview-dots"><span class="pdot r"></span><span class="pdot y"></span><span class="pdot g"></span></div>
+      <div class="preview-url">localhost/phpmyadmin — sql preview</div>
+    </div>
+    <iframe id="previewFrame"></iframe>
+  </div>
+</div>
+
+<footer class="ws-footer">
+  <a class="btn-nav" href="step3.html">← السابق</a>
+  <button class="btn-run" onclick="runPreview()">▶ تشغيل</button>
+  <div class="f-spacer"></div>
+  <button class="btn-check" onclick="checkStep()">✓ تحقق من الخطوة</button>
+  <a class="btn-nav" id="nextBtn" href="step5.html">التالي ←</a>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const STEP_NUM = 4;
+const KEY = `phinex_php_login_${STEP_NUM}`;
+const eds = { sql: document.getElementById('ed-sql'), txt: document.getElementById('ed-txt') };
+const lnDiv = document.getElementById('lineNums');
+let curTab = 'sql';
+
+const STARTER = {
+  sql: `-- ================================================
+-- schema.sql — إنشاء قاعدة البيانات والجداول
+-- انسخ هذا الكود والصقه في phpMyAdmin > SQL
+-- ================================================
+
+-- 1. إنشاء قاعدة البيانات
+CREATE DATABASE IF NOT EXISTS php_login_db
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+-- 2. استخدامها
+USE php_login_db;
+
+-- 3. إنشاء جدول المستخدمين
+CREATE TABLE IF NOT EXISTS users (
+  id           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  username     VARCHAR(50)  NOT NULL UNIQUE,
+  email        VARCHAR(100) NOT NULL UNIQUE,
+  password     VARCHAR(255) NOT NULL,
+  created_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+  updated_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+               ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 4. إنشاء جدول Remember Me tokens (اختياري)
+CREATE TABLE IF NOT EXISTS remember_tokens (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id    INT UNSIGNED NOT NULL,
+  token      VARCHAR(255) NOT NULL,
+  expires_at DATETIME     NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ================================================
+-- التحقق: سيظهر كلا الجدولين بعد التنفيذ
+-- SHOW TABLES;
+-- ================================================`,
+
+  txt: `// اكتب هنا اسم قاعدة البيانات اللي أنشأتها
+// يجب أن يحتوي على: php_login_db
+
+php_login_db`
+};
+
+function init() {
+  for (const t in eds) {
+    eds[t].value = localStorage.getItem(`${KEY}_${t}`) || STARTER[t];
+    eds[t].addEventListener('input', () => { updateLN(); saveCode(); scheduleRun(); });
+    eds[t].addEventListener('scroll', () => { lnDiv.scrollTop = eds[curTab].scrollTop; });
+    eds[t].addEventListener('keydown', handleTab);
+  }
+  updateProgress(); updateLN(); buildPreview();
+}
+
+function switchTab(t) {
+  curTab = t;
+  for (const k in eds) {
+    eds[k].classList.toggle('active', k === t);
+    document.getElementById(`tab-${k}`).classList.toggle('active', k === t);
+  }
+  updateLN(); eds[t].focus();
+}
+
+function updateLN() {
+  const n = eds[curTab].value.split('\n').length;
+  lnDiv.innerHTML = Array.from({length:n},(_,i)=>i+1).join('<br>');
+}
+
+function handleTab(e) {
+  if (e.key !== 'Tab') return;
+  e.preventDefault();
+  const ta = e.target, s = ta.selectionStart, en = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s) + '  ' + ta.value.slice(en);
+  ta.selectionStart = ta.selectionEnd = s + 2;
+  updateLN(); saveCode();
+}
+
+let saveT;
+function saveCode() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => { for (const t in eds) localStorage.setItem(`${KEY}_${t}`, eds[t].value); }, 400);
+}
+
+function resetCode() {
+  if (!confirm('إعادة ضبط الكود للنسخة الأصلية؟')) return;
+  for (const t in eds) { eds[t].value = STARTER[t]; localStorage.removeItem(`${KEY}_${t}`); }
+  updateLN(); buildPreview();
+}
+
+function buildPreview() {
+  const sql = eds.sql.value;
+  const lines = sql.split('\n');
+  const fr = document.getElementById('previewFrame');
+  const d = fr.contentDocument || fr.contentWindow.document;
+  const highlighted = lines.map(line => {
+    let l = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    l = l.replace(/\b(CREATE|DATABASE|TABLE|IF NOT EXISTS|USE|INT|VARCHAR|TIMESTAMP|DEFAULT|PRIMARY KEY|AUTO_INCREMENT|UNIQUE|NOT NULL|UNSIGNED|CHARACTER SET|COLLATE|FOREIGN KEY|REFERENCES|ON DELETE|CASCADE|SHOW|DATETIME|ON UPDATE)\b/gi, '<span style="color:#c678dd;font-weight:bold">$1</span>');
+    l = l.replace(/\b(users|remember_tokens|php_login_db|id|username|email|password|created_at|updated_at|user_id|token|expires_at)\b/g, '<span style="color:#e5c07b">$1</span>');
+    l = l.replace(/(--[^\n]*)/g, '<span style="color:#5c6370;font-style:italic">$1</span>');
+    l = l.replace(/('[^']*')/g, '<span style="color:#98c379">$1</span>');
+    return l;
+  }).join('\n');
+  d.open();
+  d.write(`<!DOCTYPE html><html><head><style>
+    body{margin:0;background:#282c34;color:#abb2bf;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;padding:20px;}
+    pre{margin:0;white-space:pre-wrap;word-break:break-word;}
+    .header{background:#21252b;border-bottom:1px solid #3e4451;padding:12px 16px;margin:-20px -20px 20px;display:flex;align-items:center;gap:10px;}
+    .header h3{color:#98c379;font-size:13px;margin:0;}
+    .badge{background:#2c313a;border:1px solid #3e4451;border-radius:4px;padding:2px 8px;font-size:11px;color:#e5c07b;}
+    .info-box{background:#2c313a;border:1px solid #3e4451;border-radius:8px;padding:14px;margin-top:20px;}
+    .info-box h4{color:#61afef;font-size:12px;margin:0 0 10px;}
+    .col-row{display:flex;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid #3e4451;font-size:12px;}
+    .col-row:last-child{border-bottom:none;}
+    .col-name{color:#e5c07b;min-width:120px;font-weight:bold;}
+    .col-type{color:#c678dd;min-width:100px;}
+    .col-attr{color:#5c6370;font-size:11px;}
+  </style></head><body>
+    <div class="header">
+      <h3>📄 schema.sql</h3>
+      <span class="badge">MySQL · phpMyAdmin</span>
+    </div>
+    <pre>${highlighted}</pre>
+    <div class="info-box">
+      <h4>📊 هيكل جدول users بعد التنفيذ:</h4>
+      <div class="col-row"><span class="col-name">id</span><span class="col-type">INT UNSIGNED</span><span class="col-attr">AUTO_INCREMENT · PRIMARY KEY</span></div>
+      <div class="col-row"><span class="col-name">username</span><span class="col-type">VARCHAR(50)</span><span class="col-attr">NOT NULL · UNIQUE</span></div>
+      <div class="col-row"><span class="col-name">email</span><span class="col-type">VARCHAR(100)</span><span class="col-attr">NOT NULL · UNIQUE</span></div>
+      <div class="col-row"><span class="col-name">password</span><span class="col-type">VARCHAR(255)</span><span class="col-attr">NOT NULL · مشفّر بـ bcrypt</span></div>
+      <div class="col-row"><span class="col-name">created_at</span><span class="col-type">TIMESTAMP</span><span class="col-attr">DEFAULT CURRENT_TIMESTAMP</span></div>
+    </div>
+  </body></html>`);
+  d.close();
+}
+
+let runT;
+function scheduleRun() { clearTimeout(runT); runT = setTimeout(buildPreview, 600); }
+function runPreview() { buildPreview(); }
+
+function updateProgress() {
+  document.querySelectorAll('.prog-dot').forEach((dot, i) => {
+    const n = i + 1;
+    dot.classList.remove('done','current');
+    if (localStorage.getItem(`phinex_php_login_${n}`) === 'complete') dot.classList.add('done');
+    else if (n === STEP_NUM) dot.classList.add('current');
+  });
+}
+function markComplete() {
+  localStorage.setItem(KEY, 'complete'); updateProgress();
+  document.getElementById('nextBtn').classList.add('visible');
+}
+function toast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = `toast ${type} show`;
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 3800);
+}
+
+function checkStep() {
+  const sql = eds.sql.value.toLowerCase();
+  const txt = eds.txt.value.toLowerCase();
+  const hasCreate   = sql.includes('create database') || sql.includes('create table');
+  const hasUsers    = sql.includes('create table') && sql.includes('users');
+  const hasId       = sql.includes('auto_increment') && sql.includes('primary key');
+  const hasUsername = sql.includes('username');
+  const hasEmail    = sql.includes('email');
+  const hasPassword = sql.includes('password') && sql.includes('varchar');
+  const hasDbName   = txt.includes('php_login_db');
+  if (hasCreate && hasUsers && hasId && hasUsername && hasEmail && hasPassword && hasDbName) {
+    markComplete();
+    toast('قاعدة البيانات جاهزة ✅\nجدول users بكل الأعمدة المطلوبة موجود! انتقل للخطوة 5', 'ok');
+  } else {
+    let e = [];
+    if (!hasCreate)   e.push('• أضف CREATE DATABASE أو CREATE TABLE');
+    if (!hasUsers)    e.push('• تأكد من إنشاء جدول users');
+    if (!hasId)       e.push('• أضف id INT AUTO_INCREMENT PRIMARY KEY');
+    if (!hasUsername) e.push('• أضف عمود username');
+    if (!hasEmail)    e.push('• أضف عمود email');
+    if (!hasPassword) e.push('• أضف عمود password VARCHAR');
+    if (!hasDbName)   e.push('• اكتب php_login_db في ملف db_name.txt');
+    toast('تحقق من:\n' + e.slice(0,4).join('\n'), 'err');
+  }
+}
+init();
+</script>
+</body>
+</html>

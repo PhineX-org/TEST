@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هندسة البيانات المتزامنة | PhineX Academy</title>
+    <style>
+        :root {
+            --primary: #bb86fc;
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --text: #c9d1d9;
+            --code-bg: #000;
+            --accent: #03dac6;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .lesson-header {
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #1f2937, #0d1117);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #30363d;
+        }
+
+        .lesson-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+
+        h2 { color: var(--primary); font-size: 2rem; border-bottom: 2px solid var(--primary); display: inline-block; padding-bottom: 5px; }
+        h3 { color: var(--accent); font-size: 1.4rem; margin-top: 25px; }
+
+        .explanation-box {
+            background: rgba(187, 134, 252, 0.05);
+            border-right: 4px solid var(--primary);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #e6edf3;
+            padding: 25px;
+            border-radius: 12px;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            border: 1px solid #30363d;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+
+        .concept-map {
+            background: #21262d;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px dashed var(--accent);
+            margin: 20px 0;
+        }
+
+        .quiz-container {
+            background: #1c2128;
+            padding: 40px;
+            border-radius: 25px;
+            border: 2px solid var(--primary);
+            margin-top: 50px;
+        }
+
+        .question { margin-bottom: 30px; padding: 20px; background: #0d1117; border-radius: 12px; }
+
+        button.check-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        button.check-btn:hover { opacity: 0.8; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lesson-header">
+        <h1>تحدث مع السيرفر: Async & APIs 🌐</h1>
+        <p>دليل السيطرة على البيانات الخارجية وبناء تطبيقات حية تستمد قوتها من السحاب.</p>
+    </div>
+
+    <div class="lesson-card">
+        <h2>1. البرمجة غير المتزامنة (Asynchronous JS)</h2>
+        <p>جافا سكريبت بطبعه "أحادي المسار" (Single Threaded)، أي أنه ينفذ أمراً واحداً في الوقت نفسه. لو طلبت منه تحميل ملف كبير، سيتوقف الموقع كله حتى ينتهي التحميل!</p>
+        
+        <h3>الحل: نظام "الانتظار الذكي"</h3>
+        <p>بدلاً من تجميد الموقع، يرسل JS المهمة للمتصفح ويقول له: "أخبرني عندما تنتهي، سأكمل أنا بقية المهام الآن".</p>
+        
+        
+
+        <div class="explanation-box">
+            تخيل أنك في مطعم:
+            - **Synchronous:** الجرسون يأخذ طلبك ويقف أمام المطبخ ينتظر الأكل ولا يخدم أي طاولة أخرى.
+            - **Asynchronous:** الجرسون يأخذ طلبك، يعطيه للمطبخ، ويذهب لخدمة طاولات أخرى حتى يجهز طعامك.
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>2. الوعود (Promises)</h2>
+        <p>الـ Promise هو كائن يمثل "وعداً" بأن بيانات ما ستأتي في المستقبل. هذا الوعد له 3 حالات:</p>
+        <ul>
+            <li><b>Pending:</b> قيد الانتظار (جاري التحميل).</li>
+            <li><b>Fulfilled (Resolved):</b> تم الوفاء بالوعد (البيانات وصلت بنجاح).</li>
+            <li><b>Rejected:</b> فشل الوعد (حدث خطأ في السيرفر).</li>
+        </ul>
+        
+        
+    </div>
+
+    <div class="lesson-card">
+        <h2>3. ما هو الـ API؟</h2>
+        <p>الـ API (Application Programming Interface) هو "النادل" الذي يربط موقعك بقاعدة بيانات خارجية. أنت تطلب منه (Request) وهو يرد عليك ببيانات (Response) غالباً تكون بصيغة <b>JSON</b>.</p>
+
+        <h3>استخدام Fetch و Async/Await (الطريقة الحديثة):</h3>
+        <p>هذه هي الطريقة التي يستخدمها المحترفون اليوم لجعل الكود يبدو كأنه كود عادي بسيط ولكنه يعمل في الخلفية.</p>
+
+        <div class="code-block">
+// آلة جلب البيانات من السيرفر<br>
+async function getGameData() {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 1. إرسال الطلب وانتظار الرد<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch('https://api.example.com/games');<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 2. تحويل الرد إلى صيغة JSON مفهومة<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const data = await response.json();<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 3. استخدام البيانات<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log(data);<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// في حال انقطع الإنترنت أو حدث خطأ<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.error("فشل الجلب:", error);<br>
+&nbsp;&nbsp;}<br>
+}
+        </div>
+    </div>
+
+    <div class="lesson-card">
+        <h2>4. لغة تداول البيانات (JSON)</h2>
+        <p>الـ JSON (JavaScript Object Notation) هو الطريقة التي تكتب بها البيانات لكي يفهمها أي سيرفر في العالم. يشبه الـ Object في JS ولكنه نصي.</p>
+        
+        <div class="code-block">
+{<br>
+&nbsp;&nbsp;"game": "War Tycoon",<br>
+&nbsp;&nbsp;"price": 0,<br>
+&nbsp;&nbsp;"isMultiplayer": true<br>
+}
+        </div>
+    </div>
+
+    <div class="quiz-container">
+        <h2>اختبار مهندس السحاب 🧠</h2>
+        
+        <div class="question">
+            <p><b>س1: لماذا نستخدم كلمة <code>await</code> قبل الـ Fetch؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="wrong"> لتسريع عملية التحميل.</label><br>
+                <label><input type="radio" name="q1" value="correct"> لإيقاف تنفيذ الدالة حتى ينتهي السيرفر من الرد (بدون تجميد الموقع).</label><br>
+                <label><input type="radio" name="q1" value="wrong"> لحذف الأخطاء البرمجية تلقائياً.</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><b>س2: أي حالة من حالات الـ Promise تعني أن البيانات وصلت بنجاح؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="wrong"> Pending</label><br>
+                <label><input type="radio" name="q2" value="correct"> Fulfilled / Resolved</label><br>
+                <label><input type="radio" name="q2" value="wrong"> Rejected</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><b>س3: ما هي وظيفة <code>try { ... } catch { ... }</code>؟</b></p>
+            <div class="options">
+                <label><input type="radio" name="q3" value="wrong"> تكرار الكود 100 مرة.</label><br>
+                <label><input type="radio" name="q3" value="correct"> محاولة تنفيذ الكود والتقاط الأخطاء (مثل انقطاع الإنترنت) لمنع انهيار الموقع.</label><br>
+                <label><input type="radio" name="q3" value="wrong"> تحسين جودة الصور في الصفحة.</label>
+            </div>
+        </div>
+
+        <button class="check-btn" onclick="checkFinalAnswers()">فحص الإجابات النهائية 🏁</button>
+    </div>
+</div>
+
+<script>
+    function checkFinalAnswers() {
+        const q1 = document.querySelector('input[name="q1"]:checked');
+        const q2 = document.querySelector('input[name="q2"]:checked');
+        const q3 = document.querySelector('input[name="q3"]:checked');
+
+        if (q1?.value === "correct" && q2?.value === "correct" && q3?.value === "correct") {
+            alert("مذهل! أنت الآن تمتلك المفاتيح لربط أي تطبيق ويب بالعالم الخارجي. أنت الآن مبرمج Full-Stack Logic!");
+            localStorage.setItem('lesson-js-async', 'completed');
+            window.location.href = 'js-advanced.html';
+        } else {
+            alert("هناك بعض المفاهيم تحتاج لمراجعة، خاصة كيفية التعامل مع الانتظار (Await) والأخطاء.");
+        }
+    }
+</script>
+
+</body>
+</html>
