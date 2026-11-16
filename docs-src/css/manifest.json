@@ -1,0 +1,2954 @@
+[
+ {
+  "id": "intro-css",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "إيه هو CSS؟"
+ },
+ {
+  "id": "adding-css",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "تلات طرق تضيف بيها CSS"
+ },
+ {
+  "id": "css-syntax",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "تشريح قاعدة CSS"
+ },
+ {
+  "id": "selectors-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "المحددات: اختار العنصر"
+ },
+ {
+  "id": "specificity",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ Specificity: مين يكسب؟"
+ },
+ {
+  "id": "cascade-inheritance",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ Cascade والوراثة"
+ },
+ {
+  "id": "box-model",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ Box Model"
+ },
+ {
+  "id": "units",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "وحدات القياس"
+ },
+ {
+  "id": "colors-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الألوان في CSS"
+ },
+ {
+  "id": "fonts-text-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الخطوط والنص"
+ },
+ {
+  "id": "display-flow",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ Display والـ Normal Flow"
+ },
+ {
+  "id": "positioning-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ Positioning"
+ },
+ {
+  "id": "flexbox-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "دليل Flexbox"
+ },
+ {
+  "id": "grid-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "دليل Grid"
+ },
+ {
+  "id": "responsive-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "التصميم المتجاوب"
+ },
+ {
+  "id": "transitions-animations-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الحركة: Transitions و Animations"
+ },
+ {
+  "id": "variables-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "المتغيرات (Custom Properties)"
+ },
+ {
+  "id": "backgrounds-borders-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الخلفيات والحدود والظلال"
+ },
+ {
+  "id": "pseudo-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ Pseudo-classes والـ Pseudo-elements"
+ },
+ {
+  "id": "nesting-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ CSS Nesting"
+ },
+ {
+  "id": "layers-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الـ Cascade Layers"
+ },
+ {
+  "id": "logical-properties-guide",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "الخصائص المنطقية و RTL"
+ },
+ {
+  "id": "debugging-css",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "إزاي تعمل Debug لـ CSS"
+ },
+ {
+  "id": "css-best-practices",
+  "kind": "guide",
+  "cat": "start",
+  "chip": null,
+  "mdn": null,
+  "size": "normal",
+  "title_hint": "أفضل الممارسات وتنظيم الملفات"
+ },
+ {
+  "id": "type-selector",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "element",
+  "mdn": "Type_selectors",
+  "size": "normal"
+ },
+ {
+  "id": "class-selector",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": ".class",
+  "mdn": "Class_selectors",
+  "size": "normal"
+ },
+ {
+  "id": "id-selector",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "#id",
+  "mdn": "ID_selectors",
+  "size": "normal"
+ },
+ {
+  "id": "universal-selector",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "*",
+  "mdn": "Universal_selectors",
+  "size": "normal"
+ },
+ {
+  "id": "attribute-selector",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "[attr]",
+  "mdn": "Attribute_selectors",
+  "size": "normal"
+ },
+ {
+  "id": "selector-list",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "A, B",
+  "mdn": "Selector_list",
+  "size": "normal"
+ },
+ {
+  "id": "descendant-combinator",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "A B",
+  "mdn": "Descendant_combinator",
+  "size": "normal"
+ },
+ {
+  "id": "child-combinator",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "A > B",
+  "mdn": "Child_combinator",
+  "size": "normal"
+ },
+ {
+  "id": "adjacent-sibling-combinator",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "A + B",
+  "mdn": "Next-sibling_combinator",
+  "size": "normal"
+ },
+ {
+  "id": "general-sibling-combinator",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "A ~ B",
+  "mdn": "Subsequent-sibling_combinator",
+  "size": "normal"
+ },
+ {
+  "id": "nesting-selector",
+  "kind": "selector",
+  "cat": "selectors",
+  "chip": "&",
+  "mdn": "Nesting_selector",
+  "size": "normal"
+ },
+ {
+  "id": "hover",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":hover",
+  "mdn": ":hover",
+  "size": "normal"
+ },
+ {
+  "id": "active",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":active",
+  "mdn": ":active",
+  "size": "normal"
+ },
+ {
+  "id": "focus",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":focus",
+  "mdn": ":focus",
+  "size": "normal"
+ },
+ {
+  "id": "focus-visible",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":focus-visible",
+  "mdn": ":focus-visible",
+  "size": "normal"
+ },
+ {
+  "id": "focus-within",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":focus-within",
+  "mdn": ":focus-within",
+  "size": "normal"
+ },
+ {
+  "id": "target",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":target",
+  "mdn": ":target",
+  "size": "normal"
+ },
+ {
+  "id": "link",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":link",
+  "mdn": ":link",
+  "size": "compact"
+ },
+ {
+  "id": "visited",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":visited",
+  "mdn": ":visited",
+  "size": "compact"
+ },
+ {
+  "id": "any-link",
+  "kind": "pseudoclass",
+  "cat": "pc-user",
+  "chip": ":any-link",
+  "mdn": ":any-link",
+  "size": "compact"
+ },
+ {
+  "id": "checked",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":checked",
+  "mdn": ":checked",
+  "size": "normal"
+ },
+ {
+  "id": "disabled",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":disabled",
+  "mdn": ":disabled",
+  "size": "normal"
+ },
+ {
+  "id": "enabled",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":enabled",
+  "mdn": ":enabled",
+  "size": "compact"
+ },
+ {
+  "id": "required",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":required",
+  "mdn": ":required",
+  "size": "normal"
+ },
+ {
+  "id": "optional",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":optional",
+  "mdn": ":optional",
+  "size": "compact"
+ },
+ {
+  "id": "valid",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":valid",
+  "mdn": ":valid",
+  "size": "normal"
+ },
+ {
+  "id": "invalid",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":invalid",
+  "mdn": ":invalid",
+  "size": "normal"
+ },
+ {
+  "id": "in-range",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":in-range",
+  "mdn": ":in-range",
+  "size": "compact"
+ },
+ {
+  "id": "out-of-range",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":out-of-range",
+  "mdn": ":out-of-range",
+  "size": "compact"
+ },
+ {
+  "id": "read-only",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":read-only",
+  "mdn": ":read-only",
+  "size": "compact"
+ },
+ {
+  "id": "read-write",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":read-write",
+  "mdn": ":read-write",
+  "size": "compact"
+ },
+ {
+  "id": "placeholder-shown",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":placeholder-shown",
+  "mdn": ":placeholder-shown",
+  "size": "normal"
+ },
+ {
+  "id": "default",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":default",
+  "mdn": ":default",
+  "size": "compact"
+ },
+ {
+  "id": "indeterminate",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":indeterminate",
+  "mdn": ":indeterminate",
+  "size": "compact"
+ },
+ {
+  "id": "autofill",
+  "kind": "pseudoclass",
+  "cat": "pc-form",
+  "chip": ":autofill",
+  "mdn": ":autofill",
+  "size": "compact"
+ },
+ {
+  "id": "root",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":root",
+  "mdn": ":root",
+  "size": "normal"
+ },
+ {
+  "id": "empty",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":empty",
+  "mdn": ":empty",
+  "size": "compact"
+ },
+ {
+  "id": "first-child",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":first-child",
+  "mdn": ":first-child",
+  "size": "normal"
+ },
+ {
+  "id": "last-child",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":last-child",
+  "mdn": ":last-child",
+  "size": "normal"
+ },
+ {
+  "id": "only-child",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":only-child",
+  "mdn": ":only-child",
+  "size": "compact"
+ },
+ {
+  "id": "nth-child",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":nth-child",
+  "mdn": ":nth-child",
+  "size": "normal"
+ },
+ {
+  "id": "nth-last-child",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":nth-last-child",
+  "mdn": ":nth-last-child",
+  "size": "compact"
+ },
+ {
+  "id": "first-of-type",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":first-of-type",
+  "mdn": ":first-of-type",
+  "size": "compact"
+ },
+ {
+  "id": "last-of-type",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":last-of-type",
+  "mdn": ":last-of-type",
+  "size": "compact"
+ },
+ {
+  "id": "only-of-type",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":only-of-type",
+  "mdn": ":only-of-type",
+  "size": "compact"
+ },
+ {
+  "id": "nth-of-type",
+  "kind": "pseudoclass",
+  "cat": "pc-structure",
+  "chip": ":nth-of-type",
+  "mdn": ":nth-of-type",
+  "size": "compact"
+ },
+ {
+  "id": "is",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":is",
+  "mdn": ":is",
+  "size": "normal"
+ },
+ {
+  "id": "where",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":where",
+  "mdn": ":where",
+  "size": "normal"
+ },
+ {
+  "id": "not",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":not",
+  "mdn": ":not",
+  "size": "normal"
+ },
+ {
+  "id": "has",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":has",
+  "mdn": ":has",
+  "size": "normal"
+ },
+ {
+  "id": "lang",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":lang",
+  "mdn": ":lang",
+  "size": "compact"
+ },
+ {
+  "id": "dir",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":dir",
+  "mdn": ":dir",
+  "size": "compact"
+ },
+ {
+  "id": "fullscreen",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":fullscreen",
+  "mdn": ":fullscreen",
+  "size": "compact"
+ },
+ {
+  "id": "modal",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":modal",
+  "mdn": ":modal",
+  "size": "compact"
+ },
+ {
+  "id": "popover-open",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":popover-open",
+  "mdn": ":popover-open",
+  "size": "compact"
+ },
+ {
+  "id": "defined",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":defined",
+  "mdn": ":defined",
+  "size": "compact"
+ },
+ {
+  "id": "scope",
+  "kind": "pseudoclass",
+  "cat": "pc-logical",
+  "chip": ":scope",
+  "mdn": ":scope",
+  "size": "compact"
+ },
+ {
+  "id": "before",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::before",
+  "mdn": "::before",
+  "size": "normal"
+ },
+ {
+  "id": "after",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::after",
+  "mdn": "::after",
+  "size": "normal"
+ },
+ {
+  "id": "first-line",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::first-line",
+  "mdn": "::first-line",
+  "size": "compact"
+ },
+ {
+  "id": "first-letter",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::first-letter",
+  "mdn": "::first-letter",
+  "size": "normal"
+ },
+ {
+  "id": "selection",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::selection",
+  "mdn": "::selection",
+  "size": "normal"
+ },
+ {
+  "id": "placeholder",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::placeholder",
+  "mdn": "::placeholder",
+  "size": "normal"
+ },
+ {
+  "id": "marker",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::marker",
+  "mdn": "::marker",
+  "size": "compact"
+ },
+ {
+  "id": "backdrop",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::backdrop",
+  "mdn": "::backdrop",
+  "size": "compact"
+ },
+ {
+  "id": "file-selector-button",
+  "kind": "pseudoelement",
+  "cat": "pseudo-elements",
+  "chip": "::file-selector-button",
+  "mdn": "::file-selector-button",
+  "size": "compact"
+ },
+ {
+  "id": "margin",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "margin",
+  "mdn": "margin",
+  "size": "normal"
+ },
+ {
+  "id": "margin-top",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "margin-top",
+  "mdn": "margin-top",
+  "size": "compact"
+ },
+ {
+  "id": "margin-right",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "margin-right",
+  "mdn": "margin-right",
+  "size": "compact"
+ },
+ {
+  "id": "margin-bottom",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "margin-bottom",
+  "mdn": "margin-bottom",
+  "size": "compact"
+ },
+ {
+  "id": "margin-left",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "margin-left",
+  "mdn": "margin-left",
+  "size": "compact"
+ },
+ {
+  "id": "padding",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "padding",
+  "mdn": "padding",
+  "size": "normal"
+ },
+ {
+  "id": "padding-top",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "padding-top",
+  "mdn": "padding-top",
+  "size": "compact"
+ },
+ {
+  "id": "padding-right",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "padding-right",
+  "mdn": "padding-right",
+  "size": "compact"
+ },
+ {
+  "id": "padding-bottom",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "padding-bottom",
+  "mdn": "padding-bottom",
+  "size": "compact"
+ },
+ {
+  "id": "padding-left",
+  "kind": "property",
+  "cat": "spacing",
+  "chip": "padding-left",
+  "mdn": "padding-left",
+  "size": "compact"
+ },
+ {
+  "id": "width",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "width",
+  "mdn": "width",
+  "size": "normal"
+ },
+ {
+  "id": "height",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "height",
+  "mdn": "height",
+  "size": "normal"
+ },
+ {
+  "id": "min-width",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "min-width",
+  "mdn": "min-width",
+  "size": "normal"
+ },
+ {
+  "id": "max-width",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "max-width",
+  "mdn": "max-width",
+  "size": "normal"
+ },
+ {
+  "id": "min-height",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "min-height",
+  "mdn": "min-height",
+  "size": "compact"
+ },
+ {
+  "id": "max-height",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "max-height",
+  "mdn": "max-height",
+  "size": "compact"
+ },
+ {
+  "id": "box-sizing",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "box-sizing",
+  "mdn": "box-sizing",
+  "size": "normal"
+ },
+ {
+  "id": "aspect-ratio",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "aspect-ratio",
+  "mdn": "aspect-ratio",
+  "size": "normal"
+ },
+ {
+  "id": "overflow",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "overflow",
+  "mdn": "overflow",
+  "size": "normal"
+ },
+ {
+  "id": "overflow-x",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "overflow-x",
+  "mdn": "overflow-x",
+  "size": "compact"
+ },
+ {
+  "id": "overflow-y",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "overflow-y",
+  "mdn": "overflow-y",
+  "size": "compact"
+ },
+ {
+  "id": "visibility",
+  "kind": "property",
+  "cat": "sizing",
+  "chip": "visibility",
+  "mdn": "visibility",
+  "size": "compact"
+ },
+ {
+  "id": "border",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border",
+  "mdn": "border",
+  "size": "normal"
+ },
+ {
+  "id": "border-width",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-width",
+  "mdn": "border-width",
+  "size": "compact"
+ },
+ {
+  "id": "border-style",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-style",
+  "mdn": "border-style",
+  "size": "compact"
+ },
+ {
+  "id": "border-color",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-color",
+  "mdn": "border-color",
+  "size": "compact"
+ },
+ {
+  "id": "border-top",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-top",
+  "mdn": "border-top",
+  "size": "compact"
+ },
+ {
+  "id": "border-right",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-right",
+  "mdn": "border-right",
+  "size": "compact"
+ },
+ {
+  "id": "border-bottom",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-bottom",
+  "mdn": "border-bottom",
+  "size": "compact"
+ },
+ {
+  "id": "border-left",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-left",
+  "mdn": "border-left",
+  "size": "compact"
+ },
+ {
+  "id": "border-radius",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "border-radius",
+  "mdn": "border-radius",
+  "size": "normal"
+ },
+ {
+  "id": "outline",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "outline",
+  "mdn": "outline",
+  "size": "normal"
+ },
+ {
+  "id": "outline-offset",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "outline-offset",
+  "mdn": "outline-offset",
+  "size": "compact"
+ },
+ {
+  "id": "box-shadow",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "box-shadow",
+  "mdn": "box-shadow",
+  "size": "normal"
+ },
+ {
+  "id": "background",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background",
+  "mdn": "background",
+  "size": "normal"
+ },
+ {
+  "id": "background-color",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-color",
+  "mdn": "background-color",
+  "size": "normal"
+ },
+ {
+  "id": "background-image",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-image",
+  "mdn": "background-image",
+  "size": "normal"
+ },
+ {
+  "id": "background-repeat",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-repeat",
+  "mdn": "background-repeat",
+  "size": "compact"
+ },
+ {
+  "id": "background-position",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-position",
+  "mdn": "background-position",
+  "size": "compact"
+ },
+ {
+  "id": "background-size",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-size",
+  "mdn": "background-size",
+  "size": "normal"
+ },
+ {
+  "id": "background-attachment",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-attachment",
+  "mdn": "background-attachment",
+  "size": "compact"
+ },
+ {
+  "id": "background-clip",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-clip",
+  "mdn": "background-clip",
+  "size": "compact"
+ },
+ {
+  "id": "background-origin",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-origin",
+  "mdn": "background-origin",
+  "size": "compact"
+ },
+ {
+  "id": "background-blend-mode",
+  "kind": "property",
+  "cat": "borders-bg",
+  "chip": "background-blend-mode",
+  "mdn": "background-blend-mode",
+  "size": "compact"
+ },
+ {
+  "id": "color",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "color",
+  "mdn": "color",
+  "size": "normal"
+ },
+ {
+  "id": "opacity",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "opacity",
+  "mdn": "opacity",
+  "size": "normal"
+ },
+ {
+  "id": "filter",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "filter",
+  "mdn": "filter",
+  "size": "normal"
+ },
+ {
+  "id": "backdrop-filter",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "backdrop-filter",
+  "mdn": "backdrop-filter",
+  "size": "normal"
+ },
+ {
+  "id": "clip-path",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "clip-path",
+  "mdn": "clip-path",
+  "size": "normal"
+ },
+ {
+  "id": "mask-image",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "mask-image",
+  "mdn": "mask-image",
+  "size": "compact"
+ },
+ {
+  "id": "mix-blend-mode",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "mix-blend-mode",
+  "mdn": "mix-blend-mode",
+  "size": "compact"
+ },
+ {
+  "id": "accent-color",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "accent-color",
+  "mdn": "accent-color",
+  "size": "compact"
+ },
+ {
+  "id": "caret-color",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "caret-color",
+  "mdn": "caret-color",
+  "size": "compact"
+ },
+ {
+  "id": "color-scheme",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "color-scheme",
+  "mdn": "color-scheme",
+  "size": "compact"
+ },
+ {
+  "id": "isolation",
+  "kind": "property",
+  "cat": "colors-effects",
+  "chip": "isolation",
+  "mdn": "isolation",
+  "size": "compact"
+ },
+ {
+  "id": "font-family",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "font-family",
+  "mdn": "font-family",
+  "size": "normal"
+ },
+ {
+  "id": "font-size",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "font-size",
+  "mdn": "font-size",
+  "size": "normal"
+ },
+ {
+  "id": "font-weight",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "font-weight",
+  "mdn": "font-weight",
+  "size": "normal"
+ },
+ {
+  "id": "font-style",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "font-style",
+  "mdn": "font-style",
+  "size": "normal"
+ },
+ {
+  "id": "font-variant",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "font-variant",
+  "mdn": "font-variant",
+  "size": "compact"
+ },
+ {
+  "id": "font",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "font",
+  "mdn": "font",
+  "size": "normal"
+ },
+ {
+  "id": "line-height",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "line-height",
+  "mdn": "line-height",
+  "size": "normal"
+ },
+ {
+  "id": "letter-spacing",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "letter-spacing",
+  "mdn": "letter-spacing",
+  "size": "normal"
+ },
+ {
+  "id": "word-spacing",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "word-spacing",
+  "mdn": "word-spacing",
+  "size": "compact"
+ },
+ {
+  "id": "text-align",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-align",
+  "mdn": "text-align",
+  "size": "normal"
+ },
+ {
+  "id": "text-decoration",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-decoration",
+  "mdn": "text-decoration",
+  "size": "normal"
+ },
+ {
+  "id": "text-transform",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-transform",
+  "mdn": "text-transform",
+  "size": "normal"
+ },
+ {
+  "id": "text-indent",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-indent",
+  "mdn": "text-indent",
+  "size": "compact"
+ },
+ {
+  "id": "text-overflow",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-overflow",
+  "mdn": "text-overflow",
+  "size": "normal"
+ },
+ {
+  "id": "text-shadow",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-shadow",
+  "mdn": "text-shadow",
+  "size": "normal"
+ },
+ {
+  "id": "white-space",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "white-space",
+  "mdn": "white-space",
+  "size": "normal"
+ },
+ {
+  "id": "word-break",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "word-break",
+  "mdn": "word-break",
+  "size": "normal"
+ },
+ {
+  "id": "overflow-wrap",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "overflow-wrap",
+  "mdn": "overflow-wrap",
+  "size": "normal"
+ },
+ {
+  "id": "hyphens",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "hyphens",
+  "mdn": "hyphens",
+  "size": "compact"
+ },
+ {
+  "id": "direction",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "direction",
+  "mdn": "direction",
+  "size": "compact"
+ },
+ {
+  "id": "unicode-bidi",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "unicode-bidi",
+  "mdn": "unicode-bidi",
+  "size": "compact"
+ },
+ {
+  "id": "writing-mode",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "writing-mode",
+  "mdn": "writing-mode",
+  "size": "compact"
+ },
+ {
+  "id": "vertical-align",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "vertical-align",
+  "mdn": "vertical-align",
+  "size": "normal"
+ },
+ {
+  "id": "text-underline-offset",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-underline-offset",
+  "mdn": "text-underline-offset",
+  "size": "compact"
+ },
+ {
+  "id": "text-wrap",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-wrap",
+  "mdn": "text-wrap",
+  "size": "compact"
+ },
+ {
+  "id": "tab-size",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "tab-size",
+  "mdn": "tab-size",
+  "size": "compact"
+ },
+ {
+  "id": "quotes",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "quotes",
+  "mdn": "quotes",
+  "size": "compact"
+ },
+ {
+  "id": "text-decoration-thickness",
+  "kind": "property",
+  "cat": "typography",
+  "chip": "text-decoration-thickness",
+  "mdn": "text-decoration-thickness",
+  "size": "compact"
+ },
+ {
+  "id": "display",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "display",
+  "mdn": "display",
+  "size": "normal"
+ },
+ {
+  "id": "position",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "position",
+  "mdn": "position",
+  "size": "normal"
+ },
+ {
+  "id": "top",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "top",
+  "mdn": "top",
+  "size": "normal"
+ },
+ {
+  "id": "right",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "right",
+  "mdn": "right",
+  "size": "normal"
+ },
+ {
+  "id": "bottom",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "bottom",
+  "mdn": "bottom",
+  "size": "normal"
+ },
+ {
+  "id": "left",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "left",
+  "mdn": "left",
+  "size": "normal"
+ },
+ {
+  "id": "inset",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "inset",
+  "mdn": "inset",
+  "size": "compact"
+ },
+ {
+  "id": "z-index",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "z-index",
+  "mdn": "z-index",
+  "size": "normal"
+ },
+ {
+  "id": "float",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "float",
+  "mdn": "float",
+  "size": "normal"
+ },
+ {
+  "id": "clear",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "clear",
+  "mdn": "clear",
+  "size": "compact"
+ },
+ {
+  "id": "columns",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "columns",
+  "mdn": "columns",
+  "size": "normal"
+ },
+ {
+  "id": "column-count",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "column-count",
+  "mdn": "column-count",
+  "size": "compact"
+ },
+ {
+  "id": "column-width",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "column-width",
+  "mdn": "column-width",
+  "size": "compact"
+ },
+ {
+  "id": "column-rule",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "column-rule",
+  "mdn": "column-rule",
+  "size": "compact"
+ },
+ {
+  "id": "content-visibility",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "content-visibility",
+  "mdn": "content-visibility",
+  "size": "compact"
+ },
+ {
+  "id": "contain",
+  "kind": "property",
+  "cat": "layout",
+  "chip": "contain",
+  "mdn": "contain",
+  "size": "compact"
+ },
+ {
+  "id": "flex",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "flex",
+  "mdn": "flex",
+  "size": "normal"
+ },
+ {
+  "id": "flex-direction",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "flex-direction",
+  "mdn": "flex-direction",
+  "size": "normal"
+ },
+ {
+  "id": "flex-wrap",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "flex-wrap",
+  "mdn": "flex-wrap",
+  "size": "normal"
+ },
+ {
+  "id": "flex-flow",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "flex-flow",
+  "mdn": "flex-flow",
+  "size": "compact"
+ },
+ {
+  "id": "flex-grow",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "flex-grow",
+  "mdn": "flex-grow",
+  "size": "compact"
+ },
+ {
+  "id": "flex-shrink",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "flex-shrink",
+  "mdn": "flex-shrink",
+  "size": "compact"
+ },
+ {
+  "id": "flex-basis",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "flex-basis",
+  "mdn": "flex-basis",
+  "size": "compact"
+ },
+ {
+  "id": "order",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "order",
+  "mdn": "order",
+  "size": "compact"
+ },
+ {
+  "id": "justify-content",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "justify-content",
+  "mdn": "justify-content",
+  "size": "normal"
+ },
+ {
+  "id": "align-items",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "align-items",
+  "mdn": "align-items",
+  "size": "normal"
+ },
+ {
+  "id": "align-content",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "align-content",
+  "mdn": "align-content",
+  "size": "compact"
+ },
+ {
+  "id": "align-self",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "align-self",
+  "mdn": "align-self",
+  "size": "normal"
+ },
+ {
+  "id": "justify-items",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "justify-items",
+  "mdn": "justify-items",
+  "size": "compact"
+ },
+ {
+  "id": "justify-self",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "justify-self",
+  "mdn": "justify-self",
+  "size": "compact"
+ },
+ {
+  "id": "place-items",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "place-items",
+  "mdn": "place-items",
+  "size": "compact"
+ },
+ {
+  "id": "place-content",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "place-content",
+  "mdn": "place-content",
+  "size": "compact"
+ },
+ {
+  "id": "place-self",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "place-self",
+  "mdn": "place-self",
+  "size": "compact"
+ },
+ {
+  "id": "gap",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "gap",
+  "mdn": "gap",
+  "size": "normal"
+ },
+ {
+  "id": "row-gap",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "row-gap",
+  "mdn": "row-gap",
+  "size": "compact"
+ },
+ {
+  "id": "column-gap",
+  "kind": "property",
+  "cat": "flexbox",
+  "chip": "column-gap",
+  "mdn": "column-gap",
+  "size": "compact"
+ },
+ {
+  "id": "grid",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid",
+  "mdn": "grid",
+  "size": "normal"
+ },
+ {
+  "id": "grid-template-columns",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-template-columns",
+  "mdn": "grid-template-columns",
+  "size": "normal"
+ },
+ {
+  "id": "grid-template-rows",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-template-rows",
+  "mdn": "grid-template-rows",
+  "size": "normal"
+ },
+ {
+  "id": "grid-template-areas",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-template-areas",
+  "mdn": "grid-template-areas",
+  "size": "normal"
+ },
+ {
+  "id": "grid-template",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-template",
+  "mdn": "grid-template",
+  "size": "compact"
+ },
+ {
+  "id": "grid-area",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-area",
+  "mdn": "grid-area",
+  "size": "normal"
+ },
+ {
+  "id": "grid-column",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-column",
+  "mdn": "grid-column",
+  "size": "compact"
+ },
+ {
+  "id": "grid-row",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-row",
+  "mdn": "grid-row",
+  "size": "compact"
+ },
+ {
+  "id": "grid-column-start",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-column-start",
+  "mdn": "grid-column-start",
+  "size": "compact"
+ },
+ {
+  "id": "grid-column-end",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-column-end",
+  "mdn": "grid-column-end",
+  "size": "compact"
+ },
+ {
+  "id": "grid-row-start",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-row-start",
+  "mdn": "grid-row-start",
+  "size": "compact"
+ },
+ {
+  "id": "grid-row-end",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-row-end",
+  "mdn": "grid-row-end",
+  "size": "compact"
+ },
+ {
+  "id": "grid-auto-flow",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-auto-flow",
+  "mdn": "grid-auto-flow",
+  "size": "normal"
+ },
+ {
+  "id": "grid-auto-columns",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-auto-columns",
+  "mdn": "grid-auto-columns",
+  "size": "compact"
+ },
+ {
+  "id": "grid-auto-rows",
+  "kind": "property",
+  "cat": "grid",
+  "chip": "grid-auto-rows",
+  "mdn": "grid-auto-rows",
+  "size": "compact"
+ },
+ {
+  "id": "transform",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transform",
+  "mdn": "transform",
+  "size": "normal"
+ },
+ {
+  "id": "transform-origin",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transform-origin",
+  "mdn": "transform-origin",
+  "size": "compact"
+ },
+ {
+  "id": "transform-style",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transform-style",
+  "mdn": "transform-style",
+  "size": "compact"
+ },
+ {
+  "id": "perspective",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "perspective",
+  "mdn": "perspective",
+  "size": "normal"
+ },
+ {
+  "id": "perspective-origin",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "perspective-origin",
+  "mdn": "perspective-origin",
+  "size": "compact"
+ },
+ {
+  "id": "backface-visibility",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "backface-visibility",
+  "mdn": "backface-visibility",
+  "size": "compact"
+ },
+ {
+  "id": "translate",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "translate",
+  "mdn": "translate",
+  "size": "compact"
+ },
+ {
+  "id": "scale",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "scale",
+  "mdn": "scale",
+  "size": "compact"
+ },
+ {
+  "id": "rotate",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "rotate",
+  "mdn": "rotate",
+  "size": "compact"
+ },
+ {
+  "id": "transition",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transition",
+  "mdn": "transition",
+  "size": "normal"
+ },
+ {
+  "id": "transition-property",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transition-property",
+  "mdn": "transition-property",
+  "size": "compact"
+ },
+ {
+  "id": "transition-duration",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transition-duration",
+  "mdn": "transition-duration",
+  "size": "compact"
+ },
+ {
+  "id": "transition-timing-function",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transition-timing-function",
+  "mdn": "transition-timing-function",
+  "size": "compact"
+ },
+ {
+  "id": "transition-delay",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "transition-delay",
+  "mdn": "transition-delay",
+  "size": "compact"
+ },
+ {
+  "id": "animation",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation",
+  "mdn": "animation",
+  "size": "normal"
+ },
+ {
+  "id": "animation-name",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-name",
+  "mdn": "animation-name",
+  "size": "compact"
+ },
+ {
+  "id": "animation-duration",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-duration",
+  "mdn": "animation-duration",
+  "size": "compact"
+ },
+ {
+  "id": "animation-timing-function",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-timing-function",
+  "mdn": "animation-timing-function",
+  "size": "compact"
+ },
+ {
+  "id": "animation-delay",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-delay",
+  "mdn": "animation-delay",
+  "size": "compact"
+ },
+ {
+  "id": "animation-iteration-count",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-iteration-count",
+  "mdn": "animation-iteration-count",
+  "size": "compact"
+ },
+ {
+  "id": "animation-direction",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-direction",
+  "mdn": "animation-direction",
+  "size": "compact"
+ },
+ {
+  "id": "animation-fill-mode",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-fill-mode",
+  "mdn": "animation-fill-mode",
+  "size": "compact"
+ },
+ {
+  "id": "animation-play-state",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "animation-play-state",
+  "mdn": "animation-play-state",
+  "size": "compact"
+ },
+ {
+  "id": "will-change",
+  "kind": "property",
+  "cat": "motion",
+  "chip": "will-change",
+  "mdn": "will-change",
+  "size": "compact"
+ },
+ {
+  "id": "cursor",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "cursor",
+  "mdn": "cursor",
+  "size": "normal"
+ },
+ {
+  "id": "pointer-events",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "pointer-events",
+  "mdn": "pointer-events",
+  "size": "normal"
+ },
+ {
+  "id": "user-select",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "user-select",
+  "mdn": "user-select",
+  "size": "normal"
+ },
+ {
+  "id": "resize",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "resize",
+  "mdn": "resize",
+  "size": "normal"
+ },
+ {
+  "id": "appearance",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "appearance",
+  "mdn": "appearance",
+  "size": "compact"
+ },
+ {
+  "id": "touch-action",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "touch-action",
+  "mdn": "touch-action",
+  "size": "compact"
+ },
+ {
+  "id": "scroll-behavior",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "scroll-behavior",
+  "mdn": "scroll-behavior",
+  "size": "normal"
+ },
+ {
+  "id": "scroll-snap-type",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "scroll-snap-type",
+  "mdn": "scroll-snap-type",
+  "size": "normal"
+ },
+ {
+  "id": "scroll-snap-align",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "scroll-snap-align",
+  "mdn": "scroll-snap-align",
+  "size": "compact"
+ },
+ {
+  "id": "scroll-margin",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "scroll-margin",
+  "mdn": "scroll-margin",
+  "size": "compact"
+ },
+ {
+  "id": "scroll-padding",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "scroll-padding",
+  "mdn": "scroll-padding",
+  "size": "compact"
+ },
+ {
+  "id": "overscroll-behavior",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "overscroll-behavior",
+  "mdn": "overscroll-behavior",
+  "size": "compact"
+ },
+ {
+  "id": "scrollbar-width",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "scrollbar-width",
+  "mdn": "scrollbar-width",
+  "size": "compact"
+ },
+ {
+  "id": "scrollbar-color",
+  "kind": "property",
+  "cat": "ui",
+  "chip": "scrollbar-color",
+  "mdn": "scrollbar-color",
+  "size": "compact"
+ },
+ {
+  "id": "list-style",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "list-style",
+  "mdn": "list-style",
+  "size": "normal"
+ },
+ {
+  "id": "list-style-type",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "list-style-type",
+  "mdn": "list-style-type",
+  "size": "compact"
+ },
+ {
+  "id": "list-style-position",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "list-style-position",
+  "mdn": "list-style-position",
+  "size": "compact"
+ },
+ {
+  "id": "list-style-image",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "list-style-image",
+  "mdn": "list-style-image",
+  "size": "compact"
+ },
+ {
+  "id": "table-layout",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "table-layout",
+  "mdn": "table-layout",
+  "size": "compact"
+ },
+ {
+  "id": "border-collapse",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "border-collapse",
+  "mdn": "border-collapse",
+  "size": "normal"
+ },
+ {
+  "id": "border-spacing",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "border-spacing",
+  "mdn": "border-spacing",
+  "size": "compact"
+ },
+ {
+  "id": "empty-cells",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "empty-cells",
+  "mdn": "empty-cells",
+  "size": "compact"
+ },
+ {
+  "id": "caption-side",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "caption-side",
+  "mdn": "caption-side",
+  "size": "compact"
+ },
+ {
+  "id": "content",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "content",
+  "mdn": "content",
+  "size": "normal"
+ },
+ {
+  "id": "counter-reset",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "counter-reset",
+  "mdn": "counter-reset",
+  "size": "compact"
+ },
+ {
+  "id": "counter-increment",
+  "kind": "property",
+  "cat": "lists-tables",
+  "chip": "counter-increment",
+  "mdn": "counter-increment",
+  "size": "compact"
+ },
+ {
+  "id": "margin-inline",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "margin-inline",
+  "mdn": "margin-inline",
+  "size": "normal"
+ },
+ {
+  "id": "margin-block",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "margin-block",
+  "mdn": "margin-block",
+  "size": "compact"
+ },
+ {
+  "id": "margin-inline-start",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "margin-inline-start",
+  "mdn": "margin-inline-start",
+  "size": "compact"
+ },
+ {
+  "id": "margin-inline-end",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "margin-inline-end",
+  "mdn": "margin-inline-end",
+  "size": "compact"
+ },
+ {
+  "id": "padding-inline",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "padding-inline",
+  "mdn": "padding-inline",
+  "size": "normal"
+ },
+ {
+  "id": "padding-block",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "padding-block",
+  "mdn": "padding-block",
+  "size": "compact"
+ },
+ {
+  "id": "padding-inline-start",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "padding-inline-start",
+  "mdn": "padding-inline-start",
+  "size": "compact"
+ },
+ {
+  "id": "padding-inline-end",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "padding-inline-end",
+  "mdn": "padding-inline-end",
+  "size": "compact"
+ },
+ {
+  "id": "inline-size",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "inline-size",
+  "mdn": "inline-size",
+  "size": "normal"
+ },
+ {
+  "id": "block-size",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "block-size",
+  "mdn": "block-size",
+  "size": "compact"
+ },
+ {
+  "id": "inset-inline-start",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "inset-inline-start",
+  "mdn": "inset-inline-start",
+  "size": "compact"
+ },
+ {
+  "id": "border-inline-start",
+  "kind": "property",
+  "cat": "logical",
+  "chip": "border-inline-start",
+  "mdn": "border-inline-start",
+  "size": "compact"
+ },
+ {
+  "id": "all",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "all",
+  "mdn": "all",
+  "size": "normal"
+ },
+ {
+  "id": "container-type",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "container-type",
+  "mdn": "container-type",
+  "size": "compact"
+ },
+ {
+  "id": "container-name",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "container-name",
+  "mdn": "container-name",
+  "size": "compact"
+ },
+ {
+  "id": "container",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "container",
+  "mdn": "container",
+  "size": "compact"
+ },
+ {
+  "id": "object-fit",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "object-fit",
+  "mdn": "object-fit",
+  "size": "normal"
+ },
+ {
+  "id": "object-position",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "object-position",
+  "mdn": "object-position",
+  "size": "compact"
+ },
+ {
+  "id": "shape-outside",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "shape-outside",
+  "mdn": "shape-outside",
+  "size": "compact"
+ },
+ {
+  "id": "image-rendering",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "image-rendering",
+  "mdn": "image-rendering",
+  "size": "compact"
+ },
+ {
+  "id": "field-sizing",
+  "kind": "property",
+  "cat": "modern-props",
+  "chip": "field-sizing",
+  "mdn": "field-sizing",
+  "size": "compact"
+ },
+ {
+  "id": "at-media",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@media",
+  "mdn": "@media",
+  "size": "normal"
+ },
+ {
+  "id": "at-import",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@import",
+  "mdn": "@import",
+  "size": "normal"
+ },
+ {
+  "id": "at-font-face",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@font-face",
+  "mdn": "@font-face",
+  "size": "normal"
+ },
+ {
+  "id": "at-keyframes",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@keyframes",
+  "mdn": "@keyframes",
+  "size": "normal"
+ },
+ {
+  "id": "at-layer",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@layer",
+  "mdn": "@layer",
+  "size": "normal"
+ },
+ {
+  "id": "at-container",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@container",
+  "mdn": "@container",
+  "size": "normal"
+ },
+ {
+  "id": "at-supports",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@supports",
+  "mdn": "@supports",
+  "size": "normal"
+ },
+ {
+  "id": "at-charset",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@charset",
+  "mdn": "@charset",
+  "size": "compact"
+ },
+ {
+  "id": "at-page",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@page",
+  "mdn": "@page",
+  "size": "compact"
+ },
+ {
+  "id": "at-property",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@property",
+  "mdn": "@property",
+  "size": "normal"
+ },
+ {
+  "id": "at-scope",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@scope",
+  "mdn": "@scope",
+  "size": "compact"
+ },
+ {
+  "id": "at-starting-style",
+  "kind": "atrule",
+  "cat": "at-rules",
+  "chip": "@starting-style",
+  "mdn": "@starting-style",
+  "size": "compact"
+ },
+ {
+  "id": "fn-calc",
+  "kind": "function",
+  "cat": "fn-math",
+  "chip": "calc()",
+  "mdn": "calc",
+  "size": "normal"
+ },
+ {
+  "id": "fn-min",
+  "kind": "function",
+  "cat": "fn-math",
+  "chip": "min()",
+  "mdn": "min",
+  "size": "compact"
+ },
+ {
+  "id": "fn-max",
+  "kind": "function",
+  "cat": "fn-math",
+  "chip": "max()",
+  "mdn": "max",
+  "size": "compact"
+ },
+ {
+  "id": "fn-clamp",
+  "kind": "function",
+  "cat": "fn-math",
+  "chip": "clamp()",
+  "mdn": "clamp",
+  "size": "normal"
+ },
+ {
+  "id": "fn-var",
+  "kind": "function",
+  "cat": "fn-math",
+  "chip": "var()",
+  "mdn": "var",
+  "size": "normal"
+ },
+ {
+  "id": "fn-env",
+  "kind": "function",
+  "cat": "fn-math",
+  "chip": "env()",
+  "mdn": "env",
+  "size": "compact"
+ },
+ {
+  "id": "fn-attr",
+  "kind": "function",
+  "cat": "fn-math",
+  "chip": "attr()",
+  "mdn": "attr",
+  "size": "compact"
+ },
+ {
+  "id": "fn-rgb",
+  "kind": "function",
+  "cat": "fn-color",
+  "chip": "rgb()",
+  "mdn": "color_value/rgb",
+  "size": "normal"
+ },
+ {
+  "id": "fn-hsl",
+  "kind": "function",
+  "cat": "fn-color",
+  "chip": "hsl()",
+  "mdn": "color_value/hsl",
+  "size": "normal"
+ },
+ {
+  "id": "fn-hwb",
+  "kind": "function",
+  "cat": "fn-color",
+  "chip": "hwb()",
+  "mdn": "color_value/hwb",
+  "size": "compact"
+ },
+ {
+  "id": "fn-oklch",
+  "kind": "function",
+  "cat": "fn-color",
+  "chip": "oklch()",
+  "mdn": "color_value/oklch",
+  "size": "compact"
+ },
+ {
+  "id": "fn-color-mix",
+  "kind": "function",
+  "cat": "fn-color",
+  "chip": "color-mix()",
+  "mdn": "color_value/color-mix",
+  "size": "normal"
+ },
+ {
+  "id": "fn-light-dark",
+  "kind": "function",
+  "cat": "fn-color",
+  "chip": "light-dark()",
+  "mdn": "color_value/light-dark",
+  "size": "compact"
+ },
+ {
+  "id": "fn-color",
+  "kind": "function",
+  "cat": "fn-color",
+  "chip": "color()",
+  "mdn": "color_value/color",
+  "size": "compact"
+ },
+ {
+  "id": "fn-linear-gradient",
+  "kind": "function",
+  "cat": "fn-gradient",
+  "chip": "linear-gradient()",
+  "mdn": "gradient/linear-gradient",
+  "size": "normal"
+ },
+ {
+  "id": "fn-radial-gradient",
+  "kind": "function",
+  "cat": "fn-gradient",
+  "chip": "radial-gradient()",
+  "mdn": "gradient/radial-gradient",
+  "size": "normal"
+ },
+ {
+  "id": "fn-conic-gradient",
+  "kind": "function",
+  "cat": "fn-gradient",
+  "chip": "conic-gradient()",
+  "mdn": "gradient/conic-gradient",
+  "size": "normal"
+ },
+ {
+  "id": "fn-repeating-linear-gradient",
+  "kind": "function",
+  "cat": "fn-gradient",
+  "chip": "repeating-linear-gradient()",
+  "mdn": "gradient/repeating-linear-gradient",
+  "size": "compact"
+ },
+ {
+  "id": "fn-translate",
+  "kind": "function",
+  "cat": "fn-transform",
+  "chip": "translate()",
+  "mdn": "transform-function/translate",
+  "size": "normal"
+ },
+ {
+  "id": "fn-scale",
+  "kind": "function",
+  "cat": "fn-transform",
+  "chip": "scale()",
+  "mdn": "transform-function/scale",
+  "size": "normal"
+ },
+ {
+  "id": "fn-rotate",
+  "kind": "function",
+  "cat": "fn-transform",
+  "chip": "rotate()",
+  "mdn": "transform-function/rotate",
+  "size": "normal"
+ },
+ {
+  "id": "fn-skew",
+  "kind": "function",
+  "cat": "fn-transform",
+  "chip": "skew()",
+  "mdn": "transform-function/skew",
+  "size": "compact"
+ },
+ {
+  "id": "fn-matrix",
+  "kind": "function",
+  "cat": "fn-transform",
+  "chip": "matrix()",
+  "mdn": "transform-function/matrix",
+  "size": "compact"
+ },
+ {
+  "id": "fn-perspective",
+  "kind": "function",
+  "cat": "fn-transform",
+  "chip": "perspective()",
+  "mdn": "transform-function/perspective",
+  "size": "compact"
+ },
+ {
+  "id": "fn-blur",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "blur()",
+  "mdn": "filter-function/blur",
+  "size": "normal"
+ },
+ {
+  "id": "fn-brightness",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "brightness()",
+  "mdn": "filter-function/brightness",
+  "size": "compact"
+ },
+ {
+  "id": "fn-contrast",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "contrast()",
+  "mdn": "filter-function/contrast",
+  "size": "compact"
+ },
+ {
+  "id": "fn-drop-shadow",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "drop-shadow()",
+  "mdn": "filter-function/drop-shadow",
+  "size": "normal"
+ },
+ {
+  "id": "fn-grayscale",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "grayscale()",
+  "mdn": "filter-function/grayscale",
+  "size": "compact"
+ },
+ {
+  "id": "fn-hue-rotate",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "hue-rotate()",
+  "mdn": "filter-function/hue-rotate",
+  "size": "compact"
+ },
+ {
+  "id": "fn-invert",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "invert()",
+  "mdn": "filter-function/invert",
+  "size": "compact"
+ },
+ {
+  "id": "fn-saturate",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "saturate()",
+  "mdn": "filter-function/saturate",
+  "size": "compact"
+ },
+ {
+  "id": "fn-sepia",
+  "kind": "function",
+  "cat": "fn-filter",
+  "chip": "sepia()",
+  "mdn": "filter-function/sepia",
+  "size": "compact"
+ },
+ {
+  "id": "fn-minmax",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "minmax()",
+  "mdn": "minmax",
+  "size": "normal"
+ },
+ {
+  "id": "fn-repeat",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "repeat()",
+  "mdn": "repeat",
+  "size": "normal"
+ },
+ {
+  "id": "fn-fit-content",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "fit-content()",
+  "mdn": "fit-content_function",
+  "size": "compact"
+ },
+ {
+  "id": "fn-url",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "url()",
+  "mdn": "url_function",
+  "size": "normal"
+ },
+ {
+  "id": "fn-cubic-bezier",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "cubic-bezier()",
+  "mdn": "easing-function",
+  "size": "normal"
+ },
+ {
+  "id": "fn-steps",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "steps()",
+  "mdn": "easing-function",
+  "size": "compact"
+ },
+ {
+  "id": "fn-counter",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "counter()",
+  "mdn": "counter",
+  "size": "compact"
+ },
+ {
+  "id": "fn-circle",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "circle()",
+  "mdn": "basic-shape/circle",
+  "size": "compact"
+ },
+ {
+  "id": "fn-inset-shape",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "inset()",
+  "mdn": "basic-shape/inset",
+  "size": "compact"
+ },
+ {
+  "id": "fn-polygon",
+  "kind": "function",
+  "cat": "fn-misc",
+  "chip": "polygon()",
+  "mdn": "basic-shape/polygon",
+  "size": "compact"
+ },
+ {
+  "id": "dt-length",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<length>",
+  "mdn": "length",
+  "size": "normal"
+ },
+ {
+  "id": "dt-percentage",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<percentage>",
+  "mdn": "percentage",
+  "size": "normal"
+ },
+ {
+  "id": "dt-color",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<color>",
+  "mdn": "color_value",
+  "size": "normal"
+ },
+ {
+  "id": "dt-number",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<number>",
+  "mdn": "number",
+  "size": "compact"
+ },
+ {
+  "id": "dt-angle",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<angle>",
+  "mdn": "angle",
+  "size": "compact"
+ },
+ {
+  "id": "dt-time",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<time>",
+  "mdn": "time",
+  "size": "compact"
+ },
+ {
+  "id": "dt-string",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<string>",
+  "mdn": "string",
+  "size": "compact"
+ },
+ {
+  "id": "dt-image",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<image>",
+  "mdn": "image",
+  "size": "normal"
+ },
+ {
+  "id": "dt-position",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<position>",
+  "mdn": "position",
+  "size": "normal"
+ },
+ {
+  "id": "dt-ratio",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<ratio>",
+  "mdn": "ratio",
+  "size": "compact"
+ },
+ {
+  "id": "dt-easing",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "<easing-function>",
+  "mdn": "easing-function",
+  "size": "normal"
+ },
+ {
+  "id": "kw-initial",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "initial",
+  "mdn": "initial",
+  "size": "compact"
+ },
+ {
+  "id": "kw-inherit",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "inherit",
+  "mdn": "inherit",
+  "size": "compact"
+ },
+ {
+  "id": "kw-unset",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "unset",
+  "mdn": "unset",
+  "size": "compact"
+ },
+ {
+  "id": "kw-revert",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "revert",
+  "mdn": "revert",
+  "size": "compact"
+ },
+ {
+  "id": "kw-important",
+  "kind": "datatype",
+  "cat": "datatypes",
+  "chip": "!important",
+  "mdn": "important",
+  "size": "normal"
+ }
+]
