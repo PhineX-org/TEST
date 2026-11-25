@@ -3,7 +3,7 @@ id: kw-initial
 kind: datatype
 cat: datatypes
 chip: initial
-title: الكلمة initial: القيمة الابتدائية
+title: القيمة الابتدائية
 en: CSS initial keyword
 status: stable
 support: all
@@ -84,7 +84,7 @@ margin: initial;    /* 0 */
   p { margin:20px; background:#efe0bd; color:#3d2c18; padding:4px; }
   .z { margin:initial; }
 </style>
-<p>هامش 20</p><p class="z">initial = صفر</p>
+<p>margin 20</p><p class="z">initial = صفر</p>
 ```
 
 

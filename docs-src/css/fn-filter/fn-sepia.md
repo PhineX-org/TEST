@@ -3,7 +3,7 @@ id: fn-sepia
 kind: function
 cat: fn-filter
 chip: sepia()
-title: دالة sepia(): لون بني قديم
+title: لون بني قديم
 en: CSS sepia() function
 status: stable
 support: all

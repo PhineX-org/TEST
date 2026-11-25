@@ -3,7 +3,7 @@ id: border-width
 kind: property
 cat: borders-bg
 chip: border-width
-title: سُمك الحد
+title: سُمك الـ border
 en: CSS border-width property
 status: stable
 support: all

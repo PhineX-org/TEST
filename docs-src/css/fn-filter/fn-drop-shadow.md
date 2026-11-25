@@ -3,7 +3,7 @@ id: fn-drop-shadow
 kind: function
 cat: fn-filter
 chip: drop-shadow()
-title: دالة drop-shadow(): ظل يتبع الشكل
+title: ظل يتبع الشكل
 en: CSS drop-shadow() function
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: fn-rgb
 kind: function
 cat: fn-color
 chip: rgb()
-title: دالة rgb(): ألوان أحمر أخضر أزرق
+title: ألوان أحمر أخضر أزرق
 en: CSS rgb() function
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: kw-unset
 kind: datatype
 cat: datatypes
 chip: unset
-title: الكلمة unset: وارث أو ابتدائي
+title: وارث أو ابتدائي
 en: CSS unset keyword
 status: stable
 support: all
@@ -72,7 +72,7 @@ margin: unset.
   p { margin:20px; background:#efe0bd; color:#3d2c18; padding:4px; }
   .u { margin:unset; }
 </style>
-<p>هامش 20</p><p class="u">unset = صفر</p>
+<p>margin 20</p><p class="u">unset = صفر</p>
 ```
 
 

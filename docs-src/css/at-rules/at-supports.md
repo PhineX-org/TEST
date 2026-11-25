@@ -3,7 +3,7 @@ id: at-supports
 kind: atrule
 cat: at-rules
 chip: @supports
-title: قاعدة @supports: اختبار دعم الميزة
+title: اختبار دعم الميزة
 en: CSS @supports at-rule
 status: stable
 support: all

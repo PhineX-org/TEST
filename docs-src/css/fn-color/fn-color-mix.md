@@ -3,7 +3,7 @@ id: fn-color-mix
 kind: function
 cat: fn-color
 chip: color-mix()
-title: دالة color-mix(): مزج لونين
+title: مزج لونين
 en: CSS color-mix() function
 status: stable
 support: all

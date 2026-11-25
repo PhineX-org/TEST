@@ -3,7 +3,7 @@ id: fn-contrast
 kind: function
 cat: fn-filter
 chip: contrast()
-title: دالة contrast(): التباين
+title: التباين
 en: CSS contrast() function
 status: stable
 support: all

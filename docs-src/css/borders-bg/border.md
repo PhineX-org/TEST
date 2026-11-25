@@ -3,7 +3,7 @@ id: border
 kind: property
 cat: borders-bg
 chip: border
-title: خاصية الحد
+title: إطار العنصر (border)
 en: CSS border property
 status: stable
 support: all
@@ -15,13 +15,13 @@ related: border-radius, outline, box-model, border-width, border-style, border-c
 
 ## intro
 
-الخاصية `border` بترسم **إطار** حوالين العنصر بين الحشو والهامش ([[box-model]]). وهي **اختصار** لتلات خصائص: [[border-width]] (السُمك) و[[border-style]] (النوع) و[[border-color]] (اللون)، بالترتيب الشائع: `border: 2px solid #7a4a1d`.
+الخاصية `border` بترسم **إطار** حوالين العنصر بين الـ padding والـ margin ([[box-model]]). وهي **اختصار** لتلات خصائص: [[border-width]] (السُمك) و[[border-style]] (النوع) و[[border-color]] (اللون)، بالترتيب الشائع: `border: 2px solid #7a4a1d`.
 
 **أهم نقطة**: لازم تكتب **النوع** (`solid` أو `dashed`…). النوع الافتراضي `none`، فلو كتبت `border: 2px red` من غير نوع **مفيش حد هيظهر أبداً**! أما السُمك فالافتراضي `medium` (حوالي 3px) واللون الافتراضي هو لون النص (`currentcolor`).
 
 الحد **بياخد مساحة** ويزوّد حجم العنصر الكلي (إلا لو `box-sizing: border-box`). ولو عايز جهة بعينها استخدم `border-top` وأخواتها، أو لو عايز إطار من غير ما يحتل مساحة استخدم [[outline]]. وللزوايا المدوّرة [[border-radius]].
 
-> [!analogy] الحد زي إطار الصورة: له سُمك ونوع (خشب، ذهبي) ولون، وبيتحط حوالين الصورة والكرتون (الحشو).
+> [!analogy] الحد زي إطار الصورة: له سُمك ونوع (خشب، ذهبي) ولون، وبيتحط حوالين الصورة والكرتون (الـ padding).
 
 > [!warn] `border: 2px #7a4a1d` من غير `solid` = **لا حد**. أكتر غلطة للمبتدئين.
 

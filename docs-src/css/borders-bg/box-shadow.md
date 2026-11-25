@@ -3,7 +3,7 @@ id: box-shadow
 kind: property
 cat: borders-bg
 chip: box-shadow
-title: ظل الصندوق
+title: ظل العنصر (box-shadow)
 en: CSS box-shadow property
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: at-scope
 kind: atrule
 cat: at-rules
 chip: @scope
-title: قاعدة @scope: نطاق الـ selectors
+title: نطاق الـ selectors
 en: CSS @scope at-rule
 status: stable
 support: all

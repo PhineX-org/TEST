@@ -3,7 +3,7 @@ id: dt-position
 kind: datatype
 cat: datatypes
 chip: <position>
-title: نوع القيمة position: المواضع
+title: المواضع
 en: CSS <position> data type
 status: stable
 support: all

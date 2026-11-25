@@ -3,7 +3,7 @@ id: kw-inherit
 kind: datatype
 cat: datatypes
 chip: inherit
-title: الكلمة inherit: وارث من الأب
+title: وارث من الأب
 en: CSS inherit keyword
 status: stable
 support: all

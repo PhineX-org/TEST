@@ -3,7 +3,7 @@ id: fn-light-dark
 kind: function
 cat: fn-color
 chip: light-dark()
-title: دالة light-dark(): لون للفاتح ولون للغامق
+title: لون للفاتح ولون للغامق
 en: CSS light-dark() function
 status: stable
 support: all

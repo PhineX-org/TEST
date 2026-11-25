@@ -3,7 +3,7 @@ id: dt-angle
 kind: datatype
 cat: datatypes
 chip: <angle>
-title: نوع القيمة angle: الزوايا
+title: الزوايا
 en: CSS <angle> data type
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: dt-length
 kind: datatype
 cat: datatypes
 chip: <length>
-title: نوع القيمة length: الأطوال
+title: الأطوال
 en: CSS <length> data type
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: fn-color
 kind: function
 cat: fn-color
 chip: color()
-title: دالة color(): فضاءات ألوان محددة
+title: فضاءات ألوان محددة
 en: CSS color() function
 status: stable
 support: all

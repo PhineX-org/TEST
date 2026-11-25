@@ -3,7 +3,7 @@ id: fn-saturate
 kind: function
 cat: fn-filter
 chip: saturate()
-title: دالة saturate(): التشبّع اللوني
+title: التشبّع اللوني
 en: CSS saturate() function
 status: stable
 support: all

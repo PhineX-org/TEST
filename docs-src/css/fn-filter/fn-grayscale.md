@@ -3,7 +3,7 @@ id: fn-grayscale
 kind: function
 cat: fn-filter
 chip: grayscale()
-title: دالة grayscale(): تدرجات الرمادي
+title: تدرجات الرمادي
 en: CSS grayscale() function
 status: stable
 support: all

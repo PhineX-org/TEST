@@ -3,7 +3,7 @@ id: border-top
 kind: property
 cat: borders-bg
 chip: border-top
-title: حد الأعلى
+title: border من فوق
 en: CSS border-top property
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: border-right
 kind: property
 cat: borders-bg
 chip: border-right
-title: حد اليمين
+title: border من اليمين
 en: CSS border-right property
 status: stable
 support: all

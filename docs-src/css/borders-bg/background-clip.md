@@ -16,7 +16,7 @@ related: background, background-origin, border, color
 
 ## intro
 
-الخاصية `background-clip` بتحدد **المنطقة اللي الخلفية بتتقص عندها**. القيم: **`border-box`** (الافتراضي: تحت الحد كمان)، **`padding-box`** (لحد الحشو بس)، **`content-box`** (تحت المحتوى بس)، و**`text`** (الخلفية بتظهر **جوه حروف النص فقط**). الحيلة الشهيرة: **نص بتدرج لوني** (`background: linear-gradient(...); background-clip: text; color: transparent`). ومحتاجة `-webkit-background-clip: text` للتوافق في بعض المتصفحات. وتختلف عن [[background-origin]] اللي بتحدد **مكان بداية** الصورة. وبتتكتب في [[background]].
+الخاصية `background-clip` بتحدد **المنطقة اللي الخلفية بتتقص عندها**. القيم: **`border-box`** (الافتراضي: تحت الحد كمان)، **`padding-box`** (لحد الـ padding بس)، **`content-box`** (تحت المحتوى بس)، و**`text`** (الخلفية بتظهر **جوه حروف النص فقط**). الحيلة الشهيرة: **نص بتدرج لوني** (`background: linear-gradient(...); background-clip: text; color: transparent`). ومحتاجة `-webkit-background-clip: text` للتوافق في بعض المتصفحات. وتختلف عن [[background-origin]] اللي بتحدد **مكان بداية** الصورة. وبتتكتب في [[background]].
 
 ## try
 
@@ -46,7 +46,7 @@ background-clip: text;
 تحت الحد (الافتراضي).
 
 ### padding-box
-لحد الحشو.
+لحد الـ padding.
 
 ### content-box
 المحتوى فقط.

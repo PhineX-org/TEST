@@ -3,7 +3,7 @@ id: fn-oklch
 kind: function
 cat: fn-color
 chip: oklch()
-title: دالة oklch(): ألوان متسقة إدراكياً
+title: ألوان متسقة إدراكياً
 en: CSS oklch() function
 status: stable
 support: all

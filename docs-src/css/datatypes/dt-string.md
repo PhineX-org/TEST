@@ -3,7 +3,7 @@ id: dt-string
 kind: datatype
 cat: datatypes
 chip: <string>
-title: نوع القيمة string: النصوص
+title: النصوص
 en: CSS <string> data type
 status: stable
 support: all

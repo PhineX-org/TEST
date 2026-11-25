@@ -3,7 +3,7 @@ id: at-property
 kind: atrule
 cat: at-rules
 chip: @property
-title: قاعدة @property: تسجيل متغير مخصص بنوع
+title: تسجيل متغير مخصص بنوع
 en: CSS @property at-rule
 status: stable
 support: all

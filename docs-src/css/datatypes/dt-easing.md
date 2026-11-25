@@ -3,7 +3,7 @@ id: dt-easing
 kind: datatype
 cat: datatypes
 chip: <easing-function>
-title: نوع القيمة easing: دوال التوقيت
+title: دوال التوقيت
 en: CSS <easing-function> data type
 status: stable
 support: all

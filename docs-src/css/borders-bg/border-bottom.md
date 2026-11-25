@@ -3,7 +3,7 @@ id: border-bottom
 kind: property
 cat: borders-bg
 chip: border-bottom
-title: حد الأسفل
+title: border من تحت
 en: CSS border-bottom property
 status: stable
 support: all

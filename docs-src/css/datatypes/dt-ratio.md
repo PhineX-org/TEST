@@ -3,7 +3,7 @@ id: dt-ratio
 kind: datatype
 cat: datatypes
 chip: <ratio>
-title: نوع القيمة ratio: النسبة بين رقمين
+title: النسبة بين رقمين
 en: CSS <ratio> data type
 status: stable
 support: all

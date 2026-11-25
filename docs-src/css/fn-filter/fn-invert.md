@@ -3,7 +3,7 @@ id: fn-invert
 kind: function
 cat: fn-filter
 chip: invert()
-title: دالة invert(): عكس الألوان
+title: عكس الألوان
 en: CSS invert() function
 status: stable
 support: all

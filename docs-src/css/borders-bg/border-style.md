@@ -3,7 +3,7 @@ id: border-style
 kind: property
 cat: borders-bg
 chip: border-style
-title: نوع الحد
+title: نوع الـ border
 en: CSS border-style property
 status: stable
 support: all

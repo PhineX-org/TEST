@@ -16,7 +16,7 @@ related: justify-items, align-self, place-self, grid-guide
 
 ## intro
 
-الخاصية `justify-self` بتتحط على **ابن واحد** في Grid، وبتحدد **محاذاته أفقياً جوه خليته**، متجاهلة [[justify-items]] اللي على الحاوية. القيم: `auto`، `stretch`، `start`، `end`، `center`. ومفيش `justify-self` في Flexbox (بتستخدم هوامش `auto`). الاختصار مع `align-self` هو [[place-self]]، وللمحاذاة الرأسية [[align-self]].
+الخاصية `justify-self` بتتحط على **ابن واحد** في Grid، وبتحدد **محاذاته أفقياً جوه خليته**، متجاهلة [[justify-items]] اللي على الحاوية. القيم: `auto`، `stretch`، `start`، `end`، `center`. ومفيش `justify-self` في Flexbox (بتستخدم margins `auto`). الاختصار مع `align-self` هو [[place-self]]، وللمحاذاة الرأسية [[align-self]].
 
 > [!tip] في Flexbox مفيش `justify-self`، فاستخدم `margin-inline-start: auto` علشان تدفع عنصر لآخر الصف. وبتشتغل `justify-self` على العناصر اللي بتتمدّد جوه خلية، فلو الخلية ضيقة على قد العنصر مش هتشوف فرق.
 

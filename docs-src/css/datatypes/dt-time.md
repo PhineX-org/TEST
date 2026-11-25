@@ -3,7 +3,7 @@ id: dt-time
 kind: datatype
 cat: datatypes
 chip: <time>
-title: نوع القيمة time: الأزمنة
+title: الأزمنة
 en: CSS <time> data type
 status: stable
 support: all

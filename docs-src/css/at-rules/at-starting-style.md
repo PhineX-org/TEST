@@ -3,7 +3,7 @@ id: at-starting-style
 kind: atrule
 cat: at-rules
 chip: @starting-style
-title: قاعدة @starting-style: نقطة بداية الانتقال
+title: نقطة بداية الانتقال
 en: CSS @starting-style at-rule
 status: stable
 support: all

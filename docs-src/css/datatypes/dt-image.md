@@ -3,7 +3,7 @@ id: dt-image
 kind: datatype
 cat: datatypes
 chip: <image>
-title: نوع القيمة image: الصور
+title: الصور
 en: CSS <image> data type
 status: stable
 support: all

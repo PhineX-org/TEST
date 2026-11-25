@@ -16,7 +16,7 @@ related: background-clip, background-position, background, border
 
 ## intro
 
-الخاصية `background-origin` بتحدد **مربع المرجع** اللي بيتحسب منه موضع صورة الخلفية ([[background-position]]): هل «الركن العلوي الأيمن» هو ركن **الحد** (`border-box`)، ولا ركن **الحشو** (`padding-box`، الافتراضي)، ولا ركن **المحتوى** (`content-box`)؟ مفيدة لما تعايز الصورة تبدأ بعد الحشو. وتختلف عن [[background-clip]] اللي بتقص الخلفية. **ملحوظة**: لا تؤثر لو `background-attachment: fixed`. وعشان تفهمها بسهولة: تخيّل إطار صورة؛ الـ origin بيقولك «ابدأ ألصق الصورة من أنهي ركن» (الحد ولا الحشو ولا المحتوى).
+الخاصية `background-origin` بتحدد **مربع المرجع** اللي بيتحسب منه موضع صورة الخلفية ([[background-position]]): هل «الركن العلوي الأيمن» هو ركن **الحد** (`border-box`)، ولا ركن **الـ padding** (`padding-box`، الافتراضي)، ولا ركن **المحتوى** (`content-box`)؟ مفيدة لما تعايز الصورة تبدأ بعد الـ padding. وتختلف عن [[background-clip]] اللي بتقص الخلفية. **ملحوظة**: لا تؤثر لو `background-attachment: fixed`. وعشان تفهمها بسهولة: تخيّل إطار صورة؛ الـ origin بيقولك «ابدأ ألصق الصورة من أنهي ركن» (الحد ولا الـ padding ولا المحتوى).
 
 ## try
 
@@ -41,7 +41,7 @@ background-origin: content-box;
 ## values
 
 ### padding-box
-من حافة الحشو (الافتراضي).
+من حافة الـ padding (الافتراضي).
 
 ### border-box
 من حافة الحد.
@@ -51,7 +51,7 @@ background-origin: content-box;
 
 ## use
 
-- صورة تبدأ بعد الحشو.
+- صورة تبدأ بعد الـ padding.
 - تحكم دقيق في موضع الخلفية.
 
 ## avoid

@@ -3,7 +3,7 @@ id: at-import
 kind: atrule
 cat: at-rules
 chip: @import
-title: قاعدة @import: استيراد ملف CSS
+title: استيراد ملف CSS
 en: CSS @import at-rule
 status: stable
 support: all

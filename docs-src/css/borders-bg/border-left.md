@@ -3,7 +3,7 @@ id: border-left
 kind: property
 cat: borders-bg
 chip: border-left
-title: حد الشمال
+title: border من الشمال
 en: CSS border-left property
 status: stable
 support: all

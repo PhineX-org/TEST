@@ -3,7 +3,7 @@ id: fn-hwb
 kind: function
 cat: fn-color
 chip: hwb()
-title: دالة hwb(): درجة وبياض وسواد
+title: درجة وبياض وسواد
 en: CSS hwb() function
 status: stable
 support: all

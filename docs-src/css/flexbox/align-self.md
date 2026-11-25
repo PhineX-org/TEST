@@ -17,10 +17,10 @@ related: align-items, justify-self, order, flexbox-guide, place-self
 
 الخاصية `align-self` بتتحط على **ابن واحد** وبتعدّل محاذاته على المحور العرضي، متجاهلة قيمة [[align-items]] اللي على الحاوية. يعني لو الحاوية عاملة `align-items: center` وعايز ابن واحد ينزل تحت، بتكتب له `align-self: flex-end`.
 
-القيم زي `align-items`: `auto` (الافتراضي: يتبع الحاوية)، `stretch`، `flex-start`، `flex-end`، `center`، `baseline`. وبتشتغل في Flexbox وGrid. وفي flex، **الهامش `auto`** على المحور العرضي (`margin-top: auto`) بيعمل شيء شبيه.
+القيم زي `align-items`: `auto` (الافتراضي: يتبع الحاوية)، `stretch`، `flex-start`، `flex-end`، `center`، `baseline`. وبتشتغل في Flexbox وGrid. وفي flex، **الـ margin `auto`** على المحور العرضي (`margin-top: auto`) بيعمل شيء شبيه.
 
 
-فكّر فيها كـ «استثناء من القاعدة»: الحاوية قررت إن كل الأبناء يتوسّطوا (`align-items: center`)، لكن عندك عنصر واحد عايزه يشذ عن الباقي: ينزل تحت أو يطلع فوق أو يتمدد. بدل ما تعمل حاويات منفصلة، بتدّي العنصر ده بس `align-self` بالقيمة اللي عايزها. ومهم تفتكر إنها **على المحور العرضي** بس (الرأسي في `row`)؛ للمحور الرئيسي استخدم هوامش `auto` أو [[order]] أو [[justify-content]].
+فكّر فيها كـ «استثناء من القاعدة»: الحاوية قررت إن كل الأبناء يتوسّطوا (`align-items: center`)، لكن عندك عنصر واحد عايزه يشذ عن الباقي: ينزل تحت أو يطلع فوق أو يتمدد. بدل ما تعمل حاويات منفصلة، بتدّي العنصر ده بس `align-self` بالقيمة اللي عايزها. ومهم تفتكر إنها **على المحور العرضي** بس (الرأسي في `row`)؛ للمحور الرئيسي استخدم margins `auto` أو [[order]] أو [[justify-content]].
 
 > [!tip] الأكتر استخداماً: زرار «حفظ» ينزل لتحت في كارت `flex-direction:column` بـ `align-self:flex-end`.
 

@@ -3,7 +3,7 @@ id: dt-number
 kind: datatype
 cat: datatypes
 chip: <number>
-title: نوع القيمة number: الأرقام
+title: الأرقام
 en: CSS <number> data type
 status: stable
 support: all

@@ -55,7 +55,7 @@ clip-path: none;
 قطع ناقص.
 
 ### inset()
-مستطيل بهوامش.
+مستطيل بـmargins.
 
 ### polygon()
 مضلع بنقاط.

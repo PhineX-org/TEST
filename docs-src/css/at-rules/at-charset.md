@@ -3,7 +3,7 @@ id: at-charset
 kind: atrule
 cat: at-rules
 chip: @charset
-title: قاعدة @charset: ترميز ملف CSS
+title: ترميز ملف CSS
 en: CSS @charset at-rule
 status: stable
 support: all

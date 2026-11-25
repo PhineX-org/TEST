@@ -3,7 +3,7 @@ id: at-font-face
 kind: atrule
 cat: at-rules
 chip: @font-face
-title: قاعدة @font-face: تحميل خط مخصص
+title: تحميل خط مخصص
 en: CSS @font-face at-rule
 status: stable
 support: all

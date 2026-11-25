@@ -3,7 +3,7 @@ id: dt-percentage
 kind: datatype
 cat: datatypes
 chip: <percentage>
-title: نوع القيمة percentage: النسب المئوية
+title: النسب المئوية
 en: CSS <percentage> data type
 status: stable
 support: all

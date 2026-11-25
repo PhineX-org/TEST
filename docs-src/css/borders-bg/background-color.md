@@ -8,14 +8,14 @@ en: CSS background-color property
 status: stable
 support: all
 mdn: background-color
-summary: background-color بتحدد لون خلفية العنصر (محتوى وحشو وحد). تقبل hex وrgb وhsl وtransparent، والافتراضي شفاف.
+summary: background-color بتحدد لون خلفية العنصر (محتوى و padding وحد). تقبل hex وrgb وhsl وtransparent، والافتراضي شفاف.
 keywords: background-color, لون الخلفية, background, hex, rgb, hsl, transparent, alpha
 related: background, color, opacity, colors-guide, dt-color
 ---
 
 ## intro
 
-الخاصية `background-color` بتحدد **لون خلفية** العنصر. الخلفية بتغطي **المحتوى والحشو** وبتمتد **تحت الحد** كمان (افتراضياً)، لكن **مش الهامش**. الافتراضي `transparent` (شفاف) يعني بتشوف خلفية الأب.
+الخاصية `background-color` بتحدد **لون خلفية** العنصر. الخلفية بتغطي **المحتوى والـ padding** وبتمتد **تحت الحد** كمان (افتراضياً)، لكن **مش الـ margin**. الافتراضي `transparent` (شفاف) يعني بتشوف خلفية الأب.
 
 بتقبل أي صيغة لون ([[colors-guide]]): `#efe0bd` أو `rgb(239 224 189)` أو `hsl(40 50% 85%)` أو اسم، وبتقبل **الشفافية**: `rgb(0 0 0 / 0.3)`. فيها فرق مهم عن [[opacity]]: شفافية الخلفية **مبتأثرش** على النص، أما `opacity` فبتخلي العنصر كله (نص وخلفية) شفاف.
 
@@ -157,11 +157,11 @@ alpha على الخلفية بس.
 
 ### الخلفية بتغطي؟
 - [ ] المحتوى فقط
-- [x] المحتوى والحشو (وتحت الحد)
-- [ ] الهامش
+- [x] المحتوى والـ padding (وتحت الحد)
+- [ ] الـ margin
 - [ ] الظل
 
-مش الهامش.
+مش الـ margin.
 
 ### الأفضل لشفافية الخلفية فقط؟
 - [ ] opacity

@@ -3,7 +3,7 @@ id: at-keyframes
 kind: atrule
 cat: at-rules
 chip: @keyframes
-title: قاعدة @keyframes: تعريف الأنيميشن
+title: تعريف الأنيميشن
 en: CSS @keyframes at-rule
 status: stable
 support: all

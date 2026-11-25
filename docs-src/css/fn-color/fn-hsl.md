@@ -3,7 +3,7 @@ id: fn-hsl
 kind: function
 cat: fn-color
 chip: hsl()
-title: دالة hsl(): درجة وتشبّع وإضاءة
+title: درجة وتشبّع وإضاءة
 en: CSS hsl() function
 status: stable
 support: all

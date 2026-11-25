@@ -3,7 +3,7 @@ id: border-color
 kind: property
 cat: borders-bg
 chip: border-color
-title: لون الحد
+title: لون الـ border
 en: CSS border-color property
 status: stable
 support: all

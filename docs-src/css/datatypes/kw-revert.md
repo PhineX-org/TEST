@@ -3,7 +3,7 @@ id: kw-revert
 kind: datatype
 cat: datatypes
 chip: revert
-title: الكلمة revert: رجوع لستايل المتصفح
+title: رجوع لستايل المتصفح
 en: CSS revert keyword
 status: stable
 support: all

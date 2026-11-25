@@ -3,7 +3,7 @@ id: fn-blur
 kind: function
 cat: fn-filter
 chip: blur()
-title: دالة blur(): تغبيش
+title: تغبيش
 en: CSS blur() function
 status: stable
 support: all

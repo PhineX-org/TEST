@@ -3,7 +3,7 @@ id: fn-hue-rotate
 kind: function
 cat: fn-filter
 chip: hue-rotate()
-title: دالة hue-rotate(): لف درجة اللون
+title: لف درجة اللون
 en: CSS hue-rotate() function
 status: stable
 support: all

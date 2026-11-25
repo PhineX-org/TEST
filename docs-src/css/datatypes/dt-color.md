@@ -3,7 +3,7 @@ id: dt-color
 kind: datatype
 cat: datatypes
 chip: <color>
-title: نوع القيمة color: الألوان
+title: الألوان
 en: CSS <color> data type
 status: stable
 support: all

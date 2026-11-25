@@ -3,7 +3,7 @@ id: at-layer
 kind: atrule
 cat: at-rules
 chip: @layer
-title: قاعدة @layer: طبقات الـ cascade
+title: طبقات الـ cascade
 en: CSS @layer at-rule
 status: stable
 support: all

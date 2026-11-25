@@ -3,7 +3,7 @@ id: fn-brightness
 kind: function
 cat: fn-filter
 chip: brightness()
-title: دالة brightness(): السطوع
+title: السطوع
 en: CSS brightness() function
 status: stable
 support: all

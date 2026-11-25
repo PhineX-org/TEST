@@ -3,7 +3,7 @@ id: kw-important
 kind: datatype
 cat: datatypes
 chip: !important
-title: الكلمة !important: رفع أولوية الإعلان
+title: رفع أولوية الإعلان
 en: CSS !important keyword
 status: stable
 support: all

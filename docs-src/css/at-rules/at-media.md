@@ -3,7 +3,7 @@ id: at-media
 kind: atrule
 cat: at-rules
 chip: @media
-title: قاعدة @media: الاستعلامات الإعلامية
+title: الاستعلامات الإعلامية
 en: CSS @media at-rule
 status: stable
 support: all

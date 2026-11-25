@@ -3,7 +3,7 @@ id: at-container
 kind: atrule
 cat: at-rules
 chip: @container
-title: قاعدة @container: استعلام الحاوية
+title: استعلام الحاوية
 en: CSS @container at-rule
 status: stable
 support: all

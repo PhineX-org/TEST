@@ -3,20 +3,20 @@ id: at-page
 kind: atrule
 cat: at-rules
 chip: @page
-title: قاعدة @page: تنسيق صفحة الطباعة
+title: تنسيق صفحة الطباعة
 en: CSS @page at-rule
 status: stable
 support: all
 size: compact
 mdn: @page
-summary: قاعدة @page بتتحكم في صفحة الطباعة: الحجم والهوامش والاتجاه (size وmargin). للتقارير وPDF.
+summary: قاعدة @page بتتحكم في صفحة الطباعة: الحجم والـ margins والاتجاه (size وmargin). للتقارير وPDF.
 keywords: @page, print, طباعة, size, margin, PDF
 related: at-media, margin, padding
 ---
 
 ## intro
 
-القاعدة `@page` بتتحكم في **شكل الصفحة المطبوعة** نفسها (مش محتواها): **حجم الورقة** و**هوامشها** واتجاهها. مفيدة لتقارير وفواتير وتصدير PDF من المتصفح. أشهر الخصائص جواها: **`size`** (`A4` أو `A4 landscape` أو `210mm 297mm`) و**`margin`** (هامش الصفحة). مثال: `@page { size: A4; margin: 20mm; }`. وفيه **صفحات مسمّاة** و**pseudo-classes** زي `@page :first { margin-top: 40mm; }` للصفحة الأولى، و`:left`/`:right` لصفحات الكتاب. بتظهر نتيجتها فقط **عند الطباعة** أو معاينتها (Ctrl+P). ودعمها جزئي: `size` و`margin` شغالين في معظم المتصفحات، لكن غيرهم (زي صناديق الهوامش `@top-center`) دعمه محدود.
+القاعدة `@page` بتتحكم في **شكل الصفحة المطبوعة** نفسها (مش محتواها): **حجم الورقة** و**الـ margins** بتاعتها واتجاهها. مفيدة لتقارير وفواتير وتصدير PDF من المتصفح. أشهر الخصائص جواها: **`size`** (`A4` أو `A4 landscape` أو `210mm 297mm`) و**`margin`** (margin الصفحة). مثال: `@page { size: A4; margin: 20mm; }`. وفيه **صفحات مسمّاة** و**pseudo-classes** زي `@page :first { margin-top: 40mm; }` للصفحة الأولى، و`:left`/`:right` لصفحات الكتاب. بتظهر نتيجتها فقط **عند الطباعة** أو معاينتها (Ctrl+P). ودعمها جزئي: `size` و`margin` شغالين في معظم المتصفحات، لكن غيرهم (زي صناديق الـ margins `@top-center`) دعمه محدود.
 
 ## try
 
@@ -26,7 +26,7 @@ related: at-media, margin, padding
   .pg::after { content:""; position:absolute; inset:12px; border:1px dashed #c9772f; }
   .cap { color:#3d2c18; font-size:.8rem; }
 </style>
-<div class="pg"></div><div class="cap">A4 (مصغّرة) بهامش 20mm = الحد المنقّط</div>
+<div class="pg"></div><div class="cap">A4 (مصغّرة) بـmargin 20mm = الحد المنقّط</div>
 ```
 
 ## syntax
@@ -53,12 +53,12 @@ related: at-media, margin, padding
 
 ## avoid
 
-- توقع صناديق الهوامش (@top-center) تشتغل في كل المتصفحات.
+- توقع صناديق الـ margins (@top-center) تشتغل في كل المتصفحات.
 
 ## examples
 
-### 1) حجم وهوامش
-A4 بهامش 20mm.
+### 1) حجم و margins
+A4 بـmargin 20mm.
 
 ```html nolive
 <style>
@@ -72,7 +72,7 @@ A4 بهامش 20mm.
 
 
 ### 2) الصفحة الأولى
-هامش أعلى أكبر.
+margin أعلى أكبر.
 
 ```html nolive
 <style>
