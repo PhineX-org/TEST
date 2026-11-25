@@ -1,61 +1,65 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
+<meta name="theme-color" content="#14181e">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ربط قواعد البيانات | PhineX Academy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --firebase:  #FFCA28;
-            --supabase:  #3ECF8E;
-            --mongo:     #00ED64;
-            --local:     #82aaff;
-            --rest:      #ff9f43;
-            --bg:        #080b10;
-            --card:      #111827;
-            --card2:     #1a2233;
-            --border:    #1e2d42;
-            --text:      #cdd6f4;
-            --muted:     #6b7a99;
-            --code-bg:   #0a0f1a;
-            --neon-cyan: #00d4ff;
-            --neon-green:#c3e88d;
-            --neon-pink: #ff5874;
-            --js-gold:   #f7df1e;
+            --firebase:var(--px-c-yellow);
+            --supabase:var(--px-c-green);
+            --mongo:var(--px-accent);
+            --local:var(--px-c-blue);
+            --rest:var(--px-c-orange);
+            --bg:var(--px-bg);
+            --card:var(--px-card);
+            --card2:var(--px-card2);
+            --border:var(--px-line);
+            --text:var(--px-text);
+            --muted:var(--px-muted);
+            --code-bg:var(--px-code-bg);
+            --neon-cyan:var(--px-c-cyan);
+            --neon-green:var(--px-c-green);
+            --neon-pink:var(--px-c-red);
+            --js-gold:var(--px-c-yellow);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; line-height: 1.8; }
 
-        /* ── HEADER ── */
+        
         .site-header {
-            background: #0d1117; border-bottom: 1px solid var(--border);
+            background:var(--px-surface); border-bottom: 1px solid var(--border);
             padding: 0 40px; display: flex; align-items: center;
             justify-content: space-between; height: 60px;
             position: sticky; top: 0; z-index: 100;
         }
-        .logo { font-family: 'Orbitron', monospace; color: var(--js-gold); font-size: 1.1rem; }
+        .logo { font-family: 'Cairo', monospace; color: var(--js-gold); font-size: 1.1rem; }
         .back-btn {
             color: var(--neon-cyan); text-decoration: none; font-size: 0.9rem;
             border: 1px solid var(--neon-cyan); padding: 6px 16px; border-radius: 6px; transition: .3s;
         }
-        .back-btn:hover { background: var(--neon-cyan); color: #000; }
+        .back-btn:hover { background: var(--neon-cyan); color:var(--px-on-accent); }
 
-        /* ── HERO ── */
+        
         .hero {
-            background: radial-gradient(ellipse at 50% 0%, #0a1a10 0%, #080b10 70%);
+            background:radial-gradient(ellipse at 50% 0%, var(--px-surface) 0%, var(--px-bg) 70%);
             text-align: center; padding: 70px 40px 50px;
         }
         .hero-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
         .hero-tag {
             padding: 4px 14px; border-radius: 20px; font-size: 0.8rem;
-            font-family: 'Orbitron', monospace; font-weight: 700;
+            font-family: 'Cairo', monospace; font-weight: 700;
         }
-        .hero h1 { font-family: 'Orbitron', monospace; font-size: 2.2rem; color: #fff; margin-bottom: 14px; }
+        .hero h1 { font-family: 'Cairo', monospace; font-size: 2.2rem; color:var(--px-text-strong); margin-bottom: 14px; }
         .hero p { color: var(--muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
 
-        /* ── DB NAV ── */
+        
         .db-nav {
             display: flex; gap: 10px; justify-content: center;
             flex-wrap: wrap; padding: 30px 30px 0; background: var(--bg);
@@ -68,12 +72,12 @@
             font-weight: 600; transition: all .3s; text-decoration: none;
         }
         .db-nav-btn .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .db-nav-btn:hover { border-color: var(--neon-cyan); color: #fff; }
+        .db-nav-btn:hover { border-color: var(--neon-cyan); color:var(--px-text-strong); }
 
-        /* ── CONTAINER ── */
+        
         .container { max-width: 1100px; margin: 0 auto; padding: 40px 30px 80px; }
 
-        /* ── SECTION HEADER ── */
+        
         .db-section { margin-bottom: 70px; scroll-margin-top: 80px; }
         .db-section-head {
             display: flex; align-items: center; gap: 16px;
@@ -92,37 +96,37 @@
             overflow: hidden;
         }
 
-        /* Firebase */
-        .firebase .db-section-head { border-color: var(--firebase); background: rgba(255,202,40,.05); }
+        
+        .firebase .db-section-head { border-color: var(--firebase); background:rgba(var(--px-c-yellow-rgb),.05); }
         .firebase .db-section-head h2 { color: var(--firebase); }
         .firebase .db-body { border-color: var(--firebase); }
-        .firebase .db-icon { background: rgba(255,202,40,.15); color: var(--firebase); }
+        .firebase .db-icon { background:rgba(var(--px-c-yellow-rgb),.15); color: var(--firebase); }
 
-        /* Supabase */
-        .supabase .db-section-head { border-color: var(--supabase); background: rgba(62,207,142,.05); }
+        
+        .supabase .db-section-head { border-color: var(--supabase); background:rgba(var(--px-c-green-rgb),.05); }
         .supabase .db-section-head h2 { color: var(--supabase); }
         .supabase .db-body { border-color: var(--supabase); }
-        .supabase .db-icon { background: rgba(62,207,142,.15); color: var(--supabase); }
+        .supabase .db-icon { background:rgba(var(--px-c-green-rgb),.15); color: var(--supabase); }
 
-        /* MongoDB */
-        .mongo .db-section-head { border-color: var(--mongo); background: rgba(0,237,100,.05); }
+        
+        .mongo .db-section-head { border-color: var(--mongo); background:rgba(var(--px-accent-rgb),.05); }
         .mongo .db-section-head h2 { color: var(--mongo); }
         .mongo .db-body { border-color: var(--mongo); }
-        .mongo .db-icon { background: rgba(0,237,100,.15); color: var(--mongo); }
+        .mongo .db-icon { background:rgba(var(--px-accent-rgb),.15); color: var(--mongo); }
 
-        /* LocalStorage */
-        .local .db-section-head { border-color: var(--local); background: rgba(130,170,255,.05); }
+        
+        .local .db-section-head { border-color: var(--local); background:rgba(var(--px-c-blue-rgb),.05); }
         .local .db-section-head h2 { color: var(--local); }
         .local .db-body { border-color: var(--local); }
-        .local .db-icon { background: rgba(130,170,255,.15); color: var(--local); }
+        .local .db-icon { background:rgba(var(--px-c-blue-rgb),.15); color: var(--local); }
 
-        /* REST */
-        .rest .db-section-head { border-color: var(--rest); background: rgba(255,159,67,.05); }
+        
+        .rest .db-section-head { border-color: var(--rest); background:rgba(var(--px-c-orange-rgb),.05); }
         .rest .db-section-head h2 { color: var(--rest); }
         .rest .db-body { border-color: var(--rest); }
-        .rest .db-icon { background: rgba(255,159,67,.15); color: var(--rest); }
+        .rest .db-icon { background:rgba(var(--px-c-orange-rgb),.15); color: var(--rest); }
 
-        /* ── TABS inside section ── */
+        
         .tabs-nav {
             display: flex; background: var(--card);
             border-bottom: 1px solid var(--border);
@@ -133,33 +137,31 @@
             font-size: 0.9rem; font-weight: 600; border-bottom: 2px solid transparent;
             transition: .25s;
         }
-        .tab-btn.active { color: #fff; border-bottom-color: var(--neon-cyan); }
+        .tab-btn.active { color:var(--px-text-strong); border-bottom-color: var(--neon-cyan); }
         .tab-btn:hover:not(.active) { color: var(--text); }
         .tab-content { display: none; padding: 28px; background: var(--card); }
         .tab-content.active { display: block; }
 
-        /* ── CODE BLOCK ── */
+        
         .code-block {
             background: var(--code-bg); border: 1px solid var(--border);
             border-radius: 10px; padding: 20px 24px; font-family: 'Fira Code', monospace;
             font-size: 0.87rem; line-height: 1.75; direction: ltr; text-align: left;
-            color: #abb2bf; overflow-x: auto; margin: 14px 0;
-        }
-        .code-block .kw  { color: #c678dd; }
-        .code-block .fn  { color: #61afef; }
-        .code-block .str { color: #98c379; }
-        .code-block .num { color: #d19a66; }
-        .code-block .cm  { color: #5c6370; font-style: italic; }
-        .code-block .var { color: #e5c07b; }
-        .code-block .op  { color: #56b6c2; }
+            color:var(--px-text); overflow-x: auto; margin: 14px 0;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--firebase:var(--px-c-yellow);--supabase:var(--px-c-green);--mongo:var(--px-accent);--local:var(--px-c-blue);--rest:var(--px-c-orange);--bg:var(--px-bg);--card:var(--px-card);--card2:var(--px-card2);--border:var(--px-line);--text:var(--px-text);--muted:var(--px-muted);--code-bg:var(--px-code-bg);--neon-cyan:var(--px-c-cyan);--neon-green:var(--px-c-green);--neon-pink:var(--px-c-red);--js-gold:var(--px-c-yellow)}
+        .code-block .kw  { color:var(--px-c-purple); }
+        .code-block .fn  { color:var(--px-c-blue); }
+        .code-block .str { color:var(--px-c-green); }
+        .code-block .num { color:var(--px-c-orange); }
+        .code-block .cm  { color:var(--px-muted); font-style: italic; }
+        .code-block .var { color:var(--px-c-orange); }
+        .code-block .op  { color:var(--px-c-cyan); }
         .code-label {
             font-size: 0.78rem; color: var(--muted); font-family: 'Fira Code', monospace;
             margin-bottom: -8px; padding: 6px 14px; background: var(--code-bg);
             border: 1px solid var(--border); border-bottom: none;
-            border-radius: 8px 8px 0 0; display: inline-block;
-        }
+            border-radius: 8px 8px 0 0; display: inline-block;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--firebase:var(--px-c-yellow);--supabase:var(--px-c-green);--mongo:var(--px-accent);--local:var(--px-c-blue);--rest:var(--px-c-orange);--bg:var(--px-bg);--card:var(--px-card);--card2:var(--px-card2);--border:var(--px-line);--text:var(--px-text);--muted:var(--px-muted);--code-bg:var(--px-code-bg);--neon-cyan:var(--px-c-cyan);--neon-green:var(--px-c-green);--neon-pink:var(--px-c-red);--js-gold:var(--px-c-yellow)}
 
-        /* ── CARDS GRID ── */
+        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
         @media(max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
@@ -171,36 +173,36 @@
         .info-card h4 { font-size: 1rem; color: var(--neon-cyan); margin-bottom: 8px; }
         .info-card p  { font-size: 0.9rem; color: var(--muted); }
 
-        /* ── NOTE ── */
+        
         .note {
             border-right: 4px solid; padding: 12px 16px; border-radius: 0 10px 10px 0;
             margin: 14px 0; font-size: 0.93rem; line-height: 1.7;
         }
-        .note.info    { border-color: var(--neon-cyan);  background: rgba(0,212,255,.06);  }
-        .note.success { border-color: var(--neon-green); background: rgba(195,232,141,.06); }
-        .note.warn    { border-color: var(--js-gold);    background: rgba(247,223,30,.06);  }
-        .note.danger  { border-color: var(--neon-pink);  background: rgba(255,88,116,.06);  }
+        .note.info    { border-color: var(--neon-cyan);  background:rgba(var(--px-c-cyan-rgb),.06);  }
+        .note.success { border-color: var(--neon-green); background:rgba(var(--px-c-green-rgb),.06); }
+        .note.warn    { border-color: var(--js-gold);    background:rgba(var(--px-c-yellow-rgb),.06);  }
+        .note.danger  { border-color: var(--neon-pink);  background:rgba(var(--px-c-red-rgb),.06);  }
 
-        /* ── BADGE ── */
+        
         .badge {
             display: inline-block; padding: 2px 10px; border-radius: 20px;
             font-size: 0.76rem; font-weight: 700; margin: 2px;
         }
-        .badge-g  { background: rgba(195,232,141,.15); color: var(--neon-green); border: 1px solid rgba(195,232,141,.3); }
-        .badge-c  { background: rgba(0,212,255,.15);   color: var(--neon-cyan);  border: 1px solid rgba(0,212,255,.3);  }
-        .badge-r  { background: rgba(255,88,116,.15);  color: var(--neon-pink);  border: 1px solid rgba(255,88,116,.3); }
-        .badge-y  { background: rgba(247,223,30,.15);  color: var(--js-gold);    border: 1px solid rgba(247,223,30,.3); }
+        .badge-g  { background:rgba(var(--px-c-green-rgb),.15); color: var(--neon-green); border:1px solid rgba(var(--px-c-green-rgb),.3); }
+        .badge-c  { background:rgba(var(--px-c-cyan-rgb),.15);   color: var(--neon-cyan);  border:1px solid rgba(var(--px-c-cyan-rgb),.3);  }
+        .badge-r  { background:rgba(var(--px-c-red-rgb),.15);  color: var(--neon-pink);  border:1px solid rgba(var(--px-c-red-rgb),.3); }
+        .badge-y  { background:rgba(var(--px-c-yellow-rgb),.15);  color: var(--js-gold);    border:1px solid rgba(var(--px-c-yellow-rgb),.3); }
 
-        /* ── COMPARE ── */
+        
         .compare-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.88rem; }
         .compare-table th {
             background: var(--card2); color: var(--neon-cyan); padding: 10px 14px;
             border: 1px solid var(--border); text-align: right;
         }
         .compare-table td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; }
-        .compare-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+        .compare-table tr:nth-child(even) td { background:rgba(var(--px-ink-rgb),.02); }
 
-        /* ── FLOW ── */
+        
         .flow {
             display: flex; align-items: center; gap: 0;
             flex-wrap: wrap; margin: 16px 0; direction: ltr;
@@ -212,7 +214,7 @@
         }
         .flow-arr { color: var(--neon-cyan); padding: 0 8px; font-size: 1.2rem; }
 
-        /* ── FINAL COMPARE ── */
+        
         .final-compare {
             background: var(--card); border: 1px solid var(--border);
             border-radius: 16px; overflow: hidden; margin-top: 50px;
@@ -223,7 +225,7 @@
             font-size: 1.2rem;
         }
 
-        /* ── QUIZ FOOTER ── */
+        
         .quiz-cta {
             background: linear-gradient(135deg, var(--card2), var(--card));
             border: 2px solid var(--js-gold); border-radius: 16px;
@@ -232,7 +234,7 @@
         .quiz-cta h3 { color: var(--js-gold); font-size: 1.4rem; margin-bottom: 8px; }
         .quiz-cta p  { color: var(--muted); margin-bottom: 20px; }
         .btn-gold {
-            display: inline-block; background: var(--js-gold); color: #000;
+            display: inline-block; background: var(--js-gold); color:var(--px-on-accent);
             font-weight: 700; padding: 14px 36px; border-radius: 10px;
             text-decoration: none; font-size: 1rem; transition: .3s; margin: 6px;
         }
@@ -242,10 +244,12 @@
             text-decoration: none; font-size: 1rem; transition: .3s; margin: 6px;
         }
         .btn-gold:hover   { opacity: .85; transform: scale(1.03); }
-        .btn-outline:hover { background: var(--neon-cyan); color: #000; }
+        .btn-outline:hover { background: var(--neon-cyan); color:var(--px-on-accent); }
     </style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<script src="../../assets/site.js"></script>
 </head>
-<body>
+<body data-px-tools>
 
 <header class="site-header">
     <div class="logo">PhineX Academy</div>
@@ -255,11 +259,11 @@
 <!-- HERO -->
 <section class="hero">
     <div class="hero-tags">
-        <span class="hero-tag" style="background:rgba(255,202,40,.12);color:#FFCA28;border:1px solid #FFCA28">Firebase</span>
-        <span class="hero-tag" style="background:rgba(62,207,142,.12);color:#3ECF8E;border:1px solid #3ECF8E">Supabase</span>
-        <span class="hero-tag" style="background:rgba(0,237,100,.12);color:#00ED64;border:1px solid #00ED64">MongoDB</span>
-        <span class="hero-tag" style="background:rgba(130,170,255,.12);color:#82aaff;border:1px solid #82aaff">LocalStorage</span>
-        <span class="hero-tag" style="background:rgba(255,159,67,.12);color:#ff9f43;border:1px solid #ff9f43">REST API</span>
+        <span class="hero-tag" style="background:rgba(var(--px-c-yellow-rgb),.12);color:var(--px-c-yellow);border:1px solid var(--px-c-yellow)">Firebase</span>
+        <span class="hero-tag" style="background:rgba(var(--px-c-green-rgb),.12);color:var(--px-c-green);border:1px solid var(--px-c-green)">Supabase</span>
+        <span class="hero-tag" style="background:rgba(var(--px-accent-rgb),.12);color:var(--px-accent);border:1px solid var(--px-accent)">MongoDB</span>
+        <span class="hero-tag" style="background:rgba(var(--px-c-blue-rgb),.12);color:var(--px-c-blue);border:1px solid var(--px-c-blue)">LocalStorage</span>
+        <span class="hero-tag" style="background:rgba(var(--px-c-orange-rgb),.12);color:var(--px-c-orange);border:1px solid var(--px-c-orange)">REST API</span>
     </div>
     <h1>الربط السحابي الشامل ☁️</h1>
     <p>تعلّم ربط تطبيقاتك بخمس أنظمة تخزين مختلفة — من المتصفح حتى السحابة — مع أكواد كاملة قابلة للنسخ مباشرة.</p>
@@ -267,11 +271,11 @@
 
 <!-- DB NAV -->
 <div class="db-nav">
-    <a class="db-nav-btn" href="#firebase"><span class="dot" style="background:#FFCA28"></span>Firebase</a>
-    <a class="db-nav-btn" href="#supabase"><span class="dot" style="background:#3ECF8E"></span>Supabase</a>
-    <a class="db-nav-btn" href="#mongo"><span class="dot" style="background:#00ED64"></span>MongoDB Atlas</a>
-    <a class="db-nav-btn" href="#local"><span class="dot" style="background:#82aaff"></span>LocalStorage</a>
-    <a class="db-nav-btn" href="#rest"><span class="dot" style="background:#ff9f43"></span>REST API</a>
+    <a class="db-nav-btn" href="#firebase"><span class="dot" style="background:var(--px-c-yellow)"></span>Firebase</a>
+    <a class="db-nav-btn" href="#supabase"><span class="dot" style="background:var(--px-c-green)"></span>Supabase</a>
+    <a class="db-nav-btn" href="#mongo"><span class="dot" style="background:var(--px-accent)"></span>MongoDB Atlas</a>
+    <a class="db-nav-btn" href="#local"><span class="dot" style="background:var(--px-c-blue)"></span>LocalStorage</a>
+    <a class="db-nav-btn" href="#rest"><span class="dot" style="background:var(--px-c-orange)"></span>REST API</a>
 </div>
 
 <div class="container">

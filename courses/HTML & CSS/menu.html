@@ -1,265 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Course | PhineX Academy</title>
-    <meta name="description" content="تعلّم HTML من الصفر حتى الاحتراف مع PhineX Academy. اكتشف أساسيات بناء صفحات الويب، العناصر، السمات، الهيكلية، والتكامل مع CSS وJavaScript في دورة شاملة ومفصلة.">
-    <link href="../../PhineX_Courses.png" rel="icon" type="image/png">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --neon: #39ff14;
-            --bg: #0a0a0a;
-            --card-bg: #1a1a1a;
-            --text: #ffffff;
-            --muted: #888;
-            --transition: all 0.3s ease;
-            --red : #ff4d4d;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-
-        .course-container {
-            width: 100%;
-            max-width: 800px;
-        }
-
-        /* Header & Progress */
-        .course-header {
-            margin-bottom: 30px;
-        }
-
-        .course-heading {
-            color: var(--red);
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .progress-container {
-            background: #333;
-            height: 8px;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        #progress-bar {
-            background: var(--neon);
-            width: 0%;
-            height: 100%;
-            transition: var(--transition);
-            box-shadow: 0 0 10px var(--neon);
-        }
-
-        /* Search Input */
-        .search-box {
-            width: 100%;
-            padding: 12px 15px;
-            background: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: white;
-            margin-bottom: 20px;
-            outline: none;
-        }
-
-        .search-box:focus {
-            border-color: var(--neon);
-        }
-
-        /* Menu List */
-        .course-menu {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .course-menu-item {
-            background: var(--card-bg);
-            border: 1px solid #333;
-            border-radius: 4px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-        }
-
-        .course-menu-item:hover {
-            border-color: var(--neon);
-            transform: translateX(5px);
-        }
-
-        .course-menu-item a {
-            text-decoration: none;
-            color: var(--text);
-            flex-grow: 1;
-            padding: 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .course-menu-item i.check-icon {
-            color: #333;
-            margin-right: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .course-menu-item.completed i.check-icon {
-            color: var(--neon);
-        }
-
-        .course-menu-item.completed a {
-            color: var(--muted);
-            text-decoration: line-through;
-        }
-
-        .lang-ar {
-            font-size: 0.9rem;
-            color: var(--muted);
-        }
-        .home-btn:hover{
-      color:rgb(255, 255, 255)!important;font-size:.9rem;
-      text-decoration:underline;margin-left: 10px; transition: all 0.3s ease;
-    }
-    
-    nav ul li{
-      display:flex;align-items:center;gap:6px;
-    }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HTML و CSS من الصفر — PhineX Academy</title>
+<meta name="description" content="مسار HTML و CSS بالعربي: من أول وسم لحد صفحات متجاوبة مع الموبايل، مع أمثلة تفاعلية ومشاريع.">
+<meta name="theme-color" content="#14181e">
+<link rel="icon" href="../../PhineX_Courses.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+<link rel="stylesheet" href="../../assets/site.css">
+<script src="../../assets/site.js"></script>
 </head>
 <body>
-<nav style="position:relative;z-index:10; padding:0 20px 20px;">
-  <ul>
-    <li><a href="../menu.html" style="color:rgba(255, 255, 255, 0.413); text-decoration:none; font-size:.9rem;" class="home-btn">Back to Home</a><i class="fas fa-arrow-left"></i></li>
-  </ul>
-</nav>
-<div class="course-container">
-    <div class="course-header">
-        <h3 class="course-heading"><i class="fab fa-html5"></i> HTML Course</h3>
-        <p>Complete the curriculum to master web structure.</p>
-        <div class="progress-container">
-            <div id="progress-bar"></div>
-        </div>
+<a class="skip" href="#main">تخطّي للمحتوى</a>
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="../../index.html" aria-label="PhineX Academy — الرئيسية"><span class="brand-mark">P</span><span class="brand-name">Phine<b>X</b></span></a>
+    <nav class="nav" data-px-nav aria-label="التنقل الرئيسي">
+      <a href="../../index.html">الرئيسية</a>
+      <a href="../../courses/menu.html" aria-current="page">الكورسات</a>
+      <a href="../../docs/index.html">المرجع (Docs)</a>
+      <a href="../../index.html#community">المجتمع</a>
+    </nav>
+    <div class="bar-tools">
+      <button class="ib" type="button" data-px-cycle aria-label="تغيير المظهر" title="تغيير المظهر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18" fill="currentColor" stroke="none" opacity=".55"/></svg></button>
     </div>
+  </div>
+</header>
+<header class="page-head">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="مسار التنقل"><a href="../../index.html">الرئيسية</a><span aria-hidden="true">›</span><a href="../menu.html">الكورسات</a><span aria-hidden="true">›</span><span>HTML و CSS</span></nav>
+    <h1>HTML و CSS من الصفر</h1>
+    <p>تعلّم HTML و CSS خطوة بخطوة بالعربي، وابنِ صفحات حقيقية من الصفر لحد الاحتراف.</p>
+  </div>
+</header>
+<main id="main" class="wrap" style="padding:8px 0 56px">
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="ابحث عن درس أو موضوع…" aria-label="بحث في الدروس" autocomplete="off"></div>
+  <h2 class="group-title" data-group>الدروس</h2>
+  <ol class="lessons">
+    <li><a class="lesson" href="getting-started.html" data-search="البداية من الصفر الكامل كيف يعمل الويب؟ ما هو html؟ إعداد vs code خطوة بخطوة"><span class="ln" aria-hidden="true"></span><span><b>البداية من الصفر الكامل</b><small>كيف يعمل الويب؟ ما هو HTML؟ إعداد VS Code خطوة بخطوة</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson" href="html-basics.html" data-search="أساسيات html — كل شيء من الصفر h1–h6، p، strong، em، ul، ol، a، img، semantic html"><span class="ln" aria-hidden="true"></span><span><b>أساسيات HTML — كل شيء من الصفر</b><small>h1–h6، p، strong، em، ul، ol، a، img، Semantic HTML</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson" href="all-html-elements.html" data-search="موسوعة جميع عناصر html كل عنصر بشرح + مثال + بحث فوري — المرجع الدائم"><span class="ln" aria-hidden="true"></span><span><b>موسوعة جميع عناصر HTML</b><small>كل عنصر بشرح + مثال + بحث فوري — المرجع الدائم</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson" href="html-attributes.html" data-search="سمات html (attributes) — شرح كل سمة id, class, style, href, src, alt, data-*, السمات العامة"><span class="ln" aria-hidden="true"></span><span><b>سمات HTML (Attributes) — شرح كل سمة</b><small>id, class, style, href, src, alt, data-*, السمات العامة</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson" href="html-with-css.html" data-search="html مع css — من رمادي لجميل box model، selectors، الألوان، الخطوط، css variables"><span class="ln" aria-hidden="true"></span><span><b>HTML مع CSS — من رمادي لجميل</b><small>Box Model، Selectors، الألوان، الخطوط، CSS Variables</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson" href="forms-and-validation.html" data-search="النماذج والتحقق من البيانات form، input، select، textarea، التحقق بـ js وregex"><span class="ln" aria-hidden="true"></span><span><b>النماذج والتحقق من البيانات</b><small>form، input، select، textarea، التحقق بـ JS وRegEx</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson" href="seo-for-html.html" data-search="seo لـ html — تصدّر نتائج البحث meta tags، open graph، twitter cards، defer/async"><span class="ln" aria-hidden="true"></span><span><b>SEO لـ HTML — تصدّر نتائج البحث</b><small>meta tags، Open Graph، Twitter Cards، defer/async</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson" href="html-with-javascript.html" data-search="html مع javascript — أضف الحياة dom، تعديل العناصر، الأحداث، إنشاء المحتوى ديناميكياً"><span class="ln" aria-hidden="true"></span><span><b>HTML مع JavaScript — أضف الحياة</b><small>DOM، تعديل العناصر، الأحداث، إنشاء المحتوى ديناميكياً</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+  </ol>
+  <h2 class="group-title" data-group>تطبيق ومرجع</h2>
+  <ol class="lessons">
+    <li><a class="lesson sp" href="projects.html" data-search="مشاريع html التطبيقية طبّق كل ما تعلمته في مشاريع حقيقية خطوة بخطوة"><span class="ln ic" aria-hidden="true">🎮</span><span><b>مشاريع HTML التطبيقية</b><small>طبّق كل ما تعلمته في مشاريع حقيقية خطوة بخطوة</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson sp" href="../../docs/index.html#/html" data-search="مرجع html الكامل 258 صفحة بالمصري مع أمثلة تفاعلية لكل عنصر وخاصية"><span class="ln ic" aria-hidden="true">📚</span><span><b>مرجع HTML الكامل</b><small>258 صفحة بالمصري مع أمثلة تفاعلية لكل عنصر وخاصية</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+    <li><a class="lesson sp" href="../../docs/index.html#/css" data-search="مرجع css الكامل 366 صفحة: الخصائص والدوال والـ selectors بأمثلة تجرّبها"><span class="ln ic" aria-hidden="true">🎨</span><span><b>مرجع CSS الكامل</b><small>366 صفحة: الخصائص والدوال والـ selectors بأمثلة تجرّبها</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span></a></li>
+  </ol>
+  <p class="empty" id="empty">مفيش نتائج لبحثك. جرّب كلمة تانية.</p>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-bottom" style="margin-top:0;padding-top:0;border-top:0">
+      <span>© 2026 PhineX Academy. جميع الحقوق محفوظة.</span>
+      <span><a href="../../index.html">الرئيسية</a> · <a href="../../courses/menu.html">كل الكورسات</a> · <a href="../../docs/index.html">المرجع</a></span>
+    </div>
+  </div>
+</footer>
 
-    <input type="text" id="searchInput" class="search-box" placeholder="Search lessons... بحث عن درس">
-
-    <ul class="course-menu" id="courseMenu">
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="getting-started.html">Getting started <span class="lang-ar">| البدء</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="html-basics.html">HTML Basics <span class="lang-ar">| أساسيات HTML</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="all-html-elements.html">All HTML Elements <span class="lang-ar">| جميع عناصر HTML</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="html-attributes.html">HTML Attributes <span class="lang-ar">| سمات HTML</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="html-with-css.html">HTML with CSS <span class="lang-ar">| HTML مع CSS</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="forms-and-validation.html">Forms & Validation <span class="lang-ar">| النماذج والتحقق</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="seo-for-html.html">SEO for HTML <span class="lang-ar">| تحسين محركات البحث</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="html-with-javascript.html">HTML with JavaScript <span class="lang-ar">| HTML مع JavaScript</span></a>
-        </li>
-        <li class="course-menu-item">
-            <i class="fas fa-check-circle check-icon"></i>
-            <a href="projects.html">Projects <span class="lang-ar">| مشاريع</span></a>
-        </li>
-    </ul>
-</div>
-
+<nav class="tabbar" aria-label="التنقل">
+  <a href="../../index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V20h14v-9.5"/><path d="M10 20v-5h4v5"/></svg><span>الرئيسية</span></a>
+  <a href="../../courses/menu.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><span>الكورسات</span></a>
+  <a href="../../docs/index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg><span>المرجع</span></a>
+  <button type="button" data-px-cycle aria-label="تغيير المظهر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 3a9 9 0 0 1 0 18" fill="currentColor" stroke="none" opacity=".5"/></svg><span>المظهر</span></button>
+</nav>
 <script>
-    const searchInput = document.getElementById('searchInput');
-    const menuItems = document.querySelectorAll('.course-menu-item');
-    const progressBar = document.getElementById('progress-bar');
-    const checkIcons = document.querySelectorAll('.check-icon');
-
-    // Storage key for each lesson, in the same order as the list above.
-    // Lessons set their own key to 'completed' when finished (see getting-started.html, html-with-css.html).
-    const LESSON_KEYS = [
-        'getting-started', 'html-basics', 'all-html-elements', 'html-attributes',
-        'html-with-css', 'forms-and-validation', 'seo-for-html', 'html-with-javascript', 'projects'
-    ];
-
-    // 1. Search Functionality
-    searchInput.addEventListener('keyup', (e) => {
-        const term = e.target.value.toLowerCase();
-        menuItems.forEach(item => {
-            const text = item.innerText.toLowerCase();
-            item.style.display = text.includes(term) ? 'flex' : 'none';
-        });
-    });
-
-    // 2. Progress Tracking
-    function updateProgress() {
-        const total = menuItems.length;
-        const completed = document.querySelectorAll('.course-menu-item.completed').length;
-        const percentage = (completed / total) * 100;
-        progressBar.style.width = percentage + '%';
-    }
-
-    function saveProgress(index, isCompleted) {
-        const key = LESSON_KEYS[index];
-        if (!key) return;
-        if (isCompleted) localStorage.setItem(key, 'completed');
-        else localStorage.removeItem(key);
-    }
-
-    // 3. Toggle Completion (manual override by the learner)
-    checkIcons.forEach((icon, index) => {
-        icon.addEventListener('click', () => {
-            const parent = icon.parentElement;
-            parent.classList.toggle('completed');
-            updateProgress();
-            saveProgress(index, parent.classList.contains('completed'));
-        });
-    });
-
-    // Restore completion state for every lesson from storage (not just the first)
-    menuItems.forEach((item, index) => {
-        if (localStorage.getItem(LESSON_KEYS[index]) === 'completed') {
-            item.classList.add('completed');
-        }
-    });
-    updateProgress();
+(function(){
+  var q=document.getElementById('q'),empty=document.getElementById('empty');
+  q.addEventListener('input',function(){
+    var t=q.value.trim().toLowerCase(),n=0;
+    document.querySelectorAll('.lesson').forEach(function(a){var s=!t||(a.getAttribute('data-search')||'').indexOf(t)>-1;a.parentNode.style.display=s?'':'none';if(s)n++;});
+    document.querySelectorAll('[data-group]').forEach(function(g){g.style.display=t?'none':'';});
+    empty.style.display=n?'none':'block';
+  });
+})();
 </script>
-
 </body>
 </html>

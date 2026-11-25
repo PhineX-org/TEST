@@ -1,25 +1,29 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
+<meta name="theme-color" content="#14181e">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الاختبار النهائي — 30 سؤال | PhineX Academy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --js-gold: #f7df1e;
-            --neon-cyan: #00d4ff;
-            --neon-green: #c3e88d;
-            --neon-pink: #ff5874;
-            --neon-purple: #bb86fc;
-            --bg: #080b10;
-            --bg2: #0d1117;
-            --card: #111827;
-            --card2: #1a2233;
-            --border: #1e2d42;
-            --text: #cdd6f4;
-            --muted: #6b7a99;
-            --code-bg: #0a0f1a;
+            --js-gold:var(--px-c-yellow);
+            --neon-cyan:var(--px-c-cyan);
+            --neon-green:var(--px-c-green);
+            --neon-pink:var(--px-c-red);
+            --neon-purple:var(--px-c-purple);
+            --bg:var(--px-bg);
+            --bg2:var(--px-surface);
+            --card:var(--px-card);
+            --card2:var(--px-card2);
+            --border:var(--px-line);
+            --text:var(--px-text);
+            --muted:var(--px-muted);
+            --code-bg:var(--px-code-bg);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,9 +35,9 @@
             min-height: 100vh;
         }
 
-        /* ── HEADER ── */
+        
         .site-header {
-            background: #0d1117;
+            background:var(--px-surface);
             border-bottom: 1px solid var(--border);
             padding: 0 40px;
             display: flex;
@@ -44,7 +48,7 @@
             top: 0;
             z-index: 100;
         }
-        .logo { font-family: 'Orbitron', monospace; color: var(--js-gold); font-size: 1.1rem; }
+        .logo { font-family: 'Cairo', monospace; color: var(--js-gold); font-size: 1.1rem; }
         .back-btn {
             color: var(--neon-cyan);
             text-decoration: none;
@@ -54,9 +58,9 @@
             border-radius: 6px;
             transition: all 0.3s;
         }
-        .back-btn:hover { background: var(--neon-cyan); color: #000; }
+        .back-btn:hover { background: var(--neon-cyan); color:var(--px-on-accent); }
 
-        /* ── PROGRESS BAR ── */
+        
         .quiz-progress-bar {
             height: 4px;
             background: var(--border);
@@ -71,11 +75,11 @@
             box-shadow: 0 0 8px var(--neon-green);
         }
 
-        /* ── SCREENS ── */
+        
         .screen { display: none; }
         .screen.active { display: block; }
 
-        /* ── INTRO SCREEN ── */
+        
         .intro-wrap {
             max-width: 700px;
             margin: 80px auto;
@@ -84,19 +88,19 @@
         }
         .intro-badge {
             display: inline-block;
-            background: rgba(247,223,30,0.1);
+            background:rgba(var(--px-c-yellow-rgb),0.1);
             border: 1px solid var(--js-gold);
             color: var(--js-gold);
             padding: 6px 20px;
             border-radius: 30px;
             font-size: 0.85rem;
             margin-bottom: 24px;
-            font-family: 'Orbitron', monospace;
+            font-family: 'Cairo', monospace;
         }
         .intro-wrap h1 {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Cairo', monospace;
             font-size: 2.4rem;
-            color: #fff;
+            color:var(--px-text-strong);
             margin-bottom: 16px;
             line-height: 1.2;
         }
@@ -117,7 +121,7 @@
             text-align: center;
         }
         .stat-card .num {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Cairo', monospace;
             font-size: 2rem;
             color: var(--js-gold);
         }
@@ -125,7 +129,7 @@
 
         .btn-start {
             background: var(--js-gold);
-            color: #000;
+            color:var(--px-on-accent);
             border: none;
             padding: 18px 60px;
             border-radius: 12px;
@@ -134,11 +138,11 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 0 30px rgba(247,223,30,0.25);
+            box-shadow:0 0 30px rgba(var(--px-c-yellow-rgb),0.25);
         }
-        .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 40px rgba(247,223,30,0.4); }
+        .btn-start:hover { transform: scale(1.04); box-shadow:0 0 40px rgba(var(--px-c-yellow-rgb),0.4); }
 
-        /* ── QUIZ SCREEN ── */
+        
         .quiz-wrap {
             max-width: 800px;
             margin: 0 auto;
@@ -152,7 +156,7 @@
             margin-bottom: 30px;
         }
         .q-counter .q-num {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Cairo', monospace;
             color: var(--neon-cyan);
             font-size: 0.95rem;
         }
@@ -165,7 +169,7 @@
             font-size: 0.8rem;
         }
         .timer-badge {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Cairo', monospace;
             color: var(--neon-pink);
             font-size: 0.95rem;
         }
@@ -179,7 +183,7 @@
         }
         .question-card h2 {
             font-size: 1.3rem;
-            color: #fff;
+            color:var(--px-text-strong);
             font-weight: 600;
             line-height: 1.6;
             margin-bottom: 8px;
@@ -193,12 +197,11 @@
             font-size: 0.85rem;
             direction: ltr;
             text-align: left;
-            color: #abb2bf;
+            color:var(--px-text);
             margin: 16px 0;
-            line-height: 1.7;
-        }
+            line-height: 1.7;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--js-gold:var(--px-c-yellow);--neon-cyan:var(--px-c-cyan);--neon-green:var(--px-c-green);--neon-pink:var(--px-c-red);--neon-purple:var(--px-c-purple);--bg:var(--px-bg);--bg2:var(--px-surface);--card:var(--px-card);--card2:var(--px-card2);--border:var(--px-line);--text:var(--px-text);--muted:var(--px-muted);--code-bg:var(--px-code-bg)}
 
-        /* Options */
+        
         .options { display: flex; flex-direction: column; gap: 12px; }
         .option-btn {
             background: var(--card2);
@@ -217,7 +220,7 @@
         }
         .option-btn:hover:not(:disabled) {
             border-color: var(--neon-cyan);
-            background: rgba(0,212,255,0.08);
+            background:rgba(var(--px-c-cyan-rgb),0.08);
         }
         .option-btn .opt-letter {
             width: 32px;
@@ -234,16 +237,16 @@
         }
         .option-btn.correct {
             border-color: var(--neon-green);
-            background: rgba(195,232,141,0.1);
+            background:rgba(var(--px-c-green-rgb),0.1);
             color: var(--neon-green);
         }
-        .option-btn.correct .opt-letter { background: var(--neon-green); color: #000; }
+        .option-btn.correct .opt-letter { background: var(--neon-green); color:var(--px-on-accent); }
         .option-btn.wrong {
             border-color: var(--neon-pink);
-            background: rgba(255,88,116,0.1);
+            background:rgba(var(--px-c-red-rgb),0.1);
             color: var(--neon-pink);
         }
-        .option-btn.wrong .opt-letter { background: var(--neon-pink); color: #fff; }
+        .option-btn.wrong .opt-letter { background: var(--neon-pink); color:var(--px-text-strong); }
         .option-btn:disabled { cursor: not-allowed; }
 
         .feedback-box {
@@ -261,7 +264,7 @@
 
         .btn-next {
             background: var(--neon-cyan);
-            color: #000;
+            color:var(--px-on-accent);
             border: none;
             padding: 14px 40px;
             border-radius: 10px;
@@ -277,7 +280,7 @@
         .btn-next.show { display: block; }
         .btn-next:hover { opacity: 0.85; }
 
-        /* ── RESULT SCREEN ── */
+        
         .result-wrap {
             max-width: 700px;
             margin: 60px auto;
@@ -297,7 +300,7 @@
             position: relative;
         }
         .result-circle .score-num {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Cairo', monospace;
             font-size: 3rem;
             font-weight: 900;
             line-height: 1;
@@ -307,7 +310,7 @@
             opacity: 0.7;
         }
         .result-grade {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Cairo', monospace;
             font-size: 2rem;
             margin-bottom: 12px;
         }
@@ -349,7 +352,7 @@
         .btn-retry:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
         .btn-review-link {
             background: var(--js-gold);
-            color: #000;
+            color:var(--px-on-accent);
             border: none;
             padding: 14px 30px;
             border-radius: 10px;
@@ -362,12 +365,12 @@
         }
         .btn-review-link:hover { opacity: 0.85; }
 
-        /* Wrong answers review */
+        
         .wrong-review { margin-top: 40px; text-align: right; }
         .wrong-review h3 { color: var(--neon-pink); margin-bottom: 16px; font-size: 1.2rem; }
         .wrong-item {
             background: var(--card);
-            border: 1px solid rgba(255,88,116,0.3);
+            border:1px solid rgba(var(--px-c-red-rgb),0.3);
             border-radius: 12px;
             padding: 16px 20px;
             margin-bottom: 12px;
@@ -376,8 +379,10 @@
         .wrong-item .wi-correct { color: var(--neon-green); font-size: 0.9rem; }
         .wrong-item .wi-yours { color: var(--neon-pink); font-size: 0.9rem; }
     </style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<script src="../../assets/site.js"></script>
 </head>
-<body>
+<body data-px-tools>
 
 <header class="site-header">
     <div class="logo">PhineX Academy</div>

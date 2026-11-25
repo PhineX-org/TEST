@@ -1,28 +1,32 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
+<meta name="theme-color" content="#14181e">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أساسيات HTML | PhineX Academy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --neon:#39ff14; --neon-dim:rgba(57,255,20,0.08);
-            --bg:#080a0d; --card:#0f1219; --card2:#141b24;
-            --border:rgba(255,255,255,0.07); --border-neon:rgba(57,255,20,0.25);
-            --text:#c9d1d9; --muted:#5a6478; --gold:#f7df1e; --blue:#58a6ff; --red:#ff4d4d;
+            --neon:var(--px-accent); --neon-dim:rgba(var(--px-accent-rgb),0.08);
+            --bg:var(--px-bg); --card:var(--px-card); --card2:var(--px-card2);
+            --border:var(--px-line); --border-neon:rgba(var(--px-accent-rgb),.22);
+            --text:var(--px-text); --muted:var(--px-muted); --gold:var(--px-c-yellow); --blue:var(--px-c-blue); --red:var(--px-c-red);
         }
         *{box-sizing:border-box;margin:0;padding:0;}
         body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;line-height:1.85;}
 
-        .header{background:rgba(8,10,13,.95);border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+        .header{background:rgba(var(--px-bg-rgb),.95);border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
         .logo{color:var(--neon);font-weight:800;font-size:1.1rem;}
         .back-link{color:var(--muted);text-decoration:none;font-size:.85rem;border:1px solid var(--border);padding:5px 14px;border-radius:6px;transition:.3s;}
         .back-link:hover{border-color:var(--neon);color:var(--neon);}
 
-        .hero{background:radial-gradient(ellipse at 50% 0%,rgba(57,255,20,.06) 0%,transparent 65%);text-align:center;padding:64px 24px 48px;border-bottom:1px solid var(--border);}
+        .hero{background:radial-gradient(ellipse at 50% 0%,rgba(var(--px-accent-rgb),.06) 0%,transparent 65%);text-align:center;padding:64px 24px 48px;border-bottom:1px solid var(--border);}
         .lesson-pill{display:inline-block;background:var(--neon-dim);border:1px solid var(--border-neon);color:var(--neon);padding:4px 16px;border-radius:20px;font-size:.78rem;font-weight:700;letter-spacing:1px;margin-bottom:18px;}
-        .hero h1{font-size:2.1rem;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.2;}
+        .hero h1{font-size:2.1rem;font-weight:800;color:var(--px-text-strong);margin-bottom:12px;line-height:1.2;}
         .hero h1 span{color:var(--neon);}
         .hero p{color:var(--muted);font-size:1rem;max-width:540px;margin:0 auto;}
 
@@ -31,7 +35,7 @@
         .section-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden;}
         .section-card::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--neon);border-radius:0 16px 16px 0;}
         .step-label{font-size:.72rem;font-weight:700;letter-spacing:2px;color:var(--neon);margin-bottom:8px;text-transform:uppercase;}
-        .section-card h2{color:#fff;font-size:1.35rem;font-weight:700;margin-bottom:14px;}
+        .section-card h2{color:var(--px-text-strong);font-size:1.35rem;font-weight:700;margin-bottom:14px;}
         .section-card h3{color:var(--neon);font-size:1.05rem;font-weight:700;margin:20px 0 10px;}
         .section-card h4{color:var(--gold);font-size:.95rem;font-weight:700;margin:14px 0 8px;}
         .section-card p{color:var(--text);margin-bottom:12px;}
@@ -39,22 +43,22 @@
         .explain-box{background:var(--card2);border-right:3px solid var(--neon);border-radius:0 10px 10px 0;padding:16px 18px;margin:14px 0;font-size:.93rem;}
         .explain-box strong{color:var(--neon);}
 
-        /* CODE ANNOTATED */
+        
         .code-wrap{margin:16px 0;}
         .code-title{background:var(--card2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:7px 16px;font-family:'Fira Code',monospace;font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
         .code-title .dot{width:8px;height:8px;border-radius:50%;}
-        .code-block{background:#0a0d12;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;font-family:'Fira Code',monospace;font-size:.87rem;direction:ltr;overflow-x:auto;}
-        .code-line{display:flex;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.03);}
+        .code-block{background:var(--px-code-bg);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;font-family:'Fira Code',monospace;font-size:.87rem;direction:ltr;overflow-x:auto;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--neon:var(--px-accent);--neon-dim:rgba(var(--px-accent-rgb),0.08);--bg:var(--px-bg);--card:var(--px-card);--card2:var(--px-card2);--border:var(--px-line);--border-neon:rgba(var(--px-accent-rgb),.22);--text:var(--px-text);--muted:var(--px-muted);--gold:var(--px-c-yellow);--blue:var(--px-c-blue);--red:var(--px-c-red)}
+        .code-line{display:flex;align-items:flex-start;border-bottom:1px solid rgba(var(--px-ink-rgb),.03);}
         .code-line:last-child{border-bottom:none;}
-        .code-line:hover{background:rgba(57,255,20,.03);}
-        .line-num{min-width:42px;padding:9px 10px;text-align:right;color:var(--muted);font-size:.78rem;user-select:none;border-left:1px solid rgba(255,255,255,.04);flex-shrink:0;}
-        .line-code{padding:9px 16px;flex:1;color:#abb2bf;white-space:pre;}
-        .line-note{padding:9px 16px 9px 0;font-size:.78rem;color:var(--muted);font-family:'Cairo',sans-serif;direction:rtl;min-width:180px;max-width:240px;flex-shrink:0;line-height:1.4;border-right:1px solid rgba(57,255,20,.1);}
+        .code-line:hover{background:rgba(var(--px-accent-rgb),.03);}
+        .line-num{min-width:42px;padding:9px 10px;text-align:right;color:var(--muted);font-size:.78rem;user-select:none;border-left:1px solid rgba(var(--px-ink-rgb),.04);flex-shrink:0;}
+        .line-code{padding:9px 16px;flex:1;color:var(--px-text);white-space:pre;}
+        .line-note{padding:9px 16px 9px 0;font-size:.78rem;color:var(--muted);font-family:'Cairo',sans-serif;direction:rtl;min-width:180px;max-width:240px;flex-shrink:0;line-height:1.4;border-right:1px solid rgba(var(--px-accent-rgb),.1);}
         .line-note.hi{color:var(--neon);}
 
-        .t{color:#e06c75;} .a{color:#e5c07b;} .v{color:#98c379;} .c{color:#5c6370;font-style:italic;} .tx{color:#abb2bf;} .k{color:#c678dd;}
+        .t{color:var(--px-c-red);} .a{color:var(--px-c-orange);} .v{color:var(--px-c-green);} .c{color:var(--px-muted);font-style:italic;} .tx{color:var(--px-text);} .k{color:var(--px-c-purple);}
 
-        /* TAG CARD GRID */
+        
         .tags-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:14px 0;}
         .tag-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:.25s;}
         .tag-card:hover{border-color:var(--border-neon);}
@@ -63,51 +67,53 @@
         .tag-card .tag-example{font-family:'Fira Code',monospace;font-size:.78rem;color:var(--muted);margin-top:6px;direction:ltr;text-align:left;}
 
         .note{border-right:3px solid;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.91rem;}
-        .note.warn{border-color:var(--gold);background:rgba(247,223,30,.06);}
-        .note.info{border-color:var(--blue);background:rgba(88,166,255,.06);}
+        .note.warn{border-color:var(--gold);background:rgba(var(--px-c-yellow-rgb),.06);}
+        .note.info{border-color:var(--blue);background:rgba(var(--px-c-blue-rgb),.06);}
         .note.good{border-color:var(--neon);background:var(--neon-dim);}
-        .note.danger{border-color:var(--red);background:rgba(255,77,77,.06);}
+        .note.danger{border-color:var(--red);background:rgba(var(--px-c-red-rgb),.06);}
 
-        /* LIVE EDITOR */
+        
         .editor-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;}
         @media(max-width:640px){.editor-wrap{grid-template-columns:1fr;}}
-        .editor-wrap textarea{width:100%;height:280px;background:#0a0d12;color:#abb2bf;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Fira Code',monospace;font-size:.85rem;outline:none;resize:none;direction:ltr;text-align:left;}
+        .editor-wrap textarea{width:100%;height:280px;background:var(--px-code-bg);color:var(--px-text);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Fira Code',monospace;font-size:.85rem;outline:none;resize:none;direction:ltr;text-align:left;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--neon:var(--px-accent);--neon-dim:rgba(var(--px-accent-rgb),0.08);--bg:var(--px-bg);--card:var(--px-card);--card2:var(--px-card2);--border:var(--px-line);--border-neon:rgba(var(--px-accent-rgb),.22);--text:var(--px-text);--muted:var(--px-muted);--gold:var(--px-c-yellow);--blue:var(--px-c-blue);--red:var(--px-c-red)}
         .editor-wrap textarea:focus{border-color:var(--neon);}
         .editor-label{font-size:.78rem;color:var(--muted);margin-bottom:6px;font-weight:600;}
-        .editor-wrap iframe{width:100%;height:280px;background:#fff;border:1px solid var(--border);border-radius:8px;}
+        .editor-wrap iframe{width:100%;height:280px;background:var(--px-paper);border:1px solid var(--border);border-radius:8px;--px-text:#2a303c;--px-text-strong:#161b25;--px-muted:#5d6879;--px-faint:#8a94a4;--px-line:rgba(40,50,70,.10);--px-line-strong:rgba(40,50,70,.20);--px-ink-rgb:40,50,70;--px-accent:#15735e;--px-accent-rgb:21,115,94;--px-c-red:#b24545;--px-c-red-rgb:178,69,69;--px-c-orange:#a85a22;--px-c-orange-rgb:168,90,34;--px-c-yellow:#8a6410;--px-c-yellow-rgb:138,100,16;--px-c-green:#2f6b3a;--px-c-green-rgb:47,107,58;--px-c-cyan:#1f6e82;--px-c-cyan-rgb:31,110,130;--px-c-blue:#2d5fa6;--px-c-blue-rgb:45,95,166;--px-c-purple:#5d4a9c;--px-c-purple-rgb:93,74,156;--px-c-pink:#a8456e;--px-c-pink-rgb:168,69,110;color:var(--px-text);}
 
-        /* NESTING VISUAL */
-        .nest-visual{font-family:'Fira Code',monospace;font-size:.85rem;direction:ltr;background:#0a0d12;border:1px solid var(--border);border-radius:10px;padding:20px;margin:14px 0;line-height:2;}
-        .nest-1{color:#e06c75;}
-        .nest-2{color:#e5c07b;margin-right:20px;display:block;}
-        .nest-3{color:#98c379;margin-right:40px;display:block;}
-        .nest-note{color:#5c6370;font-style:italic;}
+        
+        .nest-visual{font-family:'Fira Code',monospace;font-size:.85rem;direction:ltr;background:var(--px-surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin:14px 0;line-height:2;}
+        .nest-1{color:var(--px-c-red);}
+        .nest-2{color:var(--px-c-orange);margin-right:20px;display:block;}
+        .nest-3{color:var(--px-c-green);margin-right:40px;display:block;}
+        .nest-note{color:var(--px-muted);font-style:italic;}
 
-        /* COMPARE TABLE */
+        
         .compare-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88rem;}
         .compare-table th{background:var(--card2);color:var(--neon);padding:10px 14px;border:1px solid var(--border);text-align:right;}
         .compare-table td{padding:9px 14px;border:1px solid var(--border);}
-        .compare-table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+        .compare-table tr:nth-child(even) td{background:rgba(var(--px-ink-rgb),.02);}
 
-        /* QUIZ */
+        
         .quiz-section{background:var(--card);border:2px solid var(--border-neon);border-radius:16px;padding:28px 32px;margin-top:40px;}
         .quiz-section h2{color:var(--neon);font-size:1.3rem;margin-bottom:6px;}
         .quiz-section>p{color:var(--muted);font-size:.88rem;margin-bottom:24px;}
         .q-card{background:var(--card2);border-radius:10px;padding:18px 20px;margin-bottom:14px;border:1px solid var(--border);}
-        .q-card p{font-weight:600;color:#fff;margin-bottom:12px;font-size:.95rem;}
-        .q-card code{background:rgba(57,255,20,.1);color:var(--neon);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem;}
-        .q-code{background:#0a0d12;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:'Fira Code',monospace;font-size:.82rem;direction:ltr;text-align:left;color:#abb2bf;margin:10px 0;}
+        .q-card p{font-weight:600;color:var(--px-text-strong);margin-bottom:12px;font-size:.95rem;}
+        .q-card code{background:rgba(var(--px-accent-rgb),.1);color:var(--neon);padding:1px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.85rem;}
+        .q-code{background:var(--px-code-bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:'Fira Code',monospace;font-size:.82rem;direction:ltr;text-align:left;color:var(--px-text);margin:10px 0;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--neon:var(--px-accent);--neon-dim:rgba(var(--px-accent-rgb),0.08);--bg:var(--px-bg);--card:var(--px-card);--card2:var(--px-card2);--border:var(--px-line);--border-neon:rgba(var(--px-accent-rgb),.22);--text:var(--px-text);--muted:var(--px-muted);--gold:var(--px-c-yellow);--blue:var(--px-c-blue);--red:var(--px-c-red)}
         .q-options label{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;font-size:.91rem;transition:.2s;}
         .q-options label:hover{border-color:var(--neon);background:var(--neon-dim);}
         .q-options input[type=radio]{accent-color:var(--neon);}
-        .btn-quiz{background:var(--neon);color:#000;border:none;padding:13px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;transition:.3s;}
+        .btn-quiz{background:var(--neon);color:var(--px-on-accent);border:none;padding:13px;border-radius:8px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;margin-top:8px;transition:.3s;}
         .btn-quiz:hover{opacity:.85;}
         #quiz-result{margin-top:14px;padding:14px;border-radius:8px;text-align:center;font-weight:700;display:none;}
-        .btn-finish{display:block;background:var(--neon);color:#000;border:none;padding:15px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;width:100%;margin-top:20px;text-align:center;text-decoration:none;transition:.3s;}
+        .btn-finish{display:block;background:var(--neon);color:var(--px-on-accent);border:none;padding:15px;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;width:100%;margin-top:20px;text-align:center;text-decoration:none;transition:.3s;}
         .btn-finish:hover{opacity:.85;}
     </style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<script src="../../assets/site.js"></script>
 </head>
-<body>
+<body data-px-tools>
 
 <header class="header">
     <div class="logo">PhineX Academy</div>
@@ -130,7 +136,7 @@
     <p>HTML توفر <strong>ستة مستويات من العناوين</strong> من h1 (الأكبر والأهم) إلى h6 (الأصغر والأقل أهمية). فكر فيها كعناوين كتاب: الفصل (h1)، المبحث (h2)، العنصر الفرعي (h3)، وهكذا.</p>
 
     <div class="code-wrap">
-        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> headings.html</div>
+        <div class="code-title"><div class="dot" style="background:var(--px-c-red)"></div><div class="dot" style="background:var(--px-c-orange)"></div><div class="dot" style="background:var(--px-c-green)"></div> headings.html</div>
         <div class="code-block">
             <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;h1&gt;</span><span class="tx">عنوان من المستوى 1 — الأكبر</span><span class="t">&lt;/h1&gt;</span></div><div class="line-note hi">الأكبر والأهم — يجب أن يكون فريداً في الصفحة</div></div>
             <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;h2&gt;</span><span class="tx">عنوان من المستوى 2</span><span class="t">&lt;/h2&gt;</span></div><div class="line-note">عنوان قسم رئيسي</div></div>
@@ -175,7 +181,7 @@
     <p>النصوص هي جوهر أي موقع. HTML توفر عدة عناصر للتعامل مع النصوص بشكل دلالي (أي كل عنصر له معنى محدد).</p>
 
     <div class="code-wrap">
-        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> text-elements.html</div>
+        <div class="code-title"><div class="dot" style="background:var(--px-c-red)"></div><div class="dot" style="background:var(--px-c-orange)"></div><div class="dot" style="background:var(--px-c-green)"></div> text-elements.html</div>
         <div class="code-block">
             <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">هذه فقرة نصية عادية. المتصفح يضيف مسافة فوقها وتحتها تلقائياً.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note hi">p = Paragraph. أكثر tag استخداماً للنص</div></div>
             <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;p&gt;</span><span class="tx">هذه الكلمة </span><span class="t">&lt;strong&gt;</span><span class="tx">مهمة جداً</span><span class="t">&lt;/strong&gt;</span><span class="tx"> في الجملة.</span><span class="t">&lt;/p&gt;</span></div><div class="line-note">strong = غامق + يعني أهمية دلالية</div></div>
@@ -224,7 +230,7 @@
     <p>القوائم من أكثر عناصر HTML استخداماً. تنقسم إلى ثلاثة أنواع رئيسية. كل نوع يُستخدم في حالة محددة.</p>
 
     <div class="code-wrap">
-        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> lists.html</div>
+        <div class="code-title"><div class="dot" style="background:var(--px-c-red)"></div><div class="dot" style="background:var(--px-c-orange)"></div><div class="dot" style="background:var(--px-c-green)"></div> lists.html</div>
         <div class="code-block">
             <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!-- النوع 1: قائمة غير مرتبة (Unordered List) --&gt;</span></div><div class="line-note">ul = Unordered List = نقاط</div></div>
             <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;ul&gt;</span></div><div class="line-note">بداية القائمة — كل عنصر بنقطة</div></div>
@@ -287,7 +293,7 @@
     <p>تاج <code>&lt;a&gt;</code> (اختصار Anchor = مرساة) يُنشئ الروابط. بدونه لن تكون الصفحات متصلة ببعضها.</p>
 
     <div class="code-wrap">
-        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> links.html</div>
+        <div class="code-title"><div class="dot" style="background:var(--px-c-red)"></div><div class="dot" style="background:var(--px-c-orange)"></div><div class="dot" style="background:var(--px-c-green)"></div> links.html</div>
         <div class="code-block">
             <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!-- رابط خارجي --&gt;</span></div><div class="line-note">للمواقع الخارجية</div></div>
             <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;a</span> <span class="a">href</span>=<span class="v">"https://google.com"</span><span class="t">&gt;</span><span class="tx">زيارة جوجل</span><span class="t">&lt;/a&gt;</span></div><div class="line-note hi">href = hypertext reference. يحدد الوجهة</div></div>
@@ -308,7 +314,7 @@
 
     <h3>الصور: &lt;img&gt;</h3>
     <div class="code-wrap">
-        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> images.html</div>
+        <div class="code-title"><div class="dot" style="background:var(--px-c-red)"></div><div class="dot" style="background:var(--px-c-orange)"></div><div class="dot" style="background:var(--px-c-green)"></div> images.html</div>
         <div class="code-block">
             <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="c">&lt;!-- صورة من الإنترنت --&gt;</span></div><div class="line-note"></div></div>
             <div class="code-line"><div class="line-num">2</div><div class="line-code"><span class="t">&lt;img</span> <span class="a">src</span>=<span class="v">"https://example.com/photo.jpg"</span> <span class="a">alt</span>=<span class="v">"وصف الصورة"</span><span class="t">&gt;</span></div><div class="line-note hi">src = المسار. alt = النص البديل. لا تحتاج إغلاق</div></div>
@@ -344,9 +350,9 @@
 <span class="nest-3">&lt;header&gt; ... &lt;/header&gt; <span class="nest-note">← رأس الصفحة (اللوجو والقائمة)</span></span>
 <span class="nest-3">&lt;nav&gt; ... &lt;/nav&gt; <span class="nest-note">← قائمة التنقل</span></span>
 <span class="nest-3">&lt;main&gt; <span class="nest-note">← المحتوى الرئيسي (مرة واحدة فقط)</span></span>
-<span style="margin-right:60px;display:block;color:#98c379">&lt;section&gt; ... &lt;/section&gt; <span class="nest-note">← قسم موضوعي</span></span>
-<span style="margin-right:60px;display:block;color:#98c379">&lt;article&gt; ... &lt;/article&gt; <span class="nest-note">← مقال مستقل</span></span>
-<span style="margin-right:60px;display:block;color:#98c379">&lt;aside&gt; ... &lt;/aside&gt; <span class="nest-note">← محتوى جانبي</span></span>
+<span style="margin-right:60px;display:block;color:var(--px-c-green)">&lt;section&gt; ... &lt;/section&gt; <span class="nest-note">← قسم موضوعي</span></span>
+<span style="margin-right:60px;display:block;color:var(--px-c-green)">&lt;article&gt; ... &lt;/article&gt; <span class="nest-note">← مقال مستقل</span></span>
+<span style="margin-right:60px;display:block;color:var(--px-c-green)">&lt;aside&gt; ... &lt;/aside&gt; <span class="nest-note">← محتوى جانبي</span></span>
 <span class="nest-3">&lt;/main&gt;</span>
 <span class="nest-3">&lt;footer&gt; ... &lt;/footer&gt; <span class="nest-note">← ذيل الصفحة</span></span>
 <span class="nest-2">&lt;/body&gt;</span>
@@ -354,7 +360,7 @@
     </div>
 
     <div class="code-wrap">
-        <div class="code-title"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div> semantic-page.html — هيكل صفحة كاملة</div>
+        <div class="code-title"><div class="dot" style="background:var(--px-c-red)"></div><div class="dot" style="background:var(--px-c-orange)"></div><div class="dot" style="background:var(--px-c-green)"></div> semantic-page.html — هيكل صفحة كاملة</div>
         <div class="code-block">
             <div class="code-line"><div class="line-num">1</div><div class="line-code"><span class="t">&lt;header&gt;</span></div><div class="line-note hi">رأس الصفحة — يحتوي عادة اللوجو والناف</div></div>
             <div class="code-line"><div class="line-num">2</div><div class="line-code">  <span class="t">&lt;h1&gt;</span><span class="tx">اسم الموقع</span><span class="t">&lt;/h1&gt;</span></div><div class="line-note">اسم الموقع أو العلامة التجارية</div></div>
@@ -466,7 +472,7 @@ function checkQuiz() {
     const el=document.getElementById('quiz-result');
     el.style.display='block';
     if(score===total){
-        el.style.cssText='display:block;background:rgba(57,255,20,.1);color:#39ff14;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';
+        el.style.cssText='display:block;background:rgba(111,195,163,.1);color:#6fc3a3;padding:14px;border-radius:8px;text-align:center;font-weight:700;margin-top:14px;';
         el.textContent='🏆 ممتاز! جميع الإجابات صحيحة. أنت مستعد للدرس التالي!';
         document.getElementById('finish-btn').style.display='block';
     } else {

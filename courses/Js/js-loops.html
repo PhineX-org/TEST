@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
+<meta name="theme-color" content="#14181e">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مركز التحكم في المنطق | PhineX Academy</title>
     <style>
         :root {
-            --primary: #00d4ff;
-            --bg: #0d1117;
-            --card-bg: #161b22;
-            --text: #c9d1d9;
-            --code-bg: #000;
-            --accent: #ff007f;
+            --primary:var(--px-c-cyan);
+            --bg:var(--px-bg);
+            --card-bg:var(--px-card);
+            --text:var(--px-text);
+            --code-bg:var(--px-code-bg);
+            --accent:var(--px-c-pink);
         }
 
         body {
@@ -28,10 +32,10 @@
         .lesson-header {
             text-align: center;
             padding: 40px;
-            background: linear-gradient(135deg, #161b22, #0d1117);
+            background:linear-gradient(135deg, var(--px-card), var(--px-surface));
             border-radius: 20px;
             margin-bottom: 30px;
-            border: 1px solid #30363d;
+            border:1px solid var(--px-card2);
         }
 
         .lesson-card {
@@ -39,15 +43,15 @@
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 40px;
-            border: 1px solid #30363d;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border:1px solid var(--px-card2);
+            box-shadow:0 10px 30px rgba(0,0,0,0.5);
         }
 
         h2 { color: var(--primary); font-size: 1.8rem; margin-top: 0; }
         h3 { color: var(--accent); font-size: 1.3rem; }
 
         .explanation-box {
-            background: rgba(0, 212, 255, 0.05);
+            background:rgba(var(--px-c-cyan-rgb),0.05);
             border-right: 4px solid var(--primary);
             padding: 15px;
             margin: 15px 0;
@@ -56,19 +60,18 @@
 
         .code-block {
             background: var(--code-bg);
-            color: #fff;
+            color:var(--px-text-strong);
             padding: 20px;
             border-radius: 10px;
             direction: ltr;
             text-align: left;
             overflow-x: auto;
             font-family: 'Consolas', monospace;
-            border: 1px solid #444;
-            margin: 15px 0;
-        }
+            border:1px solid var(--px-card2);
+            margin: 15px 0;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--primary:var(--px-c-cyan);--bg:var(--px-bg);--card-bg:var(--px-card);--text:var(--px-text);--code-bg:var(--px-code-bg);--accent:var(--px-c-pink)}
 
         .result-box {
-            background: #21262d;
+            background:var(--px-card2);
             padding: 20px;
             border-radius: 10px;
             border: 1px dashed var(--accent);
@@ -78,7 +81,7 @@
         .mission-badge {
             display: inline-block;
             background: var(--accent);
-            color: #fff;
+            color:var(--px-on-fill);
             padding: 3px 10px;
             border-radius: 5px;
             font-weight: bold;
@@ -87,19 +90,19 @@
         }
 
         .quiz-container {
-            background: #1c2128;
+            background:var(--px-card);
             padding: 30px;
             border-radius: 20px;
             border: 2px solid var(--primary);
         }
 
-        .question { margin-bottom: 25px; padding: 15px; background: #0d1117; border-radius: 10px; }
+        .question { margin-bottom: 25px; padding: 15px; background:var(--px-surface); border-radius: 10px; }
         .options label { display: block; padding: 10px; cursor: pointer; transition: 0.3s; }
-        .options label:hover { background: rgba(255,255,255,0.05); }
+        .options label:hover { background:rgba(var(--px-ink-rgb),0.05); }
 
         button.check-btn {
             background: var(--primary);
-            color: #000;
+            color:var(--px-on-accent);
             border: none;
             padding: 15px 40px;
             border-radius: 10px;
@@ -108,8 +111,10 @@
             font-size: 1.1rem;
         }
     </style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<script src="../../assets/site.js"></script>
 </head>
-<body>
+<body data-px-tools>
 
 <div class="container">
     <div class="lesson-header">

@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
+<meta name="theme-color" content="#14181e">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhineX | The Ultimate JS Workshop</title>
     <style>
         :root {
-            --editor-bg: #011627;
-            --sidebar-bg: #0b0e14;
-            --accent-green: #c3e88d;
-            --accent-blue: #82aaff;
-            --text-silver: #d6deeb;
-            --header-dark: #1a1a2e;
+            --editor-bg:var(--px-code-bg);
+            --sidebar-bg:var(--px-surface);
+            --accent-green:var(--px-c-green);
+            --accent-blue:var(--px-c-blue);
+            --text-silver:var(--px-text);
+            --header-dark:var(--px-surface);
         }
 
         body {
@@ -31,7 +35,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #2d2d44;
+            border-bottom:2px solid var(--px-c-blue);
         }
 
         .main-layout {
@@ -45,16 +49,16 @@
             background: var(--sidebar-bg);
             padding: 20px;
             overflow-y: auto;
-            border-left: 1px solid #2d2d44;
+            border-left:1px solid var(--px-c-blue);
             line-height: 1.6;
         }
 
-        .editor-container { background: var(--editor-bg); position: relative; }
+        .editor-container { background: var(--editor-bg); position: relative;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--editor-bg:var(--px-code-bg);--sidebar-bg:var(--px-surface);--accent-green:var(--px-c-green);--accent-blue:var(--px-c-blue);--text-silver:var(--px-text);--header-dark:var(--px-surface)}
 
         #codeEditor {
             width: 100%; height: 100%;
             background: transparent;
-            color: #d6deeb;
+            color:var(--px-text);
             font-family: 'Consolas', monospace;
             font-size: 15px;
             padding: 20px;
@@ -65,10 +69,10 @@
             resize: none;
         }
 
-        .preview-panel { background: #010c15; color: var(--accent-green); padding: 20px; font-family: 'Consolas', monospace; overflow-y: auto; }
+        .preview-panel { background:var(--px-code-bg); color: var(--accent-green); padding: 20px; font-family: 'Consolas', monospace; overflow-y: auto;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--editor-bg:var(--px-code-bg);--sidebar-bg:var(--px-surface);--accent-green:var(--px-c-green);--accent-blue:var(--px-c-blue);--text-silver:var(--px-text);--header-dark:var(--px-surface)}
         
         .mission-card {
-            background: #1e1e3f;
+            background:var(--px-card2);
             padding: 15px;
             border-radius: 8px;
             border-right: 4px solid var(--accent-blue);
@@ -76,8 +80,8 @@
         }
 
         .btn-run {
-            background: #28a745;
-            color: white;
+            background:var(--px-c-green);
+            color:var(--px-on-fill);
             border: none;
             padding: 12px 50px;
             border-radius: 5px;
@@ -85,8 +89,10 @@
             font-weight: bold;
         }
     </style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<script src="../../assets/site.js"></script>
 </head>
-<body>
+<body data-px-tools>
 
 <header class="lab-header">
     <div style="font-weight: bold; color: var(--accent-green);">PhineX Masterclass</div>

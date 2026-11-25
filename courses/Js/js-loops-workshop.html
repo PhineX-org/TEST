@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
+<meta name="theme-color" content="#14181e">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhineX Workshop | Logic Mastery</title>
     <style>
         :root {
-            --editor-bg: #011627;
-            --sidebar-bg: #0b0e14;
-            --accent-pink: #ff5874;
-            --accent-cyan: #00d4ff;
-            --text-silver: #d6deeb;
-            --header-dark: #1a1a2e;
+            --editor-bg:var(--px-code-bg);
+            --sidebar-bg:var(--px-surface);
+            --accent-pink:var(--px-c-red);
+            --accent-cyan:var(--px-c-cyan);
+            --text-silver:var(--px-text);
+            --header-dark:var(--px-surface);
         }
 
         body {
@@ -31,7 +35,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #2d2d44;
+            border-bottom:2px solid var(--px-c-blue);
         }
 
         .main-layout {
@@ -45,18 +49,18 @@
             background: var(--sidebar-bg);
             padding: 20px;
             overflow-y: auto;
-            border-left: 1px solid #2d2d44;
+            border-left:1px solid var(--px-c-blue);
             line-height: 1.6;
         }
 
         .instructions-panel h2 { color: var(--accent-cyan); }
 
-        .editor-container { background: var(--editor-bg); position: relative; }
+        .editor-container { background: var(--editor-bg); position: relative;--px-text:#cdd6e2;--px-text-strong:#eef2f7;--px-muted:#8b99ab;--px-faint:#6c7b8e;--px-line:rgba(190,205,225,.10);--px-line-strong:rgba(190,205,225,.22);--px-ink-rgb:190,205,225;--px-accent:#6fc3a3;--px-accent-rgb:111,195,163;--px-card:#1e2731;--px-card2:#242f3b;--text:#cdd6e2;--muted:#8b99ab;--border:rgba(190,205,225,.10);--border2:rgba(111,195,163,.22);--card:#1e2731;--card2:#262f3a;--surface:#181d24;--bg2:#181d24;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;--px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;--px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;--px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;--px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;--px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;--px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;--px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;;--editor-bg:var(--px-code-bg);--sidebar-bg:var(--px-surface);--accent-pink:var(--px-c-red);--accent-cyan:var(--px-c-cyan);--text-silver:var(--px-text);--header-dark:var(--px-surface)}
 
         #codeEditor {
             width: 100%; height: 100%;
             background: transparent;
-            color: #d6deeb;
+            color:var(--px-text);
             font-family: 'Consolas', monospace;
             font-size: 15px;
             padding: 20px;
@@ -67,15 +71,14 @@
             resize: none;
         }
 
-        .preview-panel { background: #fff; overflow: hidden; color: #333; padding: 20px; }
+        .preview-panel { background:var(--px-paper); overflow: hidden; color:var(--px-on-accent); padding: 20px;--px-text:#2a303c;--px-text-strong:#161b25;--px-muted:#5d6879;--px-faint:#8a94a4;--px-line:rgba(40,50,70,.10);--px-line-strong:rgba(40,50,70,.20);--px-ink-rgb:40,50,70;--px-accent:#15735e;--px-accent-rgb:21,115,94;--px-c-red:#b24545;--px-c-red-rgb:178,69,69;--px-c-orange:#a85a22;--px-c-orange-rgb:168,90,34;--px-c-yellow:#8a6410;--px-c-yellow-rgb:138,100,16;--px-c-green:#2f6b3a;--px-c-green-rgb:47,107,58;--px-c-cyan:#1f6e82;--px-c-cyan-rgb:31,110,130;--px-c-blue:#2d5fa6;--px-c-blue-rgb:45,95,166;--px-c-purple:#5d4a9c;--px-c-purple-rgb:93,74,156;--px-c-pink:#a8456e;--px-c-pink-rgb:168,69,110;}
         #outputArea { 
-            background: #f4f4f9; 
+            background:var(--px-paper); 
             height: 100%; 
             border-radius: 8px; 
             padding: 15px;
             font-family: monospace;
-            overflow-y: auto;
-        }
+            overflow-y: auto;--px-text:#2a303c;--px-text-strong:#161b25;--px-muted:#5d6879;--px-faint:#8a94a4;--px-line:rgba(40,50,70,.10);--px-line-strong:rgba(40,50,70,.20);--px-ink-rgb:40,50,70;--px-accent:#15735e;--px-accent-rgb:21,115,94;--px-c-red:#b24545;--px-c-red-rgb:178,69,69;--px-c-orange:#a85a22;--px-c-orange-rgb:168,90,34;--px-c-yellow:#8a6410;--px-c-yellow-rgb:138,100,16;--px-c-green:#2f6b3a;--px-c-green-rgb:47,107,58;--px-c-cyan:#1f6e82;--px-c-cyan-rgb:31,110,130;--px-c-blue:#2d5fa6;--px-c-blue-rgb:45,95,166;--px-c-purple:#5d4a9c;--px-c-purple-rgb:93,74,156;--px-c-pink:#a8456e;--px-c-pink-rgb:168,69,110;color:var(--px-text);}
 
         .lab-footer {
             background: var(--header-dark);
@@ -85,8 +88,8 @@
         }
 
         .btn-check {
-            background: #28a745;
-            color: white;
+            background:var(--px-c-green);
+            color:var(--px-on-fill);
             border: none;
             padding: 12px 50px;
             border-radius: 5px;
@@ -95,15 +98,17 @@
         }
 
         .mission-box {
-            background: #1e1e3f;
+            background:var(--px-card2);
             padding: 15px;
             border-radius: 8px;
             border-right: 4px solid var(--accent-pink);
             margin-bottom: 15px;
         }
     </style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<script src="../../assets/site.js"></script>
 </head>
-<body>
+<body data-px-tools>
 
 <header class="lab-header">
     <div style="font-weight: bold; color: var(--accent-cyan);">PhineX Logic Workshop</div>

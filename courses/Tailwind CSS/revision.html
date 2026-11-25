@@ -1,27 +1,31 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dusk">
 <head>
+<meta name="theme-color" content="#14181e">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/tokens.css">
+
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>المراجعة الشاملة | Tailwind CSS | PhineX Academy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     :root{
-      --bg:#050508;--bg2:#0d0d1a;--bg3:#12121f;
-      --tw:#38bdf8;--green:#34d399;--purple:#a78bfa;
-      --orange:#fb923c;--pink:#f472b6;--yellow:#fbbf24;
-      --border:rgba(255,255,255,.07);--muted:rgba(255,255,255,.4);
-      --code:#0d1117;
+      --bg:var(--px-bg);--bg2:var(--px-surface);--bg3:var(--px-card);
+      --tw:var(--px-c-cyan);--green:var(--px-c-green);--purple:var(--px-c-purple);
+      --orange:var(--px-c-orange);--pink:var(--px-c-pink);--yellow:var(--px-c-orange);
+      --border:var(--px-line);--muted:var(--px-muted);
+      --code:var(--px-code-bg);
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth;}
-    body{background:var(--bg);color:#fff;font-family:'Cairo',sans-serif;}
+    body{background:var(--bg);color:var(--px-text-strong);font-family:'Cairo',sans-serif;}
 
-    /* TOP NAV */
+    
     .topbar{
       position:sticky;top:0;z-index:100;
-      background:rgba(5,5,8,.95);backdrop-filter:blur(20px);
+      background:rgba(var(--px-bg-rgb),.95);backdrop-filter:blur(20px);
       border-bottom:1px solid var(--border);
       display:flex;align-items:center;justify-content:space-between;
       padding:14px 32px;
@@ -29,22 +33,22 @@
     .topbar-left{display:flex;align-items:center;gap:10px;}
     .topbar a{color:var(--muted);text-decoration:none;font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s;}
     .topbar a:hover{color:var(--tw);}
-    .topbar .sep{color:rgba(255,255,255,.1);}
+    .topbar .sep{color:rgba(var(--px-ink-rgb),.1);}
     .topbar .cur{color:var(--green);}
     .nav-pills{display:flex;gap:6px;}
-    .pill{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:.78rem;color:var(--muted);text-decoration:none;transition:all .2s;}
+    .pill{background:rgba(var(--px-ink-rgb),.04);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:.78rem;color:var(--muted);text-decoration:none;transition:all .2s;}
     .pill:hover{border-color:var(--tw);color:var(--tw);}
-    .pill.active{background:rgba(52,211,153,.1);border-color:var(--green);color:var(--green);}
+    .pill.active{background:rgba(var(--px-c-green-rgb),.1);border-color:var(--green);color:var(--green);}
 
-    /* SEARCH BAR */
+    
     .search-wrap{
-      background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);
+      background:rgba(var(--px-ink-rgb),.03);border-bottom:1px solid var(--border);
       padding:20px 32px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;
     }
     .search-input{
-      flex:1;min-width:200px;background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.1);border-radius:100px;
-      padding:10px 18px 10px 40px;color:#fff;font-family:'Cairo',sans-serif;font-size:.9rem;outline:none;
+      flex:1;min-width:200px;background:rgba(var(--px-ink-rgb),.06);
+      border:1px solid rgba(var(--px-ink-rgb),.1);border-radius:100px;
+      padding:10px 18px 10px 40px;color:var(--px-text-strong);font-family:'Cairo',sans-serif;font-size:.9rem;outline:none;
       position:relative;transition:border-color .3s;
     }
     .search-input:focus{border-color:var(--tw);}
@@ -52,18 +56,18 @@
     .s-icon{position:absolute;right:48px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.9rem;pointer-events:none;}
     .cat-filters{display:flex;gap:8px;flex-wrap:wrap;}
     .cat-btn{
-      background:rgba(255,255,255,.04);border:1px solid var(--border);
+      background:rgba(var(--px-ink-rgb),.04);border:1px solid var(--border);
       border-radius:100px;padding:7px 16px;font-size:.78rem;color:var(--muted);cursor:pointer;transition:all .2s;
     }
-    .cat-btn:hover,.cat-btn.on{background:rgba(56,189,248,.12);border-color:var(--tw);color:var(--tw);}
+    .cat-btn:hover,.cat-btn.on{background:rgba(var(--px-c-cyan-rgb),.12);border-color:var(--tw);color:var(--tw);}
 
-    /* LAYOUT */
+    
     .page{display:flex;min-height:100vh;}
 
-    /* SIDEBAR */
+    
     .sidebar{
       width:250px;flex-shrink:0;
-      background:rgba(0,0,0,.3);border-left:1px solid var(--border);
+      background:rgba(var(--px-shade-rgb),calc(.3*var(--px-shade-k)));border-left:1px solid var(--border);
       position:sticky;top:69px;height:calc(100vh - 69px);overflow-y:auto;
       padding:20px 0;
     }
@@ -72,14 +76,14 @@
       display:block;padding:8px 20px;text-decoration:none;color:var(--muted);font-size:.85rem;
       border-right:2px solid transparent;transition:all .2s;
     }
-    .sb-link:hover,.sb-link.on{color:#fff;border-right-color:var(--tw);background:rgba(56,189,248,.05);}
+    .sb-link:hover,.sb-link.on{color:var(--px-text-strong);border-right-color:var(--tw);background:rgba(var(--px-c-cyan-rgb),.05);}
     .sb-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:8px;flex-shrink:0;}
 
-    /* MAIN */
+    
     .main{flex:1;padding:0;}
     .content{max-width:900px;margin:0 auto;padding:48px 32px;}
 
-    /* SECTION HEADER */
+    
     .sec-hdr{
       display:flex;align-items:center;gap:14px;
       margin-bottom:24px;padding-bottom:20px;
@@ -90,10 +94,10 @@
       width:44px;height:44px;border-radius:12px;
       display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;
     }
-    .sec-hdr h2{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;}
-    .sec-hdr .count{font-size:.75rem;color:var(--muted);background:rgba(255,255,255,.06);padding:3px 10px;border-radius:100px;margin-right:auto;}
+    .sec-hdr h2{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;}
+    .sec-hdr .count{font-size:.75rem;color:var(--muted);background:rgba(var(--px-ink-rgb),.06);padding:3px 10px;border-radius:100px;margin-right:auto;}
 
-    /* UTILITY GRID */
+    
     .u-grid{
       display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
       gap:10px;margin-bottom:48px;
@@ -108,55 +112,55 @@
       background:linear-gradient(135deg,var(--card-c,.1) 0%,transparent 60%);
       opacity:0;transition:opacity .25s;
     }
-    .u-card:hover{border-color:var(--card-border,rgba(56,189,248,.3));transform:translateY(-2px);}
+    .u-card:hover{border-color:var(--card-border,rgba(var(--px-c-cyan-rgb),.3));transform:translateY(-2px);}
     .u-card:hover::after{opacity:1;}
     .u-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-    .u-name{font-family:'Fira Code',monospace;font-size:.85rem;color:#50fa7b;font-weight:500;}
+    .u-name{font-family:'Fira Code',monospace;font-size:.85rem;color:var(--px-accent);font-weight:500;}
     .u-copy{
       background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;
-      padding:2px 8px;border:1px solid rgba(255,255,255,.07);border-radius:4px;
+      padding:2px 8px;border:1px solid rgba(var(--px-ink-rgb),.07);border-radius:4px;
       transition:all .2s;font-family:'Cairo',sans-serif;
     }
     .u-copy:hover{color:var(--tw);border-color:var(--tw);}
-    .u-css{font-size:.78rem;color:rgba(255,255,255,.5);font-family:'Fira Code',monospace;margin-bottom:4px;}
-    .u-desc{font-size:.8rem;color:rgba(255,255,255,.4);line-height:1.5;}
+    .u-css{font-size:.78rem;color:var(--px-muted);font-family:'Fira Code',monospace;margin-bottom:4px;}
+    .u-desc{font-size:.8rem;color:var(--px-muted);line-height:1.5;}
 
-    /* TABLE */
+    
     .ref-table{width:100%;border-collapse:collapse;margin-bottom:40px;font-size:.85rem;}
-    .ref-table th{background:rgba(255,255,255,.04);padding:10px 14px;text-align:right;color:var(--tw);font-weight:700;border-bottom:2px solid rgba(56,189,248,.15);}
-    .ref-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:rgba(255,255,255,.7);vertical-align:top;}
-    .ref-table tr:hover td{background:rgba(255,255,255,.02);}
-    .mono{font-family:'Fira Code',monospace;color:#50fa7b;font-size:.8rem;}
-    .val{font-family:'Fira Code',monospace;color:#f1fa8c;font-size:.78rem;}
+    .ref-table th{background:rgba(var(--px-ink-rgb),.04);padding:10px 14px;text-align:right;color:var(--tw);font-weight:700;border-bottom:2px solid rgba(var(--px-c-cyan-rgb),.15);}
+    .ref-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--px-text);vertical-align:top;}
+    .ref-table tr:hover td{background:rgba(var(--px-ink-rgb),.02);}
+    .mono{font-family:'Fira Code',monospace;color:var(--px-accent);font-size:.8rem;}
+    .val{font-family:'Fira Code',monospace;color:var(--px-c-yellow);font-size:.78rem;}
 
-    /* VISUAL DEMO */
+    
     .demo-box{
       border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:40px;
     }
     .demo-label{
-      background:rgba(255,255,255,.03);padding:8px 18px;
+      background:rgba(var(--px-ink-rgb),.03);padding:8px 18px;
       font-size:.6rem;letter-spacing:2px;color:var(--muted);
-      font-family:'Orbitron',sans-serif;border-bottom:1px solid var(--border);
+      font-family:'Cairo',sans-serif;border-bottom:1px solid var(--border);
       display:flex;align-items:center;gap:6px;
     }
-    .demo-inner{padding:24px;background:#111827;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+    .demo-inner{padding:24px;background:var(--px-card);display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
 
-    /* COLOR SWATCHES */
+    
     .swatch-grid{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin-bottom:40px;}
     .swatch{height:32px;border-radius:4px;cursor:pointer;position:relative;transition:transform .15s;}
     .swatch:hover{transform:scale(1.2);z-index:10;}
     .swatch-row{margin-bottom:8px;}
-    .swatch-name{font-size:.6rem;color:var(--muted);text-align:center;margin-bottom:4px;font-family:'Orbitron',sans-serif;letter-spacing:1px;}
+    .swatch-name{font-size:.6rem;color:var(--muted);text-align:center;margin-bottom:4px;font-family:'Cairo',sans-serif;letter-spacing:1px;}
 
-    /* divider */
+    
     .divider{border:none;border-top:1px solid var(--border);margin:32px 0;}
 
-    /* tip */
-    .tip{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:.87rem;display:flex;gap:10px;line-height:1.7;}
+    
+    .tip{background:rgba(var(--px-c-green-rgb),.07);border:1px solid rgba(var(--px-c-green-rgb),.2);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:.87rem;display:flex;gap:10px;line-height:1.7;}
     .tip i{color:var(--green);flex-shrink:0;margin-top:2px;}
 
     footer{text-align:center;padding:40px;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem;}
-    footer .logo{font-family:'Orbitron',sans-serif;color:var(--green);margin-bottom:6px;}
+    footer .logo{font-family:'Cairo',sans-serif;color:var(--green);margin-bottom:6px;}
 
     @media(max-width:768px){
       .sidebar{display:none;} .topbar{padding:12px 16px;} .nav-pills{display:none;}
@@ -164,8 +168,10 @@
       .s-icon{right:32px;}
     }
   </style>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<script src="../../assets/site.js"></script>
 </head>
-<body>
+<body data-px-tools>
 
 <!-- TOP NAV -->
 <div class="topbar">
@@ -201,27 +207,27 @@
   <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="sb-sec">Layout</div>
-    <a href="#layout" class="sb-link on"><span class="sb-dot" style="background:#38bdf8"></span>Display & Position</a>
-    <a href="#flexbox" class="sb-link"><span class="sb-dot" style="background:#38bdf8"></span>Flexbox</a>
-    <a href="#grid" class="sb-link"><span class="sb-dot" style="background:#38bdf8"></span>Grid</a>
+    <a href="#layout" class="sb-link on"><span class="sb-dot" style="background:var(--px-c-cyan)"></span>Display & Position</a>
+    <a href="#flexbox" class="sb-link"><span class="sb-dot" style="background:var(--px-c-cyan)"></span>Flexbox</a>
+    <a href="#grid" class="sb-link"><span class="sb-dot" style="background:var(--px-c-cyan)"></span>Grid</a>
     <div class="sb-sec">Sizing</div>
-    <a href="#spacing" class="sb-link"><span class="sb-dot" style="background:#a78bfa"></span>Spacing</a>
-    <a href="#sizing" class="sb-link"><span class="sb-dot" style="background:#a78bfa"></span>Width & Height</a>
+    <a href="#spacing" class="sb-link"><span class="sb-dot" style="background:var(--px-c-purple)"></span>Spacing</a>
+    <a href="#sizing" class="sb-link"><span class="sb-dot" style="background:var(--px-c-purple)"></span>Width & Height</a>
     <div class="sb-sec">Typography</div>
-    <a href="#typography" class="sb-link"><span class="sb-dot" style="background:#f472b6"></span>Text & Font</a>
+    <a href="#typography" class="sb-link"><span class="sb-dot" style="background:var(--px-c-pink)"></span>Text & Font</a>
     <div class="sb-sec">Colors</div>
-    <a href="#colors" class="sb-link"><span class="sb-dot" style="background:#fbbf24"></span>Color Palette</a>
-    <a href="#gradients" class="sb-link"><span class="sb-dot" style="background:#fbbf24"></span>Gradients</a>
+    <a href="#colors" class="sb-link"><span class="sb-dot" style="background:var(--px-c-orange)"></span>Color Palette</a>
+    <a href="#gradients" class="sb-link"><span class="sb-dot" style="background:var(--px-c-orange)"></span>Gradients</a>
     <div class="sb-sec">Effects</div>
-    <a href="#borders" class="sb-link"><span class="sb-dot" style="background:#34d399"></span>Borders</a>
-    <a href="#shadows" class="sb-link"><span class="sb-dot" style="background:#34d399"></span>Shadows & Blur</a>
-    <a href="#effects" class="sb-link"><span class="sb-dot" style="background:#34d399"></span>Transforms</a>
+    <a href="#borders" class="sb-link"><span class="sb-dot" style="background:var(--px-c-green)"></span>Borders</a>
+    <a href="#shadows" class="sb-link"><span class="sb-dot" style="background:var(--px-c-green)"></span>Shadows & Blur</a>
+    <a href="#effects" class="sb-link"><span class="sb-dot" style="background:var(--px-c-green)"></span>Transforms</a>
     <div class="sb-sec">Animation</div>
-    <a href="#transitions" class="sb-link"><span class="sb-dot" style="background:#fb923c"></span>Transitions</a>
-    <a href="#animations" class="sb-link"><span class="sb-dot" style="background:#fb923c"></span>Animations</a>
+    <a href="#transitions" class="sb-link"><span class="sb-dot" style="background:var(--px-c-orange)"></span>Transitions</a>
+    <a href="#animations" class="sb-link"><span class="sb-dot" style="background:var(--px-c-orange)"></span>Animations</a>
     <div class="sb-sec">Responsive</div>
-    <a href="#responsive" class="sb-link"><span class="sb-dot" style="background:#ff79c6"></span>Breakpoints</a>
-    <a href="#states" class="sb-link"><span class="sb-dot" style="background:#ff79c6"></span>States</a>
+    <a href="#responsive" class="sb-link"><span class="sb-dot" style="background:var(--px-c-pink)"></span>Breakpoints</a>
+    <a href="#states" class="sb-link"><span class="sb-dot" style="background:var(--px-c-pink)"></span>States</a>
   </nav>
 
   <!-- MAIN CONTENT -->
@@ -230,67 +236,67 @@
 
       <!-- ══ LAYOUT ══ -->
       <div class="sec-hdr" id="layout">
-        <div class="sec-icon" style="background:rgba(56,189,248,.1);color:var(--tw)"><i class="fas fa-th-large"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-cyan-rgb),.1);color:var(--tw)"><i class="fas fa-th-large"></i></div>
         <div><h2>Display & Position</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">التحكم في طريقة عرض وموضع العناصر</p></div>
         <span class="count">12 class</span>
       </div>
       <div class="u-grid" data-cat="layout">
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">block</span><button class="u-copy" onclick="cp(this,'block')">نسخ</button></div>
           <div class="u-css">display: block</div>
           <div class="u-desc">بيخلي العنصر يأخد سطر كامل</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">inline-block</span><button class="u-copy" onclick="cp(this,'inline-block')">نسخ</button></div>
           <div class="u-css">display: inline-block</div>
           <div class="u-desc">زي inline لكن بيقبل width و height</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">flex</span><button class="u-copy" onclick="cp(this,'flex')">نسخ</button></div>
           <div class="u-css">display: flex</div>
           <div class="u-desc">تفعيل Flexbox على العنصر</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">grid</span><button class="u-copy" onclick="cp(this,'grid')">نسخ</button></div>
           <div class="u-css">display: grid</div>
           <div class="u-desc">تفعيل CSS Grid</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">hidden</span><button class="u-copy" onclick="cp(this,'hidden')">نسخ</button></div>
           <div class="u-css">display: none</div>
           <div class="u-desc">إخفاء العنصر كلياً</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">relative</span><button class="u-copy" onclick="cp(this,'relative')">نسخ</button></div>
           <div class="u-css">position: relative</div>
           <div class="u-desc">مرجع للـ absolute children</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">absolute</span><button class="u-copy" onclick="cp(this,'absolute')">نسخ</button></div>
           <div class="u-css">position: absolute</div>
           <div class="u-desc">مرتبط بأقرب relative parent</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">fixed</span><button class="u-copy" onclick="cp(this,'fixed')">نسخ</button></div>
           <div class="u-css">position: fixed</div>
           <div class="u-desc">ثابت مع السكرول — للـ navbars</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">sticky</span><button class="u-copy" onclick="cp(this,'sticky')">نسخ</button></div>
           <div class="u-css">position: sticky</div>
           <div class="u-desc">يتثبت لما يوصل لحد معين</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">inset-0</span><button class="u-copy" onclick="cp(this,'inset-0')">نسخ</button></div>
           <div class="u-css">top:0; right:0; bottom:0; left:0</div>
           <div class="u-desc">يملا الـ parent كله (مع absolute)</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">z-10 / z-50</span><button class="u-copy" onclick="cp(this,'z-10')">نسخ</button></div>
           <div class="u-css">z-index: 10 / 50</div>
           <div class="u-desc">ترتيب العناصر فوق بعض</div>
         </div>
-        <div class="u-card" style="--card-border:rgba(56,189,248,.3);--card-c:rgba(56,189,248,.04)">
+        <div class="u-card" style="--card-border:rgba(var(--px-c-cyan-rgb),.3);--card-c:rgba(var(--px-c-cyan-rgb),.04)">
           <div class="u-card-top"><span class="u-name">overflow-hidden</span><button class="u-copy" onclick="cp(this,'overflow-hidden')">نسخ</button></div>
           <div class="u-css">overflow: hidden</div>
           <div class="u-desc">يقطع المحتوى اللي بيطلع</div>
@@ -299,7 +305,7 @@
 
       <!-- ══ FLEXBOX ══ -->
       <div class="sec-hdr" id="flexbox">
-        <div class="sec-icon" style="background:rgba(56,189,248,.1);color:var(--tw)"><i class="fas fa-columns"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-cyan-rgb),.1);color:var(--tw)"><i class="fas fa-columns"></i></div>
         <div><h2>Flexbox</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">المحاذاة والتوزيع الأفقي والعمودي</p></div>
         <span class="count">16 class</span>
       </div>
@@ -324,7 +330,7 @@
 
       <!-- ══ GRID ══ -->
       <div class="sec-hdr" id="grid">
-        <div class="sec-icon" style="background:rgba(56,189,248,.1);color:var(--tw)"><i class="fas fa-th"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-cyan-rgb),.1);color:var(--tw)"><i class="fas fa-th"></i></div>
         <div><h2>CSS Grid</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">شبكات متعددة الأعمدة بسهولة</p></div>
         <span class="count">10 class</span>
       </div>
@@ -344,7 +350,7 @@
 
       <!-- ══ SPACING ══ -->
       <div class="sec-hdr" id="spacing">
-        <div class="sec-icon" style="background:rgba(167,139,250,.1);color:var(--purple)"><i class="fas fa-ruler"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-purple-rgb),.1);color:var(--purple)"><i class="fas fa-ruler"></i></div>
         <div><h2>Spacing — الـ Scale</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">كل رقم × 4 = عدد الـ pixels</p></div>
         <span class="count">مرجع كامل</span>
       </div>
@@ -378,7 +384,7 @@
 
       <!-- ══ SIZING ══ -->
       <div class="sec-hdr" id="sizing">
-        <div class="sec-icon" style="background:rgba(167,139,250,.1);color:var(--purple)"><i class="fas fa-expand-arrows-alt"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-purple-rgb),.1);color:var(--purple)"><i class="fas fa-expand-arrows-alt"></i></div>
         <div><h2>Width & Height</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">أبعاد العناصر</p></div>
       </div>
       <table class="ref-table" data-cat="spacing">
@@ -400,26 +406,26 @@
 
       <!-- ══ TYPOGRAPHY ══ -->
       <div class="sec-hdr" id="typography">
-        <div class="sec-icon" style="background:rgba(244,114,182,.1);color:var(--pink)"><i class="fas fa-font"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-pink-rgb),.1);color:var(--pink)"><i class="fas fa-font"></i></div>
         <div><h2>Typography</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">النصوص والخطوط</p></div>
         <span class="count">مرجع شامل</span>
       </div>
       <div class="u-grid" data-cat="typography">
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">text-xs → text-9xl</span><button class="u-copy" onclick="cp(this,'text-xl')">نسخ</button></div><div class="u-css">font-size: 0.75rem → 8rem</div><div class="u-desc">12 حجم جاهز — xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">font-thin → font-black</span><button class="u-copy" onclick="cp(this,'font-bold')">نسخ</button></div><div class="u-css">font-weight: 100 → 900</div><div class="u-desc">thin(100) / light(300) / normal(400) / medium(500) / semibold(600) / bold(700) / black(900)</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">leading-none → leading-loose</span><button class="u-copy" onclick="cp(this,'leading-relaxed')">نسخ</button></div><div class="u-css">line-height</div><div class="u-desc">التباعد بين الأسطر — relaxed أو loose للنصوص الطويلة</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">tracking-tight → tracking-widest</span><button class="u-copy" onclick="cp(this,'tracking-wider')">نسخ</button></div><div class="u-css">letter-spacing</div><div class="u-desc">المسافة بين الحروف — wider للـ labels والـ badges</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">text-left/center/right</span><button class="u-copy" onclick="cp(this,'text-center')">نسخ</button></div><div class="u-css">text-align</div><div class="u-desc">محاذاة النص</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">uppercase / lowercase</span><button class="u-copy" onclick="cp(this,'uppercase')">نسخ</button></div><div class="u-css">text-transform</div><div class="u-desc">تحويل الحروف — uppercase مع tracking-widest يعطي look احترافي</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">truncate</span><button class="u-copy" onclick="cp(this,'truncate')">نسخ</button></div><div class="u-css">overflow:hidden; white-space:nowrap; text-overflow:ellipsis</div><div class="u-desc">قطع النص الطويل مع إضافة ...</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">bg-clip-text text-transparent</span><button class="u-copy" onclick="cp(this,'bg-clip-text text-transparent')">نسخ</button></div><div class="u-css">background-clip: text + transparent color</div><div class="u-desc">Gradient على النص نفسه — تقنية الـ Hero titles</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">underline decoration-2</span><button class="u-copy" onclick="cp(this,'underline decoration-2')">نسخ</button></div><div class="u-css">text-decoration + decoration-thickness</div><div class="u-desc">تسطير مع تحكم في السُمك واللون</div></div>
-        <div class="u-card" style="--card-border:rgba(244,114,182,.3)"><div class="u-card-top"><span class="u-name">line-clamp-3</span><button class="u-copy" onclick="cp(this,'line-clamp-3')">نسخ</button></div><div class="u-css">-webkit-line-clamp: 3</div><div class="u-desc">قطع النص بعد 3 أسطر — للـ cards</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">text-xs → text-9xl</span><button class="u-copy" onclick="cp(this,'text-xl')">نسخ</button></div><div class="u-css">font-size: 0.75rem → 8rem</div><div class="u-desc">12 حجم جاهز — xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">font-thin → font-black</span><button class="u-copy" onclick="cp(this,'font-bold')">نسخ</button></div><div class="u-css">font-weight: 100 → 900</div><div class="u-desc">thin(100) / light(300) / normal(400) / medium(500) / semibold(600) / bold(700) / black(900)</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">leading-none → leading-loose</span><button class="u-copy" onclick="cp(this,'leading-relaxed')">نسخ</button></div><div class="u-css">line-height</div><div class="u-desc">التباعد بين الأسطر — relaxed أو loose للنصوص الطويلة</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">tracking-tight → tracking-widest</span><button class="u-copy" onclick="cp(this,'tracking-wider')">نسخ</button></div><div class="u-css">letter-spacing</div><div class="u-desc">المسافة بين الحروف — wider للـ labels والـ badges</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">text-left/center/right</span><button class="u-copy" onclick="cp(this,'text-center')">نسخ</button></div><div class="u-css">text-align</div><div class="u-desc">محاذاة النص</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">uppercase / lowercase</span><button class="u-copy" onclick="cp(this,'uppercase')">نسخ</button></div><div class="u-css">text-transform</div><div class="u-desc">تحويل الحروف — uppercase مع tracking-widest يعطي look احترافي</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">truncate</span><button class="u-copy" onclick="cp(this,'truncate')">نسخ</button></div><div class="u-css">overflow:hidden; white-space:nowrap; text-overflow:ellipsis</div><div class="u-desc">قطع النص الطويل مع إضافة ...</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">bg-clip-text text-transparent</span><button class="u-copy" onclick="cp(this,'bg-clip-text text-transparent')">نسخ</button></div><div class="u-css">background-clip: text + transparent color</div><div class="u-desc">Gradient على النص نفسه — تقنية الـ Hero titles</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">underline decoration-2</span><button class="u-copy" onclick="cp(this,'underline decoration-2')">نسخ</button></div><div class="u-css">text-decoration + decoration-thickness</div><div class="u-desc">تسطير مع تحكم في السُمك واللون</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-pink-rgb),.3)"><div class="u-card-top"><span class="u-name">line-clamp-3</span><button class="u-copy" onclick="cp(this,'line-clamp-3')">نسخ</button></div><div class="u-css">-webkit-line-clamp: 3</div><div class="u-desc">قطع النص بعد 3 أسطر — للـ cards</div></div>
       </div>
 
       <!-- ══ COLORS ══ -->
       <div class="sec-hdr" id="colors">
-        <div class="sec-icon" style="background:rgba(251,191,36,.1);color:var(--yellow)"><i class="fas fa-palette"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-orange-rgb),.1);color:var(--yellow)"><i class="fas fa-palette"></i></div>
         <div><h2>Color Palette</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">الألوان الجاهزة في Tailwind</p></div>
       </div>
 
@@ -430,102 +436,102 @@
           <div>
             <div class="swatch-name">BLUE</div>
             <div class="swatch-grid">
-              <div class="swatch" style="background:#eff6ff" title="blue-50"></div>
-              <div class="swatch" style="background:#dbeafe" title="blue-100"></div>
-              <div class="swatch" style="background:#bfdbfe" title="blue-200"></div>
-              <div class="swatch" style="background:#93c5fd" title="blue-300"></div>
-              <div class="swatch" style="background:#60a5fa" title="blue-400"></div>
-              <div class="swatch" style="background:#3b82f6" title="blue-500 ⭐"></div>
-              <div class="swatch" style="background:#2563eb" title="blue-600"></div>
-              <div class="swatch" style="background:#1d4ed8" title="blue-700"></div>
-              <div class="swatch" style="background:#1e40af" title="blue-800"></div>
-              <div class="swatch" style="background:#1e3a8a" title="blue-900"></div>
-              <div class="swatch" style="background:#172554" title="blue-950"></div>
+              <div class="swatch" style="background:var(--px-paper)" title="blue-50"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-100"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-200"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-300"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-400"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-500 ⭐"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-600"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-700"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-800"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-900"></div>
+              <div class="swatch" style="background:var(--px-c-blue)" title="blue-950"></div>
             </div>
           </div>
           <!-- Row: cyan -->
           <div>
             <div class="swatch-name">CYAN</div>
             <div class="swatch-grid">
-              <div class="swatch" style="background:#ecfeff"></div>
-              <div class="swatch" style="background:#cffafe"></div>
-              <div class="swatch" style="background:#a5f3fc"></div>
-              <div class="swatch" style="background:#67e8f9"></div>
-              <div class="swatch" style="background:#22d3ee"></div>
-              <div class="swatch" style="background:#06b6d4"></div>
-              <div class="swatch" style="background:#0891b2"></div>
-              <div class="swatch" style="background:#0e7490"></div>
-              <div class="swatch" style="background:#155e75"></div>
-              <div class="swatch" style="background:#164e63"></div>
-              <div class="swatch" style="background:#083344"></div>
+              <div class="swatch" style="background:var(--px-paper)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
+              <div class="swatch" style="background:var(--px-c-cyan)"></div>
             </div>
           </div>
           <!-- Row: purple -->
           <div>
             <div class="swatch-name">PURPLE</div>
             <div class="swatch-grid">
-              <div class="swatch" style="background:#faf5ff"></div>
-              <div class="swatch" style="background:#f3e8ff"></div>
-              <div class="swatch" style="background:#e9d5ff"></div>
-              <div class="swatch" style="background:#d8b4fe"></div>
-              <div class="swatch" style="background:#c084fc"></div>
-              <div class="swatch" style="background:#a855f7"></div>
-              <div class="swatch" style="background:#9333ea"></div>
-              <div class="swatch" style="background:#7e22ce"></div>
-              <div class="swatch" style="background:#6b21a8"></div>
-              <div class="swatch" style="background:#581c87"></div>
-              <div class="swatch" style="background:#3b0764"></div>
+              <div class="swatch" style="background:var(--px-paper)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
+              <div class="swatch" style="background:var(--px-c-purple)"></div>
             </div>
           </div>
           <!-- Row: green -->
           <div>
             <div class="swatch-name">EMERALD</div>
             <div class="swatch-grid">
-              <div class="swatch" style="background:#ecfdf5"></div>
-              <div class="swatch" style="background:#d1fae5"></div>
-              <div class="swatch" style="background:#a7f3d0"></div>
-              <div class="swatch" style="background:#6ee7b7"></div>
-              <div class="swatch" style="background:#34d399"></div>
-              <div class="swatch" style="background:#10b981"></div>
-              <div class="swatch" style="background:#059669"></div>
-              <div class="swatch" style="background:#047857"></div>
-              <div class="swatch" style="background:#065f46"></div>
-              <div class="swatch" style="background:#064e3b"></div>
-              <div class="swatch" style="background:#022c22"></div>
+              <div class="swatch" style="background:var(--px-paper)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-c-green)"></div>
+              <div class="swatch" style="background:var(--px-card)"></div>
             </div>
           </div>
           <!-- Row: rose -->
           <div>
             <div class="swatch-name">ROSE</div>
             <div class="swatch-grid">
-              <div class="swatch" style="background:#fff1f2"></div>
-              <div class="swatch" style="background:#ffe4e6"></div>
-              <div class="swatch" style="background:#fecdd3"></div>
-              <div class="swatch" style="background:#fda4af"></div>
-              <div class="swatch" style="background:#fb7185"></div>
-              <div class="swatch" style="background:#f43f5e"></div>
-              <div class="swatch" style="background:#e11d48"></div>
-              <div class="swatch" style="background:#be123c"></div>
-              <div class="swatch" style="background:#9f1239"></div>
-              <div class="swatch" style="background:#881337"></div>
-              <div class="swatch" style="background:#4c0519"></div>
+              <div class="swatch" style="background:var(--px-paper)"></div>
+              <div class="swatch" style="background:var(--px-c-red)"></div>
+              <div class="swatch" style="background:var(--px-c-red)"></div>
+              <div class="swatch" style="background:var(--px-c-red)"></div>
+              <div class="swatch" style="background:var(--px-c-red)"></div>
+              <div class="swatch" style="background:var(--px-c-red)"></div>
+              <div class="swatch" style="background:var(--px-c-red)"></div>
+              <div class="swatch" style="background:var(--px-c-red)"></div>
+              <div class="swatch" style="background:var(--px-c-pink)"></div>
+              <div class="swatch" style="background:var(--px-c-pink)"></div>
+              <div class="swatch" style="background:var(--px-c-pink)"></div>
             </div>
           </div>
           <!-- Grays -->
           <div>
             <div class="swatch-name">SLATE (للـ Dark UI)</div>
             <div class="swatch-grid">
-              <div class="swatch" style="background:#f8fafc"></div>
-              <div class="swatch" style="background:#f1f5f9"></div>
-              <div class="swatch" style="background:#e2e8f0"></div>
-              <div class="swatch" style="background:#cbd5e1"></div>
-              <div class="swatch" style="background:#94a3b8"></div>
-              <div class="swatch" style="background:#64748b"></div>
-              <div class="swatch" style="background:#475569"></div>
-              <div class="swatch" style="background:#334155"></div>
-              <div class="swatch" style="background:#1e293b"></div>
-              <div class="swatch" style="background:#0f172a"></div>
-              <div class="swatch" style="background:#020617"></div>
+              <div class="swatch" style="background:var(--px-paper)"></div>
+              <div class="swatch" style="background:var(--px-paper)"></div>
+              <div class="swatch" style="background:var(--px-paper)"></div>
+              <div class="swatch" style="background:var(--px-c-blue)"></div>
+              <div class="swatch" style="background:var(--px-c-blue)"></div>
+              <div class="swatch" style="background:var(--px-c-blue)"></div>
+              <div class="swatch" style="background:var(--px-c-blue)"></div>
+              <div class="swatch" style="background:var(--px-c-blue)"></div>
+              <div class="swatch" style="background:var(--px-card2)"></div>
+              <div class="swatch" style="background:var(--px-card)"></div>
+              <div class="swatch" style="background:var(--px-bg)"></div>
             </div>
           </div>
         </div>
@@ -533,7 +539,7 @@
 
       <!-- ══ GRADIENTS ══ -->
       <div class="sec-hdr" id="gradients">
-        <div class="sec-icon" style="background:rgba(251,191,36,.1);color:var(--yellow)"><i class="fas fa-fill-drip"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-orange-rgb),.1);color:var(--yellow)"><i class="fas fa-fill-drip"></i></div>
         <div><h2>Gradients</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">التدرجات اللونية</p></div>
       </div>
       <table class="ref-table" data-cat="colors">
@@ -551,33 +557,33 @@
       <div class="demo-box" data-cat="colors">
         <div class="demo-label"><i class="fas fa-eye"></i> مثال على Gradients</div>
         <div class="demo-inner">
-          <div style="background:linear-gradient(to right,#3b82f6,#a855f7);padding:14px 28px;border-radius:10px;font-size:.8rem;color:#fff;">to-r: blue → purple</div>
-          <div style="background:linear-gradient(135deg,#06b6d4,#818cf8,#f472b6);padding:14px 28px;border-radius:10px;font-size:.8rem;color:#fff;">to-br: cyan → indigo → pink</div>
-          <div style="background:linear-gradient(to bottom,#f59e0b,transparent);padding:14px 28px;border-radius:10px;font-size:.8rem;color:#fff;">to-b: yellow → transparent</div>
+          <div style="background:linear-gradient(to right,var(--px-c-blue),var(--px-c-purple));padding:14px 28px;border-radius:10px;font-size:.8rem;color:var(--px-on-fill);">to-r: blue → purple</div>
+          <div style="background:linear-gradient(135deg,var(--px-c-cyan),var(--px-c-blue),var(--px-c-pink));padding:14px 28px;border-radius:10px;font-size:.8rem;color:var(--px-on-fill);">to-br: cyan → indigo → pink</div>
+          <div style="background:linear-gradient(to bottom,var(--px-c-orange),transparent);padding:14px 28px;border-radius:10px;font-size:.8rem;color:var(--px-on-fill);">to-b: yellow → transparent</div>
         </div>
       </div>
 
       <!-- ══ BORDERS ══ -->
       <div class="sec-hdr" id="borders">
-        <div class="sec-icon" style="background:rgba(52,211,153,.1);color:var(--green)"><i class="fas fa-border-style"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-green-rgb),.1);color:var(--green)"><i class="fas fa-border-style"></i></div>
         <div><h2>Borders & Rounded</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">الحدود والزوايا</p></div>
       </div>
       <div class="u-grid" data-cat="effects">
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">border</span><button class="u-copy" onclick="cp(this,'border')">نسخ</button></div><div class="u-css">border-width: 1px</div><div class="u-desc">حد 1px من كل الجهات</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">border-2 / border-4</span><button class="u-copy" onclick="cp(this,'border-2')">نسخ</button></div><div class="u-css">border-width: 2px / 4px</div><div class="u-desc">زيادة سمك الحد</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">border-t / border-b</span><button class="u-copy" onclick="cp(this,'border-b')">نسخ</button></div><div class="u-css">border-top / border-bottom</div><div class="u-desc">حد من جهة واحدة فقط</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">border-blue-500</span><button class="u-copy" onclick="cp(this,'border-blue-500')">نسخ</button></div><div class="u-css">border-color: #3b82f6</div><div class="u-desc">لون الحد</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">border-dashed</span><button class="u-copy" onclick="cp(this,'border-dashed')">نسخ</button></div><div class="u-css">border-style: dashed</div><div class="u-desc">حد منقط — للـ dropzones</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">divide-y / divide-x</span><button class="u-copy" onclick="cp(this,'divide-y')">نسخ</button></div><div class="u-css">border بين الـ children تلقائياً</div><div class="u-desc">بدل ما تضيف border-b على كل child</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">rounded-sm → rounded-full</span><button class="u-copy" onclick="cp(this,'rounded-xl')">نسخ</button></div><div class="u-css">border-radius: 2px → 9999px</div><div class="u-desc">sm/md/lg/xl/2xl/3xl/full</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">rounded-tl-xl</span><button class="u-copy" onclick="cp(this,'rounded-tl-xl')">نسخ</button></div><div class="u-css">border-top-left-radius: 0.75rem</div><div class="u-desc">تدوير زاوية واحدة فقط</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">ring-2 ring-blue-500</span><button class="u-copy" onclick="cp(this,'ring-2 ring-blue-500')">نسخ</button></div><div class="u-css">box-shadow: 0 0 0 2px #3b82f6</div><div class="u-desc">حد خارج العنصر بـ box-shadow — للـ focus states</div></div>
-        <div class="u-card" style="--card-border:rgba(52,211,153,.3)"><div class="u-card-top"><span class="u-name">ring-offset-2</span><button class="u-copy" onclick="cp(this,'ring-offset-2')">نسخ</button></div><div class="u-css">مسافة بين العنصر والـ ring</div><div class="u-desc">بيعمل مساحة بيضاء بين العنصر والـ ring</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">border</span><button class="u-copy" onclick="cp(this,'border')">نسخ</button></div><div class="u-css">border-width: 1px</div><div class="u-desc">حد 1px من كل الجهات</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">border-2 / border-4</span><button class="u-copy" onclick="cp(this,'border-2')">نسخ</button></div><div class="u-css">border-width: 2px / 4px</div><div class="u-desc">زيادة سمك الحد</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">border-t / border-b</span><button class="u-copy" onclick="cp(this,'border-b')">نسخ</button></div><div class="u-css">border-top / border-bottom</div><div class="u-desc">حد من جهة واحدة فقط</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">border-blue-500</span><button class="u-copy" onclick="cp(this,'border-blue-500')">نسخ</button></div><div class="u-css">border-color: #3b82f6</div><div class="u-desc">لون الحد</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">border-dashed</span><button class="u-copy" onclick="cp(this,'border-dashed')">نسخ</button></div><div class="u-css">border-style: dashed</div><div class="u-desc">حد منقط — للـ dropzones</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">divide-y / divide-x</span><button class="u-copy" onclick="cp(this,'divide-y')">نسخ</button></div><div class="u-css">border بين الـ children تلقائياً</div><div class="u-desc">بدل ما تضيف border-b على كل child</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">rounded-sm → rounded-full</span><button class="u-copy" onclick="cp(this,'rounded-xl')">نسخ</button></div><div class="u-css">border-radius: 2px → 9999px</div><div class="u-desc">sm/md/lg/xl/2xl/3xl/full</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">rounded-tl-xl</span><button class="u-copy" onclick="cp(this,'rounded-tl-xl')">نسخ</button></div><div class="u-css">border-top-left-radius: 0.75rem</div><div class="u-desc">تدوير زاوية واحدة فقط</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">ring-2 ring-blue-500</span><button class="u-copy" onclick="cp(this,'ring-2 ring-blue-500')">نسخ</button></div><div class="u-css">box-shadow: 0 0 0 2px #3b82f6</div><div class="u-desc">حد خارج العنصر بـ box-shadow — للـ focus states</div></div>
+        <div class="u-card" style="--card-border:rgba(var(--px-c-green-rgb),.3)"><div class="u-card-top"><span class="u-name">ring-offset-2</span><button class="u-copy" onclick="cp(this,'ring-offset-2')">نسخ</button></div><div class="u-css">مسافة بين العنصر والـ ring</div><div class="u-desc">بيعمل مساحة بيضاء بين العنصر والـ ring</div></div>
       </div>
 
       <!-- ══ SHADOWS ══ -->
       <div class="sec-hdr" id="shadows">
-        <div class="sec-icon" style="background:rgba(52,211,153,.1);color:var(--green)"><i class="fas fa-clone"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-green-rgb),.1);color:var(--green)"><i class="fas fa-clone"></i></div>
         <div><h2>Shadows & Blur</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">الظلال والضبابية</p></div>
       </div>
       <table class="ref-table" data-cat="effects">
@@ -598,7 +604,7 @@
 
       <!-- ══ TRANSFORMS ══ -->
       <div class="sec-hdr" id="effects">
-        <div class="sec-icon" style="background:rgba(52,211,153,.1);color:var(--green)"><i class="fas fa-cube"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-green-rgb),.1);color:var(--green)"><i class="fas fa-cube"></i></div>
         <div><h2>Transforms & 3D</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">التحريك والتدوير والتحجيم</p></div>
       </div>
       <table class="ref-table" data-cat="effects">
@@ -619,7 +625,7 @@
 
       <!-- ══ TRANSITIONS ══ -->
       <div class="sec-hdr" id="transitions">
-        <div class="sec-icon" style="background:rgba(251,146,60,.1);color:var(--orange)"><i class="fas fa-play"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-orange-rgb),.1);color:var(--orange)"><i class="fas fa-play"></i></div>
         <div><h2>Transitions</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">التغيير السلس</p></div>
       </div>
       <table class="ref-table" data-cat="animation">
@@ -643,34 +649,34 @@
 
       <!-- ══ ANIMATIONS ══ -->
       <div class="sec-hdr" id="animations">
-        <div class="sec-icon" style="background:rgba(251,146,60,.1);color:var(--orange)"><i class="fas fa-film"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-orange-rgb),.1);color:var(--orange)"><i class="fas fa-film"></i></div>
         <div><h2>Animations الجاهزة</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">تأثيرات متحركة بـ class واحدة</p></div>
       </div>
       <div class="demo-box" data-cat="animation">
         <div class="demo-label"><i class="fas fa-eye"></i> شوف التأثيرات</div>
         <div class="demo-inner" style="justify-content:center;gap:40px;flex-wrap:wrap;padding:40px;">
           <div style="text-align:center;">
-            <div style="width:40px;height:40px;border-radius:50%;border:4px solid #38bdf8;border-top-color:transparent;animation:spin 1s linear infinite;margin:0 auto 12px;"></div>
-            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:#50fa7b;">animate-spin</code>
+            <div style="width:40px;height:40px;border-radius:50%;border:4px solid var(--px-c-cyan);border-top-color:transparent;animation:spin 1s linear infinite;margin:0 auto 12px;"></div>
+            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:var(--px-accent);">animate-spin</code>
           </div>
           <div style="text-align:center;">
-            <div style="width:40px;height:40px;border-radius:50%;background:#a855f7;animation:ping 1s cubic-bezier(0,0,.2,1) infinite;margin:0 auto 12px;"></div>
-            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:#50fa7b;">animate-ping</code>
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--px-c-purple);animation:ping 1s cubic-bezier(0,0,.2,1) infinite;margin:0 auto 12px;"></div>
+            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:var(--px-accent);">animate-ping</code>
           </div>
           <div style="text-align:center;">
-            <div style="width:120px;height:16px;border-radius:8px;background:#334155;animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite;margin:0 auto 12px;"></div>
-            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:#50fa7b;">animate-pulse</code>
+            <div style="width:120px;height:16px;border-radius:8px;background:var(--px-c-blue);animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite;margin:0 auto 12px;"></div>
+            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:var(--px-accent);">animate-pulse</code>
           </div>
           <div style="text-align:center;">
             <div style="font-size:2rem;animation:bounce 1s infinite;text-align:center;margin-bottom:12px;">⬇</div>
-            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:#50fa7b;">animate-bounce</code>
+            <code style="font-family:'Fira Code',monospace;font-size:.75rem;color:var(--px-accent);">animate-bounce</code>
           </div>
         </div>
       </div>
 
       <!-- ══ RESPONSIVE ══ -->
       <div class="sec-hdr" id="responsive">
-        <div class="sec-icon" style="background:rgba(244,114,182,.1);color:var(--pink)"><i class="fas fa-mobile-alt"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-pink-rgb),.1);color:var(--pink)"><i class="fas fa-mobile-alt"></i></div>
         <div><h2>Responsive Breakpoints</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">Mobile-First — الأصغر أولاً</p></div>
       </div>
       <table class="ref-table" data-cat="responsive">
@@ -686,7 +692,7 @@
 
       <!-- ══ STATES ══ -->
       <div class="sec-hdr" id="states">
-        <div class="sec-icon" style="background:rgba(244,114,182,.1);color:var(--pink)"><i class="fas fa-hand-pointer"></i></div>
+        <div class="sec-icon" style="background:rgba(var(--px-c-pink-rgb),.1);color:var(--pink)"><i class="fas fa-hand-pointer"></i></div>
         <div><h2>State Variants</h2><p style="font-size:.8rem;color:var(--muted);margin-top:2px;">تطبيق الـ styles على حالات مختلفة</p></div>
       </div>
       <table class="ref-table">
