@@ -1,0 +1,27 @@
+{
+  "id": "css",
+  "name": "CSS",
+  "en": "Cascading Style Sheets",
+  "logo": "css",
+  "color": "#3b82f6",
+  "level": "مبتدئ → متوسط",
+  "desc": "الألوان والخطوط والتخطيط والحركة. من أول سطر ستايل لحد ما تبني صفحات متجاوبة مع كل الشاشات: Landing page وصفحات تسجيل دخول وكروت ونافبار وانيميشن.",
+  "goals": [
+    "تفهم الـ Cascade والـ Specificity وإزاي المتصفح بيختار الستايل",
+    "تتقن الـ Box Model: `padding` و`margin` و`border` و`box-sizing`",
+    "تظبّط الخطوط والألوان والخلفيات والتدرّجات والظلال",
+    "تبني أي تخطيط بـ Flexbox و Grid بثقة",
+    "تعمل صفحات متجاوبة (Responsive) بـ media queries و clamp",
+    "تستخدم CSS Variables وتعمل ثيمات (Light/Dark)",
+    "تعمل Transitions و Animations ناعمة",
+    "تكتب CSS منظّم وسهل الصيانة وتبني ٨ مشاريع حقيقية"
+  ],
+  "units": [
+    { "id": "u1-basics", "title": "أساسيات CSS", "icon": "🎨", "desc": "إزاي تربط CSS بالصفحة، وتختار العناصر، وتتحكم في الألوان والخطوط والمسافات." },
+    { "id": "u2-selectors-cascade", "title": "السلكتور والـ Cascade", "icon": "🎯", "desc": "الـ pseudo-classes والـ pseudo-elements، وإزاي المتصفح بيحسم لما ستايلين يتعارضوا." },
+    { "id": "u3-layout", "title": "التخطيط: Flexbox و Grid", "icon": "📐", "desc": "الـ display والـ position، وبعدين Flexbox و Grid بالتفصيل وتبني نافبار وكروت." },
+    { "id": "u4-responsive", "title": "التصميم المتجاوب", "icon": "📱", "desc": "صفحات تشتغل حلو على الموبايل والتابلت واللابتوب، وتبني Landing Page كاملة." },
+    { "id": "u5-modern", "title": "CSS الحديثة والحركة", "icon": "✨", "desc": "المتغيّرات، الـ transitions والـ animations، وميزات CSS الحديثة." },
+    { "id": "u6-pro", "title": "احترف الـ CSS", "icon": "🚀", "desc": "تنظيم الكود، إمكانية الوصول، التصحيح، ومشروع Portfolio نهائي." }
+  ]
+}

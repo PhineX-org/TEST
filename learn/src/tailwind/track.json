@@ -1,0 +1,24 @@
+{
+  "id": "tailwind",
+  "name": "Tailwind CSS",
+  "en": "Utility-first CSS framework (v4)",
+  "logo": "tailwind",
+  "color": "#06b6d4",
+  "level": "متوسط",
+  "desc": "ابني واجهات حديثة بسرعة من غير ما تكتب ملف CSS. بتتعلم الـ utility classes والـ responsive والـ dark mode وتبني صفحات حقيقية بالنسخة الرابعة (v4).",
+  "goals": [
+    "تفهم فلسفة الـ utility-first وإمتى تفيد",
+    "تستخدم Tailwind v4 في أي صفحة بسطر واحد",
+    "تتحكم في المسافات والألوان والخطوط والحدود والظلال بالكلاسات",
+    "تبني تخطيطات بـ flex و grid بالكلاسات",
+    "تعمل تصميم متجاوب بالـ prefixes (`sm:` `md:` `lg:`)",
+    "تضيف hover و focus و dark mode",
+    "تخصّص الثيم بـ `@theme` وتعمل مكونات قابلة لإعادة الاستخدام",
+    "تبني ٣ مشاريع: صفحة أسعار و Landing Page ولوحة تحكم"
+  ],
+  "units": [
+    { "id": "u1-start", "title": "البداية مع Tailwind", "icon": "🌬️", "desc": "الفكرة، الإعداد، والمسافات والألوان والخطوط والحدود." },
+    { "id": "u2-layout", "title": "التخطيط والتجاوب", "icon": "📐", "desc": "Flex و Grid، التصميم المتجاوب، والحالات (hover / focus / dark)." },
+    { "id": "u3-pro", "title": "احترف Tailwind", "icon": "✨", "desc": "تخصيص الثيم، المكونات، الحركة، ومشروعين كبار." }
+  ]
+}

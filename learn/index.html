@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dusk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>X Code — اتعلّم البرمجة من الصفر لحد الاحتراف</title>
+<meta name="description" content="X Code: كورسات برمجة بالعربي على طريقة freeCodeCamp — دروس مشروحة بالمصري، خطوات صغيرة بتجرب كودك لحظياً، ومشاريع حقيقية بتتبني من الصفر للآخر. HTML · CSS · JavaScript · Tailwind · PHP · Python · React.">
+<meta name="theme-color" content="#1d1916">
+<link rel="icon" href="../assets/xcode-icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/fonts.css">
+<link rel="stylesheet" href="../docs/assets/docs.css">
+<link rel="stylesheet" href="../assets/xf.css">
+<link rel="stylesheet" href="assets/learn.css">
+<script src="../assets/xf-brand.js"></script>
+<script src="../assets/offline.js" defer></script>
+<script>
+/* apply saved reading preferences before first paint */
+try{
+  var __d=document.documentElement,__t=JSON.parse(localStorage.getItem('pxd:theme'));
+  if(__t==='dark'||__t==='glass')__t='dusk';else if(__t==='light')__t='paper';else if(__t==='kindle')__t='sepia';
+  if(__t==='dusk'||__t==='paper'||__t==='sepia')__d.setAttribute('data-theme',__t);else __d.setAttribute('data-theme','dusk');
+  var __f=JSON.parse(localStorage.getItem('pxd:fs'));
+  if(__f>=12&&__f<=28)__d.style.setProperty('--fs',__f+'px');
+  var __lh=JSON.parse(localStorage.getItem('pxd:lh'));
+  if(__lh>=1.5&&__lh<=2.4)__d.style.setProperty('--lh',String(__lh));
+  var __m=document.querySelector('meta[name=theme-color]');
+  if(__m)__m.setAttribute('content',{dusk:'#1d1916',paper:'#f1e9d9',sepia:'#e6d6b4'}[__d.getAttribute('data-theme')]);
+}catch(e){}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">تخطّي للمحتوى</a>
+
+<header class="top">
+  <a class="brand" id="brand" href="#/" aria-label="X Code — الرئيسية">
+    <span class="brand-mark" data-mark></span>
+    <span><span class="brand-name"><b>X</b> Code</span><span class="brand-sub">اتعلّم · ابني · احترف</span></span>
+  </a>
+  <nav class="libtabs" id="libtabs" aria-label="التنقّل الرئيسي">
+    <a href="#/" data-nav="home"><i class="lg" data-logo="rocket"></i><span>الكورسات</span></a>
+    <a href="#/projects" data-nav="projects"><i class="lg" data-logo="project"></i><span>المشاريع</span></a>
+    <a href="../docs/index.html" data-nav="docs"><i class="lg" data-logo="docs"></i><span>المرجع</span></a>
+  </nav>
+  <div class="top-search">
+    <div class="sbox">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q-top" type="search" placeholder="ابحث عن درس أو مشروع… مثلاً flex أو login" aria-label="بحث في الكورسات" readonly autocomplete="off" spellcheck="false" enterkeyhint="search">
+      <kbd>/</kbd>
+      <button class="clr" type="button" aria-label="مسح البحث">✕</button>
+    </div>
+  </div>
+  <div class="tools">
+    <div class="fsz" role="group" aria-label="حجم الخط">
+      <button class="ib" id="fs-dec" type="button" aria-label="صغّر الخط" title="تصغير الخط"><span class="a-s">A</span><i>−</i></button>
+      <button class="fsz-val" id="fs-val" type="button" aria-label="حجم الخط الحالي — اضغط للرجوع للحجم العادي" title="الرجوع للحجم العادي">16</button>
+      <button class="ib" id="fs-inc" type="button" aria-label="كبّر الخط" title="تكبير الخط"><span class="a-l">A</span><i>+</i></button>
+    </div>
+    <button class="ib" data-off="icon" aria-label="حمّل الموقع للأوفلاين"></button>
+    <button class="ib" id="btn-theme" type="button" aria-label="تغيير المظهر"></button>
+    <button class="ib" id="btn-set" type="button" aria-label="الإعدادات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+    </button>
+    <a class="back-site" href="../index.html">← الرئيسية</a>
+  </div>
+</header>
+
+<div class="layout" id="layout">
+  <aside class="sb" id="sb" aria-label="منهج الكورس">
+    <div class="sb-head">
+      <div class="sbox"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="sb-search" type="search" placeholder="ابحث في الكورسات…" aria-label="بحث" readonly></div>
+      <button class="ib sb-close" id="sb-close" type="button" aria-label="إغلاق الفهرس"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+        <nav class="tree" id="tree" aria-label="الدروس والمشاريع"></nav>
+    <div class="tree" id="sres" hidden aria-live="polite"></div>
+    <div class="sb-foot"><a href="../index.html">← الموقع</a><a href="../learn/index.html">الكورسات</a></div>
+  </aside>
+  <main class="main" id="main" tabindex="-1">
+    <div class="loading" id="boot">… بيتحمّل المنهج</div>
+    <noscript><div class="noscript">المنصة محتاجة JavaScript علشان تشتغل.</div></noscript>
+  </main>
+</div>
+
+<div class="cb-bar" id="cbbar"></div>
+
+<nav class="bb" aria-label="تنقّل سريع">
+  <button id="bb-idx" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>الفهرس</span></button>
+  <button id="bb-search" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>بحث</span></button>
+  <a id="bb-prev" href="#/" aria-label="الصفحة السابقة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg><span>السابق</span></a>
+  <a id="bb-next" href="#/" aria-label="الصفحة التالية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg><span>التالي</span></a>
+  <button id="bb-sec" type="button"></button>
+</nav>
+<button class="fab" id="fab" type="button" aria-label="لأعلى الصفحة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
+
+<div class="scrim" id="scrim"></div>
+
+<div class="sov" id="sov" role="dialog" aria-label="بحث" aria-modal="true">
+  <div class="sov-head">
+    <div class="sbox">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q-ov" type="search" placeholder="ابحث عن درس أو مشروع…" aria-label="بحث" autocomplete="off" spellcheck="false" enterkeyhint="search">
+      <button class="clr" type="button" aria-label="مسح">✕</button>
+    </div>
+    <button class="ib sov-close" id="ov-close" type="button" aria-label="إغلاق البحث"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="sov-body" id="ovres"></div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="grab"></div>
+  <div style="display:flex;align-items:center"><h3 id="sheet-title" style="flex:1"></h3><button class="ib" id="sheet-x" type="button" aria-label="إغلاق" style="margin-inline-end:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div id="sheet-body" style="overflow-y:auto;min-height:0"></div>
+</div>
+
+<script>document.querySelectorAll("[data-logo]").forEach(function(e){e.innerHTML=XFB.logo(e.getAttribute("data-logo"))});document.querySelectorAll("[data-mark]").forEach(function(e){e.innerHTML=XFB.mark()});</script>
+<script src="../docs/assets/px-core.js"></script>
+<script src="../docs/assets/px-view.js"></script>
+<script src="assets/xf-core.js"></script>
+<script src="assets/xf-ide.js"></script>
+<script src="assets/xf-view.js"></script>
+<script src="data/index.js"></script>
+<script src="assets/xf-app.js"></script>
+<script src="../assets/bidi.js"></script>
+</body>
+</html>
