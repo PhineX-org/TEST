@@ -5,7 +5,7 @@ cat: start
 title: الـ Box Model: كل عنصر صندوق
 en: CSS box model
 status: stable
-summary: كل عنصر في الصفحة عبارة عن صندوق من أربع طبقات: المحتوى، الحشو (padding)، الحد (border)، الهامش (margin). فهمها هو مفتاح التحكم في المسافات والأحجام.
+summary: كل عنصر في الصفحة عبارة عن صندوق من أربع طبقات: المحتوى، الـ padding، الـ border، الـ margin. فهمها هو مفتاح التحكم في المسافات والأحجام.
 keywords: box model, صندوق, margin, padding, border, content, مسافات, حشو, هامش, حجم العنصر, box-sizing, عرض حقيقي
 related: padding, margin, border, box-sizing, width, height
 ---
@@ -15,15 +15,15 @@ related: padding, margin, border, box-sizing, width, height
 أول حاجة لازم تعرفها في CSS: **كل عنصر في الصفحة هو صندوق مستطيل**، حتى لو شكله دايرة أو نص عادي. والصندوق ده له **أربع طبقات** من جوه لبرّه:
 
 1. **المحتوى (Content)**: النص أو الصورة نفسها، وحجمها بتتحكم فيه [[width]] و[[height]].
-2. **الحشو (Padding)**: مسافة **جوه** الصندوق بين المحتوى والحد ([[padding]]). بياخد لون الخلفية.
-3. **الحد (Border)**: الإطار اللي حوالين الحشو ([[border]]).
-4. **الهامش (Margin)**: مسافة **برّه** الصندوق بتفصله عن الجيران ([[margin]]). شفافة دايماً.
+2. **الـ padding (المسافة الداخلية)**: مسافة **جوه** الصندوق بين المحتوى والحد ([[padding]]). بياخد لون الخلفية.
+3. **الـ border**: الإطار اللي حوالين الـ padding ([[border]]).
+4. **الـ margin (المسافة الخارجية)**: مسافة **برّه** الصندوق بتفصله عن الجيران ([[margin]]). شفافة دايماً.
 
 > [!analogy] تخيّل لوحة متعلقة على الحيطة: الصورة نفسها = المحتوى، الكرتون اللي حواليها = padding، الإطار الخشب = border، والمسافة بين اللوحة واللي جنبها = margin.
 
-بس فيه فخ بيلخبط كل المبتدئين: لو كتبت `width: 200px` و`padding: 20px`، العرض الفعلي اللي بيحتله الصندوق هيبقى 240px مش 200! علشان الـ `width` بيحدد **المحتوى بس**. الحل المحترف إنك تكتب في أول ملفك `*, *::before, *::after { box-sizing: border-box }` ([[box-sizing]])، فيبقى الـ `width` شامل الحشو والحد، وتحسب بسهولة.
+بس فيه فخ بيلخبط كل المبتدئين: لو كتبت `width: 200px` و`padding: 20px`، العرض الفعلي اللي بيحتله الصندوق هيبقى 240px مش 200! علشان الـ `width` بيحدد **المحتوى بس**. الحل المحترف إنك تكتب في أول ملفك `*, *::before, *::after { box-sizing: border-box }` ([[box-sizing]])، فيبقى الـ `width` شامل الـ padding والحد، وتحسب بسهولة.
 
-والهوامش الرأسية (فوق وتحت) ساعات **بتتدمج**: لو فيه عنصرين فوق بعض، الأول `margin-bottom: 30px` والتاني `margin-top: 20px`، المسافة بينهم 30px مش 50 (**Margin Collapsing**).
+والـ margins الرأسية (فوق وتحت) ساعات **بتتدمج**: لو فيه عنصرين فوق بعض، الأول `margin-bottom: 30px` والتاني `margin-top: 20px`، المسافة بينهم 30px مش 50 (**Margin Collapsing**).
 
 ## try
 
@@ -38,7 +38,7 @@ related: padding, margin, border, box-sizing, width, height
 ## examples
 
 ### 1) الطبقات الأربعة
-كل طبقة بلون: المحتوى أخضر، الحشو كريمي، الحد بني، والهامش (بنقط) بره.
+كل طبقة بلون: المحتوى أخضر، الـ padding كريمي، الحد بني، والـ margin (بنقط) بره.
 
 ```html
 <style>
@@ -49,11 +49,11 @@ related: padding, margin, border, box-sizing, width, height
 <div class="wrap"><div class="b"><div class="c">المحتوى</div></div></div>
 ```
 
-- الحد البني فاصل بين الحشو والهامش.
-- الهامش بره الحد وملوش لون.
+- الحد البني فاصل بين الـ padding والـ margin.
+- الـ margin بره الحد وملوش لون.
 
 ### 2) فخ العرض: content-box
-العرض 200px والحشو 20px والحد 5px يبقى المجموع 250px (المحتوى 200 + 40 + 10).
+العرض 200px والـ padding 20px والحد 5px يبقى المجموع 250px (المحتوى 200 + 40 + 10).
 
 ```html
 <style>
@@ -79,10 +79,10 @@ related: padding, margin, border, box-sizing, width, height
 <div class="ruler"></div><div class="a">مضبوط على 200px</div>
 ```
 
-- الحشو والحد اتحسبوا جوه الـ width.
+- الـ padding والحد اتحسبوا جوه الـ width.
 
-### 4) تداخل الهوامش
-الهامش بين فقرتين بياخد الأكبر: 30px مش 50px.
+### 4) تداخل الـ margins
+الـ margin بين فقرتين بياخد الأكبر: 30px مش 50px.
 
 ```html
 <style>
@@ -98,7 +98,7 @@ related: padding, margin, border, box-sizing, width, height
 
 ## mistakes
 
-### نسيان الحشو في حساب العرض
+### نسيان الـ padding في حساب العرض
 
 ```css bad
 .col { width:50%; padding:20px; }   /* اتنين جنب بعض مش هيكفّوا */
@@ -131,7 +131,7 @@ related: padding, margin, border, box-sizing, width, height
 - [ ] border بس
 - [ ] مفيش
 
-الخلفية بتغطي المحتوى والحشو (وتحت الحد).
+الخلفية بتغطي المحتوى والـ padding (وتحت الحد).
 
 ### width:100px مع padding:10px و content-box. العرض الفعلي؟
 - [ ] 100px
@@ -143,8 +143,8 @@ related: padding, margin, border, box-sizing, width, height
 
 ### `box-sizing: border-box` معناه؟
 - [ ] الحد بيختفي
-- [x] الـ width بيشمل الحشو والحد
-- [ ] الهامش بيتلغي
+- [x] الـ width بيشمل الـ padding والحد
+- [ ] الـ margin بيتلغي
 - [ ] الصندوق بيبقى دايرة
 
 الحجم المحدد هو الحجم النهائي.

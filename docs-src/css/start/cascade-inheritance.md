@@ -46,7 +46,7 @@ related: specificity, kw-initial, kw-inherit, kw-unset, kw-revert, all
 - `color` و`font-weight` اتوارثوا.
 
 ### 2) خصائص مبتتوارثش
-الحد (`border`) بتاع الأب ماتورّثش للابن.
+الـ border بتاع الأب ماتورّثش للابن.
 
 ```html
 <style>

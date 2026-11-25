@@ -3,7 +3,7 @@ id: padding-right
 kind: property
 cat: spacing
 chip: padding-right
-title: حشو اليمين
+title: padding من اليمين
 en: CSS padding-right property
 status: stable
 support: all
@@ -16,7 +16,7 @@ related: padding, margin, box-model, padding-inline, box-sizing
 
 ## intro
 
-الخاصية `padding-right` بتحدد **الحشو على جهة اليمين** لوحدها. هي واحدة من أربع خصائص بتكوّن الاختصار [[padding]]، وبتستخدمها لما عايز تظبط جهة واحدة بس من غير ما تلمس الباقي. الحشو هو المسافة **جوه** العنصر بين المحتوى والحد، وبيتلوّن بـ `background` بتاع العنصر. وبيزوّد حجم العنصر الكلي إلا لو استخدمت [[box-sizing]]`: border-box`. ولو الصفحة عربية استخدم المنطقي `padding-inline-end` (إنجليزي) أو `padding-inline-start` (عربي) علشان يشتغل صح في أي اتجاه.
+الخاصية `padding-right` بتحدد **الـ padding على جهة اليمين** لوحدها. هي واحدة من أربع خصائص بتكوّن الاختصار [[padding]]، وبتستخدمها لما عايز تظبط جهة واحدة بس من غير ما تلمس الباقي. الـ padding هو المسافة **جوه** العنصر بين المحتوى والحد، وبيتلوّن بـ `background` بتاع العنصر. وبيزوّد حجم العنصر الكلي إلا لو استخدمت [[box-sizing]]`: border-box`. ولو الصفحة عربية استخدم المنطقي `padding-inline-end` (إنجليزي) أو `padding-inline-start` (عربي) علشان يشتغل صح في أي اتجاه.
 
 ## try
 
@@ -49,7 +49,7 @@ padding-right: 5%;
 
 ## use
 
-- ظبط حشو جهة واحدة بدقة.
+- ظبط padding جهة واحدة بدقة.
 - تعويض مسافة لأيقونة أو عنصر مثبّت.
 
 ## avoid
@@ -58,7 +58,7 @@ padding-right: 5%;
 
 ## examples
 
-### 1) حشو من اليمين
+### 1) padding من اليمين
 المسافة بين الحد الأيمن والمحتوى.
 
 ```html
@@ -106,10 +106,10 @@ padding-right: 5%;
 ```
 
 ```css good
-.a { margin-right:-10px; }  /* السالب للهامش بس */
+.a { margin-right:-10px; }  /* السالب للـ margin بس */
 ```
 
-الحشو لازم يكون صفر أو موجب.
+الـ padding لازم يكون صفر أو موجب.
 
 ## quiz
 
@@ -119,15 +119,15 @@ padding-right: 5%;
 - [ ] عرض الحد
 - [ ] لون
 
-حشو جهة واحدة.
+padding جهة واحدة.
 
-### هل الحشو بياخد لون الخلفية؟
+### هل الـ padding بياخد لون الخلفية؟
 - [x] أيوه
 - [ ] لأ
 - [ ] أحياناً
 - [ ] فقط مع border
 
-الخلفية بتمتد تحت الحشو.
+الخلفية بتمتد تحت الـ padding.
 
 ## refs
 

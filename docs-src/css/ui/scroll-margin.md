@@ -3,7 +3,7 @@ id: scroll-margin
 kind: property
 cat: ui
 chip: scroll-margin
-title: هامش التقاط التمرير
+title: margin التقاط التمرير
 en: CSS scroll-margin property
 status: stable
 support: all

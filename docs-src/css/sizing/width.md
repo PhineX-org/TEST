@@ -15,7 +15,7 @@ related: height, max-width, min-width, box-sizing, box-model, dt-length
 
 ## intro
 
-الخاصية `width` بتحدد **عرض** العنصر. وبشكل افتراضي (`box-sizing: content-box`) بتحدد عرض **منطقة المحتوى بس**، وبعدين الحشو والحد بيتضافوا عليها ([[box-model]]). فلو حطيت `box-sizing: border-box` ([[box-sizing]]) الـ `width` هيشمل الحشو والحد.
+الخاصية `width` بتحدد **عرض** العنصر. وبشكل افتراضي (`box-sizing: content-box`) بتحدد عرض **منطقة المحتوى بس**، وبعدين الـ padding والحد بيتضافوا عليها ([[box-model]]). فلو حطيت `box-sizing: border-box` ([[box-sizing]]) الـ `width` هيشمل الـ padding والحد.
 
 القيمة الافتراضية `auto`: عناصر الـ block بتتمدد لحد عرض الأب كله، وعناصر الـ inline مبتقبلش `width` أصلاً (لازم تخليها `inline-block` أو `block`).
 
@@ -104,8 +104,8 @@ width: min(100%, 600px);
 
 
 
-### 2) فخ الحشو
-العرض 100% + حشو 20px بيزيد عن الأب. `border-box` بيحلها.
+### 2) فخ الـ padding
+العرض 100% + padding 20px بيزيد عن الأب. `border-box` بيحلها.
 
 ```html
 <style>

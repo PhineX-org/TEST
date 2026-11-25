@@ -3,7 +3,7 @@ id: margin-top
 kind: property
 cat: spacing
 chip: margin-top
-title: هامش الفوق
+title: margin من فوق
 en: CSS margin-top property
 status: stable
 support: all
@@ -16,7 +16,7 @@ related: margin, padding, box-model, margin-inline, padding-top
 
 ## intro
 
-الخاصية `margin-top` بتحدد **الهامش على جهة الفوق** من العنصر لوحدها، من غير ما تأثر على باقي الجهات. هي واحدة من أربع خصائص بتكوّن الاختصار [[margin]]، وبتستخدمها لما عايز تظبط جهة واحدة بس. زي ما عرفنا في [[box-model]]، الهامش هو المسافة **برّه** حدود العنصر، وهو **شفاف** ومبياخدش لون الخلفية. وده بيتأثر بـ **دمج الهوامش الرأسية (margin collapsing)**: لو العنصر اللي فوقه عنده margin-bottom فهياخدوا الأكبر بس.
+الخاصية `margin-top` بتحدد **الـ margin على جهة الفوق** من العنصر لوحدها، من غير ما تأثر على باقي الجهات. هي واحدة من أربع خصائص بتكوّن الاختصار [[margin]]، وبتستخدمها لما عايز تظبط جهة واحدة بس. زي ما عرفنا في [[box-model]]، الـ margin هو المسافة **برّه** حدود العنصر، وهو **شفاف** ومبياخدش لون الخلفية. وده بيتأثر بـ **دمج الـ margins الرأسية (margin collapsing)**: لو العنصر اللي فوقه عنده margin-bottom فهياخدوا الأكبر بس.
 
 المنطقي المقابل: `margin-block-start`. القيمة ممكن تكون طول زي `20px` أو نسبة (من عرض الأب) أو `auto` أو قيمة سالبة.
 
@@ -79,20 +79,20 @@ margin-top: -10px;
 
 
 ### 2) أول عنصر بيدفع الأب
-ممكن هامش أول ابن يتسرّب برّه الأب (margin collapsing) فبنمنعه بـ `padding` أو `overflow`.
+ممكن margin أول ابن يتسرّب برّه الأب (margin collapsing) فبنمنعه بـ `padding` أو `overflow`.
 
 ```html
 <style>
   .p { background:#efe0bd; color:#3d2c18; overflow:hidden; }
   .c { margin-top:30px; background:#3d7a5a; color:#f3ede0; padding:8px; }
 </style>
-<div class="p"><div class="c">ابن بهامش علوي (جوه الأب لأن overflow)</div></div>
+<div class="p"><div class="c">ابن بـmargin علوي (جوه الأب لأن overflow)</div></div>
 ```
 
-- من غير `overflow` الهامش بيطلع برّه الأب.
+- من غير `overflow` الـ margin بيطلع برّه الأب.
 
 ### 3) قائمة بمسافات
-نفس الهامش على كل عنصر ما عدا الأول بـ `* + *`.
+نفس الـ margin على كل عنصر ما عدا الأول بـ `* + *`.
 
 ```html
 <style>
@@ -117,7 +117,7 @@ margin-top: -10px;
 .a { padding-top:20px; }
 ```
 
-الهامش برّه العنصر والحشو جوّاه. الخلفية بتظهر في الحشو.
+الـ margin برّه العنصر والـ padding جوّاه. الخلفية بتظهر في الـ padding.
 
 ## quiz
 
@@ -127,9 +127,9 @@ margin-top: -10px;
 - [ ] سُمك الحد
 - [ ] لون الخلفية
 
-هامش جهة واحدة.
+margin جهة واحدة.
 
-### الهامش شفاف؟
+### الـ margin شفاف؟
 - [x] أيوه
 - [ ] لأ
 - [ ] أحياناً

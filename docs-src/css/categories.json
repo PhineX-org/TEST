@@ -150,7 +150,7 @@
   },
   {
    "id": "spacing",
-   "name": "الهوامش والحشو",
+   "name": "المسافات: margin و padding",
    "icon": "↔️",
    "desc": "margin وpadding بكل اتجاهاتهم: المسافة برّه العنصر وجواه.",
    "items": [
@@ -188,7 +188,7 @@
   },
   {
    "id": "borders-bg",
-   "name": "الحدود والخلفيات والظلال",
+   "name": "Border والخلفيات والظلال",
    "icon": "🖼️",
    "desc": "border وborder-radius وoutline وbox-shadow وكل خصائص background.",
    "items": [

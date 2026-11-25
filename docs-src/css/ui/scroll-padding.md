@@ -3,7 +3,7 @@ id: scroll-padding
 kind: property
 cat: ui
 chip: scroll-padding
-title: حشو منطقة التمرير
+title: padding منطقة التمرير
 en: CSS scroll-padding property
 status: stable
 support: all

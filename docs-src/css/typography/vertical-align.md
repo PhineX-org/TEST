@@ -90,7 +90,7 @@ middle بتظبط المحاذاة.
 
 
 ### 2) sub وsuper
-معادلات وهوامش.
+معادلات و margins.
 
 ```html
 <style>

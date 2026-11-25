@@ -154,7 +154,7 @@ max-width: none;
 .c { max-width:600px; margin-inline:auto; }
 ```
 
-العنصر المحدود بيحتاج هامش auto علشان يتوسّط.
+العنصر المحدود بيحتاج margin auto علشان يتوسّط.
 
 ## quiz
 

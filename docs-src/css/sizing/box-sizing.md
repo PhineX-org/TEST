@@ -8,7 +8,7 @@ en: CSS box-sizing property
 status: stable
 support: all
 mdn: box-sizing
-summary: box-sizing بتحدد هل width وheight بيشملوا الحشو والحد (border-box) ولا بيحسبوا المحتوى بس (content-box). أهم سطر في أي reset.
+summary: box-sizing بتحدد هل width وheight بيشملوا الـ padding والحد (border-box) ولا بيحسبوا المحتوى بس (content-box). أهم سطر في أي reset.
 keywords: box-sizing, border-box, content-box, حساب العرض, حشو, حد, reset, box model
 related: box-model, width, height, padding, border, universal-selector
 ---
@@ -17,8 +17,8 @@ related: box-model, width, height, padding, border, universal-selector
 
 الخاصية `box-sizing` بتجاوب على سؤال: **«لما أكتب `width: 200px`، الـ 200 دي بتشمل إيه؟»**
 
-- **`content-box`** (الافتراضي): الـ `width` للمحتوى **بس**. الحشو والحد بيتضافوا برّه. يعني `width: 200px` + `padding: 20px` + `border: 5px` = عرض فعلي **250px**.
-- **`border-box`**: الـ `width` يشمل **المحتوى + الحشو + الحد**. يعني `width: 200px` = 200px كلهم مهما كان الحشو، والمحتوى هو اللي بيضيق.
+- **`content-box`** (الافتراضي): الـ `width` للمحتوى **بس**. الـ padding والحد بيتضافوا برّه. يعني `width: 200px` + `padding: 20px` + `border: 5px` = عرض فعلي **250px**.
+- **`border-box`**: الـ `width` يشمل **المحتوى + الـ padding + الحد**. يعني `width: 200px` = 200px كلهم مهما كان الـ padding، والمحتوى هو اللي بيضيق.
 
 الأكثر استخداماً هو `border-box` لأنه **أسهل في الحساب**: لو عايز عمودين 50% جنب بعض وحطيت padding، هيفضلوا 50% بالظبط ومش هيعدّوا 100%.
 
@@ -55,10 +55,10 @@ box-sizing: border-box;    /* الأسهل */
 ## values
 
 ### content-box
-`width`/`height` بيحسبوا المحتوى بس، والحشو والحد بيتضافوا.
+`width`/`height` بيحسبوا المحتوى بس، والـ padding والحد بيتضافوا.
 
 ### border-box
-`width`/`height` بيشملوا الحشو والحد. أسهل في التخطيط.
+`width`/`height` بيشملوا الـ padding والحد. أسهل في التخطيط.
 
 ### padding-box
 قيمة قديمة (Firefox فقط) وانتهت. متستخدمهاش.
@@ -66,7 +66,7 @@ box-sizing: border-box;    /* الأسهل */
 ## use
 
 - `*, *::before, *::after { box-sizing: border-box }` في أول أي مشروع.
-- أعمدة بنسب مئوية مع حشو.
+- أعمدة بنسب مئوية مع padding.
 - حقول إدخال `width: 100%` مع padding.
 
 ## avoid
@@ -173,7 +173,7 @@ body { box-sizing:border-box; }  /* مبتتوارثش */
 - [ ] 240
 - [ ] عشوائي
 
-العرض يشمل الحشو.
+العرض يشمل الـ padding.
 
 ### الخاصية بتتوارث؟
 - [ ] أيوه
