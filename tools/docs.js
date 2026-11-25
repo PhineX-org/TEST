@@ -658,6 +658,8 @@ if (cmd === 'check') {
 } else if (cmd === 'build') {
   const targets = libFlag ? [libFlag] : (positional[0] === 'all' ? LIB_LIST.filter(l => fs.existsSync(path.join(SRC, l, 'categories.json'))) : [positional[0] || 'html']);
   let rc = 0; targets.forEach(l => { rc = rc || build(l); });
+  // refresh the list of files the "download for offline" button fetches
+  if (!rc) require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'offline.js')], { stdio: 'inherit' });
   process.exit(rc);
 } else if (cmd === 'status') {
   (libFlag ? [libFlag] : [positional[0] || 'html']).forEach(l => { console.log('── ' + l); status(l); });
