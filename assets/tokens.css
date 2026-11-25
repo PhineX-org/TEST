@@ -1,0 +1,122 @@
+/* PhineX — design tokens (shared by the landing page, course menus, lessons and the docs)
+   Soft "glass" look inspired by iOS: translucent layers, large continuous corners, hairline borders,
+   gentle shadows. Calm, low-glare palettes: no neon, no pure black, no pure white.
+   Three colour themes (data-theme on <html>, saved as pxd:theme):  dusk = داكن هادئ (default) · paper = فاتح هادئ · sepia = سيبيا
+   Two shape styles (data-style on <html>, saved as pxd:style):      classic = الافتراضي · liquid = Liquid Glass (iOS 27)  — see liquid.css */
+:root{
+  --px-fs:16px;
+  --px-radius:22px; --px-radius-lg:28px; --px-radius-sm:14px;
+  --px-ease:cubic-bezier(.22,.8,.2,1);
+  --px-font:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Arabic','Cairo','Segoe UI',Tahoma,system-ui,sans-serif;
+  --px-font-ar:'Cairo',-apple-system,BlinkMacSystemFont,'SF Arabic','Segoe UI',Tahoma,system-ui,sans-serif;
+  --px-mono:'SF Mono','JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --px-bg:#14181e; --px-surface:#181d24; --px-card:#1e252e; --px-card2:#262f3a;
+  --px-glass:rgba(34,42,54,.58); --px-glass-strong:rgba(26,32,42,.78); --px-glass-hi:rgba(255,255,255,.07);
+  --px-blur:blur(24px) saturate(1.6);
+  --px-line:rgba(200,214,232,.10); --px-line-strong:rgba(200,214,232,.20);
+  --px-text:#d9e0ea; --px-text-strong:#f0f3f8; --px-muted:#93a1b4; --px-faint:#6e7c8f;
+  --px-accent:#6fc3a3; --px-accent-rgb:111,195,163; --px-accent-strong:#8fd6bb; --px-on-accent:#0f201a;
+  --px-accent2:#8aa4e8; --px-accent2-rgb:138,164,232;
+  --px-warm:#e0bd7e; --px-danger:#e69a9a; --px-info:#82b6e6; --px-purple:#b3a4e6;
+  --px-code-bg:#10151b; --px-code-text:#cdd6e2; --px-code-muted:#7f8da0; --px-code-line:rgba(200,214,232,.08);
+  --px-paper:#eeeae0; --px-ink-rgb:200,214,232;
+  --px-shadow:0 1px 2px rgba(0,0,0,.18),0 12px 34px rgba(2,6,12,.34);
+  --px-shadow-sm:0 1px 2px rgba(0,0,0,.16),0 4px 14px rgba(2,6,12,.22);
+  --px-scrim:rgba(6,10,16,.6);
+  --px-mesh:radial-gradient(620px 420px at 88% -6%,rgba(111,195,163,.13),transparent 70%),radial-gradient(560px 420px at 4% 6%,rgba(138,164,232,.11),transparent 70%),radial-gradient(700px 460px at 50% 112%,rgba(179,164,230,.08),transparent 70%);
+  color-scheme:dark;
+}
+:root[data-theme=paper]{
+  --px-bg:#eef0f5; --px-surface:#e7eaf1; --px-card:#fbfbfd; --px-card2:#f0f2f7;
+  --px-glass:rgba(255,255,255,.62); --px-glass-strong:rgba(250,251,253,.80); --px-glass-hi:rgba(255,255,255,.9);
+  --px-blur:blur(24px) saturate(1.8);
+  --px-line:rgba(40,50,70,.10); --px-line-strong:rgba(40,50,70,.20);
+  --px-text:#2a303c; --px-text-strong:#161b25; --px-muted:#5d6879; --px-faint:#8a94a4;
+  --px-accent:#15735e; --px-accent-rgb:21,115,94; --px-accent-strong:#0e5a49; --px-on-accent:#f2fbf8;
+  --px-accent2:#4a60c8; --px-accent2-rgb:74,96,200;
+  --px-warm:#8a5c12; --px-danger:#b04444; --px-info:#2a6aa8; --px-purple:#5f4ba3;
+  /* code panels stay dark in every theme: syntax colours keep their contrast */
+  --px-code-bg:#1f2731; --px-code-text:#d3dae4; --px-code-muted:#8b99ab; --px-code-line:rgba(200,214,232,.09);
+  --px-paper:#fbfbfd; --px-ink-rgb:40,50,70;
+  --px-shadow:0 1px 2px rgba(30,40,70,.06),0 12px 32px rgba(30,40,70,.12);
+  --px-shadow-sm:0 1px 2px rgba(30,40,70,.06),0 4px 14px rgba(30,40,70,.09);
+  --px-scrim:rgba(30,35,50,.36);
+  --px-mesh:radial-gradient(620px 420px at 88% -6%,rgba(28,138,116,.13),transparent 70%),radial-gradient(560px 420px at 4% 6%,rgba(74,96,200,.11),transparent 70%),radial-gradient(700px 460px at 50% 112%,rgba(150,120,210,.08),transparent 70%);
+  color-scheme:light;
+}
+:root[data-theme=sepia]{
+  --px-bg:#e9dfc7; --px-surface:#e2d7bb; --px-card:#f3e9d0; --px-card2:#ebe0c3;
+  --px-glass:rgba(247,238,216,.62); --px-glass-strong:rgba(243,233,208,.82); --px-glass-hi:rgba(255,250,235,.8);
+  --px-blur:blur(24px) saturate(1.5);
+  --px-line:rgba(78,52,20,.15); --px-line-strong:rgba(78,52,20,.28);
+  --px-text:#3a2c18; --px-text-strong:#241a0c; --px-muted:#6e5c3c; --px-faint:#8f7c58;
+  --px-accent:#2f6b57; --px-accent-rgb:47,107,87; --px-accent-strong:#245444; --px-on-accent:#f6efd9;
+  --px-accent2:#5a4a8c; --px-accent2-rgb:90,74,140;
+  --px-warm:#7f5208; --px-danger:#9a3a2a; --px-info:#285f7c; --px-purple:#62468f;
+  --px-code-bg:#2b2a22; --px-code-text:#e3dcc6; --px-code-muted:#9a9174; --px-code-line:rgba(240,228,200,.09);
+  --px-paper:#f6edd4; --px-ink-rgb:78,52,20;
+  --px-shadow:0 1px 2px rgba(70,46,14,.08),0 12px 30px rgba(70,46,14,.16);
+  --px-shadow-sm:0 1px 2px rgba(70,46,14,.08),0 4px 14px rgba(70,46,14,.12);
+  --px-scrim:rgba(50,34,10,.4);
+  --px-mesh:radial-gradient(620px 420px at 88% -6%,rgba(47,107,87,.12),transparent 70%),radial-gradient(560px 420px at 4% 6%,rgba(143,74,20,.10),transparent 70%);
+  color-scheme:light;
+}
+/* ── bidi: English / code tokens inside Arabic text stay isolated and readable ── */
+bdi.px-l{unicode-bidi:isolate;direction:ltr;overflow-wrap:anywhere}
+
+/* ── floating reading tools on lesson pages: [theme button] [font-size button] — injected by site.js ── */
+.px-tools{position:fixed;inset-inline-start:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:900;font-family:var(--px-font);direction:rtl;display:flex;gap:10px;align-items:center}
+.px-tools-fab,.px-theme-fab{width:48px;height:48px;border-radius:50%;border:1px solid var(--px-line);background:var(--px-glass-strong);-webkit-backdrop-filter:var(--px-blur);backdrop-filter:var(--px-blur);color:var(--px-text);display:grid;place-items:center;cursor:pointer;box-shadow:var(--px-shadow);-webkit-tap-highlight-color:transparent;transition:transform .25s var(--px-ease),background .25s;padding:0}
+.px-tools-fab:active,.px-theme-fab:active{transform:scale(.94)}
+.px-tools-fab svg,.px-theme-fab svg{width:21px;height:21px}
+.px-theme-fab{color:var(--px-accent)}
+.px-tools-panel{position:absolute;bottom:60px;inset-inline-start:0;width:min(272px,calc(100vw - 28px));background:var(--px-glass-strong);-webkit-backdrop-filter:var(--px-blur);backdrop-filter:var(--px-blur);border:1px solid var(--px-line);border-radius:24px;box-shadow:var(--px-shadow);padding:14px;display:none;color:var(--px-text)}
+.px-tools.open .px-tools-panel{display:block;animation:px-pop .28s var(--px-ease)}
+@keyframes px-pop{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+.px-tools-panel h6{margin:0 0 8px;font:700 .76rem var(--px-font);color:var(--px-muted);letter-spacing:.2px}
+.px-tools-row{display:flex;gap:4px;margin-bottom:14px;padding:3px;background:rgba(var(--px-ink-rgb),.08);border-radius:14px}
+.px-tools-row:last-child{margin-bottom:0}
+.px-tools-row button{flex:1;border:0;background:transparent;color:var(--px-text);border-radius:11px;padding:8px 6px;font:600 .82rem var(--px-font);cursor:pointer;min-height:38px;transition:background .2s,box-shadow .2s}
+.px-tools-row button[aria-pressed=true]{background:var(--px-card);color:var(--px-text-strong);box-shadow:var(--px-shadow-sm)}
+
+/* ── theme switch feedback: small pill that names the look you just switched to ── */
+.px-toast{position:fixed;inset-inline:0;bottom:calc(92px + env(safe-area-inset-bottom));margin-inline:auto;width:max-content;max-width:calc(100vw - 32px);z-index:1000;display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:var(--px-glass-strong);-webkit-backdrop-filter:var(--px-blur);backdrop-filter:var(--px-blur);border:1px solid var(--px-line-strong);box-shadow:var(--px-shadow);color:var(--px-text-strong);font:600 .88rem var(--px-font);direction:rtl;opacity:0;transform:translateY(10px) scale(.96);pointer-events:none;transition:opacity .25s,transform .35s var(--px-ease)}
+.px-toast.show{opacity:1;transform:none}
+.px-toast i{width:14px;height:14px;border-radius:50%;border:1px solid var(--px-line-strong);flex:none}
+@media (prefers-reduced-motion:reduce){.px-toast,.px-tools-fab,.px-theme-fab{transition:none}}
+
+/* ── colour families used by the re-skinned lessons (deep tones on light themes, soft pastels on dark) ── */
+:root{
+  --px-bg-rgb:20,24,30;--px-shade-rgb:0,0,0;--px-shade-k:1;--px-on-fill:#10161c;
+  --px-c-red:#e68f8f;--px-c-red-rgb:230,143,143;
+  --px-c-orange:#dba078;--px-c-orange-rgb:219,160,120;
+  --px-c-yellow:#e0c27a;--px-c-yellow-rgb:224,194,122;
+  --px-c-green:#9fcf95;--px-c-green-rgb:159,207,149;
+  --px-c-cyan:#7cc4d8;--px-c-cyan-rgb:124,196,216;
+  --px-c-blue:#85b4ee;--px-c-blue-rgb:133,180,238;
+  --px-c-purple:#b8a6e8;--px-c-purple-rgb:184,166,232;
+  --px-c-pink:#dc9bbd;--px-c-pink-rgb:220,155,189;
+}
+:root[data-theme=paper]{
+  --px-bg-rgb:238,240,245;--px-shade-rgb:40,50,70;--px-shade-k:.3;--px-on-fill:#fff;
+  --px-c-red:#b24545;--px-c-red-rgb:178,69,69;
+  --px-c-orange:#a85a22;--px-c-orange-rgb:168,90,34;
+  --px-c-yellow:#8a6410;--px-c-yellow-rgb:138,100,16;
+  --px-c-green:#2f6b3a;--px-c-green-rgb:47,107,58;
+  --px-c-cyan:#1f6e82;--px-c-cyan-rgb:31,110,130;
+  --px-c-blue:#2d5fa6;--px-c-blue-rgb:45,95,166;
+  --px-c-purple:#5d4a9c;--px-c-purple-rgb:93,74,156;
+  --px-c-pink:#a8456e;--px-c-pink-rgb:168,69,110;
+}
+:root[data-theme=sepia]{
+  --px-bg-rgb:233,223,199;--px-shade-rgb:70,46,14;--px-shade-k:.3;--px-on-fill:#fff;
+  --px-c-red:#9a3a2a;--px-c-red-rgb:154,58,42;
+  --px-c-orange:#8f4a14;--px-c-orange-rgb:143,74,20;
+  --px-c-yellow:#7a5a0a;--px-c-yellow-rgb:122,90,10;
+  --px-c-green:#3a6a2a;--px-c-green-rgb:58,106,42;
+  --px-c-cyan:#24625f;--px-c-cyan-rgb:36,98,95;
+  --px-c-blue:#285f7c;--px-c-blue-rgb:40,95,124;
+  --px-c-purple:#62468f;--px-c-purple-rgb:98,70,143;
+  --px-c-pink:#98384f;--px-c-pink-rgb:152,56,79;
+}

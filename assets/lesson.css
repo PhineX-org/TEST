@@ -1,0 +1,72 @@
+/* PhineX — lesson.css : loaded LAST on every course lesson / project page.
+   Calm base + small-screen fixes that the page's own CSS did not have. Requires tokens.css. */
+html{-webkit-text-size-adjust:100%;font-size:var(--px-fs,16px)}
+body{overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img,video,canvas,svg,iframe{max-width:100%}
+pre{max-width:100%;overflow-x:auto}
+table{max-width:100%}
+.px-l{font-feature-settings:normal}
+::selection{background:rgba(var(--px-accent-rgb),.28)}
+:focus-visible{outline:2px solid var(--px-accent);outline-offset:2px}
+/* soften glows / scan-lines / neon effects used by the old theme */
+*{text-shadow:none!important}
+.glow,.neon-glow,[class*="glow"]{box-shadow:none!important;filter:none!important}
+body::before,body::after{animation:none!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* ── phones / small displays ── */
+@media (max-width:720px){
+  .container,.wrap,.content,.main-wrap{padding-left:14px!important;padding-right:14px!important}
+  .header,header.top,.topbar,.navbar{padding-left:14px!important;padding-right:14px!important;gap:10px}
+  .hero{padding:34px 16px 28px!important}
+  .hero h1,h1{font-size:clamp(1.45rem,6.6vw,2rem)!important;line-height:1.35!important}
+  .hero p{font-size:.95rem!important}
+  .section-card,.card,.box{padding:18px 14px!important;border-radius:14px!important}
+  .tags-grid,.grid,.cards-grid{grid-template-columns:minmax(0,1fr)!important}
+  .editor-wrap{grid-template-columns:minmax(0,1fr)!important}
+  /* annotated code: note goes under the code line instead of squeezing it */
+  .code-line{flex-wrap:wrap}
+  .line-note{flex:1 0 100%!important;min-width:0!important;max-width:none!important;border:0!important;padding:0 14px 10px 14px!important}
+  .line-code{min-width:0;overflow-x:auto}
+  .code-block,.code-wrap{max-width:100%}
+  table{display:block;overflow-x:auto;white-space:nowrap}
+  .btn,button,.nav-btn{min-height:40px}
+}
+/* tiny phones */
+@media (max-width:380px){
+  html{font-size:calc(var(--px-fs,16px) - 1px)}
+  .section-card,.card,.box{padding:16px 12px!important}
+}
+
+/* ───── soft iOS layer: large corners, pill controls, hairlines, gentle shadows ───── */
+[class*="card"],[class*="-box"],[class*="box-"],.box,[class*="panel"],.task-list,.note,.hint,.quiz-container,.quiz-body,.gotcha,.q-card,.win-card{border-radius:22px!important}
+.code-block,.code-wrap,.editor-wrap,.preview-wrap,[class*="terminal"]{border-radius:20px!important;overflow:hidden}
+button,[class^="btn"],[class*=" btn"],.btn,.copy-btn,.back-link,.menu-btn,.nav-btn{border-radius:999px!important}
+[class*="badge"],[class*="pill"],.meta-tag,.ll-badge,.cd{border-radius:999px!important}
+input:not([type=checkbox]):not([type=radio]):not([type=range]),select{border-radius:14px}
+.section-card,.lesson-card,.q-card,.card,.task-list{box-shadow:var(--px-shadow-sm)}
+.header,.topbar,.navbar,.top-nav,.sticky-header{background:var(--px-glass-strong)!important;-webkit-backdrop-filter:var(--px-blur);backdrop-filter:var(--px-blur);border-bottom:1px solid var(--px-line)!important}
+@media (max-width:720px){
+  .line-code{white-space:pre-wrap!important;overflow-wrap:anywhere;overflow-x:visible}
+  .editor-wrap iframe,.preview-wrap iframe{min-height:220px}
+}
+
+/* code windows: the title bar belongs to the dark code panel in every theme */
+.code-wrap{border:1px solid var(--px-line);box-shadow:var(--px-shadow-sm)}
+.code-wrap>.code-title,.code-title,.code-header,.window-bar,.editor-bar,[class*="titlebar"]{border-radius:0!important;background:var(--px-code-bg)!important;color:var(--px-code-muted)!important;border:0!important;border-bottom:1px solid var(--px-code-line)!important}
+.code-wrap>.code-block{border-radius:0!important;border:0!important}
+
+/* badges painted with a solid colour-family fill: text follows the theme (white on deep tones, dark on soft pastels) */
+.mission-badge{color:var(--px-on-fill)!important}
+
+/* code panels: plain text + copy buttons keep their contrast in every theme */
+.code-block pre,.code-wrap pre{color:var(--px-code-text)}
+.copy-btn{color:var(--px-code-muted)}
+
+/* phones: nothing may push the page wider than the screen */
+@media (max-width:720px){
+  :not(pre)>code{white-space:normal;overflow-wrap:anywhere}
+  label>*,.q-options label>*{min-width:0}
+  table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .main,.page>.main,.content{min-width:0;max-width:100%}
+}
