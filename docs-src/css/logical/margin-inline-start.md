@@ -3,20 +3,20 @@ id: margin-inline-start
 kind: property
 cat: logical
 chip: margin-inline-start
-title: هامش بداية السطر
+title: margin بداية السطر
 en: CSS margin-inline-start property
 status: stable
 support: all
 size: compact
 mdn: margin-inline-start
-summary: margin-inline-start هامش في بداية السطر: يمين في العربي وشمال في الإنجليزي. بديل ذكي لـ margin-right.
+summary: margin-inline-start margin في بداية السطر: يمين في العربي وشمال في الإنجليزي. بديل ذكي لـ margin-right.
 keywords: margin-inline-start, بداية, rtl, هامش
 related: margin-inline-end, margin-inline, margin-right, margin-left
 ---
 
 ## intro
 
-الخاصية `margin-inline-start` بتحط هامش **عند بداية السطر** فقط. في العربي (RTL) البداية = **يمين**، وفي الإنجليزي (LTR) = **شمال**. بدل ما تكتب كودين (`margin-right` للعربي و`margin-left` للإنجليزي) تكتب سطر واحد وهو بيتصرف صح لوحده. مثال كلاسيكي: أيقونة قبل النص: `.icon { margin-inline-end: 8px; }` تفصل الأيقونة عن النص في أي لغة. وهي جزء من عائلة [[margin-inline]]. زي ما بنقول: «سيب مسافة من جهة البداية» من غير ما تفكر في الاتجاه.
+الخاصية `margin-inline-start` بتحط margin **عند بداية السطر** فقط. في العربي (RTL) البداية = **يمين**، وفي الإنجليزي (LTR) = **شمال**. بدل ما تكتب كودين (`margin-right` للعربي و`margin-left` للإنجليزي) تكتب سطر واحد وهو بيتصرف صح لوحده. مثال كلاسيكي: أيقونة قبل النص: `.icon { margin-inline-end: 8px; }` تفصل الأيقونة عن النص في أي لغة. وهي جزء من عائلة [[margin-inline]]. زي ما بنقول: «سيب مسافة من جهة البداية» من غير ما تفكر في الاتجاه.
 
 ## try
 

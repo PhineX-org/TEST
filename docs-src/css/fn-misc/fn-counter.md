@@ -3,7 +3,7 @@ id: fn-counter
 kind: function
 cat: fn-misc
 chip: counter()
-title: دالة counter(): عرض قيمة عدّاد
+title: عرض قيمة عدّاد
 en: CSS counter() function
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: fn-translate
 kind: function
 cat: fn-transform
 chip: translate()
-title: دالة translate(): تحريك العنصر
+title: تحريك العنصر
 en: CSS translate() function
 status: stable
 support: all

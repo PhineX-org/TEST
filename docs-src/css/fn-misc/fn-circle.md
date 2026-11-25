@@ -3,7 +3,7 @@ id: fn-circle
 kind: function
 cat: fn-misc
 chip: circle()
-title: دالة circle(): شكل دايرة
+title: شكل دايرة
 en: CSS circle() function
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: fn-perspective
 kind: function
 cat: fn-transform
 chip: perspective()
-title: دالة perspective(): عمق ثلاثي الأبعاد
+title: عمق ثلاثي الأبعاد
 en: CSS perspective() function
 status: stable
 support: all

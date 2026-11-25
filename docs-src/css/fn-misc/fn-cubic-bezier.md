@@ -3,7 +3,7 @@ id: fn-cubic-bezier
 kind: function
 cat: fn-misc
 chip: cubic-bezier()
-title: دالة cubic-bezier(): منحنى سرعة مخصص
+title: منحنى سرعة مخصص
 en: CSS cubic-bezier() function
 status: stable
 support: all

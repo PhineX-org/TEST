@@ -3,7 +3,7 @@ id: fn-inset-shape
 kind: function
 cat: fn-misc
 chip: inset()
-title: دالة inset(): قص مستطيل من الحواف
+title: قص مستطيل من الحواف
 en: CSS inset() function
 status: stable
 support: all

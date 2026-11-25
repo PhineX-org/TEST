@@ -3,20 +3,20 @@ id: padding-block
 kind: property
 cat: logical
 chip: padding-block
-title: حشو الاتجاه الرأسي (منطقي)
+title: padding الاتجاه الرأسي (منطقي)
 en: CSS padding-block property
 status: stable
 support: all
 size: compact
 mdn: padding-block
-summary: padding-block بتحط حشو قبل وبعد المحتوى في اتجاه الكتل (فوق وتحت). بديل padding-top وpadding-bottom.
+summary: padding-block بتحط padding قبل وبعد المحتوى في اتجاه الكتل (فوق وتحت). بديل padding-top وpadding-bottom.
 keywords: padding-block, حشو رأسي, logical, padding
 related: padding-inline, padding-top, padding-bottom, logical-properties-guide
 ---
 
 ## intro
 
-الخاصية `padding-block` هي النسخة المنطقية من `padding-top` و`padding-bottom`: حشو **قبل وبعد** المحتوى في اتجاه تراص الكتل (فوق وتحت في الكتابة العادية). `padding-block: 12px 20px;` يعني 12 قبل و20 بعد. بتكمل [[padding-inline]]، والاتنين مع بعض بيعوّضوا `padding` المختصر: `padding-block: 10px; padding-inline: 20px;`. مفيدة في الأزرار والبطاقات والأقسام (`section { padding-block: 60px; }`) وبتبقى صح حتى مع الكتابة الرأسية. تخيّل إنك بتسيب مسافة فوق وتحت الفقرة جوه الإطار عشان الكلام ميلزقش في الحافة: ده بالظبط شغل `padding-block`، والاسم «block» معناه الاتجاه اللي الفقرات بتتحط فيه فوق بعض.
+الخاصية `padding-block` هي النسخة المنطقية من `padding-top` و`padding-bottom`: padding **قبل وبعد** المحتوى في اتجاه تراص الكتل (فوق وتحت في الكتابة العادية). `padding-block: 12px 20px;` يعني 12 قبل و20 بعد. بتكمل [[padding-inline]]، والاتنين مع بعض بيعوّضوا `padding` المختصر: `padding-block: 10px; padding-inline: 20px;`. مفيدة في الأزرار والبطاقات والأقسام (`section { padding-block: 60px; }`) وبتبقى صح حتى مع الكتابة الرأسية. تخيّل إنك بتسيب مسافة فوق وتحت الفقرة جوه الإطار عشان الكلام ميلزقش في الحافة: ده بالظبط شغل `padding-block`، والاسم «block» معناه الاتجاه اللي الفقرات بتتحط فيه فوق بعض.
 
 ## try
 
@@ -48,7 +48,7 @@ section { padding-block: 60px; }
 
 ## use
 
-- أقسام بحشو رأسي كبير.
+- أقسام بـpadding رأسي كبير.
 - أزرار.
 
 ## avoid
@@ -58,14 +58,14 @@ section { padding-block: 60px; }
 ## examples
 
 ### 1) قسم
-حشو رأسي كبير.
+padding رأسي كبير.
 
 ```html
 <style>
   .w { margin:6px 0; padding:6px; background:#f3e6c9; border-radius:8px; color:#3d2c18; }
   .i { background:#c9772f; color:#f3ede0; padding:6px 10px; border-radius:6px; font-weight:bold; }
 </style>
-<div class="w" style="padding-block:28px;background:#efe0bd">قسم بحشو رأسي 28</div>
+<div class="w" style="padding-block:28px;background:#efe0bd">قسم بـpadding رأسي 28</div>
 ```
 
 
@@ -116,7 +116,7 @@ block = رأسي.
 - [x] رأسي
 - [ ] أفقي
 - [ ] كل الجهات
-- [ ] هامش
+- [ ] margin
 
 قبل وبعد.
 

@@ -3,7 +3,7 @@ id: fn-skew
 kind: function
 cat: fn-transform
 chip: skew()
-title: دالة skew(): إمالة العنصر
+title: إمالة العنصر
 en: CSS skew() function
 status: stable
 support: all

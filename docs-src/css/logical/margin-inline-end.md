@@ -3,20 +3,20 @@ id: margin-inline-end
 kind: property
 cat: logical
 chip: margin-inline-end
-title: هامش نهاية السطر
+title: margin نهاية السطر
 en: CSS margin-inline-end property
 status: stable
 support: all
 size: compact
 mdn: margin-inline-end
-summary: margin-inline-end هامش في نهاية السطر: شمال في العربي ويمين في الإنجليزي. أشهر استخدام: مسافة بين أيقونة والنص.
+summary: margin-inline-end margin في نهاية السطر: شمال في العربي ويمين في الإنجليزي. أشهر استخدام: مسافة بين أيقونة والنص.
 keywords: margin-inline-end, نهاية, rtl, هامش
 related: margin-inline-start, margin-inline, margin-left, margin-right
 ---
 
 ## intro
 
-الخاصية `margin-inline-end` بتحط هامش **عند نهاية السطر**: شمال في العربي (RTL) ويمين في الإنجليزي (LTR). الاستخدام الأشهر: **مسافة بين أيقونة ونصها**. الأيقونة بتيجي قبل النص، فالمسافة بتبقى «بعد» الأيقونة: `.icon { margin-inline-end: 8px; }` وبتشتغل صح في العربي والإنجليزي بنفس الكود. وهي عكس [[margin-inline-start]] وجزء من [[margin-inline]]. وفي flex، `margin-inline-end: auto` بتدفع باقي العناصر لبداية السطر.
+الخاصية `margin-inline-end` بتحط margin **عند نهاية السطر**: شمال في العربي (RTL) ويمين في الإنجليزي (LTR). الاستخدام الأشهر: **مسافة بين أيقونة ونصها**. الأيقونة بتيجي قبل النص، فالمسافة بتبقى «بعد» الأيقونة: `.icon { margin-inline-end: 8px; }` وبتشتغل صح في العربي والإنجليزي بنفس الكود. وهي عكس [[margin-inline-start]] وجزء من [[margin-inline]]. وفي flex، `margin-inline-end: auto` بتدفع باقي العناصر لبداية السطر.
 
 ## try
 

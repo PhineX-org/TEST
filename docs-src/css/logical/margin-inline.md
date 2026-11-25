@@ -3,12 +3,12 @@ id: margin-inline
 kind: property
 cat: logical
 chip: margin-inline
-title: هامش الاتجاه الأفقي (منطقي)
+title: margin الاتجاه الأفقي (منطقي)
 en: CSS margin-inline property
 status: stable
 support: all
 mdn: margin-inline
-summary: margin-inline بتحط هامش على جانبي العنصر في اتجاه الكتابة (بداية ونهاية). بتتقلب لوحدها في العربي RTL بدل margin-left وmargin-right.
+summary: margin-inline بتحط margin على جانبي العنصر في اتجاه الكتابة (بداية ونهاية). بتتقلب لوحدها في العربي RTL بدل margin-left وmargin-right.
 keywords: margin-inline, logical properties, rtl, margin, هامش, بداية ونهاية
 related: margin-block, margin-inline-start, margin-inline-end, margin, logical-properties-guide
 ---
@@ -18,11 +18,11 @@ related: margin-block, margin-inline-start, margin-inline-end, margin, logical-p
 الخاصية `margin-inline` هي النسخة **المنطقية** من `margin-left` و`margin-right` مع بعض. بدل ما تقول «يمين» و«شمال»، بتقول **«بداية» و«نهاية» السطر** حسب اتجاه الكتابة. ده بيفرق جداً في المواقع العربية: في صفحة عربية (RTL) البداية هي اليمين والنهاية هي الشمال، وفي الإنجليزي (LTR) العكس. لو كتبت `margin-left: 20px` هتفضل شمال حتى لو الصفحة اتقلبت، لكن `margin-inline-start: 20px` هتتقلب **لوحدها** مع اتجاه الصفحة.
 
 الصيغ:
-- `margin-inline: 16px;` الهامش للبداية والنهاية بنفس القيمة.
+- `margin-inline: 16px;` الـ margin للبداية والنهاية بنفس القيمة.
 - `margin-inline: 8px 24px;` الأولى للبداية والتانية للنهاية.
 - **`margin-inline: auto;`** لتوسيط الصندوق أفقياً (الأشهر!) مع `width` أو `max-width`.
 
-زي ما تتخيل الكتاب: ناس بتفتحه من اليمين وناس من الشمال، لكن «الهامش جنب الكعب» (الداخلي) هو هو بغض النظر عن الاتجاه. ده المقصود بـ start وend. الدعم ممتاز في كل المتصفحات الحديثة، فابدأ استخدمه كعادة، خصوصاً لو موقعك بيدعم لغتين.
+زي ما تتخيل الكتاب: ناس بتفتحه من اليمين وناس من الشمال، لكن «الـ margin جنب الكعب» (الداخلي) هو هو بغض النظر عن الاتجاه. ده المقصود بـ start وend. الدعم ممتاز في كل المتصفحات الحديثة، فابدأ استخدمه كعادة، خصوصاً لو موقعك بيدعم لغتين.
 
 ## try
 
@@ -56,7 +56,7 @@ margin-inline: auto;       /* توسيط */
 نسبة من عرض الأب.
 
 ### auto
-هامش تلقائي (للتوسيط).
+margin تلقائي (للتوسيط).
 
 ## use
 

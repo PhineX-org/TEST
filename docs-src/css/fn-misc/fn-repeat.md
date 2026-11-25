@@ -3,7 +3,7 @@ id: fn-repeat
 kind: function
 cat: fn-misc
 chip: repeat()
-title: دالة repeat(): تكرار مسارات Grid
+title: تكرار مسارات Grid
 en: CSS repeat() function
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: fn-repeating-linear-gradient
 kind: function
 cat: fn-gradient
 chip: repeating-linear-gradient()
-title: دالة repeating-linear-gradient(): تدرج خطي متكرر
+title: تدرج خطي متكرر
 en: CSS repeating-linear-gradient() function
 status: stable
 support: all

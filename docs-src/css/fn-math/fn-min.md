@@ -3,7 +3,7 @@ id: fn-min
 kind: function
 cat: fn-math
 chip: min()
-title: دالة min(): الأصغر
+title: الأصغر
 en: CSS min() function
 status: stable
 support: all
@@ -75,14 +75,14 @@ vw أو 1.6rem.
 
 
 
-### 3) حشو مرن
+### 3) padding مرن
 أقل من 24.
 
 ```html
 <style>
   .a { padding:min(4vw, 24px); background:#bcd4a8; color:#3d2c18; border-radius:8px; }
 </style>
-<div class="a">حشو مرن</div>
+<div class="a">padding مرن</div>
 ```
 
 

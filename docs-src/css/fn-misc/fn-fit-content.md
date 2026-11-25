@@ -3,7 +3,7 @@ id: fn-fit-content
 kind: function
 cat: fn-misc
 chip: fit-content()
-title: دالة fit-content(): على قد المحتوى بحد أقصى
+title: على قد المحتوى بحد أقصى
 en: CSS fit-content() function
 status: stable
 support: all

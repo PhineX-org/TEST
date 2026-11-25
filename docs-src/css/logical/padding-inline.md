@@ -3,19 +3,19 @@ id: padding-inline
 kind: property
 cat: logical
 chip: padding-inline
-title: حشو الاتجاه الأفقي (منطقي)
+title: padding الاتجاه الأفقي (منطقي)
 en: CSS padding-inline property
 status: stable
 support: all
 mdn: padding-inline
-summary: padding-inline بتحط حشو على جانبي العنصر في اتجاه الكتابة (بداية ونهاية). بتتقلب لوحدها في RTL.
+summary: padding-inline بتحط padding على جانبي العنصر في اتجاه الكتابة (بداية ونهاية). بتتقلب لوحدها في RTL.
 keywords: padding-inline, حشو, logical, rtl, padding
 related: padding-block, padding-inline-start, padding-inline-end, padding, logical-properties-guide
 ---
 
 ## intro
 
-الخاصية `padding-inline` هي النسخة المنطقية من `padding-left` و`padding-right`. زي [[margin-inline]] بالظبط لكن للحشو **جوه** الصندوق بدل الهامش بره. `padding-inline: 16px;` يعني 16 على **بداية ونهاية** السطر. وبقيمتين: `padding-inline: 8px 20px;` (بداية ثم نهاية). وبتتقلب مع اتجاه الصفحة تلقائي: لو عندك زرار بحشو أكبر من جهة البداية عشان أيقونة، `padding-inline-start: 40px;` هتشتغل في العربي والإنجليزي بنفس السطر. وشائعة جداً في الأزرار: `padding-block: 8px; padding-inline: 16px;` بدل `padding: 8px 16px`. ولا تنسى إن الحشو بيزوّد حجم الصندوق إلا لو `box-sizing: border-box`. تخيّل الحشو زي «البطانة» جوه علبة هدايا: بتبعد الهدية عن جدار العلبة، وكلمة inline بتقول لك إنك بتتكلم عن البطانة اللي على جنبي السطر، من غير ما تقول يمين ولا شمال. وده بيخلّي نفس الستايل يشتغل صح لو موقعك عربي وإنجليزي مع بعض، وكمان لو حد قلب الصفحة بـ `dir`.
+الخاصية `padding-inline` هي النسخة المنطقية من `padding-left` و`padding-right`. زي [[margin-inline]] بالظبط لكن للـ padding **جوه** الصندوق بدل الـ margin بره. `padding-inline: 16px;` يعني 16 على **بداية ونهاية** السطر. وبقيمتين: `padding-inline: 8px 20px;` (بداية ثم نهاية). وبتتقلب مع اتجاه الصفحة تلقائي: لو عندك زرار بـpadding أكبر من جهة البداية عشان أيقونة، `padding-inline-start: 40px;` هتشتغل في العربي والإنجليزي بنفس السطر. وشائعة جداً في الأزرار: `padding-block: 8px; padding-inline: 16px;` بدل `padding: 8px 16px`. ولا تنسى إن الـ padding بيزوّد حجم الصندوق إلا لو `box-sizing: border-box`. تخيّل الـ padding زي «البطانة» جوه علبة هدايا: بتبعد الهدية عن جدار العلبة، وكلمة inline بتقول لك إنك بتتكلم عن البطانة اللي على جنبي السطر، من غير ما تقول يمين ولا شمال. وده بيخلّي نفس الستايل يشتغل صح لو موقعك عربي وإنجليزي مع بعض، وكمان لو حد قلب الصفحة بـ `dir`.
 
 ## try
 
@@ -24,7 +24,7 @@ related: padding-block, padding-inline-start, padding-inline-end, padding, logic
   .w { margin:6px 0; padding:6px; background:#f3e6c9; border-radius:8px; color:#3d2c18; }
   .i { background:#c9772f; color:#f3ede0; padding:6px 10px; border-radius:6px; font-weight:bold; }
 </style>
-<div class="w"><span class="i" style="display:inline-block;padding-inline:30px">حشو أفقي 30</span> <span class="i" style="display:inline-block;padding-inline:6px">حشو 6</span></div>
+<div class="w"><span class="i" style="display:inline-block;padding-inline:30px">padding أفقي 30</span> <span class="i" style="display:inline-block;padding-inline:6px">padding 6</span></div>
 ```
 
 ## syntax
@@ -48,13 +48,13 @@ button { padding-block: 8px; padding-inline: 18px; }
 نسبة من عرض الأب.
 
 ### 0
-بدون حشو (الافتراضي).
+بدون padding (الافتراضي).
 
 ## use
 
-- أزرار بحشو أفقي.
-- قوايم وبطاقات بحشو جانبي.
-- حشو أكبر عند أيقونة (start).
+- أزرار بـpadding أفقي.
+- قوايم وبطاقات بـpadding جانبي.
+- padding أكبر عند أيقونة (start).
 
 ## avoid
 
@@ -103,21 +103,21 @@ block وinline.
 
 
 ### 4) بطاقة
-حشو جانبي.
+padding جانبي.
 
 ```html
 <style>
   .w { margin:6px 0; padding:6px; background:#f3e6c9; border-radius:8px; color:#3d2c18; }
   .i { background:#c9772f; color:#f3ede0; padding:6px 10px; border-radius:6px; font-weight:bold; }
 </style>
-<div class="w" style="padding-inline:24px;background:#efe0bd">بطاقة بحشو جانبي 24</div>
+<div class="w" style="padding-inline:24px;background:#efe0bd">بطاقة بـpadding جانبي 24</div>
 ```
 
 
 
 ## mistakes
 
-### حشو left ثابت
+### padding left ثابت
 
 ```css bad
 .btn { padding-left:20px; padding-right:12px; }
@@ -139,7 +139,7 @@ block وinline.
 .a { padding-inline:16px; }
 ```
 
-الحشو مش بيقبل auto.
+الـ padding مش بيقبل auto.
 
 ## quiz
 
@@ -157,7 +157,7 @@ block وinline.
 - [ ] أحياناً
 - [ ] فقط flex
 
-مفيش auto للحشو.
+مفيش auto للـ padding.
 
 ### الأولى بتمثل؟
 - [x] البداية

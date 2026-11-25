@@ -3,7 +3,7 @@ id: fn-attr
 kind: function
 cat: fn-math
 chip: attr()
-title: دالة attr(): قراءة خاصية HTML
+title: قراءة خاصية HTML
 en: CSS attr() function
 status: stable
 support: all

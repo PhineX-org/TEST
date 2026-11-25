@@ -3,7 +3,7 @@ id: fn-clamp
 kind: function
 cat: fn-math
 chip: clamp()
-title: دالة clamp(): قيمة بين حدين
+title: قيمة بين حدين
 en: CSS clamp() function
 status: stable
 support: all
@@ -93,14 +93,14 @@ rem + vw.
 
 
 
-### 4) حشو مرن
+### 4) padding مرن
 3vw بحدود.
 
 ```html
 <style>
   .a { padding:clamp(8px, 3vw, 28px); background:#bcd4a8; color:#3d2c18; border-radius:8px; }
 </style>
-<div class="a">حشو مرن</div>
+<div class="a">padding مرن</div>
 ```
 
 

@@ -3,7 +3,7 @@ id: border-inline-start
 kind: property
 cat: logical
 chip: border-inline-start
-title: حد بداية السطر (منطقي)
+title: border بداية السطر (منطقي)
 en: CSS border-inline-start property
 status: stable
 support: all
@@ -16,7 +16,7 @@ related: border-left, border-right, border-radius, padding-inline-start
 
 ## intro
 
-الخاصية `border-inline-start` بتحط **حد (border)** عند بداية السطر فقط: يمين في العربي وشمال في الإنجليزي. اختصار بيجمع العرض والنمط واللون: `border-inline-start: 4px solid #c9772f;`. أشهر استخدام: **الخط الجانبي المميّز** للاقتباسات والتنبيهات (callouts)، وده بالظبط شكل التنبيهات اللي في الموقع ده. بدل `border-left` اللي في العربي هتحط الخط في الجهة الغلط، `border-inline-start` بتحطه جنب بداية النص صح. فيه `border-inline-end` و`border-block-start` وغيرهم، و`border-inline` لكلا الجانبين.
+الخاصية `border-inline-start` بتحط **الـ border** عند بداية السطر فقط: يمين في العربي وشمال في الإنجليزي. اختصار بيجمع العرض والنمط واللون: `border-inline-start: 4px solid #c9772f;`. أشهر استخدام: **الخط الجانبي المميّز** للاقتباسات والتنبيهات (callouts)، وده بالظبط شكل التنبيهات اللي في الموقع ده. بدل `border-left` اللي في العربي هتحط الخط في الجهة الغلط، `border-inline-start` بتحطه جنب بداية النص صح. فيه `border-inline-end` و`border-block-start` وغيرهم، و`border-inline` لكلا الجانبين.
 
 ## try
 

@@ -3,7 +3,7 @@ id: fn-scale
 kind: function
 cat: fn-transform
 chip: scale()
-title: دالة scale(): تكبير وتصغير
+title: تكبير وتصغير
 en: CSS scale() function
 status: stable
 support: all

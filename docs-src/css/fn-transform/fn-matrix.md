@@ -3,7 +3,7 @@ id: fn-matrix
 kind: function
 cat: fn-transform
 chip: matrix()
-title: دالة matrix(): كل التحويلات في مصفوفة
+title: كل التحويلات في مصفوفة
 en: CSS matrix() function
 status: stable
 support: all

@@ -19,7 +19,7 @@ related: list-style-type, list-style-position, list-style-image, marker, display
 
 أشهر سطر في الدنيا بالنسبة للقوائم: **`list-style: none;`** عشان تشيل النقط والأرقام خالص. بنعمله لما القائمة بتكون **قايمة تنقل (nav)** أو أزرار أو بطاقات، مش قائمة نصية حقيقية. بس خد بالك: في **Safari مع VoiceOver** لما تشيل `list-style` من `ul` بيتعامل معاها كأنها مش قائمة (مشكلة وصولية)، فلو القائمة محتواها قائمة فعلاً أضف `role="list"` للأمان.
 
-مثال كامل: `ul { list-style: square inside; }` يعني مربعات بتبدأ جوه صندوق العنصر. وعادة بنصفّر الحشو الافتراضي بـ `padding: 0; margin: 0;` لأن المتصفح بيدّي `ul` حشو من اليمين (في العربي) عشان العلامات.
+مثال كامل: `ul { list-style: square inside; }` يعني مربعات بتبدأ جوه صندوق العنصر. وعادة بنصفّر الـ padding الافتراضي بـ `padding: 0; margin: 0;` لأن المتصفح بيدّي `ul` padding من اليمين (في العربي) عشان العلامات.
 
 وتذكّر إن `list-style` بتتوارث، فلو حطيتها على `ul` كل الـ `li` بتاخدها.
 
@@ -72,7 +72,7 @@ list-style: url(star.svg) inside;
 ## avoid
 
 - شيل العلامات من قايمة نصية حقيقية بدون `role="list"`.
-- نسيان تصفير الحشو الافتراضي بعد `none`.
+- نسيان تصفير الـ padding الافتراضي بعد `none`.
 
 ## examples
 
@@ -128,7 +128,7 @@ decimal وlower-alpha.
 
 ## mistakes
 
-### شيل الحشو غلط
+### شيل الـ padding غلط
 
 ```css bad
 ul { list-style:none; }  /* لسه فيه فراغ على اليمين */
@@ -138,7 +138,7 @@ ul { list-style:none; }  /* لسه فيه فراغ على اليمين */
 ul { list-style:none; margin:0; padding:0; }
 ```
 
-list-style مبتشيلش الحشو الافتراضي.
+list-style مبتشيلش الـ padding الافتراضي.
 
 ### إزالة سياق القايمة
 

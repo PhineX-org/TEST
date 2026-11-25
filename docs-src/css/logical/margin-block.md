@@ -3,13 +3,13 @@ id: margin-block
 kind: property
 cat: logical
 chip: margin-block
-title: هامش الاتجاه الرأسي (منطقي)
+title: margin الاتجاه الرأسي (منطقي)
 en: CSS margin-block property
 status: stable
 support: all
 size: compact
 mdn: margin-block
-summary: margin-block بتحط هامش قبل وبعد العنصر في اتجاه الكتل (فوق وتحت في الكتابة الأفقية).
+summary: margin-block بتحط margin قبل وبعد العنصر في اتجاه الكتل (فوق وتحت في الكتابة الأفقية).
 keywords: margin-block, هامش رأسي, logical, margin-top, margin-bottom
 related: margin-inline, margin-top, margin-bottom, logical-properties-guide
 ---

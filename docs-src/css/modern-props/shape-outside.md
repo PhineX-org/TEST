@@ -51,7 +51,7 @@ related: float, fn-circle, fn-polygon, clip-path
 من شفافية صورة.
 
 ### margin-box
-صندوق الهامش.
+صندوق الـ margin.
 
 ## use
 

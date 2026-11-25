@@ -3,7 +3,7 @@ id: fn-radial-gradient
 kind: function
 cat: fn-gradient
 chip: radial-gradient()
-title: دالة radial-gradient(): تدرج دائري
+title: تدرج دائري
 en: CSS radial-gradient() function
 status: stable
 support: all

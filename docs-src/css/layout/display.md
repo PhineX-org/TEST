@@ -64,7 +64,7 @@ display: flow-root;
 ## values
 
 ### block
-سطر كامل ويقبل الأبعاد والهوامش.
+سطر كامل ويقبل الأبعاد والـ margins.
 
 ### inline
 مع الكلام، من غير width/height.

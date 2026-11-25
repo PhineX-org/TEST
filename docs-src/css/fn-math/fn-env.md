@@ -3,7 +3,7 @@ id: fn-env
 kind: function
 cat: fn-math
 chip: env()
-title: دالة env(): متغيرات البيئة
+title: متغيرات البيئة
 en: CSS env() function
 status: stable
 support: all
@@ -24,7 +24,7 @@ related: fn-var, fn-calc, padding
 <style>
   .a { padding:max(10px, env(safe-area-inset-top, 0px)) 10px 10px; background:#bcd4a8; color:#3d2c18; border-radius:8px; }
 </style>
-<div class="a">حشو أعلى = أكبر من 10px أو منطقة النتوء الآمنة</div>
+<div class="a">padding أعلى = أكبر من 10px أو منطقة النتوء الآمنة</div>
 ```
 
 ## syntax
@@ -51,7 +51,7 @@ padding-top: max(12px, env(safe-area-inset-top));
 
 ## examples
 
-### 1) حشو آمن
+### 1) padding آمن
 max مع env.
 
 ```html

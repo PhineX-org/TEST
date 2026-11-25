@@ -3,7 +3,7 @@ id: fn-steps
 kind: function
 cat: fn-misc
 chip: steps()
-title: دالة steps(): حركة بخطوات منفصلة
+title: حركة بخطوات منفصلة
 en: CSS steps() function
 status: stable
 support: all

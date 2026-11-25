@@ -3,7 +3,7 @@ id: fn-minmax
 kind: function
 cat: fn-misc
 chip: minmax()
-title: دالة minmax(): حد أدنى وأقصى للمسار
+title: حد أدنى وأقصى للمسار
 en: CSS minmax() function
 status: stable
 support: all

@@ -3,7 +3,7 @@ id: fn-max
 kind: function
 cat: fn-math
 chip: max()
-title: دالة max(): الأكبر
+title: الأكبر
 en: CSS max() function
 status: stable
 support: all
@@ -74,14 +74,14 @@ padding-inline: max(16px, 5vw);
 
 
 
-### 3) حشو جانبي
+### 3) padding جانبي
 16px على الأقل.
 
 ```html
 <style>
   .a { padding-inline:max(16px, 5vw); padding-block:8px; background:#bcd4a8; color:#3d2c18; border-radius:8px; }
 </style>
-<div class="a">حشو جانبي مرن</div>
+<div class="a">padding جانبي مرن</div>
 ```
 
 

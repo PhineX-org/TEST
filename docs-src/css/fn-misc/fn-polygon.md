@@ -3,7 +3,7 @@ id: fn-polygon
 kind: function
 cat: fn-misc
 chip: polygon()
-title: دالة polygon(): شكل مضلع
+title: شكل مضلع
 en: CSS polygon() function
 status: stable
 support: all

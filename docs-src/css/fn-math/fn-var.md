@@ -3,7 +3,7 @@ id: fn-var
 kind: function
 cat: fn-math
 chip: var()
-title: دالة var(): استخدام متغير CSS
+title: استخدام متغير CSS
 en: CSS var() function
 status: stable
 support: all
@@ -65,7 +65,7 @@ color: var(--text, #333);  /* fallback */
   :root { --brand:#c9772f; --gap:10px; }
   .a { background:var(--brand); color:#f3ede0; padding:var(--gap); border-radius:8px; font-weight:bold; }
 </style>
-<div class="a">لون وحشو من متغيرات</div>
+<div class="a">لون و padding من متغيرات</div>
 ```
 
 

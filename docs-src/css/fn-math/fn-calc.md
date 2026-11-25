@@ -3,7 +3,7 @@ id: fn-calc
 kind: function
 cat: fn-math
 chip: calc()
-title: دالة calc(): حسابات داخل CSS
+title: حسابات داخل CSS
 en: CSS calc() function
 status: stable
 support: all
@@ -98,7 +98,7 @@ gap × 2.
   :root { --gap:10px; }
   .a { padding:calc(var(--gap) * 2); background:#bcd4a8; color:#3d2c18; border-radius:8px; }
 </style>
-<div class="a">حشو = gap × 2</div>
+<div class="a">padding = gap × 2</div>
 ```
 
 

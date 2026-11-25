@@ -75,7 +75,7 @@ inset: 0 auto auto 0;
 
 
 
-### 2) هوامش داخلية
+### 2) margins داخلية
 `inset:10px` بيسيب 10px من كل جهة.
 
 ```html

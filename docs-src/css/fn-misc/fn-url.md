@@ -3,7 +3,7 @@ id: fn-url
 kind: function
 cat: fn-misc
 chip: url()
-title: دالة url(): مسار ملف
+title: مسار ملف
 en: CSS url() function
 status: stable
 support: all

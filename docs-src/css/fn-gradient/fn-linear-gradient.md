@@ -3,7 +3,7 @@ id: fn-linear-gradient
 kind: function
 cat: fn-gradient
 chip: linear-gradient()
-title: دالة linear-gradient(): تدرج خطي
+title: تدرج خطي
 en: CSS linear-gradient() function
 status: stable
 support: all

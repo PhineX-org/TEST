@@ -3,7 +3,7 @@ id: fn-conic-gradient
 kind: function
 cat: fn-gradient
 chip: conic-gradient()
-title: دالة conic-gradient(): تدرج مخروطي
+title: تدرج مخروطي
 en: CSS conic-gradient() function
 status: stable
 support: all

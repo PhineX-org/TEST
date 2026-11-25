@@ -3,7 +3,7 @@ id: fn-rotate
 kind: function
 cat: fn-transform
 chip: rotate()
-title: دالة rotate(): تدوير العنصر
+title: تدوير العنصر
 en: CSS rotate() function
 status: stable
 support: all

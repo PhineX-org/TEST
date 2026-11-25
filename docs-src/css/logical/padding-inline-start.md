@@ -3,20 +3,20 @@ id: padding-inline-start
 kind: property
 cat: logical
 chip: padding-inline-start
-title: حشو بداية السطر
+title: padding بداية السطر
 en: CSS padding-inline-start property
 status: stable
 support: all
 size: compact
 mdn: padding-inline-start
-summary: padding-inline-start حشو عند بداية السطر: يمين في العربي وشمال في الإنجليزي. مثالي لقوائم ومسافة أيقونات.
+summary: padding-inline-start padding عند بداية السطر: يمين في العربي وشمال في الإنجليزي. مثالي لقوائم ومسافة أيقونات.
 keywords: padding-inline-start, بداية, حشو, rtl
 related: padding-inline-end, padding-inline, padding-left, padding-right
 ---
 
 ## intro
 
-الخاصية `padding-inline-start` بتحط حشو **عند بداية السطر** فقط: يمين في العربي (RTL) وشمال في الإنجليزي (LTR). مثال شهير: القوائم `ul` بتاخد حشو افتراضي من جهة البداية، فلو عايز تغيّره في موقع ثنائي الاتجاه استخدم `ul { padding-inline-start: 24px; }` بدل `padding-left` اللي هتبوظ في العربي. كمان للحقول اللي فيها أيقونة في البداية: `input { padding-inline-start: 36px; }` تفسح مكان الأيقونة. جزء من عائلة [[padding-inline]]. وبكده بتكتب الكود مرة واحدة وتنساه، ومتحتاجش تعمل نسخة منفصلة للعربي وأخرى للإنجليزي.
+الخاصية `padding-inline-start` بتحط padding **عند بداية السطر** فقط: يمين في العربي (RTL) وشمال في الإنجليزي (LTR). مثال شهير: القوائم `ul` بتاخد padding افتراضي من جهة البداية، فلو عايز تغيّره في موقع ثنائي الاتجاه استخدم `ul { padding-inline-start: 24px; }` بدل `padding-left` اللي هتبوظ في العربي. كمان للحقول اللي فيها أيقونة في البداية: `input { padding-inline-start: 36px; }` تفسح مكان الأيقونة. جزء من عائلة [[padding-inline]]. وبكده بتكتب الكود مرة واحدة وتنساه، ومتحتاجش تعمل نسخة منفصلة للعربي وأخرى للإنجليزي.
 
 ## try
 
@@ -25,7 +25,7 @@ related: padding-inline-end, padding-inline, padding-left, padding-right
   .w { margin:6px 0; padding:6px; background:#f3e6c9; border-radius:8px; color:#3d2c18; }
   .i { background:#c9772f; color:#f3ede0; padding:6px 10px; border-radius:6px; font-weight:bold; }
 </style>
-<div dir="rtl" class="w"><div class="i" style="padding-inline-start:50px">start حشو 50</div></div>
+<div dir="rtl" class="w"><div class="i" style="padding-inline-start:50px">start padding 50</div></div>
 <div dir="ltr" class="w"><div class="i" style="padding-inline-start:50px">start padding 50</div></div>
 ```
 
@@ -112,7 +112,7 @@ ul { padding-inline-start:24px; }
 
 ## quiz
 
-### بتحط حشو؟
+### بتحط padding؟
 - [x] عند بداية السطر
 - [ ] عند النهاية
 - [ ] فوق
